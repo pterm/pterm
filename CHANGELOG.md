@@ -2,6 +2,7 @@
 ## [Unreleased]
 
 ### Docs
+- add readme
 
 ### Feat
 - change prefix text color to `LightWhite`
