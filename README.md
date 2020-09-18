@@ -1,7 +1,4 @@
 <!--suppress HtmlDeprecatedAttribute -->
-<a href="https://github.com/dops-cli/dops/">
-<img src="https://raw.githubusercontent.com/pterm/pterm/master/_examples/demo/animation.svg" alt="Dops">
-</a>
 
 <h1 align="center">:computer: PTerm | Pretty Terminal</h1>
 <p align="center">A golang module to print pretty text</p>
@@ -35,3 +32,9 @@
 </a>
 
 </p>
+
+<a href="https://github.com/dops-cli/dops/">
+<img src="https://raw.githubusercontent.com/pterm/pterm/master/_examples/demo/animation.svg" alt="Dops">
+</a>
+
+---
