@@ -10,7 +10,7 @@ var (
 	InfoPrinter = PrefixPrinter{
 		Prefix: Prefix{
 			Text:  "INFO",
-			Style: New(FgWhite, BgCyan),
+			Style: New(FgLightWhite, BgCyan),
 		},
 		MessageStyle: New(FgLightCyan),
 	}
@@ -18,7 +18,7 @@ var (
 	WarningPrinter = PrefixPrinter{
 		Prefix: Prefix{
 			Text:  "WARNING",
-			Style: New(FgWhite, BgYellow),
+			Style: New(FgLightWhite, BgYellow),
 		},
 		MessageStyle: New(FgYellow),
 	}
@@ -26,7 +26,7 @@ var (
 	SuccessPrinter = PrefixPrinter{
 		Prefix: Prefix{
 			Text:  "SUCCESS",
-			Style: New(FgWhite, BgGreen),
+			Style: New(FgLightWhite, BgGreen),
 		},
 		MessageStyle: New(FgGreen),
 	}
@@ -34,7 +34,7 @@ var (
 	ErrorPrinter = PrefixPrinter{
 		Prefix: Prefix{
 			Text:  "ERROR",
-			Style: New(FgWhite, BgLightRed),
+			Style: New(FgLightWhite, BgLightRed),
 		},
 		MessageStyle: New(FgLightRed),
 	}
