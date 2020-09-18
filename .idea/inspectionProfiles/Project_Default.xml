@@ -1,0 +1,18 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="GoCommentStart" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="GoExportedElementShouldHaveComment" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="GoUnhandledErrorResult" enabled="true" level="WARNING" enabled_by_default="true">
+      <functions>
+        <function importPath="fmt" name="Printf" />
+        <function importPath="fmt" name="Errorf" />
+        <function importPath="math/rand" name="Read" />
+        <function importPath="fmt" name="Println" />
+        <function importPath="fmt" name="Print" />
+        <function importPath="fmt" name="Fprintf" />
+        <function importPath="os" name="Setenv" />
+      </functions>
+    </inspection_tool>
+  </profile>
+</component>
