@@ -33,7 +33,7 @@
 
 </p>
 
-<a href="https://github.com/dops-cli/dops/">
+<a href="https://github.com/pterm/pterm/">
 <img src="https://raw.githubusercontent.com/pterm/pterm/master/_examples/demo/animation.svg" alt="Dops">
 </a>
 
