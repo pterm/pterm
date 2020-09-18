@@ -1,6 +1,11 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Docs
+
+### Feat
+- change prefix text color to `LightWhite`
+
 
 <a name="v0.0.0"></a>
 ## v0.0.0 - 2020-09-18
