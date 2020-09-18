@@ -3,6 +3,7 @@
 
 ### Docs
 - add readme
+- **readme:** put demo animation under header
 
 ### Feat
 - change prefix text color to `LightWhite`
