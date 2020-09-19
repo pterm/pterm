@@ -6,7 +6,7 @@
 <p align="center">
 
 <a href="https://github.com/pterm/pterm/releases">
-<img src="https://img.shields.io/github/v/release/pterm/pterm" alt="Latest Release">
+<img src="https://img.shields.io/github/v/release/pterm/pterm?style=flat-square" alt="Latest Release">
 </a>
 
 <a href="https://github.com/pterm/pterm/stargazers">
