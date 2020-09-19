@@ -7,6 +7,7 @@
 - **idea:** exclude experimenting directory
 
 ### Docs
+- fix release badge style
 - add readme
 - **readme:** put demo animation under header
 - **readme:** fix readme animation href
