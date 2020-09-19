@@ -12,6 +12,7 @@
 - **readme:** fix readme animation href
 
 ### Feat
+- add exported version variable
 - add example `override-default-printer`
 - change prefix text color to `LightWhite`
 
