@@ -13,3 +13,6 @@
 
 # Dependency directories (remove the comment below to include it)
 vendor/
+
+# This is where we test stuff
+/experimenting/
