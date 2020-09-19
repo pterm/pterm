@@ -1,7 +1,5 @@
 package pterm
 
-import "time"
-
 var (
 	GrayBoxStyle = New(BgGray, FgLightWhite)
 )
@@ -75,19 +73,19 @@ func (p PrefixPrinter) Sprintf(format string, a ...interface{}) string {
 	return p.Sprint(Sprintf(format, a...))
 }
 
-func (p PrefixPrinter) Print(a ...interface{}) {
+func (p PrefixPrinter) Print(a ...interface{}) GenericPrinter {
 	Print(p.Sprint(a...))
+	return p
 }
 
-func (p PrefixPrinter) Println(a ...interface{}) {
+func (p PrefixPrinter) Println(a ...interface{}) GenericPrinter {
 	Print(p.Sprintln(a...))
-	go func() {
-		time.Sleep(time.Second * 10)
-	}()
+	return p
 }
 
-func (p PrefixPrinter) Printf(format string, a ...interface{}) {
+func (p PrefixPrinter) Printf(format string, a ...interface{}) GenericPrinter {
 	Print(Sprintf(format, a...))
+	return p
 }
 
 func (p PrefixPrinter) GetFormattedPrefix() string {
