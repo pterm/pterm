@@ -16,6 +16,7 @@
 - **readme:** fix readme animation href
 
 ### Feat
+- add header example
 - integrate ci
 - add `HeaderPrinter`
 - add exported version variable
