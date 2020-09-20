@@ -13,6 +13,8 @@
 - **readme:** fix readme animation href
 
 ### Feat
+- integrate ci
+- add `HeaderPrinter`
 - add exported version variable
 - add example `override-default-printer`
 - change prefix text color to `LightWhite`
