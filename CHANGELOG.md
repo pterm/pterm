@@ -6,6 +6,9 @@
 - **idea:** unexclude experimenting directory
 - **idea:** exclude experimenting directory
 
+### Ci
+- automatically add example code to readme files
+
 ### Docs
 - fix release badge style
 - add readme
