@@ -23,6 +23,7 @@ func main() {
 	customHeaderPrinter := pterm.HeaderPrinter{Header: pterm.Header{
 		TextStyle:       pterm.Style{pterm.FgLightRed},
 		BackgroundStyle: pterm.Style{pterm.BgGreen},
+		Margin:          15,
 	}}
 	// Use custom Header printer
 	customHeaderPrinter.Println("This is a custom header.")

@@ -10,6 +10,7 @@
 - automatically add example code to readme files
 
 ### Docs
+- update header example
 - fix release badge style
 - add readme
 - **readme:** put demo animation under header
