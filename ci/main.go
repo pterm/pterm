@@ -22,6 +22,10 @@ func main() {
 		fmt.Println("### Generating animations for example '" + f.Name() + "'")
 		animationDataPath := "./_examples/" + f.Name() + "/animation_data.json"
 		animationSvgPath := "./_examples/" + f.Name() + "/animation.svg"
+		exampleCode, err := ioutil.ReadFile("./_examples/" + f.Name() + "/main.go")
+		if err != nil {
+			log.Fatal(err)
+		}
 
 		if fileExists(animationDataPath) {
 			fmt.Println("#### animation_data.json already exists. Removing it.")
@@ -56,18 +60,16 @@ func main() {
 		execute(`svg-term --in ` + animationDataPath + ` --out ` + animationSvgPath + ` --window true --no-optimize`)
 
 		fmt.Println("#### Generating README.md")
-		readmeString := "# " + f.Name() + "\n\n![Animation](animation.svg)"
+		readmeString := "# " + f.Name() + "\n\n![Animation](animation.svg)\n\n"
+		readmeString += "```go\n"
+		readmeString += string(exampleCode)
+		readmeString += "\n```\n"
 		err = ioutil.WriteFile("./_examples/"+f.Name()+"/README.md", []byte(readmeString), 0600)
 		if err != nil {
 			log.Fatal(err)
 		}
 
 		fmt.Println("#### Adding example to global example list")
-
-		exampleCode, err := ioutil.ReadFile("./_examples/" + f.Name() + "/main.go")
-		if err != nil {
-			log.Fatal(err)
-		}
 
 		readmeExamples += "### " + f.Name() + "\n\n"
 		readmeExamples += "![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/" + f.Name() + "/animation.svg)\n\n"
