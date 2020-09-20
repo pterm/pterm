@@ -3,7 +3,7 @@ package pterm
 var (
 	// DefaultHeaderPrinter returns the printer for a default header text.
 	// Defaults to LightWhite, Bold Text and a Gray Header background.
-	DefaultHeaderPrinter = HeaderPrinter{Title: Header{
+	DefaultHeaderPrinter = HeaderPrinter{Header: Header{
 		TextStyle:       Style{FgLightWhite, Bold},
 		BackgroundStyle: Style{BgGray},
 	}}
@@ -18,11 +18,11 @@ type Header struct {
 }
 
 type HeaderPrinter struct {
-	Title Header
+	Header Header
 }
 
 func (p HeaderPrinter) Sprint(a ...interface{}) string {
-	return p.Title.BackgroundStyle.Sprint("\n", "    "+p.Title.TextStyle.Sprint(Sprint(a...)), p.Title.BackgroundStyle.Sprint("\n\n"))
+	return p.Header.BackgroundStyle.Sprint("\n", "    "+p.Header.TextStyle.Sprint(Sprint(a...)), p.Header.BackgroundStyle.Sprint("\n\n"))
 }
 
 func (p HeaderPrinter) Sprintln(a ...interface{}) string {
