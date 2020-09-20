@@ -1,40 +1,40 @@
 package pterm
 
 var (
-	GrayBoxStyle = New(BgGray, FgLightWhite)
+	GrayBoxStyle = NewStyle(BgGray, FgLightWhite)
 )
 
 var (
 	InfoPrinter = PrefixPrinter{
 		Prefix: Prefix{
 			Text:  "INFO",
-			Style: New(FgLightWhite, BgCyan),
+			Style: NewStyle(FgLightWhite, BgCyan),
 		},
-		MessageStyle: New(FgLightCyan),
+		MessageStyle: NewStyle(FgLightCyan),
 	}
 
 	WarningPrinter = PrefixPrinter{
 		Prefix: Prefix{
 			Text:  "WARNING",
-			Style: New(FgLightWhite, BgYellow),
+			Style: NewStyle(FgLightWhite, BgYellow),
 		},
-		MessageStyle: New(FgYellow),
+		MessageStyle: NewStyle(FgYellow),
 	}
 
 	SuccessPrinter = PrefixPrinter{
 		Prefix: Prefix{
 			Text:  "SUCCESS",
-			Style: New(FgLightWhite, BgGreen),
+			Style: NewStyle(FgLightWhite, BgGreen),
 		},
-		MessageStyle: New(FgGreen),
+		MessageStyle: NewStyle(FgGreen),
 	}
 
 	ErrorPrinter = PrefixPrinter{
 		Prefix: Prefix{
 			Text:  "ERROR",
-			Style: New(FgLightWhite, BgLightRed),
+			Style: NewStyle(FgLightWhite, BgLightRed),
 		},
-		MessageStyle: New(FgLightRed),
+		MessageStyle: NewStyle(FgLightRed),
 	}
 
 	DescriptionPrinter = PrefixPrinter{
@@ -44,64 +44,79 @@ var (
 		},
 		MessageStyle: Style{BgDarkGray, FgLightWhite},
 	}
-
-	AllPrinters = []PrefixPrinter{SuccessPrinter, InfoPrinter, WarningPrinter, ErrorPrinter, DescriptionPrinter}
 )
 
+// PrefixPrinter is the printer used to print a Prefix
 type PrefixPrinter struct {
 	Prefix       Prefix
 	Scope        Scope
 	MessageStyle Style
 }
 
+// Sprint formats using the default formats for its operands and returns the resulting string.
+// Spaces are added between operands when neither is a string.
 func (p PrefixPrinter) Sprint(a ...interface{}) string {
 	var args []interface{}
 	args = append(args, p.GetFormattedPrefix())
 	if p.Scope.Text != "" {
-		args = append(args, New(p.Scope.Style...).Sprint(" ("+p.Scope.Text+") "))
+		args = append(args, NewStyle(p.Scope.Style...).Sprint(" ("+p.Scope.Text+") "))
 	}
 	args = append(args, p.GetFormattedMessage(a...))
 
 	return Sprint(args...)
 }
 
+// Sprintln formats using the default formats for its operands and returns the resulting string.
+// Spaces are always added between operands and a newline is appended.
 func (p PrefixPrinter) Sprintln(a ...interface{}) string {
 	return p.Sprint(a...) + "\n"
 }
 
+// Sprintf formats according to a format specifier and returns the resulting string.
 func (p PrefixPrinter) Sprintf(format string, a ...interface{}) string {
 	return p.Sprint(Sprintf(format, a...))
 }
 
+// Print formats using the default formats for its operands and writes to standard output.
+// Spaces are added between operands when neither is a string.
+// It returns the number of bytes written and any write error encountered.
 func (p PrefixPrinter) Print(a ...interface{}) GenericPrinter {
 	Print(p.Sprint(a...))
 	return p
 }
 
+// Println formats using the default formats for its operands and writes to standard output.
+// Spaces are always added between operands and a newline is appended.
+// It returns the number of bytes written and any write error encountered.
 func (p PrefixPrinter) Println(a ...interface{}) GenericPrinter {
 	Print(p.Sprintln(a...))
 	return p
 }
 
+// Printf formats according to a format specifier and writes to standard output.
+// It returns the number of bytes written and any write error encountered.
 func (p PrefixPrinter) Printf(format string, a ...interface{}) GenericPrinter {
 	Print(Sprintf(format, a...))
 	return p
 }
 
+// GetFormattedPrefix returns the Prefix as a styled text string
 func (p PrefixPrinter) GetFormattedPrefix() string {
-	return New(p.Prefix.Style...).Sprint(" " + p.Prefix.Text + " ")
+	return NewStyle(p.Prefix.Style...).Sprint(" " + p.Prefix.Text + " ")
 }
 
+// GetFormattedMessage returns the message as a styled text string
 func (p PrefixPrinter) GetFormattedMessage(a ...interface{}) string {
 	var args []interface{}
 	args = append(args, " ")
 	args = append(args, a...)
 	if p.MessageStyle == nil {
-		p.MessageStyle = New()
+		p.MessageStyle = NewStyle()
 	}
-	return New(p.MessageStyle...).Sprint(args...)
+	return NewStyle(p.MessageStyle...).Sprint(args...)
 }
 
+// WithScope adds a scope to the Prefix
 func (p PrefixPrinter) WithScope(scope string, style ...Style) *PrefixPrinter {
 	p.Scope.Text = scope
 	if len(style) > 0 {
@@ -112,11 +127,14 @@ func (p PrefixPrinter) WithScope(scope string, style ...Style) *PrefixPrinter {
 	return &p
 }
 
+// Prefix contains the data used as the beginning of a printed text via a PrefixPrinter
 type Prefix struct {
 	Text  string
 	Style Style
 }
 
+// Scope contains the data of the optional scope of a prefix.
+// If it has a text, it will be printed after the Prefix in brackets.
 type Scope struct {
 	Text  string
 	Style Style

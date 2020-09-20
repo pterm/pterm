@@ -8,13 +8,16 @@ import (
 
 func main() {
 
-	for _, p := range pterm.AllPrinters {
-		p.Println("This is the default ", p.Prefix.Text, " printer.")
-		p.WithScope("scope").Println("This is the ", p.Prefix.Text, " printer with a scope.")
-		p.WithScope("custom", pterm.New(pterm.FgLightMagenta, pterm.Bold, pterm.BgWhite)).Println("This is the ", p.Prefix.Text, " printer with a custom scope style.")
-		time.Sleep(time.Second)
-		pterm.Println()
-	}
+	twoSeconds := time.Tick(time.Second * 2)
+	// fiveSeconds := time.Tick(time.Second*5)
+	// tenSeconds := time.Tick(time.Second*10)
+	// second := time.Tick(time.Second)
+	// halfSecond := time.Tick(time.Second/2)
+	// quarterSecond := time.Tick(time.Second/4)
+
+	pterm.PrintHeader("You can do many things with PTerm")
+
+	<-twoSeconds
 
 	customPrefixPrinter := pterm.PrefixPrinter{
 		Prefix: pterm.Prefix{
