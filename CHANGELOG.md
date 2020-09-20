@@ -23,6 +23,9 @@
 - add example `override-default-printer`
 - change prefix text color to `LightWhite`
 
+### Fix
+- header should now work in CI
+
 
 <a name="v0.0.0"></a>
 ## v0.0.0 - 2020-09-18
