@@ -6,6 +6,7 @@ var (
 	DefaultHeaderPrinter = HeaderPrinter{Header: Header{
 		TextStyle:       Style{FgLightWhite, Bold},
 		BackgroundStyle: Style{BgGray},
+		Margin:          5,
 	}}
 
 	// PrintHeader is the short form of DefaultHeaderPrinter.Println
@@ -15,6 +16,7 @@ var (
 type Header struct {
 	TextStyle       Style
 	BackgroundStyle Style
+	Margin          int
 }
 
 type HeaderPrinter struct {
@@ -22,7 +24,24 @@ type HeaderPrinter struct {
 }
 
 func (p HeaderPrinter) Sprint(a ...interface{}) string {
-	return p.Header.BackgroundStyle.Sprint("\n", "    "+p.Header.TextStyle.Sprint(Sprint(a...)), p.Header.BackgroundStyle.Sprint("\n\n"))
+	text := Sprint(a...)
+	textLength := len(text) + p.Header.Margin*2
+	var marginString string
+	for i := 0; i < p.Header.Margin; i++ {
+		marginString += " "
+	}
+	var blankLine string
+	for i := 0; i < textLength; i++ {
+		blankLine += " "
+	}
+
+	var ret string
+
+	ret += p.Header.BackgroundStyle.Sprint(blankLine) + "\n"
+	ret += p.Header.BackgroundStyle.Sprint(p.Header.TextStyle.Sprint(marginString+text+marginString)) + "\n"
+	ret += p.Header.BackgroundStyle.Sprint(blankLine) + "\n\n"
+
+	return ret
 }
 
 func (p HeaderPrinter) Sprintln(a ...interface{}) string {
