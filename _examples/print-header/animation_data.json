@@ -1,0 +1,4 @@
+{"version": 2, "width": 80, "height": 24, "timestamp": 1600692080, "env": {"SHELL": null, "TERM": "xterm-256color"}}
+[0.226701, "o", "\u001b[100m                                          \u001b[0m\r\n\u001b[100m\u001b[97;1m     This is the default header style     \u001b[0m\u001b[0m\r\n\u001b[100m                                          \u001b[0m\r\n\r\n"]
+[2.226989, "o", "\u001b[42m                                                      \u001b[0m\r\n\u001b[42m\u001b[91m               This is a custom header.               \u001b[0m\u001b[0m\r\n\u001b[42m                                                      \u001b[0m\r\n\r\n"]
+[7.226989, "o", "\r\nrestarting...\r\n"]

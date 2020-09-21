@@ -1,0 +1,3 @@
+{"version": 2, "width": 80, "height": 24, "timestamp": 1600692079, "env": {"SHELL": null, "TERM": "xterm-256color"}}
+[0.229677, "o", "\u001b[97;101m ERROR \u001b[0m\u001b[91m This is the default ErrorPrinter\u001b[0m\r\n\u001b[46;31m OVERRIDE \u001b[0m\u001b[91m This is the default ErrorPrinter after the prefix was overridden\u001b[0m\r\n"]
+[5.229677, "o", "\r\nrestarting...\r\n"]

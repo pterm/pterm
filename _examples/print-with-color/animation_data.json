@@ -1,0 +1,3 @@
+{"version": 2, "width": 80, "height": 24, "timestamp": 1600692084, "env": {"SHELL": null, "TERM": "xterm-256color"}}
+[0.242317, "o", "\u001b[31mHello, \u001b[0m\u001b[32mWorld\u001b[0m\u001b[36m!\u001b[0m\r\n"]
+[5.242317, "o", "\r\nrestarting...\r\n"]
