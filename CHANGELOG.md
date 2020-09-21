@@ -34,6 +34,7 @@
 - header should now work in CI
 
 ### Refactor
+- refactor project
 - add comments to functions
 
 
