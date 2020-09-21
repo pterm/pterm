@@ -10,6 +10,7 @@
 - automatically add example code to readme files
 
 ### Docs
+- update demo
 - update header example
 - fix release badge style
 - add readme
@@ -17,6 +18,7 @@
 - **readme:** fix readme animation href
 
 ### Feat
+- add aliases to default printers
 - add header example
 - integrate ci
 - add `HeaderPrinter`
@@ -26,6 +28,9 @@
 
 ### Fix
 - header should now work in CI
+
+### Refactor
+- add comments to functions
 
 
 <a name="v0.0.0"></a>
