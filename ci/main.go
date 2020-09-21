@@ -1,12 +1,15 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
 	"regexp"
+	"strconv"
+	"strings"
 )
 
 func main() {
@@ -46,7 +49,11 @@ func main() {
 		execute(`asciinema rec ` + animationDataPath + ` -c "go run ./_examples/` + f.Name() + `"`)
 
 		fmt.Println("#### Adding sleep to end of animation_data.json")
-		sleepString := `[5, "o", "\r\nrestarting...\r\n"]`
+		animationDataLines := getLinesFromFile(animationDataPath)
+		animationDataLastLine := animationDataLines[len(animationDataLines)-1]
+		re := regexp.MustCompile(`\[\d[^,]*`).FindAllString(animationDataLastLine, 1)[0]
+		lastTime, _ := strconv.ParseFloat(strings.ReplaceAll(re, "[", ""), 10)
+		sleepString := `[` + strconv.FormatFloat(lastTime+5, 'f', 6, 64) + `, "o", "\r\nrestarting...\r\n"]`
 		animationDataFile, err := os.OpenFile(animationDataPath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
 		if err != nil {
 			log.Println(err)
@@ -79,7 +86,7 @@ func main() {
 		readmeExamples += "\n\n"
 
 		fmt.Println("#### Cleaning files")
-		os.Remove(animationDataPath)
+		// os.Remove(animationDataPath)
 
 	}
 
@@ -126,4 +133,15 @@ func fileExists(filename string) bool {
 		return false
 	}
 	return !info.IsDir()
+}
+
+func getLinesFromFile(fileName string) []string {
+	f, _ := os.Open(fileName)
+	scanner := bufio.NewScanner(f)
+	var result []string
+	for scanner.Scan() {
+		line := scanner.Text()
+		result = append(result, line)
+	}
+	return result
 }
