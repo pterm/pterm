@@ -14,6 +14,8 @@
 - automatically add example code to readme files
 
 ### Docs
+- put documentation flag in seperate line
+- add documentation badge
 - update demo
 - update header example
 - fix release badge style
