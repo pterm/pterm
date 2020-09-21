@@ -33,8 +33,8 @@
 
 <br/>
 
-<a href="https://pkg.go.dev/pterm/pterm">
-<img src="https://pkg.go.dev/badge/pterm/pterm" alt="PTerm Documentation"/>
+<a href="https://pkg.go.dev/github.com/pterm/pterm">
+<img src="https://pkg.go.dev/badge/github.com/pterm/pterm" alt="PTerm Documentation"/>
 </a>
 
 <a href="https://github.com/pterm/pterm/">
