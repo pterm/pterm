@@ -86,7 +86,7 @@ func main() {
 		readmeExamples += "\n\n"
 
 		fmt.Println("#### Cleaning files")
-		// os.Remove(animationDataPath)
+		os.Remove(animationDataPath)
 
 	}
 
