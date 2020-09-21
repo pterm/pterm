@@ -7,6 +7,7 @@
 - **idea:** exclude experimenting directory
 
 ### Ci
+- remove animationdata again
 - fix sleep timing of animations
 - update commit-to-tag.yml
 - add release system
