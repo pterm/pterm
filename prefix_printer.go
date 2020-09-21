@@ -12,6 +12,7 @@ var (
 		},
 		MessageStyle: NewStyle(FgLightCyan),
 	}
+	PrintInfo = InfoPrinter.Println
 
 	WarningPrinter = PrefixPrinter{
 		Prefix: Prefix{
@@ -20,6 +21,7 @@ var (
 		},
 		MessageStyle: NewStyle(FgYellow),
 	}
+	PrintWarning = WarningPrinter.Println
 
 	SuccessPrinter = PrefixPrinter{
 		Prefix: Prefix{
@@ -28,6 +30,7 @@ var (
 		},
 		MessageStyle: NewStyle(FgGreen),
 	}
+	PrintSuccess = SuccessPrinter.Println
 
 	ErrorPrinter = PrefixPrinter{
 		Prefix: Prefix{
@@ -36,6 +39,7 @@ var (
 		},
 		MessageStyle: NewStyle(FgLightRed),
 	}
+	PrintError = ErrorPrinter.Println
 
 	DescriptionPrinter = PrefixPrinter{
 		Prefix: Prefix{
@@ -44,6 +48,7 @@ var (
 		},
 		MessageStyle: Style{BgDarkGray, FgLightWhite},
 	}
+	PrintDescription = DescriptionPrinter.Println
 )
 
 // PrefixPrinter is the printer used to print a Prefix

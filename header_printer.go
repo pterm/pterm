@@ -45,7 +45,7 @@ func (p HeaderPrinter) Sprint(a ...interface{}) string {
 
 	ret += p.Header.BackgroundStyle.Sprint(blankLine) + "\n"
 	ret += p.Header.BackgroundStyle.Sprint(p.Header.TextStyle.Sprint(marginString+text+marginString)) + "\n"
-	ret += p.Header.BackgroundStyle.Sprint(blankLine) + "\n\n"
+	ret += p.Header.BackgroundStyle.Sprint(blankLine) + "\n"
 
 	return ret
 }
