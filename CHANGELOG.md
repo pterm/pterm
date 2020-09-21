@@ -7,6 +7,7 @@
 - **idea:** exclude experimenting directory
 
 ### Ci
+- update commit-to-tag.yml
 - add release system
 - automatically add example code to readme files
 
