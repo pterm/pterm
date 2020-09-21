@@ -7,6 +7,7 @@
 - **idea:** exclude experimenting directory
 
 ### Ci
+- add release system
 - automatically add example code to readme files
 
 ### Docs
