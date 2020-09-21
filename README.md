@@ -31,6 +31,8 @@
 <img src="https://img.shields.io/badge/platform-windows%20%7C%20macos%20%7C%20linux-informational?style=for-the-badge" alt="Downloads">
 </a>
 
+<br/>
+
 <a href="https://pkg.go.dev/pterm/pterm">
 <img src="https://pkg.go.dev/badge/pterm/pterm" alt="PTerm Documentation"/>
 </a>
