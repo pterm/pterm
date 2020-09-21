@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+
+<a name="v0.0.1"></a>
+## [v0.0.1] - 2020-09-21
 ### Chore
 - **gitignore:** ignore experimenting directory
 - **idea:** unexclude experimenting directory
@@ -36,6 +39,7 @@
 - header should now work in CI
 
 ### Refactor
+- bump version to "v0.0.1"
 - refactor project
 - add comments to functions
 
@@ -48,4 +52,5 @@
 - initial commit
 
 
-[Unreleased]: https://github.com/dops-cli/dops/compare/v0.0.0...HEAD
+[Unreleased]: https://github.com/dops-cli/dops/compare/v0.0.1...HEAD
+[v0.0.1]: https://github.com/dops-cli/dops/compare/v0.0.0...v0.0.1
