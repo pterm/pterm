@@ -1,10 +1,12 @@
 package pterm
 
 var (
+	// GrayBoxStyle wraps text in a gray box
 	GrayBoxStyle = NewStyle(BgGray, FgLightWhite)
 )
 
 var (
+	// InfoPrinter returns a PrefixPrinter, which can be used to print text with an "info" Prefix
 	InfoPrinter = PrefixPrinter{
 		Prefix: Prefix{
 			Text:  "INFO",
@@ -12,8 +14,10 @@ var (
 		},
 		MessageStyle: NewStyle(FgLightCyan),
 	}
+	// PrintInfo is a shortcut to InfoPrinter.Println
 	PrintInfo = InfoPrinter.Println
 
+	// WarningPrinter returns a PrefixPrinter, which can be used to print text with a "warning" Prefix
 	WarningPrinter = PrefixPrinter{
 		Prefix: Prefix{
 			Text:  "WARNING",
@@ -21,8 +25,10 @@ var (
 		},
 		MessageStyle: NewStyle(FgYellow),
 	}
+	// PrintWarning is a shortcut to WarningPrinter.Println
 	PrintWarning = WarningPrinter.Println
 
+	// SuccessPrinter returns a PrefixPrinter, which can be used to print text with a "success" Prefix
 	SuccessPrinter = PrefixPrinter{
 		Prefix: Prefix{
 			Text:  "SUCCESS",
@@ -30,8 +36,10 @@ var (
 		},
 		MessageStyle: NewStyle(FgGreen),
 	}
+	// PrintSuccess is a shortcut to SuccessPrinter.Println
 	PrintSuccess = SuccessPrinter.Println
 
+	// ErrorPrinter returns a PrefixPrinter, which can be used to print text with an "error" Prefix
 	ErrorPrinter = PrefixPrinter{
 		Prefix: Prefix{
 			Text:  "ERROR",
@@ -39,8 +47,10 @@ var (
 		},
 		MessageStyle: NewStyle(FgLightRed),
 	}
+	// PrintError is a shortcut to ErrorPrinter.Println
 	PrintError = ErrorPrinter.Println
 
+	// DescriptionPrinter returns a PrefixPrinter, which can be used to print text with a "description" Prefix
 	DescriptionPrinter = PrefixPrinter{
 		Prefix: Prefix{
 			Text:  "Description",
@@ -48,6 +58,7 @@ var (
 		},
 		MessageStyle: Style{BgDarkGray, FgLightWhite},
 	}
+	// PrintDescription is a shortcut to DescriptionPrinter.Println
 	PrintDescription = DescriptionPrinter.Println
 )
 

@@ -184,7 +184,7 @@ func (c Color) Print(a ...interface{}) {
 // It returns the number of bytes written and any write error encountered.
 // Input will be colored with the parent Color
 func (c Color) Printf(format string, a ...interface{}) {
-	Print(c.Sprintf(format, a))
+	Print(c.Sprintf(format, a...))
 }
 
 // String converts the color to a string. eg "35"
