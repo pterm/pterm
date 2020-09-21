@@ -6,6 +6,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Update Version
-        uses: pterm/release-action@v1.0.0
+        uses: pterm/release-action@v1.0.1
         env:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
