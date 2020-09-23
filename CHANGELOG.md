@@ -5,6 +5,7 @@
 - fix doc link
 
 ### Feat
+- add `FullWidth` to `HeaderPrinter`
 - add terminal size detection
 
 ### Refactor
