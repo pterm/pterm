@@ -1,6 +1,15 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Docs
+- fix doc link
+
+### Feat
+- add terminal size detection
+
+### Refactor
+- simplify `HeaderPrinter`
+
 
 <a name="v0.0.1"></a>
 ## [v0.0.1] - 2020-09-21
