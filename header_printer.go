@@ -27,14 +27,19 @@ type HeaderPrinter struct {
 // Spaces are added between operands when neither is a string.
 func (p HeaderPrinter) Sprint(a ...interface{}) string {
 	text := Sprint(a...)
-	textLength := len(text) + p.Margin*2
+
+	if p.FullWidth {
+		p.Margin = (GetTerminalWidth() - len(text)) / 2
+	}
+
+	renderedTextLength := len(text) + p.Margin*2
 
 	var marginString string
 	for i := 0; i < p.Margin; i++ {
 		marginString += " "
 	}
 	var blankLine string
-	for i := 0; i < textLength; i++ {
+	for i := 0; i < renderedTextLength; i++ {
 		blankLine += " "
 	}
 
@@ -45,6 +50,12 @@ func (p HeaderPrinter) Sprint(a ...interface{}) string {
 	ret += p.BackgroundStyle.Sprint(blankLine) + "\n"
 
 	return ret
+}
+
+// WithFullWidth enables full width on a HeaderPrinter
+func (p HeaderPrinter) WithFullWidth() *HeaderPrinter {
+	p.FullWidth = true
+	return &p
 }
 
 // Sprintln formats using the default formats for its operands and returns the resulting string.
