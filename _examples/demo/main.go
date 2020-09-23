@@ -70,33 +70,33 @@ func main() {
 
 	for _, style := range headerStyles {
 		clear()
-		pterm.HeaderPrinter{Header: pterm.Header{
+		pterm.HeaderPrinter{
 			BackgroundStyle: style,
 			TextStyle:       pterm.Style{pterm.FgLightWhite},
 			Margin:          5,
-		}}.Println("Everything can be customized")
+		}.Println("Everything can be customized")
 		time.Sleep(time.Second / 2)
 	}
 
 	for i := 0; i < 10; i++ {
 		clear()
 		style := headerStyles[len(headerStyles)-1]
-		pterm.HeaderPrinter{Header: pterm.Header{
+		pterm.HeaderPrinter{
 			BackgroundStyle: style,
 			TextStyle:       pterm.Style{pterm.FgLightWhite},
 			Margin:          5 + i,
-		}}.Println("Everything can be customized")
+		}.Println("Everything can be customized")
 		time.Sleep(time.Millisecond * 100)
 	}
 
 	for i := 0; i < 15; i++ {
 		clear()
 		style := headerStyles[len(headerStyles)-1]
-		pterm.HeaderPrinter{Header: pterm.Header{
+		pterm.HeaderPrinter{
 			BackgroundStyle: style,
 			TextStyle:       pterm.Style{pterm.FgLightWhite},
 			Margin:          15 - i,
-		}}.Println("Everything can be customized")
+		}.Println("Everything can be customized")
 		time.Sleep(time.Millisecond * 100)
 	}
 

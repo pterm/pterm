@@ -3,37 +3,34 @@ package pterm
 var (
 	// DefaultHeaderPrinter returns the printer for a default header text.
 	// Defaults to LightWhite, Bold Text and a Gray Header background.
-	DefaultHeaderPrinter = HeaderPrinter{Header: Header{
+	DefaultHeaderPrinter = HeaderPrinter{
 		TextStyle:       Style{FgLightWhite, Bold},
 		BackgroundStyle: Style{BgGray},
 		Margin:          5,
-	}}
+	}
 
 	// PrintHeader is the short form of DefaultHeaderPrinter.Println
 	PrintHeader = DefaultHeaderPrinter.Println
 )
 
-// Header contains the data used to craft a header.
-// A Header is printed as a big box with text in it.
+// HeaderPrinter contains the data used to craft a header.
+// A header is printed as a big box with text in it.
 // Can be used as title screens or section separator.
-type Header struct {
+type HeaderPrinter struct {
 	TextStyle       Style
 	BackgroundStyle Style
 	Margin          int
-}
-
-// HeaderPrinter is the printer used to print a Header.
-type HeaderPrinter struct {
-	Header Header
+	FullWidth       bool
 }
 
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
 func (p HeaderPrinter) Sprint(a ...interface{}) string {
 	text := Sprint(a...)
-	textLength := len(text) + p.Header.Margin*2
+	textLength := len(text) + p.Margin*2
+
 	var marginString string
-	for i := 0; i < p.Header.Margin; i++ {
+	for i := 0; i < p.Margin; i++ {
 		marginString += " "
 	}
 	var blankLine string
@@ -43,9 +40,9 @@ func (p HeaderPrinter) Sprint(a ...interface{}) string {
 
 	var ret string
 
-	ret += p.Header.BackgroundStyle.Sprint(blankLine) + "\n"
-	ret += p.Header.BackgroundStyle.Sprint(p.Header.TextStyle.Sprint(marginString+text+marginString)) + "\n"
-	ret += p.Header.BackgroundStyle.Sprint(blankLine) + "\n"
+	ret += p.BackgroundStyle.Sprint(blankLine) + "\n"
+	ret += p.BackgroundStyle.Sprint(p.TextStyle.Sprint(marginString+text+marginString)) + "\n"
+	ret += p.BackgroundStyle.Sprint(blankLine) + "\n"
 
 	return ret
 }

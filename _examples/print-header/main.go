@@ -15,11 +15,11 @@ func main() {
 	<-tick // Wait
 
 	// Create a custom HeaderPrinter
-	customHeaderPrinter := pterm.HeaderPrinter{Header: pterm.Header{
+	customHeaderPrinter := pterm.HeaderPrinter{
 		TextStyle:       pterm.Style{pterm.FgLightRed},
 		BackgroundStyle: pterm.Style{pterm.BgGreen},
 		Margin:          15,
-	}}
+	}
 	// Use custom Header printer
 	customHeaderPrinter.Println("This is a custom header.")
 }
