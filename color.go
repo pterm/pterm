@@ -28,6 +28,16 @@ var (
 	// Spaces are added between operands when neither is a string.
 	// It returns the number of bytes written and any write error encountered.
 	Print = color.Print
+
+	// Fprint formats using the default formats for its operands and writes to w.
+	// Spaces are added between operands when neither is a string.
+	// It returns the number of bytes written and any write error encountered.
+	Fprint = color.Fprint
+
+	// Fprintln formats using the default formats for its operands and writes to w.
+	// Spaces are always added between operands and a newline is appended.
+	// It returns the number of bytes written and any write error encountered.
+	Fprintln = color.Fprintln
 )
 
 // Foreground colors. basic foreground colors 30 - 37
