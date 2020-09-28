@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Docs
+- add code of conduct
+
 
 <a name="v0.1.0"></a>
 ## [v0.1.0] - 2020-09-28
