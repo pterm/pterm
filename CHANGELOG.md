@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Ci
+- add dependabot
+
 ### Docs
 - add code of conduct
 
