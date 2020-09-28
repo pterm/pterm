@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+
+<a name="v0.1.0"></a>
+## [v0.1.0] - 2020-09-28
 ### Ci
 - remove go dep
 - add go testing
@@ -18,9 +21,16 @@
 - add terminal size detection
 
 ### Refactor
+- bump version to "v0.1.0"
 - consistent example code for `Printo`
 - better comments for `Printo`
 - simplify `HeaderPrinter`
+
+### BREAKING CHANGE
+
+printer names changed
+
+removed `Header` and put it's content directly into `HeaderPrinter`
 
 
 <a name="v0.0.1"></a>
@@ -73,5 +83,6 @@
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.0.1...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.1.0...HEAD
+[v0.1.0]: https://github.com/pterm/pterm/compare/v0.0.1...v0.1.0
 [v0.0.1]: https://github.com/pterm/pterm/compare/v0.0.0...v0.0.1
