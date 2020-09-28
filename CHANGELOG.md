@@ -2,6 +2,7 @@
 ## [Unreleased]
 
 ### Ci
+- add go testing
 - update changelog config
 
 ### Docs
