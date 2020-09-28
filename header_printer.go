@@ -1,16 +1,16 @@
 package pterm
 
 var (
-	// DefaultHeaderPrinter returns the printer for a default header text.
+	// Header returns the printer for a default header text.
 	// Defaults to LightWhite, Bold Text and a Gray Header background.
-	DefaultHeaderPrinter = HeaderPrinter{
+	Header = HeaderPrinter{
 		TextStyle:       Style{FgLightWhite, Bold},
 		BackgroundStyle: Style{BgGray},
 		Margin:          5,
 	}
 
 	// PrintHeader is the short form of DefaultHeaderPrinter.Println
-	PrintHeader = DefaultHeaderPrinter.Println
+	PrintHeader = Header.Println
 )
 
 // HeaderPrinter contains the data used to craft a header.
@@ -21,6 +21,30 @@ type HeaderPrinter struct {
 	BackgroundStyle Style
 	Margin          int
 	FullWidth       bool
+}
+
+// WithTextStyle changes the text styling of the header.
+func (p HeaderPrinter) WithTextStyle(colors ...Color) *HeaderPrinter {
+	p.TextStyle = colors
+	return &p
+}
+
+// WithBackgroundStyle changes the background styling of the header.
+func (p HeaderPrinter) WithBackgroundStyle(colors ...Color) *HeaderPrinter {
+	p.BackgroundStyle = colors
+	return &p
+}
+
+// WithMargin changes the background styling of the header.
+func (p HeaderPrinter) WithMargin(margin int) *HeaderPrinter {
+	p.Margin = margin
+	return &p
+}
+
+// WithFullWidth enables full width on a HeaderPrinter
+func (p HeaderPrinter) WithFullWidth() *HeaderPrinter {
+	p.FullWidth = true
+	return &p
 }
 
 // Sprint formats using the default formats for its operands and returns the resulting string.
@@ -50,12 +74,6 @@ func (p HeaderPrinter) Sprint(a ...interface{}) string {
 	ret += p.BackgroundStyle.Sprint(blankLine) + "\n"
 
 	return ret
-}
-
-// WithFullWidth enables full width on a HeaderPrinter
-func (p HeaderPrinter) WithFullWidth() *HeaderPrinter {
-	p.FullWidth = true
-	return &p
 }
 
 // Sprintln formats using the default formats for its operands and returns the resulting string.

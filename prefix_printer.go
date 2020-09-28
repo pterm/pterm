@@ -6,60 +6,60 @@ var (
 )
 
 var (
-	// InfoPrinter returns a PrefixPrinter, which can be used to print text with an "info" Prefix
-	InfoPrinter = PrefixPrinter{
+	// Info returns a PrefixPrinter, which can be used to print text with an "info" Prefix
+	Info = PrefixPrinter{
 		Prefix: Prefix{
 			Text:  "INFO",
 			Style: NewStyle(FgLightWhite, BgCyan),
 		},
 		MessageStyle: NewStyle(FgLightCyan),
 	}
-	// PrintInfo is a shortcut to InfoPrinter.Println
-	PrintInfo = InfoPrinter.Println
+	// PrintInfo is a shortcut to Info.Println
+	PrintInfo = Info.Println
 
-	// WarningPrinter returns a PrefixPrinter, which can be used to print text with a "warning" Prefix
-	WarningPrinter = PrefixPrinter{
+	// Warning returns a PrefixPrinter, which can be used to print text with a "warning" Prefix
+	Warning = PrefixPrinter{
 		Prefix: Prefix{
 			Text:  "WARNING",
 			Style: NewStyle(FgLightWhite, BgYellow),
 		},
 		MessageStyle: NewStyle(FgYellow),
 	}
-	// PrintWarning is a shortcut to WarningPrinter.Println
-	PrintWarning = WarningPrinter.Println
+	// PrintWarning is a shortcut to Warning.Println
+	PrintWarning = Warning.Println
 
-	// SuccessPrinter returns a PrefixPrinter, which can be used to print text with a "success" Prefix
-	SuccessPrinter = PrefixPrinter{
+	// Success returns a PrefixPrinter, which can be used to print text with a "success" Prefix
+	Success = PrefixPrinter{
 		Prefix: Prefix{
 			Text:  "SUCCESS",
 			Style: NewStyle(FgLightWhite, BgGreen),
 		},
 		MessageStyle: NewStyle(FgGreen),
 	}
-	// PrintSuccess is a shortcut to SuccessPrinter.Println
-	PrintSuccess = SuccessPrinter.Println
+	// PrintSuccess is a shortcut to Success.Println
+	PrintSuccess = Success.Println
 
-	// ErrorPrinter returns a PrefixPrinter, which can be used to print text with an "error" Prefix
-	ErrorPrinter = PrefixPrinter{
+	// Error returns a PrefixPrinter, which can be used to print text with an "error" Prefix
+	Error = PrefixPrinter{
 		Prefix: Prefix{
 			Text:  "ERROR",
 			Style: NewStyle(FgLightWhite, BgLightRed),
 		},
 		MessageStyle: NewStyle(FgLightRed),
 	}
-	// PrintError is a shortcut to ErrorPrinter.Println
-	PrintError = ErrorPrinter.Println
+	// PrintError is a shortcut to Error.Println
+	PrintError = Error.Println
 
-	// DescriptionPrinter returns a PrefixPrinter, which can be used to print text with a "description" Prefix
-	DescriptionPrinter = PrefixPrinter{
+	// Description returns a PrefixPrinter, which can be used to print text with a "description" Prefix
+	Description = PrefixPrinter{
 		Prefix: Prefix{
 			Text:  "Description",
 			Style: Style{BgDarkGray, FgLightWhite},
 		},
 		MessageStyle: Style{BgDarkGray, FgLightWhite},
 	}
-	// PrintDescription is a shortcut to DescriptionPrinter.Println
-	PrintDescription = DescriptionPrinter.Println
+	// PrintDescription is a shortcut to Description.Println
+	PrintDescription = Description.Println
 )
 
 // PrefixPrinter is the printer used to print a Prefix
@@ -67,6 +67,25 @@ type PrefixPrinter struct {
 	Prefix       Prefix
 	Scope        Scope
 	MessageStyle Style
+}
+
+// WithPrefix adds a custom prefix to the printer
+func (p PrefixPrinter) WithPrefix(prefix Prefix) *PrefixPrinter {
+	p.Prefix = prefix
+	return &p
+}
+
+// WithScope adds a scope to the Prefix
+func (p PrefixPrinter) WithScope(scope string, colors ...Color) *PrefixPrinter {
+	p.Scope.Text = scope
+	p.Scope.Style = colors
+	return &p
+}
+
+// WithMessageStyle adds a custom prefix to the printer
+func (p PrefixPrinter) WithMessageStyle(prefix Prefix) *PrefixPrinter {
+	p.Prefix = prefix
+	return &p
 }
 
 // Sprint formats using the default formats for its operands and returns the resulting string.
@@ -130,17 +149,6 @@ func (p PrefixPrinter) GetFormattedMessage(a ...interface{}) string {
 		p.MessageStyle = NewStyle()
 	}
 	return NewStyle(p.MessageStyle...).Sprint(args...)
-}
-
-// WithScope adds a scope to the Prefix
-func (p PrefixPrinter) WithScope(scope string, style ...Style) *PrefixPrinter {
-	p.Scope.Text = scope
-	if len(style) > 0 {
-		p.Scope.Style = style[0]
-	} else {
-		p.Scope.Style = p.Prefix.Style
-	}
-	return &p
 }
 
 // Prefix contains the data used as the beginning of a printed text via a PrefixPrinter
