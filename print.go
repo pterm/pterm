@@ -9,7 +9,7 @@ import (
 // If the current line is empty, the text will be printed like with pterm.Print.
 // To create a new line, which
 // Example:
-// pterm.Print("Hello, World") // You could also use pterm.Printo here
+// pterm.Printo("Hello, World")
 // time.Sleep(time.Second)
 // pterm.Oprint("Hello, Earth!")
 func Printo(a ...interface{}) {
