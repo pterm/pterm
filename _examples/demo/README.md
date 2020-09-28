@@ -54,7 +54,7 @@ func main() {
 
 	time.Sleep(time.Second * 2)
 
-	pterm.WarningPrinter.WithScope("custom-scope").Println("PrefixPrinters also support scopes!")
+	pterm.Warning.WithScope("custom-scope").Println("PrefixPrinters also support scopes!")
 
 	time.Sleep(time.Second * 4)
 

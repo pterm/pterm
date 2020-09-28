@@ -104,7 +104,7 @@ func main() {
 
 	time.Sleep(time.Second * 2)
 
-	pterm.WarningPrinter.WithScope("custom-scope").Println("PrefixPrinters also support scopes!")
+	pterm.Warning.WithScope("custom-scope").Println("PrefixPrinters also support scopes!")
 
 	time.Sleep(time.Second * 4)
 
@@ -174,14 +174,14 @@ import "github.com/pterm/pterm"
 
 func main() {
 
-	pterm.ErrorPrinter.Println("This is the default ErrorPrinter")
+	pterm.Error.Println("This is the default Error")
 
-	pterm.ErrorPrinter.Prefix = pterm.Prefix{
+	pterm.Error.Prefix = pterm.Prefix{
 		Text:  "OVERRIDE",
 		Style: pterm.Style{pterm.BgCyan, pterm.FgRed},
 	}
 
-	pterm.ErrorPrinter.Println("This is the default ErrorPrinter after the prefix was overridden")
+	pterm.Error.Println("This is the default Error after the prefix was overridden")
 }
 
 ```
@@ -204,6 +204,11 @@ func main() {
 
 	// Print with the default HeaderPrinter
 	pterm.PrintHeader("This is the default header style")
+
+	<-tick // Wait
+
+	// Print a custom header
+	pterm.Header.WithFullWidth().WithTextStyle(pterm.FgDarkGray).WithBackgroundStyle(pterm.BgLightMagenta).Println("Hello, World!")
 
 	<-tick // Wait
 
@@ -236,6 +241,7 @@ func main() {
 ```
 
 <!-- examples:end -->
+
 
 
 

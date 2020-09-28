@@ -1,14 +1,21 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Ci
+- update changelog config
+
 ### Docs
+- add symbols list (codepage 437)
 - fix doc link
 
 ### Feat
+- shorten printer names and add builder methods to printers
+- add `Printo` to override printed text
 - add `FullWidth` to `HeaderPrinter`
 - add terminal size detection
 
 ### Refactor
+- better comments for `Printo`
 - simplify `HeaderPrinter`
 
 
@@ -62,5 +69,5 @@
 - initial commit
 
 
-[Unreleased]: https://github.com/dops-cli/dops/compare/v0.0.1...HEAD
-[v0.0.1]: https://github.com/dops-cli/dops/compare/v0.0.0...v0.0.1
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.0.1...HEAD
+[v0.0.1]: https://github.com/pterm/pterm/compare/v0.0.0...v0.0.1
