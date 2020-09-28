@@ -9,12 +9,14 @@
 - fix doc link
 
 ### Feat
+- add spinners
 - shorten printer names and add builder methods to printers
 - add `Printo` to override printed text
 - add `FullWidth` to `HeaderPrinter`
 - add terminal size detection
 
 ### Refactor
+- consistent example code for `Printo`
 - better comments for `Printo`
 - simplify `HeaderPrinter`
 
