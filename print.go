@@ -3,6 +3,7 @@ package pterm
 import (
 	"io"
 	"os"
+	"strings"
 )
 
 // Printo overrides the current line in a terminal.
@@ -19,4 +20,8 @@ func Printo(a ...interface{}) {
 // Fprinto prints Printo to a custom writer.
 func Fprinto(w io.Writer, a ...interface{}) {
 	Fprint(w, "\r", Sprint(a...))
+}
+
+func clearLine() {
+	Printo(strings.Repeat(" ", GetTerminalWidth()))
 }
