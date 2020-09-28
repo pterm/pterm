@@ -2,6 +2,7 @@
 ## [Unreleased]
 
 ### Ci
+- remove go dep
 - add go testing
 - update changelog config
 
