@@ -31,6 +31,20 @@ func main() {
 
 	spinnerFail.Fail()
 
+	spinnerLiveText := pterm.DefaultSpinner.Start("Doing a lot of stuff...")
+
+	time.Sleep(time.Second * 2)
+
+	spinnerLiveText.UpdateText("It's really much")
+
+	time.Sleep(time.Second*2)
+
+	spinnerLiveText.UpdateText("We're nearly done!")
+
+	time.Sleep(time.Second*2)
+
+	spinnerLiveText.Success("Finally!")
+
 }
 
 ```
