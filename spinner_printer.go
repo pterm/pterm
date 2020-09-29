@@ -67,7 +67,7 @@ func (s *Spinner) Start(text ...interface{}) *Spinner {
 		s.Text = Sprint(text...)
 	}
 
-	go func(s *Spinner) {
+	go func() {
 		for s.IsActive {
 			for _, seq := range s.Sequence {
 				if s.IsActive {
@@ -76,7 +76,7 @@ func (s *Spinner) Start(text ...interface{}) *Spinner {
 				}
 			}
 		}
-	}(s)
+	}()
 	return s
 }
 
