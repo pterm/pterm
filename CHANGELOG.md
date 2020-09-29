@@ -2,6 +2,7 @@
 ## [Unreleased]
 
 ### Ci
+- make example source code expandable in main readme
 - add multi threaded animation generation
 - add dependabot
 
