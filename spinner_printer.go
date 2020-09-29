@@ -1,6 +1,8 @@
 package pterm
 
-import "time"
+import (
+	"time"
+)
 
 // DefaultSpinner is the default spinner
 var DefaultSpinner = Spinner{
@@ -67,7 +69,7 @@ func (s *Spinner) UpdateText(text string) {
 }
 
 // Start starts the spinner
-func (s *Spinner) Start(text ...interface{}) *Spinner {
+func (s Spinner) Start(text ...interface{}) *Spinner {
 	s.IsActive = true
 
 	if len(text) != 0 {
@@ -84,7 +86,7 @@ func (s *Spinner) Start(text ...interface{}) *Spinner {
 			}
 		}
 	}()
-	return s
+	return &s
 }
 
 // Success displays the success printer.
