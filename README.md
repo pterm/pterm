@@ -286,11 +286,11 @@ func main() {
 
 	spinnerLiveText.UpdateText("It's really much")
 
-	time.Sleep(time.Second*2)
+	time.Sleep(time.Second * 2)
 
 	spinnerLiveText.UpdateText("We're nearly done!")
 
-	time.Sleep(time.Second*2)
+	time.Sleep(time.Second * 2)
 
 	spinnerLiveText.Success("Finally!")
 
@@ -299,6 +299,7 @@ func main() {
 ```
 
 <!-- examples:end -->
+
 
 
 

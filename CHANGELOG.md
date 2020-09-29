@@ -2,11 +2,18 @@
 ## [Unreleased]
 
 ### Ci
+- add multi threaded animation generation
 - add dependabot
 
 ### Docs
 - add unstable notice
 - add code of conduct
+
+### Feat
+- add `UpdateText` to spinner
+
+### Perf
+- improve spinner performance
 
 
 <a name="v0.1.0"></a>
