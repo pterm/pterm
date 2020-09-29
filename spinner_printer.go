@@ -59,6 +59,13 @@ func (s Spinner) WithMessageStyle(colors ...Color) *Spinner {
 	return &s
 }
 
+// UpdateText updates the message of the active spinner.
+// Can be used live.
+func (s *Spinner) UpdateText(text string) {
+	clearLine()
+	s.Text = text
+}
+
 // Start starts the spinner
 func (s *Spinner) Start(text ...interface{}) *Spinner {
 	s.IsActive = true
