@@ -59,6 +59,10 @@ If you want to wait for a stable release, make sure to star the project and foll
 
 ![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/demo/animation.svg)
 
+<details>
+
+<summary>SHOW SOURCE</summary>
+
 ```go
 package main
 
@@ -170,9 +174,15 @@ func clear() {
 
 ```
 
+</details>
+
 ### override-default-printer
 
 ![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/override-default-printer/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
 
 ```go
 package main
@@ -193,9 +203,15 @@ func main() {
 
 ```
 
+</details>
+
 ### print-header
 
 ![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/print-header/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
 
 ```go
 package main
@@ -231,9 +247,15 @@ func main() {
 
 ```
 
+</details>
+
 ### print-with-color
 
 ![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/print-with-color/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
 
 ```go
 package main
@@ -247,9 +269,15 @@ func main() {
 
 ```
 
+</details>
+
 ### spinner
 
 ![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/spinner/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
 
 ```go
 package main
@@ -298,7 +326,12 @@ func main() {
 
 ```
 
+</details>
+
 <!-- examples:end -->
+
+
+
 
 
 
