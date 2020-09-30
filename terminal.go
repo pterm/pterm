@@ -14,20 +14,20 @@ var FallbackTerminalWidth = 80
 // You can override that value if necessary.
 var FallbackTerminalHeight = 10
 
-// GetTerminalWidth returns the terminal width of the active terminal
+// GetTerminalWidth returns the terminal width of the active terminal.
 func GetTerminalWidth() int {
 	width, _, _ := GetTerminalSize()
 	return width
 }
 
-// GetTerminalHeight returns the terminal height of the active terminal
+// GetTerminalHeight returns the terminal height of the active terminal.
 func GetTerminalHeight() int {
 	_, height, _ := GetTerminalSize()
 	return height
 }
 
-// GetTerminalSize returns the width and the height of the active terminal
-func GetTerminalSize() (width int, height int, err error) {
+// GetTerminalSize returns the width and the height of the active terminal.
+func GetTerminalSize() (width, height int, err error) {
 	w, h, err := terminal.GetSize(int(os.Stdout.Fd()))
 	if w <= 0 {
 		w = FallbackTerminalWidth

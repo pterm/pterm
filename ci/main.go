@@ -69,7 +69,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 }
 
 func processFile(f os.FileInfo) {
@@ -83,12 +82,12 @@ func processFile(f os.FileInfo) {
 
 	if fileExists(animationDataPath) {
 		fmt.Println("#### animation_data.json already exists. Removing it.")
-		err := os.Remove(animationDataPath)
+		err = os.Remove(animationDataPath)
 		if err != nil {
 			log.Fatal(err)
 		}
 	}
-	if fileExists(animationDataPath) {
+	if fileExists(animationSvgPath) {
 		fmt.Println("#### animation.svg already exists. Removing it.")
 		err := os.Remove(animationSvgPath)
 		if err != nil {
@@ -110,7 +109,8 @@ func processFile(f os.FileInfo) {
 		log.Println(err)
 	}
 	defer animationDataFile.Close()
-	if _, err := animationDataFile.WriteString(sleepString); err != nil {
+	_, err = animationDataFile.WriteString(sleepString)
+	if err != nil {
 		log.Println(err)
 	}
 
@@ -137,8 +137,6 @@ func processFile(f os.FileInfo) {
 
 func execute(command string) {
 	cmd := exec.Command("bash", "-c", command)
-	// cmd.Stderr = os.Stderr
-	// cmd.Stdout = os.Stdout
 	fmt.Println("Running: " + cmd.String())
 	err := cmd.Run()
 	if err != nil {

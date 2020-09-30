@@ -9,7 +9,7 @@ var (
 		Margin:          5,
 	}
 
-	// PrintHeader is the short form of DefaultHeaderPrinter.Println
+	// PrintHeader is the short form of DefaultHeaderPrinter.Println.
 	PrintHeader = Header.Println
 )
 
@@ -41,7 +41,7 @@ func (p HeaderPrinter) WithMargin(margin int) *HeaderPrinter {
 	return &p
 }
 
-// WithFullWidth enables full width on a HeaderPrinter
+// WithFullWidth enables full width on a HeaderPrinter.
 func (p HeaderPrinter) WithFullWidth() *HeaderPrinter {
 	p.FullWidth = true
 	return &p

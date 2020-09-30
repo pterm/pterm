@@ -7,7 +7,6 @@ import (
 )
 
 func main() {
-
 	pterm.PrintHeader("You can do many things with PTerm")
 
 	time.Sleep(time.Second * 3)
@@ -99,7 +98,6 @@ func main() {
 		}.Println("Everything can be customized")
 		time.Sleep(time.Millisecond * 100)
 	}
-
 }
 
 func clear() {

@@ -1,6 +1,6 @@
 package pterm
 
-// GenericPrinter contains methods to print formatted text to the console or return it as a string
+// GenericPrinter contains methods to print formatted text to the console or return it as a string.
 type GenericPrinter interface {
 	// Sprint formats using the default formats for its operands and returns the resulting string.
 	// Spaces are added between operands when neither is a string.

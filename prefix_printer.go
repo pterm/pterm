@@ -1,12 +1,12 @@
 package pterm
 
 var (
-	// GrayBoxStyle wraps text in a gray box
+	// GrayBoxStyle wraps text in a gray box.
 	GrayBoxStyle = NewStyle(BgGray, FgLightWhite)
 )
 
 var (
-	// Info returns a PrefixPrinter, which can be used to print text with an "info" Prefix
+	// Info returns a PrefixPrinter, which can be used to print text with an "info" Prefix.
 	Info = PrefixPrinter{
 		Prefix: Prefix{
 			Text:  "INFO",
@@ -14,10 +14,10 @@ var (
 		},
 		MessageStyle: NewStyle(FgLightCyan),
 	}
-	// PrintInfo is a shortcut to Info.Println
+	// PrintInfo is a shortcut to Info.Println.
 	PrintInfo = Info.Println
 
-	// Warning returns a PrefixPrinter, which can be used to print text with a "warning" Prefix
+	// Warning returns a PrefixPrinter, which can be used to print text with a "warning" Prefix.
 	Warning = PrefixPrinter{
 		Prefix: Prefix{
 			Text:  "WARNING",
@@ -25,10 +25,10 @@ var (
 		},
 		MessageStyle: NewStyle(FgYellow),
 	}
-	// PrintWarning is a shortcut to Warning.Println
+	// PrintWarning is a shortcut to Warning.Println.
 	PrintWarning = Warning.Println
 
-	// Success returns a PrefixPrinter, which can be used to print text with a "success" Prefix
+	// Success returns a PrefixPrinter, which can be used to print text with a "success" Prefix.
 	Success = PrefixPrinter{
 		Prefix: Prefix{
 			Text:  "SUCCESS",
@@ -36,10 +36,10 @@ var (
 		},
 		MessageStyle: NewStyle(FgGreen),
 	}
-	// PrintSuccess is a shortcut to Success.Println
+	// PrintSuccess is a shortcut to Success.Println.
 	PrintSuccess = Success.Println
 
-	// Error returns a PrefixPrinter, which can be used to print text with an "error" Prefix
+	// Error returns a PrefixPrinter, which can be used to print text with an "error" Prefix.
 	Error = PrefixPrinter{
 		Prefix: Prefix{
 			Text:  "ERROR",
@@ -47,10 +47,10 @@ var (
 		},
 		MessageStyle: NewStyle(FgLightRed),
 	}
-	// PrintError is a shortcut to Error.Println
+	// PrintError is a shortcut to Error.Println.
 	PrintError = Error.Println
 
-	// Description returns a PrefixPrinter, which can be used to print text with a "description" Prefix
+	// Description returns a PrefixPrinter, which can be used to print text with a "description" Prefix.
 	Description = PrefixPrinter{
 		Prefix: Prefix{
 			Text:  "Description",
@@ -58,31 +58,31 @@ var (
 		},
 		MessageStyle: Style{BgDarkGray, FgLightWhite},
 	}
-	// PrintDescription is a shortcut to Description.Println
+	// PrintDescription is a shortcut to Description.Println.
 	PrintDescription = Description.Println
 )
 
-// PrefixPrinter is the printer used to print a Prefix
+// PrefixPrinter is the printer used to print a Prefix.
 type PrefixPrinter struct {
 	Prefix       Prefix
 	Scope        Scope
 	MessageStyle Style
 }
 
-// WithPrefix adds a custom prefix to the printer
+// WithPrefix adds a custom prefix to the printer.
 func (p PrefixPrinter) WithPrefix(prefix Prefix) *PrefixPrinter {
 	p.Prefix = prefix
 	return &p
 }
 
-// WithScope adds a scope to the Prefix
+// WithScope adds a scope to the Prefix.
 func (p PrefixPrinter) WithScope(scope string, colors ...Color) *PrefixPrinter {
 	p.Scope.Text = scope
 	p.Scope.Style = colors
 	return &p
 }
 
-// WithMessageStyle adds a custom prefix to the printer
+// WithMessageStyle adds a custom prefix to the printer.
 func (p PrefixPrinter) WithMessageStyle(prefix Prefix) *PrefixPrinter {
 	p.Prefix = prefix
 	return &p
@@ -135,12 +135,12 @@ func (p PrefixPrinter) Printf(format string, a ...interface{}) GenericPrinter {
 	return p
 }
 
-// GetFormattedPrefix returns the Prefix as a styled text string
+// GetFormattedPrefix returns the Prefix as a styled text string.
 func (p PrefixPrinter) GetFormattedPrefix() string {
 	return NewStyle(p.Prefix.Style...).Sprint(" " + p.Prefix.Text + " ")
 }
 
-// GetFormattedMessage returns the message as a styled text string
+// GetFormattedMessage returns the message as a styled text string.
 func (p PrefixPrinter) GetFormattedMessage(a ...interface{}) string {
 	var args []interface{}
 	args = append(args, " ")
@@ -151,7 +151,7 @@ func (p PrefixPrinter) GetFormattedMessage(a ...interface{}) string {
 	return NewStyle(p.MessageStyle...).Sprint(args...)
 }
 
-// Prefix contains the data used as the beginning of a printed text via a PrefixPrinter
+// Prefix contains the data used as the beginning of a printed text via a PrefixPrinter.
 type Prefix struct {
 	Text  string
 	Style Style

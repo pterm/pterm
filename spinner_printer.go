@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-// DefaultSpinner is the default spinner
+// DefaultSpinner is the default spinner.
 var DefaultSpinner = Spinner{
 	Sequence:       []string{"▀ ", " ▀", " ▄", "▄ "},
 	Style:          Style{FgLightCyan},
@@ -31,31 +31,31 @@ type Spinner struct {
 	IsActive bool
 }
 
-// WithText adds a text to the spinner
+// WithText adds a text to the spinner.
 func (s Spinner) WithText(text string) *Spinner {
 	s.Text = text
 	return &s
 }
 
-// WithSequence adds a sequence to the spinner
+// WithSequence adds a sequence to the spinner.
 func (s Spinner) WithSequence(sequence ...string) *Spinner {
 	s.Sequence = sequence
 	return &s
 }
 
-// WithStyle adds a style to the spinner
+// WithStyle adds a style to the spinner.
 func (s Spinner) WithStyle(colors ...Color) *Spinner {
 	s.Style = colors
 	return &s
 }
 
-// WithDelay adds a delay to the spinner
+// WithDelay adds a delay to the spinner.
 func (s Spinner) WithDelay(delay time.Duration) *Spinner {
 	s.Delay = delay
 	return &s
 }
 
-// WithMessageStyle adds a style to the spinner message
+// WithMessageStyle adds a style to the spinner message.
 func (s Spinner) WithMessageStyle(colors ...Color) *Spinner {
 	s.MessageStyle = colors
 	return &s
@@ -68,7 +68,7 @@ func (s *Spinner) UpdateText(text string) {
 	s.Text = text
 }
 
-// Start starts the spinner
+// Start starts the spinner.
 func (s Spinner) Start(text ...interface{}) *Spinner {
 	s.IsActive = true
 
