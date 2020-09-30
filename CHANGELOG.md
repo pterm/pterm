@@ -16,13 +16,16 @@
 - add dependabot
 
 ### Code Refactoring
+- change `WithXXX` to `SetXXX`
 - removed `Println` aliases
 
 ### Documentation Changes
 - add unstable notice
 - add code of conduct
+- **examples:** update demo example
 
 ### Features
+- change style of `Description` printer
 - add color in color support
 - add `RemoveWhenDone` to `Spinner`
 - add multiline support to `PrefixPrinter`

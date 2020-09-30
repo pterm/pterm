@@ -67,103 +67,53 @@ If you want to wait for a stable release, make sure to star the project and foll
 package main
 
 import (
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/pterm/pterm"
 )
 
+var (
+	fakeInstallList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chrome pseudo-outlook pseudo-explorer "+
+		"pseudo-dops pseudo-git pseudo-vsc pseudo-intellij pseudo-minecraft pseudo-scoop pseudo-chocolatey", " ")
+)
+
 func main() {
-	pterm.PrintHeader("You can do many things with PTerm")
+	// Change this to time.Millisecond*200 to speed up the demo.
+	// Useful when debugging.
+	const second = time.Second
 
-	time.Sleep(time.Second * 3)
+	pterm.Header.SetBackgroundStyle(pterm.BgLightBlue).SetMargin(10).Println("PTDP - PTerm Demo Program")
+	pterm.Info.Println("This animation was generated with the latest version of PTerm!" +
+		"\nPTerm works on nearly every terminal and operating system." +
+		"\nIt's super easy to use! But you can customize everything if you want to :)" +
+		"\nYou can see the code of this demo in the " + pterm.LightMagenta("./_examples/demo") + " directory.")
 
-	pterm.Println(pterm.Cyan("Like this header above!"))
-
-	time.Sleep(time.Second * 2)
-
-	clear()
-
-	pterm.PrintSuccess("You can print success messages!")
-
-	time.Sleep(time.Second * 2)
-
-	pterm.PrintInfo("Or infos!")
-
-	time.Sleep(time.Second)
-
-	pterm.PrintError("Or errors!")
-
-	time.Sleep(time.Second)
-
-	pterm.PrintWarning("Or warnings!")
-
-	time.Sleep(time.Second)
-
-	pterm.PrintDescription("Even descriptions can be printed...")
-
-	time.Sleep(time.Second * 2)
-
-	customPrefixPrinter := pterm.PrefixPrinter{
-		Prefix: pterm.Prefix{
-			Text:  "CUSTOM",
-			Style: []pterm.Color{pterm.FgLightRed, pterm.BgBlue},
-		},
+	introSpinner := pterm.DefaultSpinner.SetRemoveWhenDone(true).Start("Waiting for 15 seconds...")
+	time.Sleep(second)
+	for i := 14; i > 0; i-- {
+		if i > 1 {
+			introSpinner.UpdateText("Waiting for " + strconv.Itoa(i) + " seconds...")
+		} else {
+			introSpinner.UpdateText("Waiting for " + strconv.Itoa(i) + " second...")
+		}
+		time.Sleep(second)
 	}
+	introSpinner.Stop()
+	pterm.Println()
 
-	customPrefixPrinter.Println("Or a custom PrefixPrinter can be crafted :)")
-
-	time.Sleep(time.Second * 2)
-
-	pterm.Warning.SetScope("custom-scope").Println("PrefixPrinters also support scopes!")
-
-	time.Sleep(time.Second * 4)
-
-	clear()
-
-	pterm.PrintHeader("Everything can be customized!")
-
-	time.Sleep(time.Second * 2)
-
-	headerStyles := []pterm.Style{
-		{pterm.BgGreen},
-		{pterm.BgWhite},
-		{pterm.BgRed},
-		{pterm.BgBlue},
-		{pterm.BgYellow},
-		{pterm.BgLightMagenta},
+	pterm.Info.Println("Let's run our pseudo program!")
+	setupSpinner := pterm.DefaultSpinner.Start("Fetching pseudo install list...")
+	time.Sleep(second * 4)
+	setupSpinner.Success()
+	installSpinner := pterm.DefaultSpinner.Start("Installing...")
+	for _, s := range fakeInstallList {
+		installSpinner.UpdateText("Installing " + s + "...")
+		time.Sleep(second)
 	}
+	installSpinner.Success("Installed all pseudo programs!")
 
-	for _, style := range headerStyles {
-		clear()
-		pterm.HeaderPrinter{
-			BackgroundStyle: style,
-			TextStyle:       pterm.Style{pterm.FgLightWhite},
-			Margin:          5,
-		}.Println("Everything can be customized")
-		time.Sleep(time.Second / 2)
-	}
-
-	for i := 0; i < 10; i++ {
-		clear()
-		style := headerStyles[len(headerStyles)-1]
-		pterm.HeaderPrinter{
-			BackgroundStyle: style,
-			TextStyle:       pterm.Style{pterm.FgLightWhite},
-			Margin:          5 + i,
-		}.Println("Everything can be customized")
-		time.Sleep(time.Millisecond * 100)
-	}
-
-	for i := 0; i < 15; i++ {
-		clear()
-		style := headerStyles[len(headerStyles)-1]
-		pterm.HeaderPrinter{
-			BackgroundStyle: style,
-			TextStyle:       pterm.Style{pterm.FgLightWhite},
-			Margin:          15 - i,
-		}.Println("Everything can be customized")
-		time.Sleep(time.Millisecond * 100)
-	}
 }
 
 func clear() {
@@ -262,6 +212,7 @@ import "github.com/pterm/pterm"
 func main() {
 	// Simple Println with different colored words.
 	pterm.Println(pterm.Red("Hello, ") + pterm.Green("World") + pterm.Cyan("!"))
+	pterm.Println(pterm.Red("Even " + pterm.Cyan("nested ") + pterm.Green("colors ") + "are supported!"))
 }
 
 ```
@@ -324,6 +275,7 @@ func main() {
 </details>
 
 <!-- examples:end -->
+
 
 
 
