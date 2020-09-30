@@ -22,6 +22,11 @@ func Fprinto(w io.Writer, a ...interface{}) {
 	Fprint(w, "\r", Sprint(a...))
 }
 
+// Sprintln returns what Println would print to the terminal.
+func Sprintln(a ...interface{}) string {
+	return Sprint(a...) + "\n"
+}
+
 func clearLine() {
 	Printo(strings.Repeat(" ", GetTerminalWidth()))
 }
