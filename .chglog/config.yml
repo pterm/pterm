@@ -12,11 +12,12 @@ options:
   #     - perf
   #     - refactor
   commit_groups:
-  # title_maps:
-  #   feat: Features
-  #   fix: Bug Fixes
-  #   perf: Performance Improvements
-  #   refactor: Code Refactoring
+   title_maps:
+     feat: Features
+     fix: Bug Fixes
+     perf: Performance Improvements
+     refactor: Code Refactoring
+     docs: Documentation Changes
   header:
     pattern: "^(\\w*)(?:\\(([\\w\\$\\.\\-\\*\\s]*)\\))?\\:\\s(.*)$"
     pattern_maps:
