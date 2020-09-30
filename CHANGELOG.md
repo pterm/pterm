@@ -20,8 +20,9 @@
 - removed `Println` aliases
 
 ### Documentation Changes
-- add unstable notice
 - add code of conduct
+- add unstable notice
+- **examples:** update demo example
 - **examples:** update demo example
 
 ### Features

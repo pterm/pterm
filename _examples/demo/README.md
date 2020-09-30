@@ -26,7 +26,8 @@ func main() {
 	pterm.Header.SetBackgroundStyle(pterm.BgLightBlue).SetMargin(10).Println("PTDP - PTerm Demo Program")
 	pterm.Info.Println("This animation was generated with the latest version of PTerm!" +
 		"\nPTerm works on nearly every terminal and operating system." +
-		"\nIt's super easy to use! But you can customize everything if you want to :)" +
+		"\nIt's super easy to use!" +
+		"\nIf you want, you can customize everything :)" +
 		"\nYou can see the code of this demo in the " + pterm.LightMagenta("./_examples/demo") + " directory.")
 
 	introSpinner := pterm.DefaultSpinner.SetRemoveWhenDone(true).Start("Waiting for 15 seconds...")
@@ -52,7 +53,6 @@ func main() {
 		time.Sleep(second)
 	}
 	installSpinner.Success("Installed all pseudo programs!")
-
 }
 
 func clear() {
