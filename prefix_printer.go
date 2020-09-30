@@ -61,21 +61,21 @@ type PrefixPrinter struct {
 	MessageStyle Style
 }
 
-// WithPrefix adds a custom prefix to the printer.
-func (p PrefixPrinter) WithPrefix(prefix Prefix) *PrefixPrinter {
+// SetPrefix adds a custom prefix to the printer.
+func (p PrefixPrinter) SetPrefix(prefix Prefix) *PrefixPrinter {
 	p.Prefix = prefix
 	return &p
 }
 
-// WithScope adds a scope to the Prefix.
-func (p PrefixPrinter) WithScope(scope string, colors ...Color) *PrefixPrinter {
+// SetScope adds a scope to the Prefix.
+func (p PrefixPrinter) SetScope(scope string, colors ...Color) *PrefixPrinter {
 	p.Scope.Text = scope
 	p.Scope.Style = colors
 	return &p
 }
 
-// WithMessageStyle adds a custom prefix to the printer.
-func (p PrefixPrinter) WithMessageStyle(prefix Prefix) *PrefixPrinter {
+// SetMessageStyle adds a custom prefix to the printer.
+func (p PrefixPrinter) SetMessageStyle(prefix Prefix) *PrefixPrinter {
 	p.Prefix = prefix
 	return &p
 }
