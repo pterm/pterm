@@ -158,20 +158,22 @@ type Color uint8
 // Spaces are always added between operands and a newline is appended.
 // Input will be colored with the parent Color.
 func (c Color) Sprintln(a ...interface{}) string {
-	return color.RenderCode(color.Color(c).String(), a...) + "\n"
+	return c.Sprint(a...) + "\n"
 }
 
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
 // Input will be colored with the parent Color.
 func (c Color) Sprint(a ...interface{}) string {
-	return color.RenderCode(color.Color(c).String(), a...)
+	message := Sprint(a...)
+	message = strings.ReplaceAll(message, color.ResetSet, Sprintf("\u001B[%sm", c.String()))
+	return color.RenderCode(c.String(), message)
 }
 
 // Sprintf formats according to a format specifier and returns the resulting string.
 // Input will be colored with the parent Color.
 func (c Color) Sprintf(format string, a ...interface{}) string {
-	return color.RenderString(color.Color(c).String(), fmt.Sprintf(format, a...))
+	return c.Sprint(Sprintf(format, a...))
 }
 
 // Println formats using the default formats for its operands and writes to standard output.
@@ -216,20 +218,22 @@ func NewStyle(colors ...Color) Style {
 // Spaces are added between operands when neither is a string.
 // Input will be colored with the parent Style.
 func (s Style) Sprint(a ...interface{}) string {
-	return color.RenderCode(s.String(), a...)
+	message := Sprint(a...)
+	message = strings.ReplaceAll(message, color.ResetSet, Sprintf("\u001B[%sm", s.String()))
+	return color.RenderCode(s.String(), message)
 }
 
 // Sprintln formats using the default formats for its operands and returns the resulting string.
 // Spaces are always added between operands and a newline is appended.
 // Input will be colored with the parent Style.
 func (s Style) Sprintln(a ...interface{}) string {
-	return color.RenderCode(s.String(), a...) + "\n"
+	return s.Sprint(a...) + "\n"
 }
 
 // Sprintf formats according to a format specifier and returns the resulting string.
 // Input will be colored with the parent Style.
 func (s Style) Sprintf(format string, a ...interface{}) string {
-	return color.RenderString(s.String(), fmt.Sprintf(format, a...))
+	return s.Sprint(Sprintf(format, a...))
 }
 
 // Print formats using the default formats for its operands and writes to standard output.
