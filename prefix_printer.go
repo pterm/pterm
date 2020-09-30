@@ -14,8 +14,6 @@ var (
 		},
 		MessageStyle: NewStyle(FgLightCyan),
 	}
-	// PrintInfo is a shortcut to Info.Println.
-	PrintInfo = Info.Println
 
 	// Warning returns a PrefixPrinter, which can be used to print text with a "warning" Prefix.
 	Warning = PrefixPrinter{
@@ -25,8 +23,6 @@ var (
 		},
 		MessageStyle: NewStyle(FgYellow),
 	}
-	// PrintWarning is a shortcut to Warning.Println.
-	PrintWarning = Warning.Println
 
 	// Success returns a PrefixPrinter, which can be used to print text with a "success" Prefix.
 	Success = PrefixPrinter{
@@ -36,8 +32,6 @@ var (
 		},
 		MessageStyle: NewStyle(FgGreen),
 	}
-	// PrintSuccess is a shortcut to Success.Println.
-	PrintSuccess = Success.Println
 
 	// Error returns a PrefixPrinter, which can be used to print text with an "error" Prefix.
 	Error = PrefixPrinter{
@@ -47,8 +41,6 @@ var (
 		},
 		MessageStyle: NewStyle(FgLightRed),
 	}
-	// PrintError is a shortcut to Error.Println.
-	PrintError = Error.Println
 
 	// Description returns a PrefixPrinter, which can be used to print text with a "description" Prefix.
 	Description = PrefixPrinter{
@@ -58,8 +50,6 @@ var (
 		},
 		MessageStyle: Style{BgDarkGray, FgLightWhite},
 	}
-	// PrintDescription is a shortcut to Description.Println.
-	PrintDescription = Description.Println
 )
 
 // PrefixPrinter is the printer used to print a Prefix.

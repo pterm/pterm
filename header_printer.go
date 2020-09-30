@@ -8,9 +8,6 @@ var (
 		BackgroundStyle: Style{BgGray},
 		Margin:          5,
 	}
-
-	// PrintHeader is the short form of DefaultHeaderPrinter.Println.
-	PrintHeader = Header.Println
 )
 
 // HeaderPrinter contains the data used to craft a header.
