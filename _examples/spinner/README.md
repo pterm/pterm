@@ -12,7 +12,6 @@ import (
 )
 
 func main() {
-
 	spinnerSuccess := pterm.DefaultSpinner.Start("Doing something important... (will succeed)")
 
 	time.Sleep(time.Second * 3) // Simulate 3 seconds of processing something
@@ -44,7 +43,6 @@ func main() {
 	time.Sleep(time.Second * 2)
 
 	spinnerLiveText.Success("Finally!")
-
 }
 
 ```

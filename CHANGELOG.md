@@ -2,6 +2,7 @@
 ## [Unreleased]
 
 ### Ci
+- add golangci linting
 - make example source code expandable in main readme
 - add multi threaded animation generation
 - add dependabot
@@ -18,6 +19,9 @@
 
 ### Perf
 - improve spinner performance
+
+### Style
+- clean up code
 
 
 <a name="v0.1.0"></a>

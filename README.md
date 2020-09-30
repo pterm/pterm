@@ -73,7 +73,6 @@ import (
 )
 
 func main() {
-
 	pterm.PrintHeader("You can do many things with PTerm")
 
 	time.Sleep(time.Second * 3)
@@ -165,7 +164,6 @@ func main() {
 		}.Println("Everything can be customized")
 		time.Sleep(time.Millisecond * 100)
 	}
-
 }
 
 func clear() {
@@ -190,7 +188,6 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-
 	pterm.Error.Println("This is the default Error")
 
 	pterm.Error.Prefix = pterm.Prefix{
@@ -289,7 +286,6 @@ import (
 )
 
 func main() {
-
 	spinnerSuccess := pterm.DefaultSpinner.Start("Doing something important... (will succeed)")
 
 	time.Sleep(time.Second * 3) // Simulate 3 seconds of processing something
@@ -321,7 +317,6 @@ func main() {
 	time.Sleep(time.Second * 2)
 
 	spinnerLiveText.Success("Finally!")
-
 }
 
 ```
@@ -329,6 +324,7 @@ func main() {
 </details>
 
 <!-- examples:end -->
+
 
 
 
