@@ -4,6 +4,9 @@
 ### Bug Fixes
 - spinners spin evenly when multiple spinners are started
 
+### Chore
+- **deps:** update deps
+
 ### Ci
 - update changelog generation
 - run golangci-lint on every push and pull-request
@@ -12,11 +15,17 @@
 - add multi threaded animation generation
 - add dependabot
 
+### Code Refactoring
+- removed `Println` aliases
+
 ### Documentation Changes
 - add unstable notice
 - add code of conduct
 
 ### Features
+- add color in color support
+- add `RemoveWhenDone` to `Spinner`
+- add multiline support to `PrefixPrinter`
 - add `UpdateText` to spinner
 
 ### Performance Improvements

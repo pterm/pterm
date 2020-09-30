@@ -223,7 +223,7 @@ func main() {
 	tick := time.Tick(time.Second * 2)
 
 	// Print with the default HeaderPrinter
-	pterm.PrintHeader("This is the default header style")
+	pterm.Header.Println("This is the default header style")
 
 	<-tick // Wait
 
@@ -324,6 +324,7 @@ func main() {
 </details>
 
 <!-- examples:end -->
+
 
 
 
