@@ -1,0 +1,85 @@
+linters-settings:
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - experimental
+      - opinionated
+      - performance
+      - style
+    disabled-checks:
+      - dupImport
+      - ifElseChain
+      - octalLiteral
+      - whyNoLint
+      - wrapperFunc
+      - exitAfterDefer
+      - hugeParam
+#  maligned:
+#    suggest-new: true
+  misspell:
+    locale: US
+linters:
+  disable-all: true
+  enable:
+    - bodyclose
+    - gocritic
+    - gosec
+    - govet
+    - ineffassign
+    - interfacer
+    - maligned
+    - unconvert
+    - gosimple
+    - godox
+    - whitespace
+    - staticcheck
+  #    - godot
+  #    - deadcode
+  #    - depguard
+  #    - dogsled
+  #    - dupl
+  #    - errcheck
+  #    - exhaustive
+  #    - funlen
+  #    - gochecknoinits
+  #    - goconst
+  #    - gocyclo
+  #    - gofmt
+  #    - goimports
+  #    - golint
+  #    - gomnd
+  #    - goprintffuncname
+  #    - lll
+  #    - misspell
+  #    - nakedret
+  #    - noctx
+  #    - nolintlint
+  #    - rowserrcheck
+  #    - scopelint
+  #    - structcheck
+  #    - stylecheck
+  #    - typecheck
+  #    - unparam
+  #    - unused
+  #    - varcheck
+  #    - whitespace
+  #   - asciicheck
+  #   - gochecknoglobals
+  #   - gocognit
+  #   - goerr113
+  #   - nestif
+  #   - prealloc
+  #   - testpackage
+  #   - wsl
+issues:
+  # Excluding configuration per-path, per-linter, per-text and per-source
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - gomnd
+    # https://github.com/go-critic/go-critic/issues/926
+    - linters:
+        - gocritic
+      text: "unnecessaryDefer:"
+service:
+  golangci-lint-version: 1.31.x # use the fixed version to not introduce new linters unexpectedly
