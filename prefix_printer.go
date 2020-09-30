@@ -1,5 +1,7 @@
 package pterm
 
+import "strings"
+
 var (
 	// GrayBoxStyle wraps text in a gray box.
 	GrayBoxStyle = NewStyle(BgGray, FgLightWhite)
@@ -81,14 +83,21 @@ func (p PrefixPrinter) WithMessageStyle(prefix Prefix) *PrefixPrinter {
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
 func (p PrefixPrinter) Sprint(a ...interface{}) string {
-	var args []interface{}
-	args = append(args, p.GetFormattedPrefix())
-	if p.Scope.Text != "" {
-		args = append(args, NewStyle(p.Scope.Style...).Sprint(" ("+p.Scope.Text+") "))
+	var ret string
+	messageLines := strings.Split(Sprint(a...), "\n")
+	for i, m := range messageLines {
+		if i == 0 {
+			ret += p.GetFormattedPrefix() + " "
+			if p.Scope.Text != "" {
+				ret += NewStyle(p.Scope.Style...).Sprint(" (" + p.Scope.Text + ") ")
+			}
+			ret += p.MessageStyle.Sprint(m)
+		} else {
+			ret += "\n" + p.Prefix.Style.Sprint(strings.Repeat(" ", len(p.Prefix.Text)+2)) + " " + p.MessageStyle.Sprint(m)
+		}
 	}
-	args = append(args, p.GetFormattedMessage(a...))
 
-	return Sprint(args...)
+	return Sprint(ret)
 }
 
 // Sprintln formats using the default formats for its operands and returns the resulting string.
@@ -128,17 +137,6 @@ func (p PrefixPrinter) Printf(format string, a ...interface{}) GenericPrinter {
 // GetFormattedPrefix returns the Prefix as a styled text string.
 func (p PrefixPrinter) GetFormattedPrefix() string {
 	return NewStyle(p.Prefix.Style...).Sprint(" " + p.Prefix.Text + " ")
-}
-
-// GetFormattedMessage returns the message as a styled text string.
-func (p PrefixPrinter) GetFormattedMessage(a ...interface{}) string {
-	var args []interface{}
-	args = append(args, " ")
-	args = append(args, a...)
-	if p.MessageStyle == nil {
-		p.MessageStyle = NewStyle()
-	}
-	return NewStyle(p.MessageStyle...).Sprint(args...)
 }
 
 // Prefix contains the data used as the beginning of a printed text via a PrefixPrinter.
