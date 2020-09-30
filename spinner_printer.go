@@ -27,6 +27,7 @@ type Spinner struct {
 	SuccessPrinter GenericPrinter
 	FailPrinter    GenericPrinter
 	WarningPrinter GenericPrinter
+	RemoveWhenDone bool
 
 	IsActive bool
 }
@@ -58,6 +59,12 @@ func (s Spinner) WithDelay(delay time.Duration) *Spinner {
 // WithMessageStyle adds a style to the spinner message.
 func (s Spinner) WithMessageStyle(colors ...Color) *Spinner {
 	s.MessageStyle = colors
+	return &s
+}
+
+// SetRemoveWhenDone removes the spinner after it is done.
+func (s Spinner) SetRemoveWhenDone(b bool) *Spinner {
+	s.RemoveWhenDone = b
 	return &s
 }
 
@@ -126,5 +133,10 @@ func (s *Spinner) Warning(message ...interface{}) {
 // The Spinner will not resolve into anything.
 func (s *Spinner) Stop() {
 	s.IsActive = false
-	Println()
+	if s.RemoveWhenDone {
+		clearLine()
+		Printo()
+	} else {
+		Println()
+	}
 }
