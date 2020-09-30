@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+
+<a name="v0.2.0"></a>
+## [v0.2.0] - 2020-09-30
 ### Bug Fixes
 - spinners spin evenly when multiple spinners are started
 
@@ -16,13 +19,14 @@
 - add dependabot
 
 ### Code Refactoring
+- bump version to "v0.2.0"
 - change `WithXXX` to `SetXXX`
 - removed `Println` aliases
 
 ### Documentation Changes
+- add CONTRIBUTING.md
 - add code of conduct
 - add unstable notice
-- add CONTRIBUTING.md
 - **demo:** add space between intro and spinner
 - **examples:** update demo example
 - **examples:** update demo example
@@ -40,6 +44,14 @@
 
 ### Style
 - clean up code
+
+### BREAKING CHANGE
+
+every `WithXXX` is renamed to `SetXXX`
+
+remove `GetFormattedMessage` from `PrefixPrinter`
+
+removed `Println` aliases
 
 
 <a name="v0.1.0"></a>
@@ -123,6 +135,7 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.2.0...HEAD
+[v0.2.0]: https://github.com/pterm/pterm/compare/v0.1.0...v0.2.0
 [v0.1.0]: https://github.com/pterm/pterm/compare/v0.0.1...v0.1.0
 [v0.0.1]: https://github.com/pterm/pterm/compare/v0.0.0...v0.0.1
