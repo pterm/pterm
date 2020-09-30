@@ -13,6 +13,9 @@
 ### Feat
 - add `UpdateText` to spinner
 
+### Fix
+- spinners spin evenly when multiple spinners are started
+
 ### Perf
 - improve spinner performance
 
