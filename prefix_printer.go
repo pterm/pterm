@@ -48,9 +48,9 @@ var (
 	Description = PrefixPrinter{
 		Prefix: Prefix{
 			Text:  "Description",
-			Style: Style{BgDarkGray, FgLightWhite},
+			Style: Style{FgLightWhite, BgDarkGray},
 		},
-		MessageStyle: Style{BgDarkGray, FgLightWhite},
+		MessageStyle: Style{FgLightWhite},
 	}
 )
 
