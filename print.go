@@ -15,16 +15,15 @@ import (
 // pterm.Oprint("Hello, Earth!")
 func Printo(a ...interface{}) {
 	Fprint(os.Stdout, "\r"+Sprint(a...))
-
 }
 
 // Fprinto prints Printo to a custom writer.
 func Fprinto(w io.Writer, a ...interface{}) {
-
 	Fprint(w, "\r", Sprint(a...))
 }
 
 func clearLine() {
 	Printo(strings.Repeat(" ", GetTerminalWidth()))
-
 }
+
+// Just testing.
