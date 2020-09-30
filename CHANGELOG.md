@@ -2,6 +2,7 @@
 ## [Unreleased]
 
 ### Ci
+- run golangci-lint on every push and pull-request
 - add golangci linting
 - make example source code expandable in main readme
 - add multi threaded animation generation
