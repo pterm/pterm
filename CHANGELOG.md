@@ -22,8 +22,11 @@
 ### Documentation Changes
 - add code of conduct
 - add unstable notice
+- add CONTRIBUTING.md
+- **demo:** add space between intro and spinner
 - **examples:** update demo example
 - **examples:** update demo example
+- **examples:** break `demo` example into two parts
 
 ### Features
 - change style of `Description` printer

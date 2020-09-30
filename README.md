@@ -89,7 +89,10 @@ func main() {
 		"\nPTerm works on nearly every terminal and operating system." +
 		"\nIt's super easy to use!" +
 		"\nIf you want, you can customize everything :)" +
-		"\nYou can see the code of this demo in the " + pterm.LightMagenta("./_examples/demo") + " directory.")
+		"\nYou can see the code of this demo in the " + pterm.LightMagenta("./_examples/demo") + " directory." +
+		"\n" +
+		"\nThis demo was updated at: " + pterm.Green(time.Now().Format("06 Jan 2006 - 15:04:05 MST")))
+	pterm.Println()
 
 	introSpinner := pterm.DefaultSpinner.SetRemoveWhenDone(true).Start("Waiting for 15 seconds...")
 	time.Sleep(second)
@@ -102,18 +105,24 @@ func main() {
 		time.Sleep(second)
 	}
 	introSpinner.Stop()
-	pterm.Println()
 
-	pterm.Info.Println("Let's run our pseudo program!")
+	clear()
+
+	pterm.Header.SetBackgroundStyle(pterm.BgLightBlue).SetMargin(10).Println("Pseudo Application created with PTerm")
+
+	time.Sleep(second)
+
 	setupSpinner := pterm.DefaultSpinner.Start("Fetching pseudo install list...")
 	time.Sleep(second * 4)
 	setupSpinner.Success()
+
 	installSpinner := pterm.DefaultSpinner.Start("Installing...")
 	for _, s := range fakeInstallList {
 		installSpinner.UpdateText("Installing " + s + "...")
 		time.Sleep(second)
 	}
 	installSpinner.Success("Installed all pseudo programs!")
+
 }
 
 func clear() {
@@ -275,6 +284,7 @@ func main() {
 </details>
 
 <!-- examples:end -->
+
 
 
 
