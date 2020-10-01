@@ -122,7 +122,6 @@ func main() {
 		time.Sleep(second)
 	}
 	installSpinner.Success("Installed all pseudo programs!")
-
 }
 
 func clear() {
@@ -284,6 +283,7 @@ func main() {
 </details>
 
 <!-- examples:end -->
+
 
 
 

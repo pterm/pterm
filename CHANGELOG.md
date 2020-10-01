@@ -2,7 +2,11 @@
 ## [Unreleased]
 
 ### Documentation Changes
+- add pull_request_template
 - **demo:** fix updated timestamp
+
+### Style
+- format code
 
 
 <a name="v0.2.0"></a>
