@@ -30,7 +30,7 @@ func main() {
 		"\nIf you want, you can customize everything :)" +
 		"\nYou can see the code of this demo in the " + pterm.LightMagenta("./_examples/demo") + " directory." +
 		"\n" +
-		"\nThis demo was updated at: " + pterm.Green(time.Now().Format("06 Jan 2006 - 15:04:05 MST")))
+		"\nThis demo was updated at: " + pterm.Green(time.Now().Format("02 Jan 2006 - 15:04:05 MST")))
 	pterm.Println()
 
 	introSpinner := pterm.DefaultSpinner.SetRemoveWhenDone(true).Start("Waiting for 15 seconds...")

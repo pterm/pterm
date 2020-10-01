@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Documentation Changes
+- **demo:** fix updated timestamp
+
 
 <a name="v0.2.0"></a>
 ## [v0.2.0] - 2020-09-30
