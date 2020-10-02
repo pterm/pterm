@@ -7,6 +7,7 @@
 - **demo:** fix updated timestamp
 
 ### Features
+- add `Progressbar` ([#5](https://github.com/pterm/pterm/issues/5))
 - add fatal to `PrefixPrinter` ([#4](https://github.com/pterm/pterm/issues/4))
 
 ### Style
