@@ -2,6 +2,7 @@
 ## [Unreleased]
 
 ### Documentation Changes
+- add sponsor button
 - add pull_request_template
 - **demo:** fix updated timestamp
 
