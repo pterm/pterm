@@ -64,7 +64,7 @@ go get github.com/pterm/pterm
 
 To view the official documentation of the latest release, you can go to the automatically generated page of [pkg.go.dev](https://pkg.go.dev/github.com/pterm/pterm) This documentation is very technical and includes every method that can be used in PTerm.
 
-**For an easy start we recommend that you take a look at the [examples section](#Examples).** Here you can see pretty much every feature of PTerm with its source code. The animations of the examples are automatically updated as soon as something changes in PTerm.
+**For an easy start we recommend that you take a look at the [examples section](#test_tube-examples).** Here you can see pretty much every feature of PTerm with its source code. The animations of the examples are automatically updated as soon as something changes in PTerm.
 
 Have fun exploring this project :rocket:
 
