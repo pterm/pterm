@@ -51,6 +51,28 @@ PTerm is currently under development. It is very likely that not all things will
 
 If you want to wait for a stable release, make sure to star the project and follow it, to get notified when we release v1.0.0 (stable) :rocket:
 
+## Installation
+
+To make PTerm available in your project, you can run the following command.\
+Make sure to run this command inside your project, when you're using go modules :wink:
+
+```sh
+go get github.com/pterm/pterm
+```
+
+## Documentation
+
+To view the official documentation of the latest release, you can go to the automatically generated page of [pkg.go.dev](https://pkg.go.dev/github.com/pterm/pterm) This documentation is very technical and includes every method that can be used in PTerm.
+
+**For an easy start we recommend that you take a look at the [examples section](#Examples).** Here you can see pretty much every feature of PTerm with its source code. The animations of the examples are automatically updated as soon as something changes in PTerm.
+
+Have fun exploring this project :rocket:
+
+## Contributing
+
+If you have found a bug or want to suggest a feature, you can do so [here](https://github.com/pterm/pterm/issues) by opening a new issue.
+
+If you want to contribute to the development of PTerm, you are very welcome to do so. Our contribution guidelines can be found [here](CONTRIBUTING.md).
 
 ## Examples
 
