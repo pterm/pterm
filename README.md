@@ -45,13 +45,13 @@
 
 ---
 
-## NOTICE
+## :warning: NOTICE
 
 PTerm is currently under development. It is very likely that not all things will remain as they are at the moment. However, PTerm is still functional. The versioning of PTerm follows the SemVer guidelines. Breaking Changes are explicitly mentioned in the changelogs and the version will be increased accordingly. Everybody is welcome to improve PTerm, whether by making suggestions or pull requests. Thanks <3
 
 If you want to wait for a stable release, make sure to star the project and follow it, to get notified when we release v1.0.0 (stable) :rocket:
 
-## Installation
+## :package: Installation
 
 To make PTerm available in your project, you can run the following command.\
 Make sure to run this command inside your project, when you're using go modules :wink:
@@ -60,7 +60,7 @@ Make sure to run this command inside your project, when you're using go modules 
 go get github.com/pterm/pterm
 ```
 
-## Documentation
+## :pencil: Documentation
 
 To view the official documentation of the latest release, you can go to the automatically generated page of [pkg.go.dev](https://pkg.go.dev/github.com/pterm/pterm) This documentation is very technical and includes every method that can be used in PTerm.
 
@@ -68,13 +68,13 @@ To view the official documentation of the latest release, you can go to the auto
 
 Have fun exploring this project :rocket:
 
-## Contributing
+## :heart: Contributing
 
 If you have found a bug or want to suggest a feature, you can do so [here](https://github.com/pterm/pterm/issues) by opening a new issue.
 
 If you want to contribute to the development of PTerm, you are very welcome to do so. Our contribution guidelines can be found [here](CONTRIBUTING.md).
 
-## Examples
+## :test_tube: Examples
 
 <!-- examples:start -->
 ### demo
