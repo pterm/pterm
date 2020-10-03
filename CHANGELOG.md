@@ -5,6 +5,7 @@
 - add sponsor button
 - add pull_request_template
 - **demo:** fix updated timestamp
+- **readme:** `installation`, `documentation` and `contributing` sections
 
 ### Features
 - add percentage helper
