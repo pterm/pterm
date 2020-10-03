@@ -1,17 +1,29 @@
 package pterm
 
 import (
+	"strconv"
 	"strings"
 	"time"
+
+	"github.com/gookit/color"
+
+	"github.com/pterm/pterm/internal"
 )
 
 var (
 	DefaultProgressbar = Progressbar{
 		Total:         100,
-		LineCharacter: '=',
-		LastCharacter: '=',
+		LineCharacter: '█',
+		LastCharacter: '█',
 	}
 )
+
+var fade = []string{"FF3D3D", "FC3F3C", "F9423C", "F7453C", "F4483C", "F24B3C", "EF4D3C", "EC503C", "EA533C", "E7563C",
+	"E5593C", "E25C3C", "DF5E3C", "DD613C", "DA643C", "D8673C", "D56A3B", "D36D3B", "D06F3B", "CD723B", "CB753B",
+	"C8783B", "C67B3B", "C37D3B", "C0803B", "BE833B", "BB863B", "B9893B", "B68C3B", "B38E3B", "B1913B", "AE943B",
+	"AC973A", "A99A3A", "A79D3A", "A49F3A", "A1A23A", "9FA53A", "9CA83A", "9AAB3A", "97AE3A", "94B03A", "92B33A",
+	"8FB63A", "8DB93A", "8ABC3A", "87BE3A", "85C13A", "82C439", "80C739", "7DCA39", "7BCD39", "78CF39", "75D239",
+	"73D539", "70D839", "6EDB39", "6BDE39", "68E039", "66E339", "63E639", "61E939", "5EEC39", "5CEF39"}
 
 // Progressbar shows a progress animation in the terminal.
 type Progressbar struct {
@@ -67,21 +79,24 @@ func (p Progressbar) Start() *Progressbar {
 
 	go func() {
 		for p.IsActive {
-			if p.Current > p.Total {
-				p.Total = p.Current
-			}
+			width := GetTerminalWidth()
+			decoratorCurrentTotal := Sprintf("[%s%s%s]", Green(p.Current), Gray("/"), Red(p.Total))
+			currentPercent := int(internal.PercentageRound(float64(int64(p.Total)), float64(int64(p.Current)), float64(width)))
 
-			decoratorCurrentTotal := Sprintf("[%d/%d]", p.Current, p.Total)
+			before := Cyan(p.Name) + " " + decoratorCurrentTotal + " "
+			after := " " + color.HEX(fade[int(0.63*float64(currentPercent))]).Sprint(strconv.Itoa(currentPercent)+"%")
 
-			before := p.Name + " " + decoratorCurrentTotal + " "
-			after := " After bar"
-
-			barMaxLength := GetTerminalWidth() - len(before) - len(after)
+			barMaxLength := width - len(RemoveColors(before)) - len(RemoveColors(after)) - 1
 			barCurrentLength := (p.Current * barMaxLength) / p.Total
 			barFiller := strings.Repeat(" ", barMaxLength-barCurrentLength)
 
-			bar := strings.Repeat(string(p.LineCharacter), barCurrentLength-1) + string(p.LastCharacter) + barFiller
+			bar := LightCyan(strings.Repeat(string(p.LineCharacter), barCurrentLength)+string(p.LastCharacter)) + barFiller
 			Printo(before + bar + after)
+
+			if p.Current == p.Total {
+				Println()
+				p.Stop()
+			}
 
 			time.Sleep(p.UpdateDelay)
 		}
