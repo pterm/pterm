@@ -1,6 +1,9 @@
 package pterm
 
-import "strings"
+import (
+	"os"
+	"strings"
+)
 
 var (
 	// GrayBoxStyle wraps text in a gray box.
@@ -59,6 +62,7 @@ type PrefixPrinter struct {
 	Prefix       Prefix
 	Scope        Scope
 	MessageStyle Style
+	Fatal        bool
 }
 
 // SetPrefix adds a custom prefix to the printer.
@@ -75,8 +79,17 @@ func (p PrefixPrinter) SetScope(scope string, colors ...Color) *PrefixPrinter {
 }
 
 // SetMessageStyle adds a custom prefix to the printer.
-func (p PrefixPrinter) SetMessageStyle(prefix Prefix) *PrefixPrinter {
-	p.Prefix = prefix
+func (p PrefixPrinter) SetMessageStyle(colors ...Color) *PrefixPrinter {
+	p.MessageStyle = colors
+	return &p
+}
+
+// SetFatal sets if the printer should panic after printing.
+// NOTE:
+// The printer will only panic if either PrefixPrinter.Println, PrefixPrinter.Print
+// or PrefixPrinter.Printf is called.
+func (p PrefixPrinter) SetFatal(fatal bool) *PrefixPrinter {
+	p.Fatal = fatal
 	return &p
 }
 
@@ -116,6 +129,7 @@ func (p PrefixPrinter) Sprintf(format string, a ...interface{}) string {
 // It returns the number of bytes written and any write error encountered.
 func (p PrefixPrinter) Print(a ...interface{}) GenericPrinter {
 	Print(p.Sprint(a...))
+	checkFatal(&p)
 	return p
 }
 
@@ -124,6 +138,7 @@ func (p PrefixPrinter) Print(a ...interface{}) GenericPrinter {
 // It returns the number of bytes written and any write error encountered.
 func (p PrefixPrinter) Println(a ...interface{}) GenericPrinter {
 	Print(p.Sprintln(a...))
+	checkFatal(&p)
 	return p
 }
 
@@ -131,6 +146,7 @@ func (p PrefixPrinter) Println(a ...interface{}) GenericPrinter {
 // It returns the number of bytes written and any write error encountered.
 func (p PrefixPrinter) Printf(format string, a ...interface{}) GenericPrinter {
 	Print(Sprintf(format, a...))
+	checkFatal(&p)
 	return p
 }
 
@@ -150,4 +166,10 @@ type Prefix struct {
 type Scope struct {
 	Text  string
 	Style Style
+}
+
+func checkFatal(p *PrefixPrinter) {
+	if p.Fatal {
+		os.Exit(1)
+	}
 }
