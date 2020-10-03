@@ -7,8 +7,12 @@
 - **demo:** fix updated timestamp
 
 ### Features
+- add percentage helper
+- add `RemoveColors`
 - add `Progressbar` ([#5](https://github.com/pterm/pterm/issues/5))
+- add `Progressbar`
 - add fatal to `PrefixPrinter` ([#4](https://github.com/pterm/pterm/issues/4))
+- **progressbar:** fade percentage color according to value
 
 ### Style
 - format code
