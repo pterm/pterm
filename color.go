@@ -38,6 +38,9 @@ var (
 	// Spaces are always added between operands and a newline is appended.
 	// It returns the number of bytes written and any write error encountered.
 	Fprintln = color.Fprintln
+
+	// RemoveColors removes color codes from a string.
+	RemoveColors = color.ClearCode
 )
 
 // Foreground colors. basic foreground colors 30 - 37.
