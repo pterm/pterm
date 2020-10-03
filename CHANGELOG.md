@@ -2,10 +2,12 @@
 ## [Unreleased]
 
 ### Documentation Changes
-- add sponsor button
 - add pull_request_template
+- add sponsor button
 - **demo:** fix updated timestamp
 - **readme:** `installation`, `documentation` and `contributing` sections
+- **reamde:** add emojis to sections
+- **reamde:** update examples section link
 
 ### Features
 - add percentage helper
