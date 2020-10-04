@@ -14,8 +14,8 @@ linters-settings:
       - wrapperFunc
       - exitAfterDefer
       - hugeParam
-#  maligned:
-#    suggest-new: true
+  #  maligned:
+  #    suggest-new: true
   misspell:
     locale: US
 linters:
@@ -27,12 +27,12 @@ linters:
     - govet
     - ineffassign
     - interfacer
-    - maligned
     - unconvert
     - gosimple
     - godox
     - whitespace
     - staticcheck
+  #    - maligned
   #    - godot
   #    - deadcode
   #    - depguard
