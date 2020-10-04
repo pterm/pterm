@@ -15,7 +15,7 @@ func Sprint(a ...interface{}) string {
 
 // Sprintf formats according to a format specifier and returns the resulting string.
 func Sprintf(format string, a ...interface{}) string {
-	return color.Sprintf(format, Sprint(a...))
+	return color.Sprintf(format, a...)
 }
 
 // Sprintln returns what Println would print to the terminal.
@@ -60,7 +60,7 @@ func Println(a ...interface{}) {
 // Printf formats according to a format specifier and writes to standard output.
 // It returns the number of bytes written and any write error encountered.
 func Printf(format string, a ...interface{}) {
-	Print(Sprintf(format, Sprint(a...)))
+	Print(Sprintf(format, a...))
 }
 
 // Fprint formats using the default formats for its operands and writes to w.
