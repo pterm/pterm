@@ -47,6 +47,17 @@ var (
 		MessageStyle: NewStyle(FgLightRed),
 	}
 
+	// Fatal returns a PrefixPrinter, which can be used to print text with an "fatal" Prefix.
+	// NOTICE: Fatal terminates the application immediately!
+	Fatal = PrefixPrinter{
+		Prefix: Prefix{
+			Text:  "FATAL",
+			Style: NewStyle(FgBlack, BgLightRed),
+		},
+		MessageStyle: NewStyle(FgLightRed),
+		Fatal:        true,
+	}
+
 	// Description returns a PrefixPrinter, which can be used to print text with a "description" Prefix.
 	Description = PrefixPrinter{
 		Prefix: Prefix{
