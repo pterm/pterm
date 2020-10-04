@@ -1,8 +1,16 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Bug Fixes
+- `Printf` works again
+
+
+<a name="v0.2.3"></a>
+## [v0.2.3] - 2020-10-04
 ### Code Refactoring
 - remove goroutine from `Progressbar`
+
+### Documentation Changes
 
 ### Features
 - automatically print above `Progressbar`
@@ -180,7 +188,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.2.2...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.2.3...HEAD
+[v0.2.3]: https://github.com/pterm/pterm/compare/v0.2.2...v0.2.3
 [v0.2.2]: https://github.com/pterm/pterm/compare/v0.2.1...v0.2.2
 [v0.2.1]: https://github.com/pterm/pterm/compare/v0.2.0...v0.2.1
 [v0.2.0]: https://github.com/pterm/pterm/compare/v0.1.0...v0.2.0
