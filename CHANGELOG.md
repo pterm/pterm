@@ -5,6 +5,8 @@
 <a name="v0.2.1"></a>
 ## [v0.2.1] - 2020-10-04
 ### Ci
+- remove commit to tag
+- remove automatic releases
 - disable maligned
 
 ### Code Refactoring
