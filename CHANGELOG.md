@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Features
+- add `Fatal` printer
+
 
 <a name="v0.2.1"></a>
 ## [v0.2.1] - 2020-10-04
