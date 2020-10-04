@@ -1,8 +1,14 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+
+<a name="v0.2.1"></a>
+## [v0.2.1] - 2020-10-04
 ### Ci
 - disable maligned
+
+### Code Refactoring
+- bump version to "v0.2.1"
 
 ### Documentation Changes
 - add sponsor button
@@ -158,7 +164,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.2.1...HEAD
+[v0.2.1]: https://github.com/pterm/pterm/compare/v0.2.0...v0.2.1
 [v0.2.0]: https://github.com/pterm/pterm/compare/v0.1.0...v0.2.0
 [v0.1.0]: https://github.com/pterm/pterm/compare/v0.0.1...v0.1.0
 [v0.0.1]: https://github.com/pterm/pterm/compare/v0.0.0...v0.0.1
