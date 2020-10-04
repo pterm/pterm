@@ -10,6 +10,10 @@ import (
 	"github.com/pterm/pterm/internal"
 )
 
+// ActiveProgressBars contains all running progressbars.
+// Generally, there should only be one active Progressbar at a time.
+var ActiveProgressBars []*Progressbar
+
 var (
 	// DefaultProgressbar is the default progressbar.
 	DefaultProgressbar = Progressbar{
@@ -179,8 +183,8 @@ func (p *Progressbar) Add(count int) *Progressbar {
 	Printo(before + bar + after)
 
 	if p.Current == p.Total {
-		Println()
 		p.Stop()
+		Println()
 	}
 	return p
 }
@@ -188,6 +192,7 @@ func (p *Progressbar) Add(count int) *Progressbar {
 // Start the progressbar.
 func (p Progressbar) Start() *Progressbar {
 	p.IsActive = true
+	ActiveProgressBars = append(ActiveProgressBars, &p)
 	p.startedAt = time.Now()
 
 	if p.UpdateDelay == 0 {
@@ -202,12 +207,11 @@ func (p Progressbar) Start() *Progressbar {
 // Stop the progressbar.
 func (p *Progressbar) Stop() *Progressbar {
 	p.IsActive = false
-	return p
-}
-
-// PrintAbove the progressbar.
-func (p *Progressbar) PrintAbove() *Progressbar {
-
+	for i, bar := range ActiveProgressBars {
+		if p == bar {
+			ActiveProgressBars = append(ActiveProgressBars[:i], ActiveProgressBars[i+1:]...)
+		}
+	}
 	return p
 }
 

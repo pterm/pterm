@@ -7,42 +7,6 @@ import (
 	"github.com/gookit/color"
 )
 
-var (
-	// Sprint formats using the default formats for its operands and returns the resulting string.
-	// Spaces are added between operands when neither is a string.
-	Sprint = color.Sprint
-
-	// Sprintf formats according to a format specifier and returns the resulting string.
-	Sprintf = color.Sprintf
-
-	// Println formats using the default formats for its operands and writes to standard output.
-	// Spaces are always added between operands and a newline is appended.
-	// It returns the number of bytes written and any write error encountered.
-	Println = color.Println
-
-	// Printf formats according to a format specifier and writes to standard output.
-	// It returns the number of bytes written and any write error encountered.
-	Printf = color.Printf
-
-	// Print formats using the default formats for its operands and writes to standard output.
-	// Spaces are added between operands when neither is a string.
-	// It returns the number of bytes written and any write error encountered.
-	Print = color.Print
-
-	// Fprint formats using the default formats for its operands and writes to w.
-	// Spaces are added between operands when neither is a string.
-	// It returns the number of bytes written and any write error encountered.
-	Fprint = color.Fprint
-
-	// Fprintln formats using the default formats for its operands and writes to w.
-	// Spaces are always added between operands and a newline is appended.
-	// It returns the number of bytes written and any write error encountered.
-	Fprintln = color.Fprintln
-
-	// RemoveColors removes color codes from a string.
-	RemoveColors = color.ClearCode
-)
-
 // Foreground colors. basic foreground colors 30 - 37.
 const (
 	FgBlack Color = iota + 30
