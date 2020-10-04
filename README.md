@@ -249,6 +249,46 @@ func main() {
 
 </details>
 
+### progressbar
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/progressbar/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"strings"
+	"time"
+
+	"github.com/pterm/pterm"
+)
+
+var fakeInstallList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chrome pseudo-outlook pseudo-explorer "+
+	"pseudo-dops pseudo-git pseudo-vsc pseudo-intellij pseudo-minecraft pseudo-scoop pseudo-chocolatey", " ")
+
+var vki int
+
+func main() {
+	p := pterm.DefaultProgressbar.SetTotal(2000).SetTitle("Downloading stuff").Start()
+
+	for i := 0; i < p.Total; i++ {
+		p.Increment()
+		time.Sleep(time.Millisecond * 5)
+		if i%200 == 0 {
+			p.Title = "Downloading " + fakeInstallList[vki]
+			vki++
+		}
+	}
+}
+
+```
+
+</details>
+
 ### spinner
 
 ![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/spinner/animation.svg)
@@ -305,6 +345,7 @@ func main() {
 </details>
 
 <!-- examples:end -->
+
 
 
 

@@ -1,15 +1,19 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Ci
+- disable maligned
+
 ### Documentation Changes
-- add pull_request_template
 - add sponsor button
+- add pull_request_template
 - **demo:** fix updated timestamp
 - **readme:** `installation`, `documentation` and `contributing` sections
 - **reamde:** add emojis to sections
 - **reamde:** update examples section link
 
 ### Features
+- make progressbar configurable
 - add percentage helper
 - add `RemoveColors`
 - add `Progressbar` ([#5](https://github.com/pterm/pterm/issues/5))
