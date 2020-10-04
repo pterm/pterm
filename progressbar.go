@@ -143,6 +143,45 @@ func (p *Progressbar) Increment() *Progressbar {
 // Add to current value.
 func (p *Progressbar) Add(count int) *Progressbar {
 	p.Current += count
+
+	var before string
+	var after string
+
+	width := GetTerminalWidth()
+	currentPercentage := int(internal.PercentageRound(float64(int64(p.Total)), float64(int64(p.Current)), float64(width)))
+
+	decoratorCount := Gray("[") + LightWhite(p.Current) + Gray("/") + LightWhite(p.Total) + Gray("]")
+	decoratorCurrentPercentage := color.HEX(fade[int(0.63*float64(currentPercentage))]).Sprint(strconv.Itoa(currentPercentage) + "%")
+
+	decoratorTitle := p.TitleStyle.Sprint(p.Title)
+
+	if p.ShowTitle {
+		before += decoratorTitle + " "
+	}
+	if p.ShowCount {
+		before += decoratorCount + " "
+	}
+
+	after += " "
+
+	if p.ShowPercentage {
+		after += decoratorCurrentPercentage + " "
+	}
+	if p.ShowElapsedTime {
+		after += "| " + p.parseElapsedTime()
+	}
+
+	barMaxLength := width - len(RemoveColors(before)) - len(RemoveColors(after)) - 1
+	barCurrentLength := (p.Current * barMaxLength) / p.Total
+	barFiller := strings.Repeat(" ", barMaxLength-barCurrentLength)
+
+	bar := p.BarStyle.Sprint(strings.Repeat(p.LineCharacter, barCurrentLength)+p.LastCharacter) + barFiller
+	Printo(before + bar + after)
+
+	if p.Current == p.Total {
+		Println()
+		p.Stop()
+	}
 	return p
 }
 
@@ -155,50 +194,7 @@ func (p Progressbar) Start() *Progressbar {
 		p.UpdateDelay = time.Millisecond * 100
 	}
 
-	go func() {
-		for p.IsActive {
-			var before string
-			var after string
-
-			width := GetTerminalWidth()
-			currentPercentage := int(internal.PercentageRound(float64(int64(p.Total)), float64(int64(p.Current)), float64(width)))
-
-			decoratorCount := Gray("[") + LightWhite(p.Current) + Gray("/") + LightWhite(p.Total) + Gray("]")
-			decoratorCurrentPercentage := color.HEX(fade[int(0.63*float64(currentPercentage))]).Sprint(strconv.Itoa(currentPercentage) + "%")
-
-			decoratorTitle := p.TitleStyle.Sprint(p.Title)
-
-			if p.ShowTitle {
-				before += decoratorTitle + " "
-			}
-			if p.ShowCount {
-				before += decoratorCount + " "
-			}
-
-			after += " "
-
-			if p.ShowPercentage {
-				after += decoratorCurrentPercentage + " "
-			}
-			if p.ShowElapsedTime {
-				after += "| " + p.parseElapsedTime()
-			}
-
-			barMaxLength := width - len(RemoveColors(before)) - len(RemoveColors(after)) - 1
-			barCurrentLength := (p.Current * barMaxLength) / p.Total
-			barFiller := strings.Repeat(" ", barMaxLength-barCurrentLength)
-
-			bar := p.BarStyle.Sprint(strings.Repeat(p.LineCharacter, barCurrentLength)+p.LastCharacter) + barFiller
-			Printo(before + bar + after)
-
-			if p.Current == p.Total {
-				Println()
-				p.Stop()
-			}
-
-			time.Sleep(p.UpdateDelay)
-		}
-	}()
+	p.Add(0)
 
 	return &p
 }
@@ -206,6 +202,12 @@ func (p Progressbar) Start() *Progressbar {
 // Stop the progressbar.
 func (p *Progressbar) Stop() *Progressbar {
 	p.IsActive = false
+	return p
+}
+
+// PrintAbove the progressbar.
+func (p *Progressbar) PrintAbove() *Progressbar {
+
 	return p
 }
 
