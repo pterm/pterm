@@ -273,16 +273,19 @@ var fakeInstallList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chrome
 var vki int
 
 func main() {
-	p := pterm.DefaultProgressbar.SetTotal(2000).SetTitle("Downloading stuff").Start()
+	p := pterm.DefaultProgressbar.SetTotal(len(fakeInstallList)).SetTitle("Downloading stuff").Start()
 
 	for i := 0; i < p.Total; i++ {
+		p.Title = "Downloading " + fakeInstallList[vki]
+		pterm.Success.Println("Downloading " + fakeInstallList[vki])
+		vki++
 		p.Increment()
-		time.Sleep(time.Millisecond * 5)
-		if i%200 == 0 {
-			p.Title = "Downloading " + fakeInstallList[vki]
-			vki++
-		}
+		time.Sleep(time.Millisecond * 500)
 	}
+
+	pterm.Success.Println("Finished downloading!")
+
+	time.Sleep(time.Second * 5)
 }
 
 ```
@@ -345,6 +348,7 @@ func main() {
 </details>
 
 <!-- examples:end -->
+
 
 
 
