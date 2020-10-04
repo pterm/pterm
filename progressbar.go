@@ -11,10 +11,18 @@ import (
 )
 
 var (
+	// DefaultProgressbar is the default progressbar.
 	DefaultProgressbar = Progressbar{
-		Total:         100,
-		LineCharacter: '█',
-		LastCharacter: '█',
+		Total:                     100,
+		LineCharacter:             "█",
+		LastCharacter:             "█",
+		ElapsedTimeRoundingFactor: time.Second,
+		BarStyle:                  Style{FgLightCyan},
+		TitleStyle:                Style{FgCyan},
+		ShowTitle:                 true,
+		ShowCount:                 true,
+		ShowPercentage:            true,
+		ShowElapsedTime:           true,
 	}
 )
 
@@ -27,25 +35,102 @@ var fade = []string{"FF3D3D", "FC3F3C", "F9423C", "F7453C", "F4483C", "F24B3C", 
 
 // Progressbar shows a progress animation in the terminal.
 type Progressbar struct {
-	Name          string
-	Total         int
-	Current       int
-	UpdateDelay   time.Duration
-	LineCharacter rune
-	LastCharacter rune
+	Title                     string
+	Total                     int
+	Current                   int
+	UpdateDelay               time.Duration
+	LineCharacter             string
+	LastCharacter             string
+	ElapsedTimeRoundingFactor time.Duration
+
+	ShowElapsedTime bool
+	ShowCount       bool
+	ShowTitle       bool
+	ShowPercentage  bool
+
+	TitleStyle Style
+	BarStyle   Style
 
 	IsActive bool
+
+	startedAt time.Time
 }
 
-// SetName sets the name of the progressbar.
-func (p Progressbar) SetName(name string) *Progressbar {
-	p.Name = name
+// SetTitle sets the name of the progressbar.
+func (p Progressbar) SetTitle(name string) *Progressbar {
+	p.Title = name
 	return &p
 }
 
 // SetTotal sets the total value of the progressbar.
 func (p Progressbar) SetTotal(total int) *Progressbar {
 	p.Total = total
+	return &p
+}
+
+// SetCurrent sets the current value of the progressbar.
+func (p Progressbar) SetCurrent(current int) *Progressbar {
+	p.Current = current
+	return &p
+}
+
+// SetUpdateDelay sets the update delay of the progressbar.
+func (p Progressbar) SetUpdateDelay(delay time.Duration) *Progressbar {
+	p.UpdateDelay = delay
+	return &p
+}
+
+// SetLineCharacter sets the line character of the progressbar.
+func (p Progressbar) SetLineCharacter(char string) *Progressbar {
+	p.LineCharacter = char
+	return &p
+}
+
+// SetLastCharacter sets the last character of the progressbar.
+func (p Progressbar) SetLastCharacter(char string) *Progressbar {
+	p.LastCharacter = char
+	return &p
+}
+
+// SetElapsedTimeRoundingFactor sets the rounding factor of the elapsed time.
+func (p Progressbar) SetElapsedTimeRoundingFactor(duration time.Duration) *Progressbar {
+	p.ElapsedTimeRoundingFactor = duration
+	return &p
+}
+
+// SetShowElapsedTime sets if the elapsed time should be displayed in the progressbar.
+func (p Progressbar) SetShowElapsedTime(show bool) *Progressbar {
+	p.ShowElapsedTime = show
+	return &p
+}
+
+// SetShowCount sets if the total and current count should be displayed in the progressbar.
+func (p Progressbar) SetShowCount(show bool) *Progressbar {
+	p.ShowCount = show
+	return &p
+}
+
+// SetShowTitle sets if the title should be displayed in the progressbar.
+func (p Progressbar) SetShowTitle(show bool) *Progressbar {
+	p.ShowTitle = show
+	return &p
+}
+
+// SetShowPercentage sets if the completed percentage should be displayed in the progressbar.
+func (p Progressbar) SetShowPercentage(show bool) *Progressbar {
+	p.ShowPercentage = show
+	return &p
+}
+
+// SetTitleStyle sets the style of the title.
+func (p Progressbar) SetTitleStyle(colors ...Color) *Progressbar {
+	p.TitleStyle = colors
+	return &p
+}
+
+// SetBarStyle sets the style of the bar.
+func (p Progressbar) SetBarStyle(colors ...Color) *Progressbar {
+	p.BarStyle = colors
 	return &p
 }
 
@@ -64,33 +149,46 @@ func (p *Progressbar) Add(count int) *Progressbar {
 // Start the progressbar.
 func (p Progressbar) Start() *Progressbar {
 	p.IsActive = true
+	p.startedAt = time.Now()
 
 	if p.UpdateDelay == 0 {
 		p.UpdateDelay = time.Millisecond * 100
 	}
 
-	if p.LineCharacter == 0 {
-		p.LineCharacter = '='
-	}
-
-	if p.LastCharacter == 0 {
-		p.LastCharacter = '='
-	}
-
 	go func() {
 		for p.IsActive {
-			width := GetTerminalWidth()
-			decoratorCurrentTotal := Sprintf("[%s%s%s]", Green(p.Current), Gray("/"), Red(p.Total))
-			currentPercent := int(internal.PercentageRound(float64(int64(p.Total)), float64(int64(p.Current)), float64(width)))
+			var before string
+			var after string
 
-			before := Cyan(p.Name) + " " + decoratorCurrentTotal + " "
-			after := " " + color.HEX(fade[int(0.63*float64(currentPercent))]).Sprint(strconv.Itoa(currentPercent)+"%")
+			width := GetTerminalWidth()
+			currentPercentage := int(internal.PercentageRound(float64(int64(p.Total)), float64(int64(p.Current)), float64(width)))
+
+			decoratorCount := Gray("[") + LightWhite(p.Current) + Gray("/") + LightWhite(p.Total) + Gray("]")
+			decoratorCurrentPercentage := color.HEX(fade[int(0.63*float64(currentPercentage))]).Sprint(strconv.Itoa(currentPercentage) + "%")
+
+			decoratorTitle := p.TitleStyle.Sprint(p.Title)
+
+			if p.ShowTitle {
+				before += decoratorTitle + " "
+			}
+			if p.ShowCount {
+				before += decoratorCount + " "
+			}
+
+			after += " "
+
+			if p.ShowPercentage {
+				after += decoratorCurrentPercentage + " "
+			}
+			if p.ShowElapsedTime {
+				after += "| " + p.parseElapsedTime()
+			}
 
 			barMaxLength := width - len(RemoveColors(before)) - len(RemoveColors(after)) - 1
 			barCurrentLength := (p.Current * barMaxLength) / p.Total
 			barFiller := strings.Repeat(" ", barMaxLength-barCurrentLength)
 
-			bar := LightCyan(strings.Repeat(string(p.LineCharacter), barCurrentLength)+string(p.LastCharacter)) + barFiller
+			bar := p.BarStyle.Sprint(strings.Repeat(p.LineCharacter, barCurrentLength)+p.LastCharacter) + barFiller
 			Printo(before + bar + after)
 
 			if p.Current == p.Total {
@@ -109,4 +207,14 @@ func (p Progressbar) Start() *Progressbar {
 func (p *Progressbar) Stop() *Progressbar {
 	p.IsActive = false
 	return p
+}
+
+// GetElapsedTime returns the elapsed time, since the progressbar was started.
+func (p *Progressbar) GetElapsedTime() time.Duration {
+	return time.Since(p.startedAt)
+}
+
+func (p *Progressbar) parseElapsedTime() string {
+	s := p.GetElapsedTime().Round(p.ElapsedTimeRoundingFactor).String()
+	return s
 }
