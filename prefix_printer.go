@@ -76,30 +76,30 @@ type PrefixPrinter struct {
 	Fatal        bool
 }
 
-// SetPrefix adds a custom prefix to the printer.
-func (p PrefixPrinter) SetPrefix(prefix Prefix) *PrefixPrinter {
+// WithPrefix adds a custom prefix to the printer.
+func (p PrefixPrinter) WithPrefix(prefix Prefix) *PrefixPrinter {
 	p.Prefix = prefix
 	return &p
 }
 
-// SetScope adds a scope to the Prefix.
-func (p PrefixPrinter) SetScope(scope string, colors ...Color) *PrefixPrinter {
+// WithScope adds a scope to the Prefix.
+func (p PrefixPrinter) WithScope(scope string, colors ...Color) *PrefixPrinter {
 	p.Scope.Text = scope
 	p.Scope.Style = colors
 	return &p
 }
 
-// SetMessageStyle adds a custom prefix to the printer.
-func (p PrefixPrinter) SetMessageStyle(colors ...Color) *PrefixPrinter {
+// WithMessageStyle adds a custom prefix to the printer.
+func (p PrefixPrinter) WithMessageStyle(colors ...Color) *PrefixPrinter {
 	p.MessageStyle = colors
 	return &p
 }
 
-// SetFatal sets if the printer should panic after printing.
+// WithFatal sets if the printer should panic after printing.
 // NOTE:
 // The printer will only panic if either PrefixPrinter.Println, PrefixPrinter.Print
 // or PrefixPrinter.Printf is called.
-func (p PrefixPrinter) SetFatal(fatal bool) *PrefixPrinter {
+func (p PrefixPrinter) WithFatal(fatal bool) *PrefixPrinter {
 	p.Fatal = fatal
 	return &p
 }

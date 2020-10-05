@@ -62,8 +62,8 @@ func (s Spinner) WithMessageStyle(colors ...Color) *Spinner {
 	return &s
 }
 
-// SetRemoveWhenDone removes the spinner after it is done.
-func (s Spinner) SetRemoveWhenDone(b bool) *Spinner {
+// WithRemoveWhenDone removes the spinner after it is done.
+func (s Spinner) WithRemoveWhenDone(b bool) *Spinner {
 	s.RemoveWhenDone = b
 	return &s
 }

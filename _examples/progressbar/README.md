@@ -18,7 +18,7 @@ var fakeInstallList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chrome
 var vki int
 
 func main() {
-	p := pterm.DefaultProgressbar.SetTotal(len(fakeInstallList)).SetTitle("Downloading stuff").Start()
+	p := pterm.DefaultProgressbar.WithTotal(len(fakeInstallList)).WithTitle("Downloading stuff").Start()
 
 	for i := 0; i < p.Total; i++ {
 		p.Title = "Downloading " + fakeInstallList[vki]

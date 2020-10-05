@@ -20,26 +20,26 @@ type HeaderPrinter struct {
 	FullWidth       bool
 }
 
-// SetTextStyle changes the text styling of the header.
-func (p HeaderPrinter) SetTextStyle(colors ...Color) *HeaderPrinter {
+// WithTextStyle changes the text styling of the header.
+func (p HeaderPrinter) WithTextStyle(colors ...Color) *HeaderPrinter {
 	p.TextStyle = colors
 	return &p
 }
 
-// SetBackgroundStyle changes the background styling of the header.
-func (p HeaderPrinter) SetBackgroundStyle(colors ...Color) *HeaderPrinter {
+// WithBackgroundStyle changes the background styling of the header.
+func (p HeaderPrinter) WithBackgroundStyle(colors ...Color) *HeaderPrinter {
 	p.BackgroundStyle = colors
 	return &p
 }
 
-// SetMargin changes the background styling of the header.
-func (p HeaderPrinter) SetMargin(margin int) *HeaderPrinter {
+// WithMargin changes the background styling of the header.
+func (p HeaderPrinter) WithMargin(margin int) *HeaderPrinter {
 	p.Margin = margin
 	return &p
 }
 
-// SetFullWidth enables full width on a HeaderPrinter.
-func (p HeaderPrinter) SetFullWidth() *HeaderPrinter {
+// WithFullWidth enables full width on a HeaderPrinter.
+func (p HeaderPrinter) WithFullWidth() *HeaderPrinter {
 	p.FullWidth = true
 	return &p
 }

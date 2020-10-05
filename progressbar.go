@@ -60,80 +60,80 @@ type Progressbar struct {
 	startedAt time.Time
 }
 
-// SetTitle sets the name of the progressbar.
-func (p Progressbar) SetTitle(name string) *Progressbar {
+// WithTitle sets the name of the progressbar.
+func (p Progressbar) WithTitle(name string) *Progressbar {
 	p.Title = name
 	return &p
 }
 
-// SetTotal sets the total value of the progressbar.
-func (p Progressbar) SetTotal(total int) *Progressbar {
+// WithTotal sets the total value of the progressbar.
+func (p Progressbar) WithTotal(total int) *Progressbar {
 	p.Total = total
 	return &p
 }
 
-// SetCurrent sets the current value of the progressbar.
-func (p Progressbar) SetCurrent(current int) *Progressbar {
+// WithCurrent sets the current value of the progressbar.
+func (p Progressbar) WithCurrent(current int) *Progressbar {
 	p.Current = current
 	return &p
 }
 
-// SetUpdateDelay sets the update delay of the progressbar.
-func (p Progressbar) SetUpdateDelay(delay time.Duration) *Progressbar {
+// WithUpdateDelay sets the update delay of the progressbar.
+func (p Progressbar) WithUpdateDelay(delay time.Duration) *Progressbar {
 	p.UpdateDelay = delay
 	return &p
 }
 
-// SetLineCharacter sets the line character of the progressbar.
-func (p Progressbar) SetLineCharacter(char string) *Progressbar {
+// WithLineCharacter sets the line character of the progressbar.
+func (p Progressbar) WithLineCharacter(char string) *Progressbar {
 	p.LineCharacter = char
 	return &p
 }
 
-// SetLastCharacter sets the last character of the progressbar.
-func (p Progressbar) SetLastCharacter(char string) *Progressbar {
+// WithLastCharacter sets the last character of the progressbar.
+func (p Progressbar) WithLastCharacter(char string) *Progressbar {
 	p.LastCharacter = char
 	return &p
 }
 
-// SetElapsedTimeRoundingFactor sets the rounding factor of the elapsed time.
-func (p Progressbar) SetElapsedTimeRoundingFactor(duration time.Duration) *Progressbar {
+// WithElapsedTimeRoundingFactor sets the rounding factor of the elapsed time.
+func (p Progressbar) WithElapsedTimeRoundingFactor(duration time.Duration) *Progressbar {
 	p.ElapsedTimeRoundingFactor = duration
 	return &p
 }
 
-// SetShowElapsedTime sets if the elapsed time should be displayed in the progressbar.
-func (p Progressbar) SetShowElapsedTime(show bool) *Progressbar {
+// WithShowElapsedTime sets if the elapsed time should be displayed in the progressbar.
+func (p Progressbar) WithShowElapsedTime(show bool) *Progressbar {
 	p.ShowElapsedTime = show
 	return &p
 }
 
-// SetShowCount sets if the total and current count should be displayed in the progressbar.
-func (p Progressbar) SetShowCount(show bool) *Progressbar {
+// WithShowCount sets if the total and current count should be displayed in the progressbar.
+func (p Progressbar) WithShowCount(show bool) *Progressbar {
 	p.ShowCount = show
 	return &p
 }
 
-// SetShowTitle sets if the title should be displayed in the progressbar.
-func (p Progressbar) SetShowTitle(show bool) *Progressbar {
+// WithShowTitle sets if the title should be displayed in the progressbar.
+func (p Progressbar) WithShowTitle(show bool) *Progressbar {
 	p.ShowTitle = show
 	return &p
 }
 
-// SetShowPercentage sets if the completed percentage should be displayed in the progressbar.
-func (p Progressbar) SetShowPercentage(show bool) *Progressbar {
+// WithShowPercentage sets if the completed percentage should be displayed in the progressbar.
+func (p Progressbar) WithShowPercentage(show bool) *Progressbar {
 	p.ShowPercentage = show
 	return &p
 }
 
-// SetTitleStyle sets the style of the title.
-func (p Progressbar) SetTitleStyle(colors ...Color) *Progressbar {
+// WithTitleStyle sets the style of the title.
+func (p Progressbar) WithTitleStyle(colors ...Color) *Progressbar {
 	p.TitleStyle = colors
 	return &p
 }
 
-// SetBarStyle sets the style of the bar.
-func (p Progressbar) SetBarStyle(colors ...Color) *Progressbar {
+// WithBarStyle sets the style of the bar.
+func (p Progressbar) WithBarStyle(colors ...Color) *Progressbar {
 	p.BarStyle = colors
 	return &p
 }

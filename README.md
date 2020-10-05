@@ -106,7 +106,7 @@ func main() {
 	// Useful when debugging.
 	const second = time.Second
 
-	pterm.Header.SetBackgroundStyle(pterm.BgLightBlue).SetMargin(10).Println("PTDP - PTerm Demo Program")
+	pterm.Header.WithBackgroundStyle(pterm.BgLightBlue).WithMargin(10).Println("PTDP - PTerm Demo Program")
 	pterm.Info.Println("This animation was generated with the latest version of PTerm!" +
 		"\nPTerm works on nearly every terminal and operating system." +
 		"\nIt's super easy to use!" +
@@ -116,7 +116,7 @@ func main() {
 		"\nThis demo was updated at: " + pterm.Green(time.Now().Format("02 Jan 2006 - 15:04:05 MST")))
 	pterm.Println()
 
-	introSpinner := pterm.DefaultSpinner.SetRemoveWhenDone(true).Start("Waiting for 15 seconds...")
+	introSpinner := pterm.DefaultSpinner.WithRemoveWhenDone(true).Start("Waiting for 15 seconds...")
 	time.Sleep(second)
 	for i := 14; i > 0; i-- {
 		if i > 1 {
@@ -130,7 +130,7 @@ func main() {
 
 	clear()
 
-	pterm.Header.SetBackgroundStyle(pterm.BgLightBlue).SetMargin(10).Println("Pseudo Application created with PTerm")
+	pterm.Header.WithBackgroundStyle(pterm.BgLightBlue).WithMargin(10).Println("Pseudo Application created with PTerm")
 
 	time.Sleep(second)
 
@@ -138,7 +138,7 @@ func main() {
 	time.Sleep(second * 4)
 	setupSpinner.Success()
 
-	p := pterm.DefaultProgressbar.SetTotal(len(pseudoProgramList)).SetTitle("Downloading stuff").Start()
+	p := pterm.DefaultProgressbar.WithTotal(len(pseudoProgramList)).WithTitle("Downloading stuff").Start()
 	for i := 0; i < p.Total; i++ {
 		p.Title = "Downloading " + pseudoProgramList[i]
 		pterm.Success.Println("Downloading " + pseudoProgramList[i])
@@ -150,7 +150,7 @@ func main() {
 	pterm.Println()
 	pterm.Info.Println("Installing pseudo programs")
 
-	p = pterm.DefaultProgressbar.SetTotal(len(pseudoProgramList)).SetTitle("Installing stuff").Start()
+	p = pterm.DefaultProgressbar.WithTotal(len(pseudoProgramList)).WithTitle("Installing stuff").Start()
 	for i := 0; i < p.Total; i++ {
 		p.Title = "Installing " + pseudoProgramList[i]
 		if pseudoProgramList[i] == "pseudo-minecraft" {
@@ -225,7 +225,7 @@ func main() {
 	<-tick // Wait
 
 	// Print a custom header
-	pterm.Header.SetFullWidth().SetTextStyle(pterm.FgDarkGray).SetBackgroundStyle(pterm.BgLightMagenta).Println("Hello, World!")
+	pterm.Header.WithFullWidth().WithTextStyle(pterm.FgDarkGray).WithBackgroundStyle(pterm.BgLightMagenta).Println("Hello, World!")
 
 	<-tick // Wait
 
@@ -290,7 +290,7 @@ var fakeInstallList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chrome
 var vki int
 
 func main() {
-	p := pterm.DefaultProgressbar.SetTotal(len(fakeInstallList)).SetTitle("Downloading stuff").Start()
+	p := pterm.DefaultProgressbar.WithTotal(len(fakeInstallList)).WithTitle("Downloading stuff").Start()
 
 	for i := 0; i < p.Total; i++ {
 		p.Title = "Downloading " + fakeInstallList[vki]

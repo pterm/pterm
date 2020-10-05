@@ -15,7 +15,7 @@ func main() {
 	<-tick // Wait
 
 	// Print a custom header
-	pterm.DefaultHeader.SetFullWidth().SetTextStyle(pterm.FgDarkGray).SetBackgroundStyle(pterm.BgLightMagenta).Println("Hello, World!")
+	pterm.DefaultHeader.WithFullWidth().WithTextStyle(pterm.FgDarkGray).WithBackgroundStyle(pterm.BgLightMagenta).Println("Hello, World!")
 
 	<-tick // Wait
 
