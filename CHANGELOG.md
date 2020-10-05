@@ -1,6 +1,12 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Features
+- add `BarFiller` to `Progressbar`
+
+
+<a name="v0.3.0"></a>
+## [v0.3.0] - 2020-10-05
 ### Bug Fixes
 - fix `WithXYZ(b ...bool)` to detect booleans correctly
 
@@ -12,6 +18,14 @@
 
 ### Documentation Changes
 - **demo:** add `Progressbar` to demo
+
+### BREAKING CHANGE
+
+remove `Version` constant
+
+rename `SetXXX` to `WithXXX`
+
+rename `Header` to `DefaultHeader`
 
 
 <a name="v0.2.4"></a>
@@ -205,7 +219,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.2.4...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.3.0...HEAD
+[v0.3.0]: https://github.com/pterm/pterm/compare/v0.2.4...v0.3.0
 [v0.2.4]: https://github.com/pterm/pterm/compare/v0.2.3...v0.2.4
 [v0.2.3]: https://github.com/pterm/pterm/compare/v0.2.2...v0.2.3
 [v0.2.2]: https://github.com/pterm/pterm/compare/v0.2.1...v0.2.2
