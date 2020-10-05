@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	fakeInstallList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chrome pseudo-outlook pseudo-explorer "+
+	pseudoProgramList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chrome pseudo-outlook pseudo-explorer "+
 		"pseudo-dops pseudo-git pseudo-vsc pseudo-intellij pseudo-minecraft pseudo-scoop pseudo-chocolatey", " ")
 )
 
@@ -50,12 +50,29 @@ func main() {
 	time.Sleep(second * 4)
 	setupSpinner.Success()
 
-	installSpinner := pterm.DefaultSpinner.Start("Installing...")
-	for _, s := range fakeInstallList {
-		installSpinner.UpdateText("Installing " + s + "...")
+	p := pterm.DefaultProgressbar.SetTotal(len(pseudoProgramList)).SetTitle("Downloading stuff").Start()
+	for i := 0; i < p.Total; i++ {
+		p.Title = "Downloading " + pseudoProgramList[i]
+		pterm.Success.Println("Downloading " + pseudoProgramList[i])
+		p.Increment()
+		time.Sleep(time.Millisecond * 500)
+	}
+	pterm.Success.Println("Downloaded all pseudo programs!")
+
+	pterm.Println()
+	pterm.Info.Println("Installing pseudo programs")
+
+	p = pterm.DefaultProgressbar.SetTotal(len(pseudoProgramList)).SetTitle("Installing stuff").Start()
+	for i := 0; i < p.Total; i++ {
+		p.Title = "Installing " + pseudoProgramList[i]
+		if pseudoProgramList[i] == "pseudo-minecraft" {
+			pterm.Warning.Println("Could not install pseudo-minecraft\nThe company policy forbids games.")
+		} else {
+			pterm.Success.Println("Installing " + pseudoProgramList[i])
+			p.Increment()
+		}
 		time.Sleep(second)
 	}
-	installSpinner.Success("Installed all pseudo programs!")
 }
 
 func clear() {
