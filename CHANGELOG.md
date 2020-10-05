@@ -2,6 +2,8 @@
 ## [Unreleased]
 
 ### Code Refactoring
+- remove `Version` constant
+- change `WithXXX(b bool)` to `WithXXX(b ...bool)`
 - change `SetXXX` to `WithXXX`
 - change `Header` to `DefaultHeader`
 
