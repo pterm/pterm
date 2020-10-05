@@ -20,7 +20,7 @@ func main() {
 		pterm.Success.Println("Downloading " + fakeInstallList[vki])
 		vki++
 		p.Increment()
-		time.Sleep(time.Millisecond * 500)
+		time.Sleep(time.Millisecond * 350)
 	}
 
 	pterm.Success.Println("Finished downloading!")

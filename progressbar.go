@@ -27,6 +27,7 @@ var (
 		ShowCount:                 true,
 		ShowPercentage:            true,
 		ShowElapsedTime:           true,
+		BarFiller:                 "░",
 	}
 )
 
@@ -46,6 +47,7 @@ type Progressbar struct {
 	LineCharacter             string
 	LastCharacter             string
 	ElapsedTimeRoundingFactor time.Duration
+	BarFiller                 string
 
 	ShowElapsedTime bool
 	ShowCount       bool
@@ -177,7 +179,7 @@ func (p *Progressbar) Add(count int) *Progressbar {
 
 	barMaxLength := width - len(RemoveColors(before)) - len(RemoveColors(after)) - 1
 	barCurrentLength := (p.Current * barMaxLength) / p.Total
-	barFiller := strings.Repeat(" ", barMaxLength-barCurrentLength)
+	barFiller := strings.Repeat(p.BarFiller, barMaxLength-barCurrentLength)
 
 	bar := p.BarStyle.Sprint(strings.Repeat(p.LineCharacter, barCurrentLength)+p.LastCharacter) + barFiller
 	Printo(before + bar + after)
