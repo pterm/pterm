@@ -1,8 +1,16 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Documentation Changes
+- **demo:** add `Progressbar` to demo
+
+
+<a name="v0.2.4"></a>
+## [v0.2.4] - 2020-10-04
 ### Bug Fixes
 - `Printf` works again
+
+### Documentation Changes
 
 
 <a name="v0.2.3"></a>
@@ -188,7 +196,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.2.3...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.2.4...HEAD
+[v0.2.4]: https://github.com/pterm/pterm/compare/v0.2.3...v0.2.4
 [v0.2.3]: https://github.com/pterm/pterm/compare/v0.2.2...v0.2.3
 [v0.2.2]: https://github.com/pterm/pterm/compare/v0.2.1...v0.2.2
 [v0.2.1]: https://github.com/pterm/pterm/compare/v0.2.0...v0.2.1
