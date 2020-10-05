@@ -1,6 +1,10 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Code Refactoring
+- change `SetXXX` to `WithXXX`
+- change `Header` to `DefaultHeader`
+
 ### Documentation Changes
 - **demo:** add `Progressbar` to demo
 

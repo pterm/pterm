@@ -106,7 +106,7 @@ func main() {
 	// Useful when debugging.
 	const second = time.Second
 
-	pterm.Header.WithBackgroundStyle(pterm.BgLightBlue).WithMargin(10).Println("PTDP - PTerm Demo Program")
+	pterm.DefaultHeader.WithBackgroundStyle(pterm.BgLightBlue).WithMargin(10).Println("PTDP - PTerm Demo Program")
 	pterm.Info.Println("This animation was generated with the latest version of PTerm!" +
 		"\nPTerm works on nearly every terminal and operating system." +
 		"\nIt's super easy to use!" +
@@ -130,7 +130,7 @@ func main() {
 
 	clear()
 
-	pterm.Header.WithBackgroundStyle(pterm.BgLightBlue).WithMargin(10).Println("Pseudo Application created with PTerm")
+	pterm.DefaultHeader.WithBackgroundStyle(pterm.BgLightBlue).WithMargin(10).Println("Pseudo Application created with PTerm")
 
 	time.Sleep(second)
 
@@ -220,12 +220,12 @@ func main() {
 	tick := time.Tick(time.Second * 2)
 
 	// Print with the default HeaderPrinter
-	pterm.Header.Println("This is the default header style")
+	pterm.DefaultHeader.Println("This is the default header style")
 
 	<-tick // Wait
 
 	// Print a custom header
-	pterm.Header.WithFullWidth().WithTextStyle(pterm.FgDarkGray).WithBackgroundStyle(pterm.BgLightMagenta).Println("Hello, World!")
+	pterm.DefaultHeader.WithFullWidth().WithTextStyle(pterm.FgDarkGray).WithBackgroundStyle(pterm.BgLightMagenta).Println("Hello, World!")
 
 	<-tick // Wait
 
@@ -235,7 +235,7 @@ func main() {
 		BackgroundStyle: pterm.Style{pterm.BgGreen},
 		Margin:          15,
 	}
-	// Use custom Header printer
+	// Use custom DefaultHeader printer
 	customHeaderPrinter.Println("This is a custom header.")
 }
 
@@ -365,6 +365,7 @@ func main() {
 </details>
 
 <!-- examples:end -->
+
 
 
 
