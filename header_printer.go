@@ -1,9 +1,9 @@
 package pterm
 
 var (
-	// Header returns the printer for a default header text.
-	// Defaults to LightWhite, Bold Text and a Gray Header background.
-	Header = HeaderPrinter{
+	// DefaultHeader returns the printer for a default header text.
+	// Defaults to LightWhite, Bold Text and a Gray DefaultHeader background.
+	DefaultHeader = HeaderPrinter{
 		TextStyle:       Style{FgLightWhite, Bold},
 		BackgroundStyle: Style{BgGray},
 		Margin:          5,
