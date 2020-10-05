@@ -3,6 +3,8 @@ package pterm
 import (
 	"os"
 	"strings"
+
+	"github.com/pterm/pterm/internal"
 )
 
 var (
@@ -100,10 +102,7 @@ func (p PrefixPrinter) WithMessageStyle(colors ...Color) *PrefixPrinter {
 // The printer will only panic if either PrefixPrinter.Println, PrefixPrinter.Print
 // or PrefixPrinter.Printf is called.
 func (p PrefixPrinter) WithFatal(b ...bool) *PrefixPrinter {
-	if len(b) == 0 {
-		b[0] = true
-	}
-	p.Fatal = b[0]
+	p.Fatal = internal.WithBoolean(b)
 	return &p
 }
 

@@ -1,5 +1,7 @@
 package pterm
 
+import "github.com/pterm/pterm/internal"
+
 var (
 	// DefaultHeader returns the printer for a default header text.
 	// Defaults to LightWhite, Bold Text and a Gray DefaultHeader background.
@@ -40,10 +42,7 @@ func (p HeaderPrinter) WithMargin(margin int) *HeaderPrinter {
 
 // WithFullWidth enables full width on a HeaderPrinter.
 func (p HeaderPrinter) WithFullWidth(b ...bool) *HeaderPrinter {
-	if len(b) == 0 {
-		b[0] = true
-	}
-	p.FullWidth = b[0]
+	p.FullWidth = internal.WithBoolean(b)
 	return &p
 }
 

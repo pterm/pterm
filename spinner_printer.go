@@ -2,6 +2,8 @@ package pterm
 
 import (
 	"time"
+
+	"github.com/pterm/pterm/internal"
 )
 
 // DefaultSpinner is the default spinner.
@@ -64,10 +66,7 @@ func (s Spinner) WithMessageStyle(colors ...Color) *Spinner {
 
 // WithRemoveWhenDone removes the spinner after it is done.
 func (s Spinner) WithRemoveWhenDone(b ...bool) *Spinner {
-	if len(b) == 0 {
-		b[0] = true
-	}
-	s.RemoveWhenDone = b[0]
+	s.RemoveWhenDone = internal.WithBoolean(b)
 	return &s
 }
 
