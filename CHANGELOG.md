@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Bug Fixes
+- fix `WithXYZ(b ...bool)` to detect booleans correctly
+
 ### Code Refactoring
 - remove `Version` constant
 - change `WithXXX(b bool)` to `WithXXX(b ...bool)`

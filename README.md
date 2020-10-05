@@ -171,37 +171,9 @@ func clear() {
 
 </details>
 
-### override-default-printer
+### header
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/override-default-printer/animation.svg)
-
-<details>
-
-<summary>SHOW SOURCE</summary>
-
-```go
-package main
-
-import "github.com/pterm/pterm"
-
-func main() {
-	pterm.Error.Println("This is the default Error")
-
-	pterm.Error.Prefix = pterm.Prefix{
-		Text:  "OVERRIDE",
-		Style: pterm.Style{pterm.BgCyan, pterm.FgRed},
-	}
-
-	pterm.Error.Println("This is the default Error after the prefix was overridden")
-}
-
-```
-
-</details>
-
-### print-header
-
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/print-header/animation.svg)
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/header/animation.svg)
 
 <details>
 
@@ -237,6 +209,34 @@ func main() {
 	}
 	// Use custom DefaultHeader printer
 	customHeaderPrinter.Println("This is a custom header.")
+}
+
+```
+
+</details>
+
+### override-default-printer
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/override-default-printer/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	pterm.Error.Println("This is the default Error")
+
+	pterm.Error.Prefix = pterm.Prefix{
+		Text:  "OVERRIDE",
+		Style: pterm.Style{pterm.BgCyan, pterm.FgRed},
+	}
+
+	pterm.Error.Println("This is the default Error after the prefix was overridden")
 }
 
 ```
@@ -365,6 +365,7 @@ func main() {
 </details>
 
 <!-- examples:end -->
+
 
 
 
