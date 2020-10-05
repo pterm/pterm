@@ -39,8 +39,11 @@ func (p HeaderPrinter) WithMargin(margin int) *HeaderPrinter {
 }
 
 // WithFullWidth enables full width on a HeaderPrinter.
-func (p HeaderPrinter) WithFullWidth() *HeaderPrinter {
-	p.FullWidth = true
+func (p HeaderPrinter) WithFullWidth(b ...bool) *HeaderPrinter {
+	if len(b) == 0 {
+		b[0] = true
+	}
+	p.FullWidth = b[0]
 	return &p
 }
 

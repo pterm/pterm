@@ -103,26 +103,38 @@ func (p Progressbar) WithElapsedTimeRoundingFactor(duration time.Duration) *Prog
 }
 
 // WithShowElapsedTime sets if the elapsed time should be displayed in the progressbar.
-func (p Progressbar) WithShowElapsedTime(show bool) *Progressbar {
-	p.ShowElapsedTime = show
+func (p Progressbar) WithShowElapsedTime(b ...bool) *Progressbar {
+	if len(b) == 0 {
+		b[0] = true
+	}
+	p.ShowElapsedTime = b[0]
 	return &p
 }
 
 // WithShowCount sets if the total and current count should be displayed in the progressbar.
-func (p Progressbar) WithShowCount(show bool) *Progressbar {
-	p.ShowCount = show
+func (p Progressbar) WithShowCount(b ...bool) *Progressbar {
+	if len(b) == 0 {
+		b[0] = true
+	}
+	p.ShowCount = b[0]
 	return &p
 }
 
 // WithShowTitle sets if the title should be displayed in the progressbar.
-func (p Progressbar) WithShowTitle(show bool) *Progressbar {
-	p.ShowTitle = show
+func (p Progressbar) WithShowTitle(b ...bool) *Progressbar {
+	if len(b) == 0 {
+		b[0] = true
+	}
+	p.ShowTitle = b[0]
 	return &p
 }
 
 // WithShowPercentage sets if the completed percentage should be displayed in the progressbar.
-func (p Progressbar) WithShowPercentage(show bool) *Progressbar {
-	p.ShowPercentage = show
+func (p Progressbar) WithShowPercentage(b ...bool) *Progressbar {
+	if len(b) == 0 {
+		b[0] = true
+	}
+	p.ShowPercentage = b[0]
 	return &p
 }
 

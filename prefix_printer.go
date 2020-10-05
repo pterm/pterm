@@ -99,8 +99,11 @@ func (p PrefixPrinter) WithMessageStyle(colors ...Color) *PrefixPrinter {
 // NOTE:
 // The printer will only panic if either PrefixPrinter.Println, PrefixPrinter.Print
 // or PrefixPrinter.Printf is called.
-func (p PrefixPrinter) WithFatal(fatal bool) *PrefixPrinter {
-	p.Fatal = fatal
+func (p PrefixPrinter) WithFatal(b ...bool) *PrefixPrinter {
+	if len(b) == 0 {
+		b[0] = true
+	}
+	p.Fatal = b[0]
 	return &p
 }
 
