@@ -6,6 +6,8 @@ import (
 	"os"
 
 	"github.com/gookit/color"
+
+	"github.com/pterm/pterm"
 )
 
 // CaptureStdout captures everything written to the terminal and returns it as a string.
@@ -13,7 +15,7 @@ func CaptureStdout(f func(w io.Writer)) string {
 	originalStdout := os.Stdout
 	r, w, _ := os.Pipe()
 	os.Stdout = w
-	color.SetOutput(w)
+	pterm.SetDefaultOutput(w)
 
 	f(w)
 
