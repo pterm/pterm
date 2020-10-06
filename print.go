@@ -7,6 +7,11 @@ import (
 	"github.com/gookit/color"
 )
 
+// SetDefaultOutput sets the default output of pterm.
+func SetDefaultOutput(w io.Writer) {
+	color.SetOutput(w)
+}
+
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
 func Sprint(a ...interface{}) string {
