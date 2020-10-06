@@ -83,7 +83,7 @@ func (p HeaderPrinter) Sprintln(a ...interface{}) string {
 
 // Sprintf formats according to a format specifier and returns the resulting string.
 func (p HeaderPrinter) Sprintf(format string, a ...interface{}) string {
-	panic("implement me")
+	return p.Sprint(Sprintf(format, a...))
 }
 
 // Print formats using the default formats for its operands and writes to standard output.
@@ -91,7 +91,7 @@ func (p HeaderPrinter) Sprintf(format string, a ...interface{}) string {
 // It returns the number of bytes written and any write error encountered.
 func (p HeaderPrinter) Print(a ...interface{}) GenericPrinter {
 	Print(p.Sprint(a...))
-	return p
+	return &p
 }
 
 // Println formats using the default formats for its operands and writes to standard output.
@@ -99,12 +99,12 @@ func (p HeaderPrinter) Print(a ...interface{}) GenericPrinter {
 // It returns the number of bytes written and any write error encountered.
 func (p HeaderPrinter) Println(a ...interface{}) GenericPrinter {
 	Println(p.Sprint(a...))
-	return p
+	return &p
 }
 
 // Printf formats according to a format specifier and writes to standard output.
 // It returns the number of bytes written and any write error encountered.
 func (p HeaderPrinter) Printf(format string, a ...interface{}) GenericPrinter {
-	p.Print(Sprintf(format, a...))
-	return p
+	Print(p.Sprintf(format, a...))
+	return &p
 }
