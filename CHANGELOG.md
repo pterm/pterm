@@ -1,8 +1,24 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Ci
+- only test pterm package
+- test all packages
+
+### Code Refactoring
+- move tests directly into `pterm` module
+
+### Documentation Changes
+
 ### Features
 - add `BarFiller` to `Progressbar`
+
+### Test
+- fix import cycle
+- change to inbuilt `SetDefaultOutput` option
+- add more benchmarks
+- add benchmarks
+- add tests to `GenericPrinter` and default print methods
 
 
 <a name="v0.3.0"></a>
