@@ -1,6 +1,18 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Bug Fixes
+- fix `Sprintf` function of `HeaderPrinter`
+
+### Features
+- add `SectionPrinter`
+
+### Test
+- add tests for `HeaderPrinter` and `SectionPrinter`
+
+
+<a name="v0.3.1"></a>
+## [v0.3.1] - 2020-10-06
 ### Ci
 - only test pterm package
 - test all packages
@@ -236,7 +248,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.3.1...HEAD
+[v0.3.1]: https://github.com/pterm/pterm/compare/v0.3.0...v0.3.1
 [v0.3.0]: https://github.com/pterm/pterm/compare/v0.2.4...v0.3.0
 [v0.2.4]: https://github.com/pterm/pterm/compare/v0.2.3...v0.2.4
 [v0.2.3]: https://github.com/pterm/pterm/compare/v0.2.2...v0.2.3
