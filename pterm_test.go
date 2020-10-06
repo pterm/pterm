@@ -2,6 +2,8 @@ package pterm
 
 import (
 	"io"
+	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -40,7 +42,7 @@ func TestSprinto(t *testing.T) {
 
 func TestPrint(t *testing.T) {
 	for _, randomString := range internal.RandomStrings {
-		out := internal.CaptureStdout(func(w io.Writer) {
+		out := captureStdout(func(w io.Writer) {
 			Print(randomString)
 		})
 		assert.Equal(t, randomString, out)
@@ -49,7 +51,7 @@ func TestPrint(t *testing.T) {
 
 func TestPrintln(t *testing.T) {
 	for _, randomString := range internal.RandomStrings {
-		out := internal.CaptureStdout(func(w io.Writer) {
+		out := captureStdout(func(w io.Writer) {
 			Println(randomString)
 		})
 		assert.Equal(t, randomString+"\n", out)
@@ -58,12 +60,12 @@ func TestPrintln(t *testing.T) {
 
 func TestPrintf(t *testing.T) {
 	for _, randomString := range internal.RandomStrings {
-		out := internal.CaptureStdout(func(w io.Writer) {
+		out := captureStdout(func(w io.Writer) {
 			Printf(randomString)
 		})
 		assert.Equal(t, randomString, out)
 	}
-	out := internal.CaptureStdout(func(w io.Writer) {
+	out := captureStdout(func(w io.Writer) {
 		Printf("Hello, %s!", "World")
 	})
 	assert.Equal(t, "Hello, World!", out)
@@ -71,7 +73,7 @@ func TestPrintf(t *testing.T) {
 
 func TestFprint(t *testing.T) {
 	for _, randomString := range internal.RandomStrings {
-		out := internal.CaptureStdout(func(w io.Writer) {
+		out := captureStdout(func(w io.Writer) {
 			Fprint(w, randomString)
 		})
 		assert.Equal(t, randomString, out)
@@ -80,7 +82,7 @@ func TestFprint(t *testing.T) {
 
 func TestFprintln(t *testing.T) {
 	for _, randomString := range internal.RandomStrings {
-		out := internal.CaptureStdout(func(w io.Writer) {
+		out := captureStdout(func(w io.Writer) {
 			Fprintln(w, randomString)
 		})
 		assert.Equal(t, randomString+"\n", out)
@@ -89,7 +91,7 @@ func TestFprintln(t *testing.T) {
 
 func TestPrinto(t *testing.T) {
 	for _, randomString := range internal.RandomStrings {
-		out := internal.CaptureStdout(func(w io.Writer) {
+		out := captureStdout(func(w io.Writer) {
 			Printo(randomString)
 		})
 		assert.Equal(t, "\r"+randomString, out)
@@ -98,7 +100,7 @@ func TestPrinto(t *testing.T) {
 
 func TestFprinto(t *testing.T) {
 	for _, randomString := range internal.RandomStrings {
-		out := internal.CaptureStdout(func(w io.Writer) {
+		out := captureStdout(func(w io.Writer) {
 			Fprinto(w, randomString)
 		})
 		assert.Equal(t, "\r"+randomString, out)
@@ -139,21 +141,21 @@ func TestGenericPrinter(t *testing.T) {
 			})
 
 			t.Run("TestGenericPrinter_Print", func(t *testing.T) {
-				out := internal.CaptureStdout(func(w io.Writer) {
+				out := captureStdout(func(w io.Writer) {
 					p.Print(str)
 				})
 				assert.NotEmpty(t, out, p)
 				assert.NotEmpty(t, RemoveColors(out), p)
 			})
 			t.Run("TestGenericPrinter_Println", func(t *testing.T) {
-				out := internal.CaptureStdout(func(w io.Writer) {
+				out := captureStdout(func(w io.Writer) {
 					p.Println(str)
 				})
 				assert.NotEmpty(t, out, p)
 				assert.NotEmpty(t, RemoveColors(out), p)
 			})
 			t.Run("TestGenericPrinter_Printf", func(t *testing.T) {
-				out := internal.CaptureStdout(func(w io.Writer) {
+				out := captureStdout(func(w io.Writer) {
 					p.Printf(str+"%s World", "Hello")
 				})
 				assert.NotEmpty(t, out, p)
@@ -161,4 +163,21 @@ func TestGenericPrinter(t *testing.T) {
 			})
 		}
 	}
+}
+
+// CaptureStdout captures everything written to the terminal and returns it as a string.
+func captureStdout(f func(w io.Writer)) string {
+	originalStdout := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+	SetDefaultOutput(w)
+
+	f(w)
+
+	w.Close()
+	out, _ := ioutil.ReadAll(r)
+	os.Stdout = originalStdout
+	SetDefaultOutput(originalStdout)
+
+	return string(out)
 }
