@@ -2,19 +2,76 @@ package pterm
 
 import (
 	"fmt"
+	"os"
+	"strconv"
 	"testing"
 )
 
 var benchmarkText = "This is a Benchmark Text"
 
-func BenchmarkFmt_Sprintln(b *testing.B) {
+func BenchmarkFmtPrint(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		fmt.Sprintln(benchmarkText)
+		_ = fmt.Sprint(benchmarkText)
 	}
 }
 
-func BenchmarkSprintln(b *testing.B) {
+func BenchmarkSprint(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		Sprintln(benchmarkText)
+		_ = Sprint(benchmarkText)
 	}
+}
+
+func BenchmarkSprintWithColor(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		_ = Sprint(Cyan(benchmarkText))
+	}
+}
+
+func BenchmarkSprintWithCustomStyle(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		_ = Sprint(NewStyle(FgCyan).Sprint(benchmarkText))
+	}
+}
+
+func BenchmarkPrefixPrinter(b *testing.B) {
+	proxyToDevNull()
+	printers := []PrefixPrinter{Info, Success, Warning, Error, *Fatal.WithFatal(false)}
+	for _, p := range printers {
+		b.Run(p.Prefix.Text, func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				p.Print(benchmarkText)
+			}
+		})
+	}
+}
+
+func BenchmarkHeader(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		DefaultHeader.Sprint(benchmarkText)
+	}
+}
+
+func BenchmarkProgressbar(b *testing.B) {
+	benchmarks := []struct {
+		total int
+	}{
+		{total: 10},
+		// {total: 100},
+		// {total: 1000},
+	}
+	for _, bm := range benchmarks {
+		proxyToDevNull()
+		b.Run("Total"+strconv.Itoa(bm.total), func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				p := DefaultProgressbar.WithTotal(bm.total).Start()
+				for i := 0; i < bm.total; i++ {
+					p.Increment()
+				}
+			}
+		})
+	}
+}
+
+func proxyToDevNull() {
+	SetDefaultOutput(os.NewFile(0, os.DevNull))
 }
