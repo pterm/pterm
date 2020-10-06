@@ -1,8 +1,20 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Documentation Changes
+- **examples:** rename progressbar to progressbar-default
+- **examples:** add default and custom `HeaderPrinter` examples
+
+### Style
+- format project
+
+
+<a name="v0.3.2"></a>
+## [v0.3.2] - 2020-10-06
 ### Bug Fixes
 - fix `Sprintf` function of `HeaderPrinter`
+
+### Documentation Changes
 
 ### Features
 - add `SectionPrinter`
@@ -248,7 +260,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.3.1...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.3.2...HEAD
+[v0.3.2]: https://github.com/pterm/pterm/compare/v0.3.1...v0.3.2
 [v0.3.1]: https://github.com/pterm/pterm/compare/v0.3.0...v0.3.1
 [v0.3.0]: https://github.com/pterm/pterm/compare/v0.2.4...v0.3.0
 [v0.2.4]: https://github.com/pterm/pterm/compare/v0.2.3...v0.2.4

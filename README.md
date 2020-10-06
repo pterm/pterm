@@ -171,9 +171,9 @@ func clear() {
 
 </details>
 
-### header
+### header-custom
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/header/animation.svg)
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/header-custom/animation.svg)
 
 <details>
 
@@ -182,33 +182,50 @@ func clear() {
 ```go
 package main
 
-import (
-	"time"
-
-	"github.com/pterm/pterm"
-)
+import "github.com/pterm/pterm"
 
 func main() {
-	tick := time.Tick(time.Second * 2)
+	// All available options: https://pkg.go.dev/github.com/pterm/pterm#HeaderPrinter
 
-	// Print with the default HeaderPrinter
-	pterm.DefaultHeader.Println("This is the default header style")
+	// Build on top of DefaultHeader
+	pterm.DefaultHeader. // Use DefaultHeader as base
+				WithMargin(15).                     // Set Margin to 15
+				WithBackgroundStyle(pterm.BgCyan).  // Set BackgroundStyle to Cyan
+				WithTextStyle(pterm.FgBlack).       // Set TextStyle to Black
+				Println("This is a custom header!") // Print header
+	// Instead of printing the header you can set it to a variable.
+	// You can then reuse your custom header.
 
-	<-tick // Wait
-
-	// Print a custom header
-	pterm.DefaultHeader.WithFullWidth().WithTextStyle(pterm.FgDarkGray).WithBackgroundStyle(pterm.BgLightMagenta).Println("Hello, World!")
-
-	<-tick // Wait
-
-	// Create a custom HeaderPrinter
-	customHeaderPrinter := pterm.HeaderPrinter{
-		TextStyle:       pterm.Style{pterm.FgLightRed},
-		BackgroundStyle: pterm.Style{pterm.BgGreen},
-		Margin:          15,
+	// Making a completely new HeaderPrinter
+	newHeader := pterm.HeaderPrinter{
+		TextStyle:       pterm.NewStyle(pterm.FgBlack),
+		BackgroundStyle: pterm.NewStyle(pterm.BgRed),
+		Margin:          20,
 	}
-	// Use custom DefaultHeader printer
-	customHeaderPrinter.Println("This is a custom header.")
+
+	newHeader.Println("This is a custom header!")
+
+}
+
+```
+
+</details>
+
+### header-default
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/header-default/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	pterm.DefaultHeader.Println("This is the default header!")
 }
 
 ```
@@ -266,9 +283,9 @@ func main() {
 
 </details>
 
-### progressbar
+### progressbar-default
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/progressbar/animation.svg)
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/progressbar-default/animation.svg)
 
 <details>
 
@@ -389,6 +406,7 @@ func main() {
 </details>
 
 <!-- examples:end -->
+
 
 
 
