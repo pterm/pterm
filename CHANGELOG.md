@@ -6,6 +6,7 @@
 - test all packages
 
 ### Code Refactoring
+- set default `BarFiller` to space
 - move tests directly into `pterm` module
 
 ### Documentation Changes
