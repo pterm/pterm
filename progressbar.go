@@ -27,7 +27,7 @@ var (
 		ShowCount:                 true,
 		ShowPercentage:            true,
 		ShowElapsedTime:           true,
-		BarFiller:                 "░",
+		BarFiller:                 " ",
 	}
 )
 
