@@ -7,6 +7,11 @@ import (
 	"github.com/gookit/color"
 )
 
+// SetDefaultOutput sets the default output of pterm.
+func SetDefaultOutput(w io.Writer) {
+	color.SetOutput(w)
+}
+
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
 func Sprint(a ...interface{}) string {
@@ -77,11 +82,6 @@ func Fprintln(writer io.Writer, a ...interface{}) {
 	Fprint(writer, Sprint(a...)+"\n")
 }
 
-// RemoveColors removes color codes from a string.
-func RemoveColors(a ...interface{}) string {
-	return color.ClearCode(Sprint(a...))
-}
-
 // Printo overrides the current line in a terminal.
 // If the current line is empty, the text will be printed like with pterm.Print.
 // To create a new line, which
@@ -96,6 +96,11 @@ func Printo(a ...interface{}) {
 // Fprinto prints Printo to a custom writer.
 func Fprinto(w io.Writer, a ...interface{}) {
 	Fprint(w, "\r", Sprint(a...))
+}
+
+// RemoveColors removes color codes from a string.
+func RemoveColors(a ...interface{}) string {
+	return color.ClearCode(Sprint(a...))
 }
 
 func clearLine() {
