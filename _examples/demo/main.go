@@ -18,7 +18,8 @@ func main() {
 	// Useful when debugging.
 	const second = time.Second
 
-	pterm.DefaultHeader.WithBackgroundStyle(pterm.BgLightBlue).WithMargin(10).Println("PTDP - PTerm Demo Program")
+	pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
+		"PTDP - PTerm Demo Program")
 	pterm.Info.Println("This animation was generated with the latest version of PTerm!" +
 		"\nPTerm works on nearly every terminal and operating system." +
 		"\nIt's super easy to use!" +
@@ -42,7 +43,8 @@ func main() {
 
 	clear()
 
-	pterm.DefaultHeader.WithBackgroundStyle(pterm.BgLightBlue).WithMargin(10).Println("Pseudo Application created with PTerm")
+	pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
+		"Pseudo Application created with PTerm")
 
 	time.Sleep(second)
 
