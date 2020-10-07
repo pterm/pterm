@@ -61,8 +61,7 @@ func main() {
 	}
 	pterm.Success.Println("Downloaded all pseudo programs!")
 
-	pterm.Println()
-	pterm.Info.Println("Installing pseudo programs")
+	pterm.DefaultSection.Println("Installing pseudo programs")
 
 	p = pterm.DefaultProgressbar.WithTotal(len(pseudoProgramList)).WithTitle("Installing stuff").Start()
 	for i := 0; i < p.Total; i++ {
