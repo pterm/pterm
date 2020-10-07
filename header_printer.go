@@ -22,15 +22,15 @@ type HeaderPrinter struct {
 	FullWidth       bool
 }
 
-// WithTextStyle changes the text styling of the header.
-func (p HeaderPrinter) WithTextStyle(colors ...Color) *HeaderPrinter {
-	p.TextStyle = colors
+// WithTextStyle returns a new HeaderPrinter with changed
+func (p HeaderPrinter) WithTextStyle(style Style) *HeaderPrinter {
+	p.TextStyle = style
 	return &p
 }
 
 // WithBackgroundStyle changes the background styling of the header.
-func (p HeaderPrinter) WithBackgroundStyle(colors ...Color) *HeaderPrinter {
-	p.BackgroundStyle = colors
+func (p HeaderPrinter) WithBackgroundStyle(style Style) *HeaderPrinter {
+	p.BackgroundStyle = style
 	return &p
 }
 
