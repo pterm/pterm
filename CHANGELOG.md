@@ -6,6 +6,7 @@
 - **intellij:** add config for commit body styling
 
 ### Code Refactoring
+- use `Style` instead of colors
 - refactor function parameters to fit expectation
 - rename `RemoveColors` to `RemoveColorFromString`
 
