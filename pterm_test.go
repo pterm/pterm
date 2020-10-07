@@ -165,6 +165,13 @@ func TestGenericPrinter(t *testing.T) {
 	}
 }
 
+func TestStyle_Add(t *testing.T) {
+	assert.Equal(t, Style{FgRed, BgGreen}, Style{FgRed}.Add(Style{BgGreen}))
+	assert.Equal(t, Style{FgRed, BgGreen, Bold}, Style{FgRed}.Add(Style{BgGreen}).Add(Style{Bold}))
+	assert.Equal(t, Style{FgRed, BgGreen, Bold}, Style{FgRed}.Add(Style{BgGreen, Bold}))
+	assert.Equal(t, Style{FgRed, BgGreen, Bold}, Style{FgRed}.Add(Style{BgGreen}, Style{Bold}))
+}
+
 // CaptureStdout captures everything written to the terminal and returns it as a string.
 func captureStdout(f func(w io.Writer)) string {
 	originalStdout := os.Stdout

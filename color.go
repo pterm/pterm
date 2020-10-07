@@ -181,6 +181,17 @@ func NewStyle(colors ...Color) Style {
 	return colors
 }
 
+// Add styles to the current Style.
+func (s Style) Add(styles ...Style) Style {
+	ret := s
+
+	for _, st := range styles {
+		ret = append(ret, st...)
+	}
+
+	return ret
+}
+
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
 // Input will be colored with the parent Style.
