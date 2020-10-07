@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Chore
+- **deps:** bump github.com/stretchr/testify from 1.3.0 to 1.6.1 ([#22](https://github.com/pterm/pterm/issues/22))
+
 ### Documentation Changes
 - **examples:** rename progressbar to progressbar-default
 - **examples:** add default and custom `HeaderPrinter` examples
