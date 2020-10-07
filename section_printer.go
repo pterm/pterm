@@ -14,6 +14,24 @@ type SectionPrinter struct {
 	TopPadding int
 }
 
+// WithStyle returns a new SectionPrinter with a specific style.
+func (p SectionPrinter) WithStyle(style Style) *SectionPrinter {
+	p.Style = style
+	return &p
+}
+
+// WithLevel returns a new SectionPrinter with a specific level.
+func (p SectionPrinter) WithLevel(level int) *SectionPrinter {
+	p.Level = level
+	return &p
+}
+
+// WithTopPadding returns a new SectionPrinter with a specific top padding.
+func (p SectionPrinter) WithTopPadding(level int) *SectionPrinter {
+	p.TopPadding = level
+	return &p
+}
+
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
 func (p SectionPrinter) Sprint(a ...interface{}) string {
