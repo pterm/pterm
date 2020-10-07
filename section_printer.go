@@ -7,7 +7,8 @@ var DefaultSection = SectionPrinter{
 	TopPadding: 1,
 }
 
-// SectionPrinter can print errors of the default Error type.
+// SectionPrinter prints a new section title.
+// It can be used to structure longer text, or different chapters of your program.
 type SectionPrinter struct {
 	Style      Style
 	Level      int
