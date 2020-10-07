@@ -3,6 +3,10 @@
 
 ### Chore
 - **deps:** bump github.com/stretchr/testify from 1.3.0 to 1.6.1 ([#22](https://github.com/pterm/pterm/issues/22))
+- **intellij:** add config for commit body styling
+
+### Code Refactoring
+- rename `RemoveColors` to `RemoveColorFromString`
 
 ### Documentation Changes
 - **examples:** rename progressbar to progressbar-default
@@ -10,6 +14,9 @@
 
 ### Style
 - format project
+
+### Test
+- ignore writer close errors in stdout capture
 
 
 <a name="v0.3.2"></a>
