@@ -1,4 +1,4 @@
-# progressbar-default
+# progressbar
 
 ![Animation](animation.svg)
 

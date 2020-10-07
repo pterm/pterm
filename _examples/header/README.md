@@ -1,4 +1,4 @@
-# header-default
+# header
 
 ![Animation](animation.svg)
 

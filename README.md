@@ -171,6 +171,27 @@ func clear() {
 
 </details>
 
+### header
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/header/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	pterm.DefaultHeader.Println("This is the default header!")
+}
+
+```
+
+</details>
+
 ### header-custom
 
 ![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/header-custom/animation.svg)
@@ -205,27 +226,6 @@ func main() {
 
 	newHeader.Println("This is a custom header!")
 
-}
-
-```
-
-</details>
-
-### header-default
-
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/header-default/animation.svg)
-
-<details>
-
-<summary>SHOW SOURCE</summary>
-
-```go
-package main
-
-import "github.com/pterm/pterm"
-
-func main() {
-	pterm.DefaultHeader.Println("This is the default header!")
 }
 
 ```
@@ -283,9 +283,9 @@ func main() {
 
 </details>
 
-### progressbar-default
+### progressbar
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/progressbar-default/animation.svg)
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/progressbar/animation.svg)
 
 <details>
 
@@ -326,9 +326,9 @@ func main() {
 
 </details>
 
-### section-default
+### section
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/section-default/animation.svg)
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/section/animation.svg)
 
 <details>
 
@@ -406,6 +406,7 @@ func main() {
 </details>
 
 <!-- examples:end -->
+
 
 
 

@@ -10,8 +10,13 @@
 - rename `RemoveColors` to `RemoveColorFromString`
 
 ### Documentation Changes
+- **examples:** restructure `examples` directory
 - **examples:** rename progressbar to progressbar-default
 - **examples:** add default and custom `HeaderPrinter` examples
+
+### Features
+- add `Add` to `Style`
+- add options shorthands to `SectionPrinter`
 
 ### Style
 - restyle color fade table

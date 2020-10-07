@@ -1,4 +1,4 @@
-# section-default
+# section
 
 ![Animation](animation.svg)
 
