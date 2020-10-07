@@ -161,6 +161,19 @@ func TestGenericPrinter(t *testing.T) {
 				assert.NotEmpty(t, out, p)
 				assert.NotEmpty(t, RemoveColorFromString(out), p)
 			})
+
+			t.Run("TestGenericPrinterPrintPrintsSprint", func(t *testing.T) {
+				out := captureStdout(func(w io.Writer) {
+					p.Print(str)
+				})
+				assert.Equal(t, p.Sprint(str), out)
+			})
+			t.Run("TestGenericPrinterPrintlnPrintsSprintln", func(t *testing.T) {
+				out := captureStdout(func(w io.Writer) {
+					p.Println(str)
+				})
+				assert.Equal(t, p.Sprintln(str), out)
+			})
 		}
 	}
 }

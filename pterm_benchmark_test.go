@@ -33,6 +33,13 @@ func BenchmarkSprintWithCustomStyle(b *testing.B) {
 	}
 }
 
+func BenchmarkSpinner(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		s := DefaultSpinner.WithDelay(0).Start()
+		s.Stop()
+	}
+}
+
 func BenchmarkPrefixPrinter(b *testing.B) {
 	proxyToDevNull()
 	printers := []PrefixPrinter{Info, Success, Warning, Error, *Fatal.WithFatal(false)}
