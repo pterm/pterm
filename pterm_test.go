@@ -174,7 +174,7 @@ func captureStdout(f func(w io.Writer)) string {
 
 	f(w)
 
-	w.Close()
+	_ = w.Close()
 	out, _ := ioutil.ReadAll(r)
 	os.Stdout = originalStdout
 	SetDefaultOutput(originalStdout)
