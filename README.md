@@ -106,7 +106,8 @@ func main() {
 	// Useful when debugging.
 	const second = time.Second
 
-	pterm.DefaultHeader.WithBackgroundStyle(pterm.BgLightBlue).WithMargin(10).Println("PTDP - PTerm Demo Program")
+	pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
+		"PTDP - PTerm Demo Program")
 	pterm.Info.Println("This animation was generated with the latest version of PTerm!" +
 		"\nPTerm works on nearly every terminal and operating system." +
 		"\nIt's super easy to use!" +
@@ -130,7 +131,8 @@ func main() {
 
 	clear()
 
-	pterm.DefaultHeader.WithBackgroundStyle(pterm.BgLightBlue).WithMargin(10).Println("Pseudo Application created with PTerm")
+	pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
+		"Pseudo Application created with PTerm")
 
 	time.Sleep(second)
 
@@ -210,10 +212,10 @@ func main() {
 
 	// Build on top of DefaultHeader
 	pterm.DefaultHeader. // Use DefaultHeader as base
-				WithMargin(15).                     // Set Margin to 15
-				WithBackgroundStyle(pterm.BgCyan).  // Set BackgroundStyle to Cyan
-				WithTextStyle(pterm.FgBlack).       // Set TextStyle to Black
-				Println("This is a custom header!") // Print header
+				WithMargin(15).                                    // Set Margin to 15
+				WithBackgroundStyle(pterm.NewStyle(pterm.BgCyan)). // Set BackgroundStyle to Cyan
+				WithTextStyle(pterm.NewStyle(pterm.FgBlack)).      // Set TextStyle to Black
+				Println("This is a custom header!")                // Print header
 	// Instead of printing the header you can set it to a variable.
 	// You can then reuse your custom header.
 
@@ -406,6 +408,7 @@ func main() {
 </details>
 
 <!-- examples:end -->
+
 
 
 

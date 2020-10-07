@@ -1,6 +1,12 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Documentation Changes
+- **examples:** fix examples
+
+
+<a name="v0.4.0"></a>
+## [v0.4.0] - 2020-10-07
 ### Chore
 - **deps:** bump github.com/stretchr/testify from 1.3.0 to 1.6.1 ([#22](https://github.com/pterm/pterm/issues/22))
 - **intellij:** add config for commit body styling
@@ -25,6 +31,15 @@
 
 ### Test
 - ignore writer close errors in stdout capture
+
+### BREAKING CHANGE
+
+use `Style` instead of colors
+
+Refactor function parameters to fit expectation.
+Affects: `WithStyle(colors -> style)`,  `WithScope(string, colors -> scope)`
+
+rename `RemoveColors` to `RemoveColorFromString`
 
 
 <a name="v0.3.2"></a>
@@ -278,7 +293,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.3.2...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.4.0...HEAD
+[v0.4.0]: https://github.com/pterm/pterm/compare/v0.3.2...v0.4.0
 [v0.3.2]: https://github.com/pterm/pterm/compare/v0.3.1...v0.3.2
 [v0.3.1]: https://github.com/pterm/pterm/compare/v0.3.0...v0.3.1
 [v0.3.0]: https://github.com/pterm/pterm/compare/v0.2.4...v0.3.0
