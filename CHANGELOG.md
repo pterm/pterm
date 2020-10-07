@@ -1,8 +1,15 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Documentation Changes
+- **demo:** add `SectionPrinter` to demo ([#25](https://github.com/pterm/pterm/issues/25))
+
 ### Features
 - add `ParagraphPrinter` ([#24](https://github.com/pterm/pterm/issues/24))
+
+### Test
+- add `Print` equals `Sprint` tests for `GenericPrinter`
+- add `Spinner` benchmarks
 
 
 <a name="v0.4.1"></a>
