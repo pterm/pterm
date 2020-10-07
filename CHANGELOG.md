@@ -1,6 +1,12 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Features
+- add `ParagraphPrinter` ([#24](https://github.com/pterm/pterm/issues/24))
+
+
+<a name="v0.4.1"></a>
+## [v0.4.1] - 2020-10-07
 ### Documentation Changes
 - **examples:** fix examples
 
@@ -293,7 +299,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.4.1...HEAD
+[v0.4.1]: https://github.com/pterm/pterm/compare/v0.4.0...v0.4.1
 [v0.4.0]: https://github.com/pterm/pterm/compare/v0.3.2...v0.4.0
 [v0.3.2]: https://github.com/pterm/pterm/compare/v0.3.1...v0.3.2
 [v0.3.1]: https://github.com/pterm/pterm/compare/v0.3.0...v0.3.1
