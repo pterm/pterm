@@ -7,7 +7,6 @@
 ```go
 package pterm
 
-// TemplatePrinter can print errors of the default Error type.
 type TemplatePrinter struct{
 	// TODO: Add printer settings here
 }
