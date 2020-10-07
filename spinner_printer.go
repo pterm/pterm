@@ -47,8 +47,8 @@ func (s Spinner) WithSequence(sequence ...string) *Spinner {
 }
 
 // WithStyle adds a style to the spinner.
-func (s Spinner) WithStyle(colors ...Color) *Spinner {
-	s.Style = colors
+func (s Spinner) WithStyle(style Style) *Spinner {
+	s.Style = style
 	return &s
 }
 
@@ -59,8 +59,8 @@ func (s Spinner) WithDelay(delay time.Duration) *Spinner {
 }
 
 // WithMessageStyle adds a style to the spinner message.
-func (s Spinner) WithMessageStyle(colors ...Color) *Spinner {
-	s.MessageStyle = colors
+func (s Spinner) WithMessageStyle(style Style) *Spinner {
+	s.MessageStyle = style
 	return &s
 }
 

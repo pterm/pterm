@@ -131,14 +131,14 @@ func (p Progressbar) WithShowPercentage(b ...bool) *Progressbar {
 }
 
 // WithTitleStyle sets the style of the title.
-func (p Progressbar) WithTitleStyle(colors ...Color) *Progressbar {
-	p.TitleStyle = colors
+func (p Progressbar) WithTitleStyle(style Style) *Progressbar {
+	p.TitleStyle = style
 	return &p
 }
 
 // WithBarStyle sets the style of the bar.
-func (p Progressbar) WithBarStyle(colors ...Color) *Progressbar {
-	p.BarStyle = colors
+func (p Progressbar) WithBarStyle(style Style) *Progressbar {
+	p.BarStyle = style
 	return &p
 }
 

@@ -85,15 +85,14 @@ func (p PrefixPrinter) WithPrefix(prefix Prefix) *PrefixPrinter {
 }
 
 // WithScope adds a scope to the Prefix.
-func (p PrefixPrinter) WithScope(scope string, colors ...Color) *PrefixPrinter {
-	p.Scope.Text = scope
-	p.Scope.Style = colors
+func (p PrefixPrinter) WithScope(scope Scope) *PrefixPrinter {
+	p.Scope = scope
 	return &p
 }
 
 // WithMessageStyle adds a custom prefix to the printer.
-func (p PrefixPrinter) WithMessageStyle(colors ...Color) *PrefixPrinter {
-	p.MessageStyle = colors
+func (p PrefixPrinter) WithMessageStyle(style Style) *PrefixPrinter {
+	p.MessageStyle = style
 	return &p
 }
 
