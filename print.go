@@ -98,8 +98,8 @@ func Fprinto(w io.Writer, a ...interface{}) {
 	Fprint(w, "\r", Sprint(a...))
 }
 
-// RemoveColors removes color codes from a string.
-func RemoveColors(a ...interface{}) string {
+// RemoveColorFromString removes color codes from a string.
+func RemoveColorFromString(a ...interface{}) string {
 	return color.ClearCode(Sprint(a...))
 }
 

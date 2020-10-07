@@ -179,7 +179,7 @@ func (p *Progressbar) Add(count int) *Progressbar {
 		after += "| " + p.parseElapsedTime()
 	}
 
-	barMaxLength := width - len(RemoveColors(before)) - len(RemoveColors(after)) - 1
+	barMaxLength := width - len(RemoveColorFromString(before)) - len(RemoveColorFromString(after)) - 1
 	barCurrentLength := (p.Current * barMaxLength) / p.Total
 	barFiller := strings.Repeat(p.BarFiller, barMaxLength-barCurrentLength)
 

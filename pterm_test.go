@@ -110,7 +110,7 @@ func TestFprinto(t *testing.T) {
 func TestRemoveColors(t *testing.T) {
 	for _, randomString := range internal.RandomStrings {
 		testString := Cyan(randomString)
-		assert.Equal(t, randomString, RemoveColors(testString))
+		assert.Equal(t, randomString, RemoveColorFromString(testString))
 	}
 }
 
@@ -127,17 +127,17 @@ func TestGenericPrinter(t *testing.T) {
 			t.Run("TestGenericPrinter_Sprint", func(t *testing.T) {
 				out := p.Sprint(str)
 				assert.NotEmpty(t, out, p)
-				assert.NotEmpty(t, RemoveColors(out), p)
+				assert.NotEmpty(t, RemoveColorFromString(out), p)
 			})
 			t.Run("TestGenericPrinter_Sprintln", func(t *testing.T) {
 				out := p.Sprintln(str)
 				assert.NotEmpty(t, out, p)
-				assert.NotEmpty(t, RemoveColors(out), p)
+				assert.NotEmpty(t, RemoveColorFromString(out), p)
 			})
 			t.Run("TestGenericPrinter_Sprintf", func(t *testing.T) {
 				out := p.Sprintf(str+"%s World", "Hello")
 				assert.NotEmpty(t, out, p)
-				assert.NotEmpty(t, RemoveColors(out), p)
+				assert.NotEmpty(t, RemoveColorFromString(out), p)
 			})
 
 			t.Run("TestGenericPrinter_Print", func(t *testing.T) {
@@ -145,21 +145,21 @@ func TestGenericPrinter(t *testing.T) {
 					p.Print(str)
 				})
 				assert.NotEmpty(t, out, p)
-				assert.NotEmpty(t, RemoveColors(out), p)
+				assert.NotEmpty(t, RemoveColorFromString(out), p)
 			})
 			t.Run("TestGenericPrinter_Println", func(t *testing.T) {
 				out := captureStdout(func(w io.Writer) {
 					p.Println(str)
 				})
 				assert.NotEmpty(t, out, p)
-				assert.NotEmpty(t, RemoveColors(out), p)
+				assert.NotEmpty(t, RemoveColorFromString(out), p)
 			})
 			t.Run("TestGenericPrinter_Printf", func(t *testing.T) {
 				out := captureStdout(func(w io.Writer) {
 					p.Printf(str+"%s World", "Hello")
 				})
 				assert.NotEmpty(t, out, p)
-				assert.NotEmpty(t, RemoveColors(out), p)
+				assert.NotEmpty(t, RemoveColorFromString(out), p)
 			})
 		}
 	}
