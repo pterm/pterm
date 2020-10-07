@@ -6,6 +6,7 @@
 - **intellij:** add config for commit body styling
 
 ### Code Refactoring
+- refactor function parameters to fit expectation
 - rename `RemoveColors` to `RemoveColorFromString`
 
 ### Documentation Changes
@@ -13,6 +14,7 @@
 - **examples:** add default and custom `HeaderPrinter` examples
 
 ### Style
+- restyle color fade table
 - format project
 
 ### Test
