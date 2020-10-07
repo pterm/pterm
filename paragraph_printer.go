@@ -16,6 +16,12 @@ type ParagraphPrinter struct {
 	MaxWidth int
 }
 
+// WithMaxWidth returns a new ParagraphPrinter with a specific MaxWidth
+func (p ParagraphPrinter) WithMaxWidth(width int) *ParagraphPrinter {
+	p.MaxWidth = width
+	return &p
+}
+
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
 func (p ParagraphPrinter) Sprint(a ...interface{}) string {
