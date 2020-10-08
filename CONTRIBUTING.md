@@ -50,5 +50,4 @@ func (p TemplatePrinter) Printf(format string, a ...interface{}) GenericPrinter 
 	Print(p.Sprintf(format, a...))
 	return &p
 }
-
 ```
