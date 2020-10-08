@@ -19,16 +19,16 @@ var DefaultSpinner = Spinner{
 
 // Spinner is a loading animation, which can be used if the progress is unknown.
 // It's an animation loop, which can have a text and supports throwing errors or warnings.
-// A GenericPrinter is used to display all outputs, after the spinner is done.
+// A TextPrinter is used to display all outputs, after the spinner is done.
 type Spinner struct {
 	Text           string
 	Sequence       []string
 	Style          Style
 	Delay          time.Duration
 	MessageStyle   Style
-	SuccessPrinter GenericPrinter
-	FailPrinter    GenericPrinter
-	WarningPrinter GenericPrinter
+	SuccessPrinter TextPrinter
+	FailPrinter    TextPrinter
+	WarningPrinter TextPrinter
 	RemoveWhenDone bool
 
 	IsActive bool

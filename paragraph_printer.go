@@ -58,7 +58,7 @@ func (p ParagraphPrinter) Sprintf(format string, a ...interface{}) string {
 // Print formats using the default formats for its operands and writes to standard output.
 // Spaces are added between operands when neither is a string.
 // It returns the number of bytes written and any write error encountered.
-func (p ParagraphPrinter) Print(a ...interface{}) GenericPrinter {
+func (p ParagraphPrinter) Print(a ...interface{}) TextPrinter {
 	Print(p.Sprint(a...))
 	return &p
 }
@@ -66,14 +66,14 @@ func (p ParagraphPrinter) Print(a ...interface{}) GenericPrinter {
 // Println formats using the default formats for its operands and writes to standard output.
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
-func (p ParagraphPrinter) Println(a ...interface{}) GenericPrinter {
+func (p ParagraphPrinter) Println(a ...interface{}) TextPrinter {
 	Println(p.Sprint(a...))
 	return &p
 }
 
 // Printf formats according to a format specifier and writes to standard output.
 // It returns the number of bytes written and any write error encountered.
-func (p ParagraphPrinter) Printf(format string, a ...interface{}) GenericPrinter {
+func (p ParagraphPrinter) Printf(format string, a ...interface{}) TextPrinter {
 	Print(p.Sprintf(format, a...))
 	return &p
 }
