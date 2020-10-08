@@ -2,17 +2,19 @@ package pterm
 
 // DefaultSection is the default section printer.
 var DefaultSection = SectionPrinter{
-	Style:      NewStyle(FgLightYellow, Underscore),
-	Level:      1,
-	TopPadding: 1,
+	Style:         NewStyle(FgLightYellow, Underscore),
+	Level:         1,
+	TopPadding:    1,
+	BottomPadding: 1,
 }
 
 // SectionPrinter prints a new section title.
 // It can be used to structure longer text, or different chapters of your program.
 type SectionPrinter struct {
-	Style      Style
-	Level      int
-	TopPadding int
+	Style         Style
+	Level         int
+	TopPadding    int
+	BottomPadding int
 }
 
 // WithStyle returns a new SectionPrinter with a specific style.
@@ -33,6 +35,12 @@ func (p SectionPrinter) WithTopPadding(level int) *SectionPrinter {
 	return &p
 }
 
+// WithBottomPadding returns a new SectionPrinter with a specific top padding.
+func (p SectionPrinter) WithBottomPadding(level int) *SectionPrinter {
+	p.BottomPadding = level
+	return &p
+}
+
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
 func (p SectionPrinter) Sprint(a ...interface{}) string {
@@ -43,6 +51,10 @@ func (p SectionPrinter) Sprint(a ...interface{}) string {
 	}
 
 	ret += p.Style.Sprint(a...)
+
+	for i := 0; i < p.BottomPadding; i++ {
+		ret += "\n"
+	}
 
 	return ret
 }
