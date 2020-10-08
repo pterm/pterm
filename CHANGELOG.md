@@ -1,10 +1,19 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Code Refactoring
+- rename spinner_printer.go to spinner.go
+- rename `GenericPrinter` to `TextPrinter`
+
 ### Documentation Changes
 - **demo:** add `SectionPrinter` to demo ([#25](https://github.com/pterm/pterm/issues/25))
 
 ### Features
+- implement `LivePrinter` in `Spinner`
+- add `BottomPadding` to `SectionPrinter`
+- add `RenderPrinter` interface
+- implement `LivePrinter` in `Progressbar`
+- add `LivePrinter` interface
 - add `TablePrinter` ([#27](https://github.com/pterm/pterm/issues/27))
 - add `ParagraphPrinter` ([#24](https://github.com/pterm/pterm/issues/24))
 
