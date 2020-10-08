@@ -77,7 +77,7 @@ func (s *Spinner) UpdateText(text string) {
 	s.Text = text
 }
 
-// Start starts the spinner.
+// Start the spinner.
 func (s Spinner) Start(text ...interface{}) *Spinner {
 	s.IsActive = true
 
@@ -96,6 +96,34 @@ func (s Spinner) Start(text ...interface{}) *Spinner {
 		}
 	}()
 	return &s
+}
+
+// Stop terminates the Spinner immediately.
+// The Spinner will not resolve into anything.
+func (s *Spinner) Stop() {
+	s.IsActive = false
+	if s.RemoveWhenDone {
+		clearLine()
+		Printo()
+	} else {
+		Println()
+	}
+}
+
+// GenericStart runs Start, but returns a LivePrinter.
+// This is used for the interface LivePrinter.
+// You most likely want to use Start instead of this in your program.
+func (s Spinner) GenericStart() LivePrinter {
+	s.Start()
+	return &s
+}
+
+// GenericStop runs Stop, but returns a LivePrinter.
+// This is used for the interface LivePrinter.
+// You most likely want to use Stop instead of this in your program.
+func (s *Spinner) GenericStop() LivePrinter {
+	s.Stop()
+	return s
 }
 
 // Success displays the success printer.
@@ -129,16 +157,4 @@ func (s *Spinner) Warning(message ...interface{}) {
 	clearLine()
 	Printo(s.WarningPrinter.Sprint(message...))
 	s.Stop()
-}
-
-// Stop terminates the Spinner immediately.
-// The Spinner will not resolve into anything.
-func (s *Spinner) Stop() {
-	s.IsActive = false
-	if s.RemoveWhenDone {
-		clearLine()
-		Printo()
-	} else {
-		Println()
-	}
 }
