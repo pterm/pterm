@@ -464,7 +464,34 @@ func main() {
 
 </details>
 
+### table
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/table/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	pterm.DefaultTable.WithHasHeader().WithData(pterm.TableData{
+		{"Firstname", "Lastname", "Email"},
+		{"Paul", "Dean", "nisi.dictum.augue@velitAliquam.co.uk"},
+		{"Callie", "Mckay", "egestas.nunc.sed@est.com"},
+		{"Libby", "Camacho", "aliquet.lobortis@semper.com"},
+	}).Render()
+}
+
+```
+
+</details>
+
 <!-- examples:end -->
+
 
 
 
