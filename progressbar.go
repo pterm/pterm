@@ -220,6 +220,20 @@ func (p *Progressbar) Stop() *Progressbar {
 	return p
 }
 
+// GenericStart runs Start, but returns a LivePrinter.
+// This is used for the interface LivePrinter.
+// You most likely want to use Start instead of this in your program.
+func (p Progressbar) GenericStart() LivePrinter {
+	return p.Start()
+}
+
+// GenericStop runs Stop, but returns a LivePrinter.
+// This is used for the interface LivePrinter.
+// You most likely want to use Stop instead of this in your program.
+func (p Progressbar) GenericStop() LivePrinter {
+	return p.Stop()
+}
+
 // GetElapsedTime returns the elapsed time, since the progressbar was started.
 func (p *Progressbar) GetElapsedTime() time.Duration {
 	return time.Since(p.startedAt)
