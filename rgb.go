@@ -11,6 +11,11 @@ type RGB struct {
 	B uint8
 }
 
+// GetValues returns the RGB values separately.
+func (rgb RGB) GetValues() (r, g, b uint8) {
+	return rgb.R, rgb.G, rgb.B
+}
+
 // NewRGB returns a new RGB.
 func NewRGB(r, g, b uint8) RGB {
 	return RGB{R: r, G: g, B: b}
