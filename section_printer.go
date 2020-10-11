@@ -2,7 +2,7 @@ package pterm
 
 // DefaultSection is the default section printer.
 var DefaultSection = SectionPrinter{
-	Style:         NewStyle(FgLightYellow, Underscore),
+	Style:         NewStyle(Bold, FgYellow),
 	Level:         1,
 	TopPadding:    1,
 	BottomPadding: 1,
