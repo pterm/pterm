@@ -7,6 +7,7 @@
 ### Documentation Changes
 
 ### Features
+- add color fade example ([#38](https://github.com/pterm/pterm/issues/38))
 - implement `TextPrinter` into `RGB`
 - implement color fade to `Progressbar` ([#37](https://github.com/pterm/pterm/issues/37))
 - add color fade function and `RBG` ([#34](https://github.com/pterm/pterm/issues/34))

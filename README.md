@@ -319,6 +319,33 @@ func main() {
 
 </details>
 
+### print-color-fade
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/print-color-fade/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	from := pterm.NewRGB(255, 0, 0)
+	to := pterm.NewRGB(0, 255, 0)
+	for i := 0; i < pterm.GetTerminalHeight(); i++ {
+		from.Fade(0, float32(pterm.GetTerminalHeight()), float32(i), to).Println("Hello, World!")
+	}
+}
+
+```
+
+</details>
+
 ### print-color-rgb
 
 ![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/print-color-rgb/animation.svg)
@@ -514,6 +541,7 @@ func main() {
 </details>
 
 <!-- examples:end -->
+
 
 
 
