@@ -1,6 +1,15 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Chore
+- **deps:** update deps
+
+### Features
+- change `Section` style
+
+
+<a name="v0.5.0"></a>
+## [v0.5.0] - 2020-10-08
 ### Code Refactoring
 - rename spinner_printer.go to spinner.go
 - rename `GenericPrinter` to `TextPrinter`
@@ -20,6 +29,10 @@
 ### Test
 - add `Print` equals `Sprint` tests for `GenericPrinter`
 - add `Spinner` benchmarks
+
+### BREAKING CHANGE
+
+The `GenericPrinter` is now called `TextPrinter`.
 
 
 <a name="v0.4.1"></a>
@@ -316,7 +329,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.4.1...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.5.0...HEAD
+[v0.5.0]: https://github.com/pterm/pterm/compare/v0.4.1...v0.5.0
 [v0.4.1]: https://github.com/pterm/pterm/compare/v0.4.0...v0.4.1
 [v0.4.0]: https://github.com/pterm/pterm/compare/v0.3.2...v0.4.0
 [v0.3.2]: https://github.com/pterm/pterm/compare/v0.3.1...v0.3.2
