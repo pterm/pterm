@@ -4,7 +4,10 @@
 ### Chore
 - **deps:** update deps
 
+### Documentation Changes
+
 ### Features
+- add color fade function and `RBG` ([#34](https://github.com/pterm/pterm/issues/34))
 - change `Section` style
 
 
