@@ -1,6 +1,7 @@
 package pterm
 
 import (
+	"encoding/csv"
 	"strings"
 
 	"github.com/pterm/pterm/internal"
@@ -59,6 +60,15 @@ func (t Table) WithSeparatorStyle(style Style) *Table {
 // WithData returns a new Table with specific Data.
 func (t Table) WithData(data [][]string) *Table {
 	t.Data = data
+	return &t
+}
+
+// WithCSV return a new Table with specified Data extracted from CSV.
+func (t Table) WithCSV(reader *csv.Reader) *Table {
+	if records, err := reader.ReadAll(); err == nil {
+		t.Data = records
+	}
+
 	return &t
 }
 
