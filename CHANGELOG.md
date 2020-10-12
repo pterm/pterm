@@ -15,6 +15,7 @@
 - **readme:** replace emoji strings with actual emojis
 
 ### Features
+- add HEX to RGB converter in `RGB` ([#41](https://github.com/pterm/pterm/issues/41))
 - add theme to generated animations
 - add color fade example ([#38](https://github.com/pterm/pterm/issues/38))
 - implement `TextPrinter` into `RGB`
