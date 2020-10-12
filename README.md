@@ -1,6 +1,6 @@
 <!--suppress HtmlDeprecatedAttribute -->
 
-<h1 align="center">:computer: PTerm | Pretty Terminal</h1>
+<h1 align="center">💻 PTerm | Pretty Terminal</h1>
 <p align="center">A golang module to print pretty text</p>
 
 <p align="center">
@@ -31,11 +31,17 @@
 <img src="https://img.shields.io/badge/platform-windows%20%7C%20macos%20%7C%20linux-informational?style=for-the-badge" alt="Downloads">
 </a>
 
-<br/>
+<hr/>
 
-<a href="https://pkg.go.dev/github.com/pterm/pterm">
-<img src="https://pkg.go.dev/badge/github.com/pterm/pterm" alt="PTerm Documentation"/>
-</a>
+<strong><a href="#package-installation">Installation</a></strong>
+|
+<strong><a href="#pencil-documentation">Documentation</a></strong>
+|
+<strong><a href="#test_tube-examples">Examples</a></strong>
+|
+<strong><a href="./CONTRIBUTING.md">Contributing</a></strong>
+
+<hr/>
 
 <a href="https://github.com/pterm/pterm/">
 <img src="https://raw.githubusercontent.com/pterm/pterm/master/_examples/demo/animation.svg" alt="Dops">
@@ -45,13 +51,13 @@
 
 ---
 
-## :warning: NOTICE
+## ⚠  NOTICE
 
 PTerm is currently under development. It is very likely that not all things will remain as they are at the moment. However, PTerm is still functional. The versioning of PTerm follows the SemVer guidelines. Breaking Changes are explicitly mentioned in the changelogs and the version will be increased accordingly. Everybody is welcome to improve PTerm, whether by making suggestions or pull requests. Thanks <3
 
 If you want to wait for a stable release, make sure to star the project and follow it, to get notified when we release v1.0.0 (stable) :rocket:
 
-## :package: Installation
+## 📦 Installation
 
 To make PTerm available in your project, you can run the following command.\
 Make sure to run this command inside your project, when you're using go modules :wink:
@@ -60,7 +66,7 @@ Make sure to run this command inside your project, when you're using go modules 
 go get github.com/pterm/pterm
 ```
 
-## :pencil: Documentation
+## ✏ Documentation
 
 To view the official documentation of the latest release, you can go to the automatically generated page of [pkg.go.dev](https://pkg.go.dev/github.com/pterm/pterm) This documentation is very technical and includes every method that can be used in PTerm.
 
@@ -68,13 +74,13 @@ To view the official documentation of the latest release, you can go to the auto
 
 Have fun exploring this project :rocket:
 
-## :heart: Contributing
+## 💖 Contributing
 
 If you have found a bug or want to suggest a feature, you can do so [here](https://github.com/pterm/pterm/issues) by opening a new issue.
 
 If you want to contribute to the development of PTerm, you are very welcome to do so. Our contribution guidelines can be found [here](CONTRIBUTING.md).
 
-## :test_tube: Examples
+## 🧪 Examples
 
 <!-- examples:start -->
 ### demo
@@ -558,7 +564,12 @@ func main() {
 
 <!-- examples:end -->
 
+  
+---
 
+> GitHub [@pterm](https://github.com/pterm) &nbsp;&middot;&nbsp;
+> Maintainer [@MarvinJWendt](https://github.com/MarvinJWendt)
+> | [MarvinJWendt.com](https://marvinjwendt.com)
 
 
 
