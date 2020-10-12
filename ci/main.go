@@ -115,7 +115,7 @@ func processFile(f os.FileInfo) {
 	}
 
 	fmt.Println("#### Generating SVG")
-	execute(`svg-term --in ` + animationDataPath + ` --out ` + animationSvgPath + ` --window true --no-optimize --profile "./ci/terminal-theme.txt" --term "iterm2"`)
+	execute(`svg-term --in ` + animationDataPath + ` --out ` + animationSvgPath + ` --no-cursor --window true --no-optimize --profile "./ci/terminal-theme.txt" --term "iterm2"`)
 
 	fmt.Println("#### Generating README.md")
 	readmeString := "# " + f.Name() + "\n\n![Animation](animation.svg)\n\n"
