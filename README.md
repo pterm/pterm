@@ -34,11 +34,11 @@
 <hr/>
 
 <p align="center">
-<strong><a href="#package-installation">Installation</a></strong>
+<strong><a href="#-installation">Installation</a></strong>
 |
-<strong><a href="#pencil-documentation">Documentation</a></strong>
+<strong><a href="#-documentation">Documentation</a></strong>
 |
-<strong><a href="#test_tube-examples">Examples</a></strong>
+<strong><a href="#-examples">Examples</a></strong>
 |
 <strong><a href="./CONTRIBUTING.md">Contributing</a></strong>
 </p>
