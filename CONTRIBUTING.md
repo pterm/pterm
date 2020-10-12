@@ -2,7 +2,7 @@
 
 ## Template Snippets
 
-### GenericPrinter Template
+### TextPrinter Template
 
 ```go
 package pterm
