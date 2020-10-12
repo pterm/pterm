@@ -7,12 +7,15 @@
 ### Ci
 - disable cursor in animations
 
+### Code Refactoring
+- declare function name as `WithCSVReader`
+
 ### Documentation Changes
 - **examples:** add every ANSI color to examples
-- **readme:** update readme
 - **readme:** center header
 - **readme:** fix header links
 - **readme:** replace emoji strings with actual emojis
+- **readme:** update readme
 
 ### Features
 - add csv table support ([#42](https://github.com/pterm/pterm/issues/42))
