@@ -185,6 +185,54 @@ func TestStyle_Add(t *testing.T) {
 	assert.Equal(t, Style{FgRed, BgGreen, Bold}, Style{FgRed}.Add(Style{BgGreen}, Style{Bold}))
 }
 
+// func TestNewRGBFromHEXasd(t *testing.T) {
+// 	assert.Equal(t, RGB{R: 255,	G: 0, B: 9}, interface{}(NewRGBFromHEX("#ff0009")))
+// 	assert.Equal(t, RGB{R: 255,	G: 0, B: 9}, interface{}(NewRGBFromHEX("ff00090x")))
+// 	assert.Equal(t, RGB{R: 255,	G: 0, B: 9}, interface{}(NewRGBFromHEX("ff00090X")))
+// 	assert.Equal(t, RGB{R: 255,	G: 187, B: 170}, interface{}(NewRGBFromHEX("#fba")))
+// 	assert.Equal(t, RGB{R: 255,	G: 187, B: 170}, interface{}(NewRGBFromHEX("fba0x")))
+// 	assert.Error(t, ErrHexCodeIsNotValid, interface{}(NewRGBFromHEX("faba0x")))
+// 	assert.Error(t, ErrHexCodeIsNotValid, interface{}(NewRGBFromHEX("#faba")))
+// }
+
+func TestNewRGBFromHEX(t *testing.T) {
+	tests := []struct {
+		hex  string
+		want RGB
+	}{
+		{hex: "#ff0009", want: RGB{R: 255, G: 0, B: 9}},
+		{hex: "ff0009", want: RGB{R: 255, G: 0, B: 9}},
+		{hex: "ff00090x", want: RGB{R: 255, G: 0, B: 9}},
+		{hex: "ff00090X", want: RGB{R: 255, G: 0, B: 9}},
+		{hex: "#fba", want: RGB{R: 255, G: 187, B: 170}},
+		{hex: "fba", want: RGB{R: 255, G: 187, B: 170}},
+		{hex: "fba0x", want: RGB{R: 255, G: 187, B: 170}},
+	}
+	for _, test := range tests {
+		t.Run("", func(t *testing.T) {
+			rgb, err := NewRGBFromHEX(test.hex)
+			assert.Equal(t, test.want, rgb)
+			assert.NoError(t, err)
+		})
+	}
+	testsFail := []struct {
+		hex  string
+		want error
+	}{
+		{hex: "faba0x", want: ErrHexCodeIsNotValid},
+		{hex: "faba", want: ErrHexCodeIsNotValid},
+		{hex: "#faba", want: ErrHexCodeIsNotValid},
+		{hex: "faba0x", want: ErrHexCodeIsNotValid},
+		{hex: "#fax", want: assert.AnError},
+	}
+	for _, test := range testsFail {
+		t.Run("", func(t *testing.T) {
+			_, err := NewRGBFromHEX(test.hex)
+			assert.Error(t, test.want, err)
+		})
+	}
+}
+
 // CaptureStdout captures everything written to the terminal and returns it as a string.
 func captureStdout(f func(w io.Writer)) string {
 	originalStdout := os.Stdout

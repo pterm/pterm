@@ -2,6 +2,7 @@ package pterm
 
 import (
 	"strconv"
+	"strings"
 
 	"github.com/gookit/color"
 
@@ -29,6 +30,17 @@ func NewRGB(r, g, b uint8) RGB {
 
 // NewRGBFromHEX converts a HEX and returns a new RGB.
 func NewRGBFromHEX(hex string) (RGB, error) {
+	hex = strings.ToLower(hex)
+	hex = strings.ReplaceAll(hex, "#", "")
+	hex = strings.ReplaceAll(hex, "0x", "")
+
+	if len(hex) == 3 {
+		hex = string([]byte{hex[0], hex[0], hex[1], hex[1], hex[2], hex[2]})
+	}
+	if len(hex) != 6 {
+		return RGB{}, ErrHexCodeIsNotValid
+	}
+
 	i64, err := strconv.ParseInt(hex, 16, 32)
 	if err != nil {
 		return RGB{}, err
