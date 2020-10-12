@@ -4,8 +4,13 @@
 ### Chore
 - **deps:** update deps
 
+### Ci
+- disable cursor in animations
+
 ### Documentation Changes
 - **examples:** add every ANSI color to examples
+- **readme:** center header
+- **readme:** update readme
 
 ### Features
 - add theme to generated animations
