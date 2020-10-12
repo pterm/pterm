@@ -185,16 +185,6 @@ func TestStyle_Add(t *testing.T) {
 	assert.Equal(t, Style{FgRed, BgGreen, Bold}, Style{FgRed}.Add(Style{BgGreen}, Style{Bold}))
 }
 
-// func TestNewRGBFromHEXasd(t *testing.T) {
-// 	assert.Equal(t, RGB{R: 255,	G: 0, B: 9}, interface{}(NewRGBFromHEX("#ff0009")))
-// 	assert.Equal(t, RGB{R: 255,	G: 0, B: 9}, interface{}(NewRGBFromHEX("ff00090x")))
-// 	assert.Equal(t, RGB{R: 255,	G: 0, B: 9}, interface{}(NewRGBFromHEX("ff00090X")))
-// 	assert.Equal(t, RGB{R: 255,	G: 187, B: 170}, interface{}(NewRGBFromHEX("#fba")))
-// 	assert.Equal(t, RGB{R: 255,	G: 187, B: 170}, interface{}(NewRGBFromHEX("fba0x")))
-// 	assert.Error(t, ErrHexCodeIsInvalid, interface{}(NewRGBFromHEX("faba0x")))
-// 	assert.Error(t, ErrHexCodeIsInvalid, interface{}(NewRGBFromHEX("#faba")))
-// }
-
 func TestNewRGBFromHEX(t *testing.T) {
 	tests := []struct {
 		hex  string
