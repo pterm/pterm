@@ -38,7 +38,7 @@ func NewRGBFromHEX(hex string) (RGB, error) {
 		hex = string([]byte{hex[0], hex[0], hex[1], hex[1], hex[2], hex[2]})
 	}
 	if len(hex) != 6 {
-		return RGB{}, ErrHexCodeIsNotValid
+		return RGB{}, ErrHexCodeIsInvalid
 	}
 
 	i64, err := strconv.ParseInt(hex, 16, 32)

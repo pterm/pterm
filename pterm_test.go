@@ -191,8 +191,8 @@ func TestStyle_Add(t *testing.T) {
 // 	assert.Equal(t, RGB{R: 255,	G: 0, B: 9}, interface{}(NewRGBFromHEX("ff00090X")))
 // 	assert.Equal(t, RGB{R: 255,	G: 187, B: 170}, interface{}(NewRGBFromHEX("#fba")))
 // 	assert.Equal(t, RGB{R: 255,	G: 187, B: 170}, interface{}(NewRGBFromHEX("fba0x")))
-// 	assert.Error(t, ErrHexCodeIsNotValid, interface{}(NewRGBFromHEX("faba0x")))
-// 	assert.Error(t, ErrHexCodeIsNotValid, interface{}(NewRGBFromHEX("#faba")))
+// 	assert.Error(t, ErrHexCodeIsInvalid, interface{}(NewRGBFromHEX("faba0x")))
+// 	assert.Error(t, ErrHexCodeIsInvalid, interface{}(NewRGBFromHEX("#faba")))
 // }
 
 func TestNewRGBFromHEX(t *testing.T) {
@@ -219,10 +219,10 @@ func TestNewRGBFromHEX(t *testing.T) {
 		hex  string
 		want error
 	}{
-		{hex: "faba0x", want: ErrHexCodeIsNotValid},
-		{hex: "faba", want: ErrHexCodeIsNotValid},
-		{hex: "#faba", want: ErrHexCodeIsNotValid},
-		{hex: "faba0x", want: ErrHexCodeIsNotValid},
+		{hex: "faba0x", want: ErrHexCodeIsInvalid},
+		{hex: "faba", want: ErrHexCodeIsInvalid},
+		{hex: "#faba", want: ErrHexCodeIsInvalid},
+		{hex: "faba0x", want: ErrHexCodeIsInvalid},
 		{hex: "#fax", want: assert.AnError},
 	}
 	for _, test := range testsFail {
