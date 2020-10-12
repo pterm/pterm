@@ -8,6 +8,7 @@
 - **examples:** add every ANSI color to examples
 
 ### Features
+- add theme to generated animations
 - add color fade example ([#38](https://github.com/pterm/pterm/issues/38))
 - implement `TextPrinter` into `RGB`
 - implement color fade to `Progressbar` ([#37](https://github.com/pterm/pterm/issues/37))
