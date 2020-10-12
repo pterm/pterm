@@ -55,14 +55,14 @@
 
 ## ⚠  NOTICE
 
-PTerm is currently under development. It is very likely that not all things will remain as they are at the moment. However, PTerm is still functional. The versioning of PTerm follows the SemVer guidelines. Breaking Changes are explicitly mentioned in the changelogs and the version will be increased accordingly. Everybody is welcome to improve PTerm, whether by making suggestions or pull requests. Thanks <3
+PTerm is currently under development. It is very likely that not all things will remain as they are at the moment. However, PTerm is still functional. The versioning of PTerm follows the SemVer guidelines. Breaking Changes are explicitly mentioned in the changelogs and the version will be increased accordingly. Everybody is welcome to improve PTerm, whether by making suggestions or pull requests. Thanks ❤
 
-If you want to wait for a stable release, make sure to star the project and follow it, to get notified when we release v1.0.0 (stable) :rocket:
+If you want to wait for a stable release, make sure to star the project and follow it, to get notified when we release v1.0.0 (stable) 🚀
 
 ## 📦 Installation
 
 To make PTerm available in your project, you can run the following command.\
-Make sure to run this command inside your project, when you're using go modules :wink:
+Make sure to run this command inside your project, when you're using go modules 😉
 
 ```sh
 go get github.com/pterm/pterm
@@ -72,9 +72,9 @@ go get github.com/pterm/pterm
 
 To view the official documentation of the latest release, you can go to the automatically generated page of [pkg.go.dev](https://pkg.go.dev/github.com/pterm/pterm) This documentation is very technical and includes every method that can be used in PTerm.
 
-**For an easy start we recommend that you take a look at the [examples section](#test_tube-examples).** Here you can see pretty much every feature of PTerm with its source code. The animations of the examples are automatically updated as soon as something changes in PTerm.
+**For an easy start we recommend that you take a look at the [examples section](#-examples).** Here you can see pretty much every feature of PTerm with its source code. The animations of the examples are automatically updated as soon as something changes in PTerm.
 
-Have fun exploring this project :rocket:
+Have fun exploring this project 🚀
 
 ## 💖 Contributing
 
