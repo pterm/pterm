@@ -33,6 +33,7 @@
 
 <hr/>
 
+<p align="center">
 <strong><a href="#package-installation">Installation</a></strong>
 |
 <strong><a href="#pencil-documentation">Documentation</a></strong>
@@ -40,6 +41,7 @@
 <strong><a href="#test_tube-examples">Examples</a></strong>
 |
 <strong><a href="./CONTRIBUTING.md">Contributing</a></strong>
+</p>
 
 <hr/>
 
@@ -570,7 +572,6 @@ func main() {
 > GitHub [@pterm](https://github.com/pterm) &nbsp;&middot;&nbsp;
 > Maintainer [@MarvinJWendt](https://github.com/MarvinJWendt)
 > | [MarvinJWendt.com](https://marvinjwendt.com)
-
 
 
 
