@@ -9,9 +9,10 @@
 
 ### Documentation Changes
 - **examples:** add every ANSI color to examples
-- **readme:** fix header links
-- **readme:** center header
 - **readme:** update readme
+- **readme:** center header
+- **readme:** fix header links
+- **readme:** replace emoji strings with actual emojis
 
 ### Features
 - add theme to generated animations
