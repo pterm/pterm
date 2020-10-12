@@ -110,7 +110,6 @@ func (t Table) Srender() string {
 }
 
 // Render prints the Table to the terminal.
-func (t Table) Render() *Table {
+func (t Table) Render() {
 	Println(t.Srender())
-	return &t
 }
