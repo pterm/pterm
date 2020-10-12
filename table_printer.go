@@ -63,12 +63,11 @@ func (t Table) WithData(data [][]string) *Table {
 	return &t
 }
 
-// WithCSV return a new Table with specified Data extracted from CSV.
-func (t Table) WithCSV(reader *csv.Reader) *Table {
+// WithCSVReader return a new Table with specified Data extracted from CSV.
+func (t Table) WithCSVReader(reader *csv.Reader) *Table {
 	if records, err := reader.ReadAll(); err == nil {
 		t.Data = records
 	}
-
 	return &t
 }
 
