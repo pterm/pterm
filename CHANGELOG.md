@@ -5,6 +5,7 @@
 - **deps:** update deps
 
 ### Documentation Changes
+- **examples:** add every ANSI color to examples
 
 ### Features
 - add color fade example ([#38](https://github.com/pterm/pterm/issues/38))
