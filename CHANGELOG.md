@@ -9,6 +9,7 @@
 
 ### Documentation Changes
 - **examples:** add every ANSI color to examples
+- **readme:** fix header links
 - **readme:** center header
 - **readme:** update readme
 
