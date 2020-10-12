@@ -11,13 +11,15 @@
 - declare function name as `WithCSVReader`
 
 ### Documentation Changes
+- **contributing:** change header name
 - **examples:** add every ANSI color to examples
-- **readme:** center header
+- **readme:** update readme
 - **readme:** fix header links
 - **readme:** replace emoji strings with actual emojis
-- **readme:** update readme
+- **readme:** center header
 
 ### Features
+- add `Srender` to `RenderPrinter` interface
 - add csv table support ([#42](https://github.com/pterm/pterm/issues/42))
 - add HEX to RGB converter in `RGB` ([#41](https://github.com/pterm/pterm/issues/41))
 - add theme to generated animations
