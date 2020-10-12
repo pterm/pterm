@@ -1,7 +1,11 @@
 package pterm
 
 import (
+	"strconv"
+	"strings"
+
 	"github.com/gookit/color"
+
 	"github.com/pterm/pterm/internal"
 )
 
@@ -22,6 +26,32 @@ func (rgb RGB) GetValues() (r, g, b uint8) {
 // NewRGB returns a new RGB.
 func NewRGB(r, g, b uint8) RGB {
 	return RGB{R: r, G: g, B: b}
+}
+
+// NewRGBFromHEX converts a HEX and returns a new RGB.
+func NewRGBFromHEX(hex string) (RGB, error) {
+	hex = strings.ToLower(hex)
+	hex = strings.ReplaceAll(hex, "#", "")
+	hex = strings.ReplaceAll(hex, "0x", "")
+
+	if len(hex) == 3 {
+		hex = string([]byte{hex[0], hex[0], hex[1], hex[1], hex[2], hex[2]})
+	}
+	if len(hex) != 6 {
+		return RGB{}, ErrHexCodeIsInvalid
+	}
+
+	i64, err := strconv.ParseInt(hex, 16, 32)
+	if err != nil {
+		return RGB{}, err
+	}
+	c := int(i64)
+
+	return RGB{
+		R: uint8(c >> 16),
+		G: uint8((c & 0x00FF00) >> 8),
+		B: uint8(c & 0x0000FF),
+	}, nil
 }
 
 // Fade fades one RGB value to another RGB value, by giving the function a minimum, maximum and current value.
