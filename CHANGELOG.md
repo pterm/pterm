@@ -19,6 +19,7 @@
 - **readme:** center header
 
 ### Features
+- add ability to disable output ([#44](https://github.com/pterm/pterm/issues/44))
 - add `Srender` to `RenderPrinter` interface
 - add csv table support ([#42](https://github.com/pterm/pterm/issues/42))
 - add HEX to RGB converter in `RGB` ([#41](https://github.com/pterm/pterm/issues/41))
