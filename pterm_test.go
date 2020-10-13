@@ -178,7 +178,6 @@ func TestPrinto(t *testing.T) {
 		}
 		DisableOutput = false
 	})
-
 }
 
 func TestFprinto(t *testing.T) {
