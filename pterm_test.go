@@ -41,70 +41,165 @@ func TestSprinto(t *testing.T) {
 // Print functions
 
 func TestPrint(t *testing.T) {
-	for _, randomString := range internal.RandomStrings {
-		out := captureStdout(func(w io.Writer) {
-			Print(randomString)
-		})
-		assert.Equal(t, randomString, out)
-	}
+	t.Run("enabled output", func(t *testing.T) {
+		for _, randomString := range internal.RandomStrings {
+			out := captureStdout(func(w io.Writer) {
+				Print(randomString)
+			})
+			assert.Equal(t, randomString, out)
+		}
+	})
+
+	t.Run("disabled output", func(t *testing.T) {
+		DisableOutput = true
+		for _, randomString := range internal.RandomStrings {
+			out := captureStdout(func(w io.Writer) {
+				Print(randomString)
+			})
+			assert.Equal(t, "", out)
+		}
+		DisableOutput = false
+	})
 }
 
 func TestPrintln(t *testing.T) {
-	for _, randomString := range internal.RandomStrings {
-		out := captureStdout(func(w io.Writer) {
-			Println(randomString)
-		})
-		assert.Equal(t, randomString+"\n", out)
-	}
+	t.Run("enabled output", func(t *testing.T) {
+		for _, randomString := range internal.RandomStrings {
+			out := captureStdout(func(w io.Writer) {
+				Println(randomString)
+			})
+			assert.Equal(t, randomString+"\n", out)
+		}
+	})
+
+	t.Run("disabled output", func(t *testing.T) {
+		DisableOutput = true
+		for _, randomString := range internal.RandomStrings {
+			out := captureStdout(func(w io.Writer) {
+				Println(randomString)
+			})
+			assert.Equal(t, "", out)
+		}
+		DisableOutput = false
+	})
 }
 
 func TestPrintf(t *testing.T) {
-	for _, randomString := range internal.RandomStrings {
+	t.Run("enabled output", func(t *testing.T) {
+		for _, randomString := range internal.RandomStrings {
+			out := captureStdout(func(w io.Writer) {
+				Printf(randomString)
+			})
+			assert.Equal(t, randomString, out)
+		}
 		out := captureStdout(func(w io.Writer) {
-			Printf(randomString)
+			Printf("Hello, %s!", "World")
 		})
-		assert.Equal(t, randomString, out)
-	}
-	out := captureStdout(func(w io.Writer) {
-		Printf("Hello, %s!", "World")
+		assert.Equal(t, "Hello, World!", out)
 	})
-	assert.Equal(t, "Hello, World!", out)
+
+	t.Run("disabled output", func(t *testing.T) {
+		DisableOutput = true
+		for _, randomString := range internal.RandomStrings {
+			out := captureStdout(func(w io.Writer) {
+				Printf(randomString)
+			})
+			assert.Equal(t, "", out)
+		}
+		out := captureStdout(func(w io.Writer) {
+			Printf("Hello, %s!", "World")
+		})
+		assert.Equal(t, "", out)
+		DisableOutput = false
+	})
 }
 
 func TestFprint(t *testing.T) {
-	for _, randomString := range internal.RandomStrings {
-		out := captureStdout(func(w io.Writer) {
-			Fprint(w, randomString)
-		})
-		assert.Equal(t, randomString, out)
-	}
+	t.Run("enabled output", func(t *testing.T) {
+		for _, randomString := range internal.RandomStrings {
+			out := captureStdout(func(w io.Writer) {
+				Fprint(w, randomString)
+			})
+			assert.Equal(t, randomString, out)
+		}
+	})
+
+	t.Run("disabled output", func(t *testing.T) {
+		DisableOutput = true
+		for _, randomString := range internal.RandomStrings {
+			out := captureStdout(func(w io.Writer) {
+				Fprint(w, randomString)
+			})
+			assert.Equal(t, "", out)
+		}
+		DisableOutput = false
+	})
 }
 
 func TestFprintln(t *testing.T) {
-	for _, randomString := range internal.RandomStrings {
-		out := captureStdout(func(w io.Writer) {
-			Fprintln(w, randomString)
-		})
-		assert.Equal(t, randomString+"\n", out)
-	}
+	t.Run("enabled output", func(t *testing.T) {
+		for _, randomString := range internal.RandomStrings {
+			out := captureStdout(func(w io.Writer) {
+				Fprintln(w, randomString)
+			})
+			assert.Equal(t, randomString+"\n", out)
+		}
+	})
+
+	t.Run("disabled output", func(t *testing.T) {
+		DisableOutput = true
+		for _, randomString := range internal.RandomStrings {
+			out := captureStdout(func(w io.Writer) {
+				Fprintln(w, randomString)
+			})
+			assert.Equal(t, "", out)
+		}
+		DisableOutput = false
+	})
 }
 
 func TestPrinto(t *testing.T) {
-	for _, randomString := range internal.RandomStrings {
-		out := captureStdout(func(w io.Writer) {
-			Printo(randomString)
-		})
-		assert.Equal(t, "\r"+randomString, out)
-	}
+	t.Run("enabled output", func(t *testing.T) {
+		for _, randomString := range internal.RandomStrings {
+			out := captureStdout(func(w io.Writer) {
+				Printo(randomString)
+			})
+			assert.Equal(t, "\r"+randomString, out)
+		}
+	})
+
+	t.Run("disabled output", func(t *testing.T) {
+		DisableOutput = true
+		for _, randomString := range internal.RandomStrings {
+			out := captureStdout(func(w io.Writer) {
+				Printo(randomString)
+			})
+			assert.Equal(t, "", out)
+		}
+		DisableOutput = false
+	})
 }
 
 func TestFprinto(t *testing.T) {
-	for _, randomString := range internal.RandomStrings {
-		out := captureStdout(func(w io.Writer) {
-			Fprinto(w, randomString)
-		})
-		assert.Equal(t, "\r"+randomString, out)
-	}
+	t.Run("enabled output", func(t *testing.T) {
+		for _, randomString := range internal.RandomStrings {
+			out := captureStdout(func(w io.Writer) {
+				Fprinto(w, randomString)
+			})
+			assert.Equal(t, "\r"+randomString, out)
+		}
+	})
+
+	t.Run("disabled output", func(t *testing.T) {
+		DisableOutput = true
+		for _, randomString := range internal.RandomStrings {
+			out := captureStdout(func(w io.Writer) {
+				Fprinto(w, randomString)
+			})
+			assert.Equal(t, "", out)
+		}
+		DisableOutput = false
+	})
 }
 
 func TestRemoveColors(t *testing.T) {
