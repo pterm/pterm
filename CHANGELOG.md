@@ -5,6 +5,8 @@
 - **deps:** update deps
 
 ### Ci
+- update animations
+- write breaking changes into unreleased changelog version
 - disable cursor in animations
 
 ### Code Refactoring
@@ -13,10 +15,10 @@
 ### Documentation Changes
 - **contributing:** change header name
 - **examples:** add every ANSI color to examples
-- **readme:** update readme
+- **readme:** center header
 - **readme:** fix header links
 - **readme:** replace emoji strings with actual emojis
-- **readme:** center header
+- **readme:** update readme
 
 ### Features
 - add ability to disable output ([#44](https://github.com/pterm/pterm/issues/44))
