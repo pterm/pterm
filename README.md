@@ -56,21 +56,24 @@
 
 ## 🥅 Goal of PTerm
 
+> PTerm is designed to beautify the terminal output of your program.
+
 ### • 🪀 Easy to use
 
-Our first priority is to keep PTerm as easy to use as possible. With many examples for each individual component, getting started with PTerm is extremely easy. All components are similar in design and implement interfaces to simplify mixing  individual components.
+Our first priority is to keep PTerm as easy to use as possible. With many [examples](#-examples) for each individual component, getting started with PTerm is extremely easy. All components are similar in design and implement interfaces to simplify mixing individual components together.
 
 ### • 🤹‍♀️ Cross-Platform
 
-PTerm is designed to beautify the terminal output of your program.\
 We take special precautions to ensure that PTerm works on as many operating systems and terminals as possible. Whether it's `Windows CMD`, `macOS iTerm2` or in the backend (for example inside a `GitHub Action` or other CI systems), PTerm **guarantees** beautiful output!\
 \
-PTerm is actively tested on `Windows`, `Linux (Debian)` and `macOS`. 
+*PTerm is actively tested on `Windows`, `Linux (Debian & Ubuntu)` and `macOS`.*
 
 ### • ✨ Consistent Colors
 
-PTerm uses the 16 bit color scheme which is widely used by terminals to ensure consistent colors in different terminal themes.
-If that's not enough, PTerm can be used to access the full RGB color scheme (8 million colors) in terminals that support `TrueColor`.
+PTerm uses the [ANSI color scheme](https://en.wikipedia.org/wiki/ANSI_escape_code#3/4_bit) which is widely used by terminals to ensure consistent colors in different terminal themes.
+If that's not enough, PTerm can be used to access the full RGB color scheme (16 million colors) in terminals that support `TrueColor`.
+
+![ANSI Colors](https://user-images.githubusercontent.com/31022056/96002009-f10c3a80-0e38-11eb-8d90-f3150150599c.png)
 
 ### • 📚 Component system
 
