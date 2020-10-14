@@ -53,7 +53,27 @@
 
 ---
 
-## 🥅 Goal
+## 🥅 Goal of PTerm
+
+### 🤹‍♀️ Cross-Platform
+
+PTerm is designed to beautify the terminal output of your program.\
+We take special precautions to ensure that PTerm works on as many operating systems and terminals as possible. Whether it's `Windows CMD`, `macOS iTerm2` or in the backend (for example inside a `GitHub Action` or other CI systems), PTerm **guarantees** beautiful output!\
+\
+PTerm is actively tested on `Windows`, `Linux (Debian)` and `macOS`. 
+
+### ✨ Consistent Colors
+
+PTerm uses the 16 bit color scheme which is widely used by terminals to ensure consistent colors in different terminal themes.
+If that's not enough, PTerm can be used to access the full RGB color scheme (8 million colors) in terminals that support `TrueColor`.
+
+### 📚 Component system
+
+PTerm consists of many components, called `Printers`, which can be used individually or together to generate pretty console output.
+
+### 🛠 Configurable
+
+PTerm can be used by without any configuration. However, you can easily configure each component with little code, so everyone has the freedom to design their own terminal output.
 
 ## ⚠  NOTICE
 
