@@ -5,6 +5,7 @@
 - **deps:** update deps
 
 ### Ci
+- add codeowners file
 - update animations
 - write breaking changes into unreleased changelog version
 - disable cursor in animations
