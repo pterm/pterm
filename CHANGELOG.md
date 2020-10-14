@@ -16,11 +16,14 @@
 ### Documentation Changes
 - **contributing:** change header name
 - **examples:** add every ANSI color to examples
-- **readme:** fix header links
+- **readme:** replace emoji strings with actual emojis
 - **readme:** update readme
 - **readme:** center header
-- **readme:** replace emoji strings with actual emojis
+- **readme:** fix header links
 - **readme:** add goal to readme
+- **readme:** put header under demo
+- **readme:** add space between demo and header
+- **readme:** add space between demo and header
 
 ### Features
 - add ability to disable output ([#44](https://github.com/pterm/pterm/issues/44))
