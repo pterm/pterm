@@ -31,7 +31,13 @@
 <img src="https://img.shields.io/badge/platform-windows%20%7C%20macos%20%7C%20linux-informational?style=for-the-badge" alt="Downloads">
 </a>
 
-<hr/>
+<a href="https://github.com/pterm/pterm/">
+<img src="https://raw.githubusercontent.com/pterm/pterm/master/_examples/demo/animation.svg" alt="Dops">
+</a>
+
+</p>
+
+---
 
 <p align="center">
 <strong><a href="#-installation">Installation</a></strong>
@@ -41,14 +47,6 @@
 <strong><a href="#-examples">Examples</a></strong>
 |
 <strong><a href="./CONTRIBUTING.md">Contributing</a></strong>
-</p>
-
-<hr/>
-
-<a href="https://github.com/pterm/pterm/">
-<img src="https://raw.githubusercontent.com/pterm/pterm/master/_examples/demo/animation.svg" alt="Dops">
-</a>
-
 </p>
 
 ---
