@@ -53,6 +53,8 @@
 
 ---
 
+## 🥅 Goal
+
 ## ⚠  NOTICE
 
 PTerm is currently under development. It is very likely that not all things will remain as they are at the moment. However, PTerm is still functional. The versioning of PTerm follows the SemVer guidelines. Breaking Changes are explicitly mentioned in the changelogs and the version will be increased accordingly. Everybody is welcome to improve PTerm, whether by making suggestions or pull requests. Thanks ❤
@@ -572,6 +574,9 @@ func main() {
 > GitHub [@pterm](https://github.com/pterm) &nbsp;&middot;&nbsp;
 > Maintainer [@MarvinJWendt](https://github.com/MarvinJWendt)
 > | [MarvinJWendt.com](https://marvinjwendt.com)
+
+
+
 
 
 
