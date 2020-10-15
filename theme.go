@@ -20,6 +20,8 @@ var (
 		DescriptionMessageStyle: NewStyle(FgWhite),
 		DescriptionPrefixStyle:  NewStyle(FgLightWhite, BgDarkGray),
 		ScopeStyle:              NewStyle(FgGray),
+		ProgressbarBarStyle:     NewStyle(FgLightCyan),
+		ProgressbarTitleStyle:   NewStyle(FgLightCyan),
 	}
 )
 
@@ -43,6 +45,8 @@ type Theme struct {
 	DescriptionMessageStyle Style
 	DescriptionPrefixStyle  Style
 	ScopeStyle              Style
+	ProgressbarBarStyle     Style
+	ProgressbarTitleStyle   Style
 }
 
 // WithPrimaryStyle returns a new theme with overridden value.
