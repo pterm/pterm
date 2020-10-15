@@ -15,6 +15,7 @@ var DefaultSpinner = Spinner{
 	SuccessPrinter: Success,
 	FailPrinter:    Error,
 	WarningPrinter: Warning,
+	MessagePrinter: MessageVanilla,
 }
 
 // Spinner is a loading animation, which can be used if the progress is unknown.
@@ -29,9 +30,10 @@ type Spinner struct {
 	SuccessPrinter TextPrinter
 	FailPrinter    TextPrinter
 	WarningPrinter TextPrinter
+	BasicPrinter   TextPrinter
+	MessagePrinter MessagePrinter
 	RemoveWhenDone bool
-
-	IsActive bool
+	IsActive       bool
 }
 
 // WithText adds a text to the spinner.
@@ -156,5 +158,16 @@ func (s *Spinner) Warning(message ...interface{}) {
 	}
 	clearLine()
 	Printo(s.WarningPrinter.Sprint(message...))
+	s.Stop()
+}
+
+// PassMessage displays the message printer.
+// If no message is given, the text of the spinner will be reused as the default message.
+func (s *Spinner) PassMessage(message string, a ...interface{}) {
+	clearLine()
+	if len(message) == 0 {
+		message = s.Text
+	}
+	s.MessagePrinter.Printf(message, a...)
 	s.Stop()
 }
