@@ -8,6 +8,7 @@
 - don't check for pointer returns
 
 ### Documentation Changes
+- add to do list to PR template ([#52](https://github.com/pterm/pterm/issues/52))
 
 
 <a name="v0.5.1"></a>
