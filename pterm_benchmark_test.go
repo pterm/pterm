@@ -34,6 +34,7 @@ func BenchmarkSprintWithCustomStyle(b *testing.B) {
 }
 
 func BenchmarkSpinner(b *testing.B) {
+	proxyToDevNull()
 	for i := 0; i < b.N; i++ {
 		s := DefaultSpinner.WithDelay(0).Start()
 		s.Stop()
