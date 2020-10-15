@@ -26,6 +26,10 @@ var (
 		HeaderBackgroundStyle:   Style{BgGray},
 		SpinnerStyle:            Style{FgLightCyan},
 		SpinnerTextStyle:        Style{FgLightWhite},
+		TableStyle:              Style{FgWhite},
+		TableHeaderStyle:        Style{FgLightCyan},
+		TableSeparatorStyle:     Style{FgGray},
+		SectionStyle:            Style{Bold, FgYellow},
 	}
 )
 
@@ -55,6 +59,10 @@ type Theme struct {
 	HeaderBackgroundStyle   Style
 	SpinnerStyle            Style
 	SpinnerTextStyle        Style
+	TableStyle              Style
+	TableHeaderStyle        Style
+	TableSeparatorStyle     Style
+	SectionStyle            Style
 }
 
 // WithPrimaryStyle returns a new theme with overridden value.

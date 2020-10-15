@@ -9,9 +9,10 @@ import (
 
 // DefaultTable contains standards, which can be used to print a Table.
 var DefaultTable = Table{
-	HeaderStyle:    NewStyle(FgLightCyan),
+	Style:          ThemeDefault.TableStyle,
+	HeaderStyle:    ThemeDefault.TableHeaderStyle,
 	Separator:      " | ",
-	SeparatorStyle: NewStyle(FgGray),
+	SeparatorStyle: ThemeDefault.TableSeparatorStyle,
 }
 
 // TableData is the type that contains the data of a Table.
