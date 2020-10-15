@@ -113,17 +113,19 @@ func (s *Spinner) Stop() {
 // GenericStart runs Start, but returns a LivePrinter.
 // This is used for the interface LivePrinter.
 // You most likely want to use Start instead of this in your program.
-func (s Spinner) GenericStart() LivePrinter {
+func (s *Spinner) GenericStart() *LivePrinter {
 	s.Start()
-	return &s
+	lp := LivePrinter(s)
+	return &lp
 }
 
 // GenericStop runs Stop, but returns a LivePrinter.
 // This is used for the interface LivePrinter.
 // You most likely want to use Stop instead of this in your program.
-func (s *Spinner) GenericStop() LivePrinter {
+func (s *Spinner) GenericStop() *LivePrinter {
 	s.Stop()
-	return s
+	lp := LivePrinter(s)
+	return &lp
 }
 
 // Success displays the success printer.

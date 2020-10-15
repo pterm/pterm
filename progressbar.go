@@ -215,15 +215,17 @@ func (p *Progressbar) Stop() *Progressbar {
 // GenericStart runs Start, but returns a LivePrinter.
 // This is used for the interface LivePrinter.
 // You most likely want to use Start instead of this in your program.
-func (p Progressbar) GenericStart() LivePrinter {
-	return p.Start()
+func (p Progressbar) GenericStart() *LivePrinter {
+	lp := LivePrinter(p.Start())
+	return &lp
 }
 
 // GenericStop runs Stop, but returns a LivePrinter.
 // This is used for the interface LivePrinter.
 // You most likely want to use Stop instead of this in your program.
-func (p Progressbar) GenericStop() LivePrinter {
-	return p.Stop()
+func (p Progressbar) GenericStop() *LivePrinter {
+	lp := LivePrinter(p.Stop())
+	return &lp
 }
 
 // GetElapsedTime returns the elapsed time, since the progressbar was started.
