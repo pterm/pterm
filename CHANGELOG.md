@@ -2,6 +2,7 @@
 ## [Unreleased]
 
 ### Ci
+- disable gocritic in test files
 - disable some checks for test files
 - don't lint test files
 - don't check for pointer returns
