@@ -9,9 +9,9 @@ import (
 // DefaultSpinner is the default spinner.
 var DefaultSpinner = Spinner{
 	Sequence:       []string{"▀ ", " ▀", " ▄", "▄ "},
-	Style:          Style{FgLightCyan},
+	Style:          ThemeDefault.SpinnerStyle,
 	Delay:          time.Millisecond * 200,
-	MessageStyle:   Style{FgLightWhite},
+	MessageStyle:   ThemeDefault.SpinnerTextStyle,
 	SuccessPrinter: &Success,
 	FailPrinter:    &Error,
 	WarningPrinter: &Warning,

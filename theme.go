@@ -4,26 +4,28 @@ var (
 	// ThemeDefault is the default theme used by PTerm.
 	// If this variable is overwritten, the new value is used as default theme.
 	ThemeDefault = Theme{
-		PrimaryStyle:            NewStyle(FgCyan),
-		SecondaryStyle:          NewStyle(FgLightMagenta),
-		HighlightStyle:          NewStyle(Bold, FgYellow),
-		InfoMessageStyle:        NewStyle(FgLightCyan),
-		InfoPrefixStyle:         NewStyle(FgBlack, BgCyan),
-		SuccessMessageStyle:     NewStyle(FgGreen),
-		SuccessPrefixStyle:      NewStyle(FgBlack, BgGreen),
-		WarningMessageStyle:     NewStyle(FgYellow),
-		WarningPrefixStyle:      NewStyle(FgBlack, BgYellow),
-		ErrorMessageStyle:       NewStyle(FgLightRed),
-		ErrorPrefixStyle:        NewStyle(FgBlack, BgLightRed),
-		FatalMessageStyle:       NewStyle(FgLightRed),
-		FatalPrefixStyle:        NewStyle(FgBlack, BgLightRed),
-		DescriptionMessageStyle: NewStyle(FgWhite),
-		DescriptionPrefixStyle:  NewStyle(FgLightWhite, BgDarkGray),
-		ScopeStyle:              NewStyle(FgGray),
-		ProgressbarBarStyle:     NewStyle(FgLightCyan),
-		ProgressbarTitleStyle:   NewStyle(FgLightCyan),
-		HeaderTextStyle:         NewStyle(FgLightWhite, Bold),
-		HeaderBackgroundStyle:   NewStyle(BgGray),
+		PrimaryStyle:            Style{FgCyan},
+		SecondaryStyle:          Style{FgLightMagenta},
+		HighlightStyle:          Style{Bold, FgYellow},
+		InfoMessageStyle:        Style{FgLightCyan},
+		InfoPrefixStyle:         Style{FgBlack, BgCyan},
+		SuccessMessageStyle:     Style{FgGreen},
+		SuccessPrefixStyle:      Style{FgBlack, BgGreen},
+		WarningMessageStyle:     Style{FgYellow},
+		WarningPrefixStyle:      Style{FgBlack, BgYellow},
+		ErrorMessageStyle:       Style{FgLightRed},
+		ErrorPrefixStyle:        Style{FgBlack, BgLightRed},
+		FatalMessageStyle:       Style{FgLightRed},
+		FatalPrefixStyle:        Style{FgBlack, BgLightRed},
+		DescriptionMessageStyle: Style{FgWhite},
+		DescriptionPrefixStyle:  Style{FgLightWhite, BgDarkGray},
+		ScopeStyle:              Style{FgGray},
+		ProgressbarBarStyle:     Style{FgLightCyan},
+		ProgressbarTitleStyle:   Style{FgLightCyan},
+		HeaderTextStyle:         Style{FgLightWhite, Bold},
+		HeaderBackgroundStyle:   Style{BgGray},
+		SpinnerStyle:            Style{FgLightCyan},
+		SpinnerTextStyle:        Style{FgLightWhite},
 	}
 )
 
@@ -51,6 +53,8 @@ type Theme struct {
 	ProgressbarTitleStyle   Style
 	HeaderTextStyle         Style
 	HeaderBackgroundStyle   Style
+	SpinnerStyle            Style
+	SpinnerTextStyle        Style
 }
 
 // WithPrimaryStyle returns a new theme with overridden value.
