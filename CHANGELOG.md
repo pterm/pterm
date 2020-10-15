@@ -2,7 +2,10 @@
 ## [Unreleased]
 
 ### Ci
+- don't lint test files
 - don't check for pointer returns
+
+### Documentation Changes
 
 
 <a name="v0.5.1"></a>
