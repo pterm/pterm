@@ -19,8 +19,8 @@ type RGB struct {
 }
 
 // GetValues returns the RGB values separately.
-func (rgb RGB) GetValues() (r, g, b uint8) {
-	return rgb.R, rgb.G, rgb.B
+func (p RGB) GetValues() (r, g, b uint8) {
+	return p.R, p.G, p.B
 }
 
 // NewRGB returns a new RGB.
@@ -55,50 +55,53 @@ func NewRGBFromHEX(hex string) (RGB, error) {
 }
 
 // Fade fades one RGB value to another RGB value, by giving the function a minimum, maximum and current value.
-func (rgb RGB) Fade(min, max, current float32, end RGB) RGB {
+func (p RGB) Fade(min, max, current float32, end RGB) RGB {
 	return RGB{
-		R: uint8(internal.MapRangeToRange(min, max, float32(rgb.R), float32(end.R), current)),
-		G: uint8(internal.MapRangeToRange(min, max, float32(rgb.G), float32(end.G), current)),
-		B: uint8(internal.MapRangeToRange(min, max, float32(rgb.B), float32(end.B), current)),
+		R: uint8(internal.MapRangeToRange(min, max, float32(p.R), float32(end.R), current)),
+		G: uint8(internal.MapRangeToRange(min, max, float32(p.G), float32(end.G), current)),
+		B: uint8(internal.MapRangeToRange(min, max, float32(p.B), float32(end.B), current)),
 	}
 }
 
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
-func (rgb RGB) Sprint(a ...interface{}) string {
-	return color.RGB(rgb.R, rgb.G, rgb.B).Sprint(a...)
+func (p RGB) Sprint(a ...interface{}) string {
+	return color.RGB(p.R, p.G, p.B).Sprint(a...)
 }
 
 // Sprintln formats using the default formats for its operands and returns the resulting string.
 // Spaces are always added between operands and a newline is appended.
-func (rgb RGB) Sprintln(a ...interface{}) string {
-	return Sprintln(rgb.Sprint(a...))
+func (p RGB) Sprintln(a ...interface{}) string {
+	return Sprintln(p.Sprint(a...))
 }
 
 // Sprintf formats according to a format specifier and returns the resulting string.
-func (rgb RGB) Sprintf(format string, a ...interface{}) string {
-	return rgb.Sprint(Sprintf(format, a...))
+func (p RGB) Sprintf(format string, a ...interface{}) string {
+	return p.Sprint(Sprintf(format, a...))
 }
 
 // Print formats using the default formats for its operands and writes to standard output.
 // Spaces are added between operands when neither is a string.
 // It returns the number of bytes written and any write error encountered.
-func (rgb RGB) Print(a ...interface{}) TextPrinter {
-	Print(rgb.Sprint(a...))
-	return &rgb
+func (p *RGB) Print(a ...interface{}) *TextPrinter {
+	Print(p.Sprint(a...))
+	tp := TextPrinter(p)
+	return &tp
 }
 
 // Println formats using the default formats for its operands and writes to standard output.
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
-func (rgb RGB) Println(a ...interface{}) TextPrinter {
-	Println(rgb.Sprint(a...))
-	return &rgb
+func (p *RGB) Println(a ...interface{}) *TextPrinter {
+	Println(p.Sprint(a...))
+	tp := TextPrinter(p)
+	return &tp
 }
 
 // Printf formats according to a format specifier and writes to standard output.
 // It returns the number of bytes written and any write error encountered.
-func (rgb RGB) Printf(format string, a ...interface{}) TextPrinter {
-	Print(rgb.Sprintf(format, a...))
-	return &rgb
+func (p *RGB) Printf(format string, a ...interface{}) *TextPrinter {
+	Print(p.Sprintf(format, a...))
+	tp := TextPrinter(p)
+	return &tp
 }

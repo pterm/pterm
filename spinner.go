@@ -12,9 +12,9 @@ var DefaultSpinner = Spinner{
 	Style:          Style{FgLightCyan},
 	Delay:          time.Millisecond * 200,
 	MessageStyle:   Style{FgLightWhite},
-	SuccessPrinter: Success,
-	FailPrinter:    Error,
-	WarningPrinter: Warning,
+	SuccessPrinter: &Success,
+	FailPrinter:    &Error,
+	WarningPrinter: &Warning,
 }
 
 // Spinner is a loading animation, which can be used if the progress is unknown.

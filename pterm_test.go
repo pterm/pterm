@@ -210,11 +210,11 @@ func TestRemoveColors(t *testing.T) {
 }
 
 func TestGenericPrinter(t *testing.T) {
-	var genericPrinters = []TextPrinter{DefaultSection, DefaultHeader}
+	var genericPrinters = []TextPrinter{&DefaultSection, &DefaultHeader}
 
 	prefixPrinter := []PrefixPrinter{Info, Success, Warning, Error, *Fatal.WithFatal(false)}
 	for _, pp := range prefixPrinter {
-		genericPrinters = append(genericPrinters, pp)
+		genericPrinters = append(genericPrinters, &pp)
 	}
 
 	for _, p := range genericPrinters {
