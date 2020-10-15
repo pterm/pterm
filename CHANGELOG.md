@@ -1,6 +1,12 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Ci
+- don't check for pointer returns
+
+
+<a name="v0.5.1"></a>
+## [v0.5.1] - 2020-10-14
 ### Chore
 - **deps:** update deps
 
@@ -16,16 +22,16 @@
 ### Documentation Changes
 - **contributing:** change header name
 - **examples:** add every ANSI color to examples
-- **readme:** replace emoji strings with actual emojis
-- **readme:** center header
+- **readme:** put header under demo
 - **readme:** update readme
 - **readme:** add goal to readme
+- **readme:** center header
 - **readme:** fix header links
-- **readme:** put header under demo
 - **readme:** add space between demo and header
 - **readme:** add space between demo and header
 - **readme:** add easy to use section
 - **readme:** style readme
+- **readme:** replace emoji strings with actual emojis
 
 ### Features
 - add ability to disable output ([#44](https://github.com/pterm/pterm/issues/44))
@@ -361,7 +367,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.5.1...HEAD
+[v0.5.1]: https://github.com/pterm/pterm/compare/v0.5.0...v0.5.1
 [v0.5.0]: https://github.com/pterm/pterm/compare/v0.4.1...v0.5.0
 [v0.4.1]: https://github.com/pterm/pterm/compare/v0.4.0...v0.4.1
 [v0.4.0]: https://github.com/pterm/pterm/compare/v0.3.2...v0.4.0
