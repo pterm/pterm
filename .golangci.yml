@@ -14,6 +14,7 @@ linters-settings:
       - wrapperFunc
       - exitAfterDefer
       - hugeParam
+      - ptrToRefParam
   #  maligned:
   #    suggest-new: true
   misspell:
