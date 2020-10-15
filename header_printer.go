@@ -6,8 +6,8 @@ var (
 	// DefaultHeader returns the printer for a default header text.
 	// Defaults to LightWhite, Bold Text and a Gray DefaultHeader background.
 	DefaultHeader = HeaderPrinter{
-		TextStyle:       Style{FgLightWhite, Bold},
-		BackgroundStyle: Style{BgGray},
+		TextStyle:       ThemeDefault.HeaderTextStyle,
+		BackgroundStyle: ThemeDefault.HeaderBackgroundStyle,
 		Margin:          5,
 	}
 )

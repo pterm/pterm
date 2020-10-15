@@ -22,6 +22,8 @@ var (
 		ScopeStyle:              NewStyle(FgGray),
 		ProgressbarBarStyle:     NewStyle(FgLightCyan),
 		ProgressbarTitleStyle:   NewStyle(FgLightCyan),
+		HeaderTextStyle:         NewStyle(FgLightWhite, Bold),
+		HeaderBackgroundStyle:   NewStyle(BgGray),
 	}
 )
 
@@ -47,6 +49,8 @@ type Theme struct {
 	ScopeStyle              Style
 	ProgressbarBarStyle     Style
 	ProgressbarTitleStyle   Style
+	HeaderTextStyle         Style
+	HeaderBackgroundStyle   Style
 }
 
 // WithPrimaryStyle returns a new theme with overridden value.
