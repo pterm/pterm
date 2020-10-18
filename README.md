@@ -357,6 +357,29 @@ func main() {
 
 </details>
 
+### print-basic-text
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/print-basic-text/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	pterm.DefaultBasicText.Println("Default basic text printer.")
+	pterm.DefaultBasicText.Println("Can be used in any" + pterm.LightMagenta(" TextPrinter ") + "context.")
+	pterm.DefaultBasicText.Println("For example to resolve progressbars and spinners.")
+}
+
+```
+
+</details>
+
 ### print-color-fade
 
 ![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/print-color-fade/animation.svg)
@@ -602,6 +625,10 @@ func main() {
 > GitHub [@pterm](https://github.com/pterm) &nbsp;&middot;&nbsp;
 > Maintainer [@MarvinJWendt](https://github.com/MarvinJWendt)
 > | [MarvinJWendt.com](https://marvinjwendt.com)
+
+
+
+
 
 
 

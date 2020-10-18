@@ -2,11 +2,19 @@
 ## [Unreleased]
 
 ### Ci
+- disable gocritic in test files
 - disable some checks for test files
 - don't lint test files
 - don't check for pointer returns
 
+### Code Refactoring
+- remove emojis to comply with cross-platform policy
+
 ### Documentation Changes
+- add to do list to PR template ([#52](https://github.com/pterm/pterm/issues/52))
+
+### Features
+- add BasicTextPrinter
 
 
 <a name="v0.5.1"></a>
