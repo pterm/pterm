@@ -10,6 +10,9 @@
 ### Documentation Changes
 - add to do list to PR template ([#52](https://github.com/pterm/pterm/issues/52))
 
+### Features
+- add BasicTextPrinter
+
 
 <a name="v0.5.1"></a>
 ## [v0.5.1] - 2020-10-14

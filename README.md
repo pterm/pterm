@@ -357,6 +357,43 @@ func main() {
 
 </details>
 
+### print-basic-text
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/print-basic-text/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"time"
+
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	pterm.DefaultBasic.Println("How do you make something as simple as printing text exciting? 🤔")
+	time.Sleep(time.Second * 3)
+	pterm.DefaultBasic.Println("By going over every example in excruciating detail, of course! 🤷")
+	time.Sleep(time.Second * 3)
+	pterm.DefaultBasic.Println("Just Kidding! Here are some examples for your benefit")
+	time.Sleep(time.Second * 3)
+	pterm.DefaultBasic.Printf("This has been printed using formatting in Printf %d%%\n", 100)
+	pterm.DefaultBasic.Println("This has been printed using Println")
+	time.Sleep(time.Second * 2)
+	pterm.DefaultBasic.Println(" 🎉  Now Styling our examples up a bit 🎉")
+	time.Sleep(time.Second * 2)
+	pterm.DefaultBasic.WithStyle(pterm.NewStyle(pterm.FgLightCyan)).Println("Thought I would dress up for the occasion!")
+
+}
+
+```
+
+</details>
+
 ### print-color-fade
 
 ![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/print-color-fade/animation.svg)
@@ -602,6 +639,7 @@ func main() {
 > GitHub [@pterm](https://github.com/pterm) &nbsp;&middot;&nbsp;
 > Maintainer [@MarvinJWendt](https://github.com/MarvinJWendt)
 > | [MarvinJWendt.com](https://marvinjwendt.com)
+
 
 
 
