@@ -1,20 +1,18 @@
 package pterm
 
 var (
-	// DefaultBasic returns a default BasicTextPrinter, which can be used to print text as is
-	// No default style is present for BasicTextPrinter
-	DefaultBasic = BasicTextPrinter{
-		Style: nil,
-	}
+	// DefaultBasicText returns a default BasicTextPrinter, which can be used to print text as is.
+	// No default style is present for BasicTextPrinter.
+	DefaultBasicText = BasicTextPrinter{}
 )
 
-// BasicTextPrinter is the printer used to print the input as-is or as specified by user formatting
+// BasicTextPrinter is the printer used to print the input as-is or as specified by user formatting.
 type BasicTextPrinter struct {
 	Style Style
 }
 
 // WithStyle adds a style to the printer.
-// unlike prefix printer, there is a single style for the message=
+// unlike prefix printer, there is a single style for the message.
 func (p BasicTextPrinter) WithStyle(style Style) *BasicTextPrinter {
 	p.Style = style
 	return &p
