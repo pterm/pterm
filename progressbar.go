@@ -150,7 +150,6 @@ func (p *Progressbar) Add(count int) *Progressbar {
 
 	if p.Total == 0 {
 		return nil
-		p.Total = 1
 	}
 
 	p.Current += count
