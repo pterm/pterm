@@ -6,8 +6,8 @@ var (
 	// DefaultHeader returns the printer for a default header text.
 	// Defaults to LightWhite, Bold Text and a Gray DefaultHeader background.
 	DefaultHeader = HeaderPrinter{
-		TextStyle:       ThemeDefault.HeaderTextStyle,
-		BackgroundStyle: ThemeDefault.HeaderBackgroundStyle,
+		TextStyle:       &ThemeDefault.HeaderTextStyle,
+		BackgroundStyle: &ThemeDefault.HeaderBackgroundStyle,
 		Margin:          5,
 	}
 )
@@ -16,20 +16,20 @@ var (
 // A header is printed as a big box with text in it.
 // Can be used as title screens or section separator.
 type HeaderPrinter struct {
-	TextStyle       Style
-	BackgroundStyle Style
+	TextStyle       *Style
+	BackgroundStyle *Style
 	Margin          int
 	FullWidth       bool
 }
 
 // WithTextStyle returns a new HeaderPrinter with changed
-func (p HeaderPrinter) WithTextStyle(style Style) *HeaderPrinter {
+func (p HeaderPrinter) WithTextStyle(style *Style) *HeaderPrinter {
 	p.TextStyle = style
 	return &p
 }
 
 // WithBackgroundStyle changes the background styling of the header.
-func (p HeaderPrinter) WithBackgroundStyle(style Style) *HeaderPrinter {
+func (p HeaderPrinter) WithBackgroundStyle(style *Style) *HeaderPrinter {
 	p.BackgroundStyle = style
 	return &p
 }
@@ -49,6 +49,13 @@ func (p HeaderPrinter) WithFullWidth(b ...bool) *HeaderPrinter {
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
 func (p HeaderPrinter) Sprint(a ...interface{}) string {
+	if p.TextStyle == nil {
+		p.TextStyle = NewStyle()
+	}
+	if p.BackgroundStyle == nil {
+		p.BackgroundStyle = NewStyle()
+	}
+
 	text := Sprint(a...)
 
 	if p.FullWidth {

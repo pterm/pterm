@@ -1,15 +1,47 @@
 package pterm
 
 import (
+	"github.com/pterm/pterm/internal"
+	"github.com/stretchr/testify/assert"
 	"io"
 	"io/ioutil"
 	"os"
+	"reflect"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
-
-	"github.com/pterm/pterm/internal"
 )
+
+// TestAllPrinters tests all functions which output something on every printer.
+// This will check if every nil value is handled well.
+func TestAllPrinters(t *testing.T) {
+	textPrinters := []TextPrinter{&BasicTextPrinter{}, &HeaderPrinter{}, &ParagraphPrinter{}, &PrefixPrinter{}, &SectionPrinter{}}
+
+	t.Run("TextPrinter", func(t *testing.T) {
+		for _, p := range textPrinters {
+			t.Run(reflect.TypeOf(p).String(), func(t *testing.T) {
+				p.Sprintln("Hello, World!")
+			})
+		}
+	})
+
+	t.Run("Progressbar", func(t *testing.T) {
+		p := Progressbar{}
+		p.Total = 1
+		p.Add(1)
+	})
+
+	t.Run("Spinner", func(t *testing.T) {
+		p := Spinner{}.Start("Hello, World!")
+		p.Success()
+		p.Fail()
+		p.Warning()
+	})
+
+	t.Run("Table", func(t *testing.T) {
+		p := Table{}
+		p.Data = TableData{[]string{"Hello", "World"}, []string{"Hello2", "World2"}}
+		p.Render()
+	})
+}
 
 // Sprint functions
 

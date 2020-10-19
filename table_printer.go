@@ -9,10 +9,10 @@ import (
 
 // DefaultTable contains standards, which can be used to print a Table.
 var DefaultTable = Table{
-	Style:          ThemeDefault.TableStyle,
-	HeaderStyle:    ThemeDefault.TableHeaderStyle,
+	Style:          &ThemeDefault.TableStyle,
+	HeaderStyle:    &ThemeDefault.TableHeaderStyle,
 	Separator:      " | ",
-	SeparatorStyle: ThemeDefault.TableSeparatorStyle,
+	SeparatorStyle: &ThemeDefault.TableSeparatorStyle,
 }
 
 // TableData is the type that contains the data of a Table.
@@ -20,64 +20,74 @@ type TableData [][]string
 
 // Table is able to render tables.
 type Table struct {
-	Style          Style
+	Style          *Style
 	HasHeader      bool
-	HeaderStyle    Style
+	HeaderStyle    *Style
 	Separator      string
-	SeparatorStyle Style
+	SeparatorStyle *Style
 	Data           TableData
 }
 
 // WithStyle returns a new Table with a specific Style.
-func (t Table) WithStyle(style Style) *Table {
-	t.Style = style
-	return &t
+func (p Table) WithStyle(style *Style) *Table {
+	p.Style = style
+	return &p
 }
 
 // WithHasHeader returns a new Table, where the first line is marked as a header.
-func (t Table) WithHasHeader(b ...bool) *Table {
-	t.HasHeader = internal.WithBoolean(b)
-	return &t
+func (p Table) WithHasHeader(b ...bool) *Table {
+	p.HasHeader = internal.WithBoolean(b)
+	return &p
 }
 
 // WithHeaderStyle returns a new Table with a specific HeaderStyle.
-func (t Table) WithHeaderStyle(style Style) *Table {
-	t.HeaderStyle = style
-	return &t
+func (p Table) WithHeaderStyle(style *Style) *Table {
+	p.HeaderStyle = style
+	return &p
 }
 
 // WithSeparator returns a new Table with a specific separator.
-func (t Table) WithSeparator(separator string) *Table {
-	t.Separator = separator
-	return &t
+func (p Table) WithSeparator(separator string) *Table {
+	p.Separator = separator
+	return &p
 }
 
 // WithSeparatorStyle returns a new Table with a specific SeparatorStyle.
-func (t Table) WithSeparatorStyle(style Style) *Table {
-	t.SeparatorStyle = style
-	return &t
+func (p Table) WithSeparatorStyle(style *Style) *Table {
+	p.SeparatorStyle = style
+	return &p
 }
 
 // WithData returns a new Table with specific Data.
-func (t Table) WithData(data [][]string) *Table {
-	t.Data = data
-	return &t
+func (p Table) WithData(data [][]string) *Table {
+	p.Data = data
+	return &p
 }
 
 // WithCSVReader return a new Table with specified Data extracted from CSV.
-func (t Table) WithCSVReader(reader *csv.Reader) *Table {
+func (p Table) WithCSVReader(reader *csv.Reader) *Table {
 	if records, err := reader.ReadAll(); err == nil {
-		t.Data = records
+		p.Data = records
 	}
-	return &t
+	return &p
 }
 
 // Srender renders the Table as a string.
-func (t Table) Srender() string {
+func (p Table) Srender() string {
+	if p.Style == nil {
+		p.Style = NewStyle()
+	}
+	if p.SeparatorStyle == nil {
+		p.SeparatorStyle = NewStyle()
+	}
+	if p.HeaderStyle == nil {
+		p.HeaderStyle = NewStyle()
+	}
+
 	var ret string
 	maxColumnWidth := make(map[int]int)
 
-	for _, row := range t.Data {
+	for _, row := range p.Data {
 		for ci, column := range row {
 			columnLength := len(RemoveColorFromString(column))
 			if columnLength > maxColumnWidth[ci] {
@@ -86,19 +96,19 @@ func (t Table) Srender() string {
 		}
 	}
 
-	for ri, row := range t.Data {
+	for ri, row := range p.Data {
 		for ci, column := range row {
 			columnLength := len(RemoveColorFromString(column))
 			columnString := column + strings.Repeat(" ", maxColumnWidth[ci]-columnLength)
 
 			if ci != len(row) && ci != 0 {
-				ret += t.Style.Sprint(t.SeparatorStyle.Sprint(t.Separator))
+				ret += p.Style.Sprint(p.SeparatorStyle.Sprint(p.Separator))
 			}
 
-			if t.HasHeader && ri == 0 {
-				ret += t.Style.Sprint(t.HeaderStyle.Sprint(columnString))
+			if p.HasHeader && ri == 0 {
+				ret += p.Style.Sprint(p.HeaderStyle.Sprint(columnString))
 			} else {
-				ret += t.Style.Sprint(columnString)
+				ret += p.Style.Sprint(columnString)
 			}
 		}
 
@@ -111,6 +121,6 @@ func (t Table) Srender() string {
 }
 
 // Render prints the Table to the terminal.
-func (t Table) Render() {
-	Println(t.Srender())
+func (p Table) Render() {
+	Println(p.Srender())
 }

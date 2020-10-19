@@ -9,7 +9,7 @@ import (
 // DefaultSpinner is the default spinner.
 var DefaultSpinner = Spinner{
 	Sequence:       []string{"▀ ", " ▀", " ▄", "▄ "},
-	Style:          ThemeDefault.SpinnerStyle,
+	Style:          &ThemeDefault.SpinnerStyle,
 	Delay:          time.Millisecond * 200,
 	MessageStyle:   ThemeDefault.SpinnerTextStyle,
 	SuccessPrinter: &Success,
@@ -23,7 +23,7 @@ var DefaultSpinner = Spinner{
 type Spinner struct {
 	Text           string
 	Sequence       []string
-	Style          Style
+	Style          *Style
 	Delay          time.Duration
 	MessageStyle   Style
 	SuccessPrinter TextPrinter
@@ -47,7 +47,7 @@ func (s Spinner) WithSequence(sequence ...string) *Spinner {
 }
 
 // WithStyle adds a style to the spinner.
-func (s Spinner) WithStyle(style Style) *Spinner {
+func (s Spinner) WithStyle(style *Style) *Spinner {
 	s.Style = style
 	return &s
 }
@@ -131,6 +131,10 @@ func (s *Spinner) GenericStop() *LivePrinter {
 // Success displays the success printer.
 // If no message is given, the text of the spinner will be reused as the default message.
 func (s *Spinner) Success(message ...interface{}) {
+	if s.SuccessPrinter == nil {
+		s.SuccessPrinter = &Success
+	}
+
 	if len(message) == 0 {
 		message = []interface{}{s.Text}
 	}
@@ -142,6 +146,10 @@ func (s *Spinner) Success(message ...interface{}) {
 // Fail displays the fail printer.
 // If no message is given, the text of the spinner will be reused as the default message.
 func (s *Spinner) Fail(message ...interface{}) {
+	if s.FailPrinter == nil {
+		s.FailPrinter = &Error
+	}
+
 	if len(message) == 0 {
 		message = []interface{}{s.Text}
 	}
@@ -153,6 +161,10 @@ func (s *Spinner) Fail(message ...interface{}) {
 // Warning displays the warning printer.
 // If no message is given, the text of the spinner will be reused as the default message.
 func (s *Spinner) Warning(message ...interface{}) {
+	if s.WarningPrinter == nil {
+		s.WarningPrinter = &Warning
+	}
+
 	if len(message) == 0 {
 		message = []interface{}{s.Text}
 	}

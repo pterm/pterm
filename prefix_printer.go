@@ -15,36 +15,36 @@ var (
 var (
 	// Info returns a PrefixPrinter, which can be used to print text with an "info" Prefix.
 	Info = PrefixPrinter{
-		MessageStyle: ThemeDefault.InfoMessageStyle,
+		MessageStyle: &ThemeDefault.InfoMessageStyle,
 		Prefix: Prefix{
-			Style: ThemeDefault.InfoPrefixStyle,
+			Style: &ThemeDefault.InfoPrefixStyle,
 			Text:  "INFO",
 		},
 	}
 
 	// Warning returns a PrefixPrinter, which can be used to print text with a "warning" Prefix.
 	Warning = PrefixPrinter{
-		MessageStyle: ThemeDefault.WarningMessageStyle,
+		MessageStyle: &ThemeDefault.WarningMessageStyle,
 		Prefix: Prefix{
-			Style: ThemeDefault.WarningPrefixStyle,
+			Style: &ThemeDefault.WarningPrefixStyle,
 			Text:  "WARNING",
 		},
 	}
 
 	// Success returns a PrefixPrinter, which can be used to print text with a "success" Prefix.
 	Success = PrefixPrinter{
-		MessageStyle: ThemeDefault.SuccessMessageStyle,
+		MessageStyle: &ThemeDefault.SuccessMessageStyle,
 		Prefix: Prefix{
-			Style: ThemeDefault.SuccessPrefixStyle,
+			Style: &ThemeDefault.SuccessPrefixStyle,
 			Text:  "SUCCESS",
 		},
 	}
 
 	// Error returns a PrefixPrinter, which can be used to print text with an "error" Prefix.
 	Error = PrefixPrinter{
-		MessageStyle: ThemeDefault.ErrorMessageStyle,
+		MessageStyle: &ThemeDefault.ErrorMessageStyle,
 		Prefix: Prefix{
-			Style: ThemeDefault.ErrorPrefixStyle,
+			Style: &ThemeDefault.ErrorPrefixStyle,
 			Text:  "ERROR",
 		},
 	}
@@ -52,9 +52,9 @@ var (
 	// Fatal returns a PrefixPrinter, which can be used to print text with an "fatal" Prefix.
 	// NOTICE: Fatal terminates the application immediately!
 	Fatal = PrefixPrinter{
-		MessageStyle: ThemeDefault.FatalMessageStyle,
+		MessageStyle: &ThemeDefault.FatalMessageStyle,
 		Prefix: Prefix{
-			Style: ThemeDefault.FatalPrefixStyle,
+			Style: &ThemeDefault.FatalPrefixStyle,
 			Text:  "FATAL",
 		},
 		Fatal: true,
@@ -62,9 +62,9 @@ var (
 
 	// Description returns a PrefixPrinter, which can be used to print text with a "description" Prefix.
 	Description = PrefixPrinter{
-		MessageStyle: ThemeDefault.DescriptionMessageStyle,
+		MessageStyle: &ThemeDefault.DescriptionMessageStyle,
 		Prefix: Prefix{
-			Style: ThemeDefault.DescriptionPrefixStyle,
+			Style: &ThemeDefault.DescriptionPrefixStyle,
 			Text:  "Description",
 		},
 	}
@@ -74,7 +74,7 @@ var (
 type PrefixPrinter struct {
 	Prefix       Prefix
 	Scope        Scope
-	MessageStyle Style
+	MessageStyle *Style
 	Fatal        bool
 }
 
@@ -92,7 +92,7 @@ func (p PrefixPrinter) WithScope(scope Scope) *PrefixPrinter {
 
 // WithMessageStyle adds a custom prefix to the printer.
 func (p PrefixPrinter) WithMessageStyle(style Style) *PrefixPrinter {
-	p.MessageStyle = style
+	p.MessageStyle = &style
 	return &p
 }
 
@@ -108,13 +108,23 @@ func (p PrefixPrinter) WithFatal(b ...bool) *PrefixPrinter {
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
 func (p *PrefixPrinter) Sprint(a ...interface{}) string {
+	if p.Prefix.Style == nil {
+		p.Prefix.Style = NewStyle()
+	}
+	if p.Scope.Style == nil {
+		p.Scope.Style = NewStyle()
+	}
+	if p.MessageStyle == nil {
+		p.MessageStyle = NewStyle()
+	}
+
 	var ret string
 	messageLines := strings.Split(Sprint(a...), "\n")
 	for i, m := range messageLines {
 		if i == 0 {
 			ret += p.GetFormattedPrefix() + " "
 			if p.Scope.Text != "" {
-				ret += NewStyle(p.Scope.Style...).Sprint(" (" + p.Scope.Text + ") ")
+				ret += NewStyle(*p.Scope.Style...).Sprint(" (" + p.Scope.Text + ") ")
 			}
 			ret += p.MessageStyle.Sprint(m)
 		} else {
@@ -172,17 +182,15 @@ func (p PrefixPrinter) GetFormattedPrefix() string {
 
 // Prefix contains the data used as the beginning of a printed text via a PrefixPrinter.
 type Prefix struct {
-	Theme Theme
 	Text  string
-	Style Style
+	Style *Style
 }
 
 // Scope contains the data of the optional scope of a prefix.
 // If it has a text, it will be printed after the Prefix in brackets.
 type Scope struct {
-	Theme Theme
 	Text  string
-	Style Style
+	Style *Style
 }
 
 func checkFatal(p *PrefixPrinter) {
