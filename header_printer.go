@@ -6,8 +6,8 @@ var (
 	// DefaultHeader returns the printer for a default header text.
 	// Defaults to LightWhite, Bold Text and a Gray DefaultHeader background.
 	DefaultHeader = HeaderPrinter{
-		TextStyle:       Style{FgLightWhite, Bold},
-		BackgroundStyle: Style{BgGray},
+		TextStyle:       &ThemeDefault.HeaderTextStyle,
+		BackgroundStyle: &ThemeDefault.HeaderBackgroundStyle,
 		Margin:          5,
 	}
 )
@@ -16,20 +16,20 @@ var (
 // A header is printed as a big box with text in it.
 // Can be used as title screens or section separator.
 type HeaderPrinter struct {
-	TextStyle       Style
-	BackgroundStyle Style
+	TextStyle       *Style
+	BackgroundStyle *Style
 	Margin          int
 	FullWidth       bool
 }
 
 // WithTextStyle returns a new HeaderPrinter with changed
-func (p HeaderPrinter) WithTextStyle(style Style) *HeaderPrinter {
+func (p HeaderPrinter) WithTextStyle(style *Style) *HeaderPrinter {
 	p.TextStyle = style
 	return &p
 }
 
 // WithBackgroundStyle changes the background styling of the header.
-func (p HeaderPrinter) WithBackgroundStyle(style Style) *HeaderPrinter {
+func (p HeaderPrinter) WithBackgroundStyle(style *Style) *HeaderPrinter {
 	p.BackgroundStyle = style
 	return &p
 }
@@ -49,6 +49,13 @@ func (p HeaderPrinter) WithFullWidth(b ...bool) *HeaderPrinter {
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
 func (p HeaderPrinter) Sprint(a ...interface{}) string {
+	if p.TextStyle == nil {
+		p.TextStyle = NewStyle()
+	}
+	if p.BackgroundStyle == nil {
+		p.BackgroundStyle = NewStyle()
+	}
+
 	text := Sprint(a...)
 
 	if p.FullWidth {
@@ -89,22 +96,25 @@ func (p HeaderPrinter) Sprintf(format string, a ...interface{}) string {
 // Print formats using the default formats for its operands and writes to standard output.
 // Spaces are added between operands when neither is a string.
 // It returns the number of bytes written and any write error encountered.
-func (p HeaderPrinter) Print(a ...interface{}) TextPrinter {
+func (p *HeaderPrinter) Print(a ...interface{}) *TextPrinter {
 	Print(p.Sprint(a...))
-	return &p
+	tp := TextPrinter(p)
+	return &tp
 }
 
 // Println formats using the default formats for its operands and writes to standard output.
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
-func (p HeaderPrinter) Println(a ...interface{}) TextPrinter {
+func (p *HeaderPrinter) Println(a ...interface{}) *TextPrinter {
 	Println(p.Sprint(a...))
-	return &p
+	tp := TextPrinter(p)
+	return &tp
 }
 
 // Printf formats according to a format specifier and writes to standard output.
 // It returns the number of bytes written and any write error encountered.
-func (p HeaderPrinter) Printf(format string, a ...interface{}) TextPrinter {
+func (p *HeaderPrinter) Printf(format string, a ...interface{}) *TextPrinter {
 	Print(p.Sprintf(format, a...))
-	return &p
+	tp := TextPrinter(p)
+	return &tp
 }

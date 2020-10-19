@@ -177,8 +177,12 @@ type Style []Color
 
 // NewStyle returns a new Style.
 // Accepts multiple colors.
-func NewStyle(colors ...Color) Style {
-	return colors
+func NewStyle(colors ...Color) *Style {
+	ret := Style{}
+	for _, c := range colors {
+		ret = append(ret, c)
+	}
+	return &ret
 }
 
 // Add styles to the current Style.
