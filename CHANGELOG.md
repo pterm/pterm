@@ -6,15 +6,39 @@
 - disable some checks for test files
 - don't lint test files
 - don't check for pointer returns
+- don't check for pointer returns
 
 ### Code Refactoring
+- make printers accept pointers to styles
 - remove emojis to comply with cross-platform policy
+- change LivePrinter interface to pointer output
+- change TextPrinter interface to pointer output
 
 ### Documentation Changes
 - add to do list to PR template ([#52](https://github.com/pterm/pterm/issues/52))
+- add documentation to theme
 
 ### Features
 - add BasicTextPrinter
+- add theme support to section and table printer
+- add theme support to spinner
+- add theme support to headers
+- add template support for progressbars
+- add default theme
+
+### Style
+- code styling
+
+### Test
+- **benchmark:** fix spinner benchmark
+
+### BREAKING CHANGE
+
+All printers only accept pointers as any `Style` attribute.
+
+LivePrinter now requires to return a pointer.
+
+TextPrinter now requires to return a pointer.
 
 
 <a name="v0.5.1"></a>

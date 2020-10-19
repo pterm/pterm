@@ -134,15 +134,12 @@ import (
 	"github.com/pterm/pterm"
 )
 
-var (
-	pseudoProgramList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chrome pseudo-outlook pseudo-explorer "+
-		"pseudo-dops pseudo-git pseudo-vsc pseudo-intellij pseudo-minecraft pseudo-scoop pseudo-chocolatey", " ")
-)
-
 func main() {
 	// Change this to time.Millisecond*200 to speed up the demo.
 	// Useful when debugging.
 	const second = time.Second
+	var pseudoProgramList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chrome pseudo-outlook pseudo-explorer "+
+		"pseudo-dops pseudo-git pseudo-vsc pseudo-intellij pseudo-minecraft pseudo-scoop pseudo-chocolatey", " ")
 
 	pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
 		"PTDP - PTerm Demo Program")
@@ -617,6 +614,47 @@ func main() {
 
 </details>
 
+### theme
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/theme/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"github.com/pterm/pterm"
+	"reflect"
+	"time"
+)
+
+func main() {
+	pterm.Info.Println("These are the default theme styles.\n" +
+		"You can modify them easily to your personal preference,\n" +
+		"or create new themes from scratch :)")
+	pterm.Println()
+
+	v := reflect.ValueOf(pterm.ThemeDefault)
+	typeOfS := v.Type()
+
+	if typeOfS == reflect.TypeOf(pterm.Theme{}) {
+		for i := 0; i < v.NumField(); i++ {
+			field, ok := v.Field(i).Interface().(pterm.Style)
+			if ok {
+				field.Println(typeOfS.Field(i).Name)
+			}
+			time.Sleep(time.Millisecond * 250)
+		}
+	}
+}
+
+```
+
+</details>
+
 <!-- examples:end -->
 
   
@@ -625,6 +663,7 @@ func main() {
 > GitHub [@pterm](https://github.com/pterm) &nbsp;&middot;&nbsp;
 > Maintainer [@MarvinJWendt](https://github.com/MarvinJWendt)
 > | [MarvinJWendt.com](https://marvinjwendt.com)
+
 
 
 
