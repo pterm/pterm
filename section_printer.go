@@ -2,7 +2,7 @@ package pterm
 
 // DefaultSection is the default section printer.
 var DefaultSection = SectionPrinter{
-	Style:         ThemeDefault.SectionStyle,
+	Style:         &ThemeDefault.SectionStyle,
 	Level:         1,
 	TopPadding:    1,
 	BottomPadding: 1,
@@ -11,14 +11,14 @@ var DefaultSection = SectionPrinter{
 // SectionPrinter prints a new section title.
 // It can be used to structure longer text, or different chapters of your program.
 type SectionPrinter struct {
-	Style         Style
+	Style         *Style
 	Level         int
 	TopPadding    int
 	BottomPadding int
 }
 
 // WithStyle returns a new SectionPrinter with a specific style.
-func (p SectionPrinter) WithStyle(style Style) *SectionPrinter {
+func (p SectionPrinter) WithStyle(style *Style) *SectionPrinter {
 	p.Style = style
 	return &p
 }
