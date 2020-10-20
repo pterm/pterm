@@ -1,6 +1,7 @@
 package pterm
 
 import (
+	"github.com/pterm/pterm/internal"
 	"github.com/stretchr/testify/assert"
 	"io"
 	"reflect"
@@ -149,11 +150,10 @@ func TestRGB_Print(t *testing.T) {
 
 	for _, rgb := range RGBs {
 		t.Run("", func(t *testing.T) {
-			out := captureStdout(func(w io.Writer) {
-				p := rgb.Print("Hello, World!")
+			internal.TestPrintContains(t, func(w io.Writer, a string) {
+				p := rgb.Print(a)
 				assert.NotNil(t, p)
 			})
-			assert.Contains(t, out, "Hello, World!")
 		})
 	}
 }
@@ -163,11 +163,10 @@ func TestRGB_Printf(t *testing.T) {
 
 	for _, rgb := range RGBs {
 		t.Run("", func(t *testing.T) {
-			out := captureStdout(func(w io.Writer) {
-				p := rgb.Printf("Hello, %s!", "World")
+			internal.TestPrintfContains(t, func(w io.Writer, format string, a string) {
+				p := rgb.Printf(format, a)
 				assert.NotNil(t, p)
 			})
-			assert.Contains(t, out, "Hello, World!")
 		})
 	}
 }
@@ -177,11 +176,10 @@ func TestRGB_Println(t *testing.T) {
 
 	for _, rgb := range RGBs {
 		t.Run("", func(t *testing.T) {
-			out := captureStdout(func(w io.Writer) {
-				p := rgb.Println("Hello, World!")
+			internal.TestPrintlnContains(t, func(w io.Writer, a string) {
+				p := rgb.Println(a)
 				assert.NotNil(t, p)
 			})
-			assert.Contains(t, out, "Hello, World!")
 		})
 	}
 }
@@ -191,8 +189,9 @@ func TestRGB_Sprint(t *testing.T) {
 
 	for _, rgb := range RGBs {
 		t.Run("", func(t *testing.T) {
-			s := rgb.Sprint("Hello, World!")
-			assert.Contains(t, s, "Hello, World!")
+			internal.TestSprintContains(t, func(a string) string {
+				return rgb.Sprint(a)
+			})
 		})
 	}
 }
@@ -202,8 +201,9 @@ func TestRGB_Sprintf(t *testing.T) {
 
 	for _, rgb := range RGBs {
 		t.Run("", func(t *testing.T) {
-			s := rgb.Sprintf("Hello, %s!", "World")
-			assert.Contains(t, s, "Hello, World!")
+			internal.TestSprintfContains(t, func(format string, a string) string {
+				return rgb.Sprintf(format, a)
+			})
 		})
 	}
 }
@@ -213,8 +213,9 @@ func TestRGB_Sprintln(t *testing.T) {
 
 	for _, rgb := range RGBs {
 		t.Run("", func(t *testing.T) {
-			s := rgb.Sprintln("Hello, World!")
-			assert.Contains(t, s, "Hello, World!")
+			internal.TestSprintlnContains(t, func(a string) string {
+				return rgb.Sprintln(a)
+			})
 		})
 	}
 }
