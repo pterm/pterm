@@ -44,7 +44,7 @@ func TestPercentageRound(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := PercentageRound(tt.args.total, tt.args.current, tt.args.max); got != tt.want {
+			if got := PercentageRound(tt.args.total, tt.args.current); got != tt.want {
 				t.Errorf("PercentageRound() = %v, want %v", got, tt.want)
 			}
 		})
