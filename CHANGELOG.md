@@ -2,7 +2,10 @@
 ## [Unreleased]
 
 ### Ci
+- fix codecov
 - upload coverage report
+
+### Documentation Changes
 
 
 <a name="v0.7.0"></a>
