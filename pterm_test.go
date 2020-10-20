@@ -4,42 +4,8 @@ import (
 	"github.com/pterm/pterm/internal"
 	"github.com/stretchr/testify/assert"
 	"io"
-	"reflect"
 	"testing"
 )
-
-// TestAllPrinters tests all functions which output something on every printer.
-// This will check if every nil value is handled well.
-func TestAllPrinters(t *testing.T) {
-	textPrinters := []TextPrinter{&BasicTextPrinter{}, &HeaderPrinter{}, &ParagraphPrinter{}, &PrefixPrinter{}, &SectionPrinter{}}
-
-	t.Run("TextPrinter", func(t *testing.T) {
-		for _, p := range textPrinters {
-			t.Run(reflect.TypeOf(p).String(), func(t *testing.T) {
-				p.Sprintln("Hello, World!")
-			})
-		}
-	})
-
-	t.Run("Progressbar", func(t *testing.T) {
-		p := Progressbar{}
-		p.Total = 1
-		p.Add(1)
-	})
-
-	t.Run("Spinner", func(t *testing.T) {
-		p := Spinner{}.Start("Hello, World!")
-		p.Success()
-		p.Fail()
-		p.Warning()
-	})
-
-	t.Run("Table", func(t *testing.T) {
-		p := Table{}
-		p.Data = TableData{[]string{"Hello", "World"}, []string{"Hello2", "World2"}}
-		p.Render()
-	})
-}
 
 // Sprint functions
 
@@ -236,70 +202,6 @@ func TestRemoveColors(t *testing.T) {
 	for _, randomString := range internal.RandomStrings {
 		testString := Cyan(randomString)
 		assert.Equal(t, randomString, RemoveColorFromString(testString))
-	}
-}
-
-func TestGenericPrinter(t *testing.T) {
-	var genericPrinters = []TextPrinter{&DefaultSection, &DefaultHeader}
-
-	prefixPrinter := []PrefixPrinter{Info, Success, Warning, Error, *Fatal.WithFatal(false)}
-	for _, pp := range prefixPrinter {
-		genericPrinters = append(genericPrinters, &pp)
-	}
-
-	for _, p := range genericPrinters {
-		for _, str := range internal.RandomStrings {
-			t.Run("TestGenericPrinter_Sprint", func(t *testing.T) {
-				out := p.Sprint(str)
-				assert.NotEmpty(t, out, p)
-				assert.NotEmpty(t, RemoveColorFromString(out), p)
-			})
-			t.Run("TestGenericPrinter_Sprintln", func(t *testing.T) {
-				out := p.Sprintln(str)
-				assert.NotEmpty(t, out, p)
-				assert.NotEmpty(t, RemoveColorFromString(out), p)
-			})
-			t.Run("TestGenericPrinter_Sprintf", func(t *testing.T) {
-				out := p.Sprintf(str+"%s World", "Hello")
-				assert.NotEmpty(t, out, p)
-				assert.NotEmpty(t, RemoveColorFromString(out), p)
-			})
-
-			t.Run("TestGenericPrinter_Print", func(t *testing.T) {
-				out := internal.CaptureStdout(func(w io.Writer) {
-					p.Print(str)
-				})
-				assert.NotEmpty(t, out, p)
-				assert.NotEmpty(t, RemoveColorFromString(out), p)
-			})
-			t.Run("TestGenericPrinter_Println", func(t *testing.T) {
-				out := internal.CaptureStdout(func(w io.Writer) {
-					p.Println(str)
-				})
-				assert.NotEmpty(t, out, p)
-				assert.NotEmpty(t, RemoveColorFromString(out), p)
-			})
-			t.Run("TestGenericPrinter_Printf", func(t *testing.T) {
-				out := internal.CaptureStdout(func(w io.Writer) {
-					p.Printf(str+"%s World", "Hello")
-				})
-				assert.NotEmpty(t, out, p)
-				assert.NotEmpty(t, RemoveColorFromString(out), p)
-			})
-
-			t.Run("TestGenericPrinterPrintPrintsSprint", func(t *testing.T) {
-				out := internal.CaptureStdout(func(w io.Writer) {
-					p.Print(str)
-				})
-				assert.Equal(t, p.Sprint(str), out)
-			})
-			t.Run("TestGenericPrinterPrintlnPrintsSprintln", func(t *testing.T) {
-				out := internal.CaptureStdout(func(w io.Writer) {
-					p.Println(str)
-				})
-				assert.Equal(t, p.Sprintln(str), out)
-			})
-		}
 	}
 }
 

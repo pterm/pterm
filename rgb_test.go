@@ -150,7 +150,7 @@ func TestRGB_Print(t *testing.T) {
 
 	for _, rgb := range RGBs {
 		t.Run("", func(t *testing.T) {
-			internal.TestPrintContains(t, func(w io.Writer, a string) {
+			internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
 				p := rgb.Print(a)
 				assert.NotNil(t, p)
 			})
@@ -163,7 +163,7 @@ func TestRGB_Printf(t *testing.T) {
 
 	for _, rgb := range RGBs {
 		t.Run("", func(t *testing.T) {
-			internal.TestPrintfContains(t, func(w io.Writer, format string, a string) {
+			internal.TestPrintfContains(t, func(w io.Writer, format string, a interface{}) {
 				p := rgb.Printf(format, a)
 				assert.NotNil(t, p)
 			})
@@ -176,7 +176,7 @@ func TestRGB_Println(t *testing.T) {
 
 	for _, rgb := range RGBs {
 		t.Run("", func(t *testing.T) {
-			internal.TestPrintlnContains(t, func(w io.Writer, a string) {
+			internal.TestPrintlnContains(t, func(w io.Writer, a interface{}) {
 				p := rgb.Println(a)
 				assert.NotNil(t, p)
 			})
@@ -189,7 +189,7 @@ func TestRGB_Sprint(t *testing.T) {
 
 	for _, rgb := range RGBs {
 		t.Run("", func(t *testing.T) {
-			internal.TestSprintContains(t, func(a string) string {
+			internal.TestSprintContains(t, func(a interface{}) string {
 				return rgb.Sprint(a)
 			})
 		})
@@ -201,7 +201,7 @@ func TestRGB_Sprintf(t *testing.T) {
 
 	for _, rgb := range RGBs {
 		t.Run("", func(t *testing.T) {
-			internal.TestSprintfContains(t, func(format string, a string) string {
+			internal.TestSprintfContains(t, func(format string, a interface{}) string {
 				return rgb.Sprintf(format, a)
 			})
 		})
@@ -213,7 +213,7 @@ func TestRGB_Sprintln(t *testing.T) {
 
 	for _, rgb := range RGBs {
 		t.Run("", func(t *testing.T) {
-			internal.TestSprintlnContains(t, func(a string) string {
+			internal.TestSprintlnContains(t, func(a interface{}) string {
 				return rgb.Sprintln(a)
 			})
 		})

@@ -12,45 +12,43 @@ func TestSectionPrinterNilPrint(t *testing.T) {
 	p.Println("Hello, World!")
 }
 
-func TestSectionPrinter_Print(t *testing.T) {
+func TestSectionPrinterPrintMethods(t *testing.T) {
 	p := DefaultSection
-	internal.TestPrintContains(t, func(w io.Writer, a string) {
-		p.Print(a)
-	})
-}
 
-func TestSectionPrinter_Printf(t *testing.T) {
-	p := DefaultSection
-	internal.TestPrintfContains(t, func(w io.Writer, format string, a string) {
-		p.Printf(format, a)
+	t.Run("Print", func(t *testing.T) {
+		internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
+			p.Print(a)
+		})
 	})
-}
 
-func TestSectionPrinter_Println(t *testing.T) {
-	p := DefaultSection
-	internal.TestPrintlnContains(t, func(w io.Writer, a string) {
-		p.Println(a)
+	t.Run("Printf", func(t *testing.T) {
+		internal.TestPrintfContains(t, func(w io.Writer, format string, a interface{}) {
+			p.Printf(format, a)
+		})
 	})
-}
 
-func TestSectionPrinter_Sprint(t *testing.T) {
-	p := DefaultSection
-	internal.TestSprintContains(t, func(a string) string {
-		return p.Sprint(a)
+	t.Run("Println", func(t *testing.T) {
+		internal.TestPrintlnContains(t, func(w io.Writer, a interface{}) {
+			p.Println(a)
+		})
 	})
-}
 
-func TestSectionPrinter_Sprintf(t *testing.T) {
-	p := DefaultSection
-	internal.TestSprintfContains(t, func(format string, a string) string {
-		return p.Sprintf(format, a)
+	t.Run("Sprint", func(t *testing.T) {
+		internal.TestSprintContains(t, func(a interface{}) string {
+			return p.Sprint(a)
+		})
 	})
-}
 
-func TestSectionPrinter_Sprintln(t *testing.T) {
-	p := DefaultSection
-	internal.TestSprintlnContains(t, func(a string) string {
-		return p.Sprintln(a)
+	t.Run("Sprintf", func(t *testing.T) {
+		internal.TestSprintfContains(t, func(format string, a interface{}) string {
+			return p.Sprintf(format, a)
+		})
+	})
+
+	t.Run("Sprintln", func(t *testing.T) {
+		internal.TestSprintlnContains(t, func(a interface{}) string {
+			return p.Sprintln(a)
+		})
 	})
 }
 
