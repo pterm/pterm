@@ -1,17 +1,64 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Bug Fixes
+- make theme accept pointer styles
+- make Spinner accept pointer Style
+- make WithMessageStyle accept Style pointer
+- add nil check to SectionPrinter Style
+- section printer Style to pointer
+
 ### Ci
 - better error handling in CI System ([#61](https://github.com/pterm/pterm/issues/61))
+- disable paramTypeCombine
+- dont check for paramTypeCombine
+- put unit test count into readme
 
 ### Code Refactoring
+- use log output
+- remove obsolete if
+- fit progressbar to new percentage calculation method
+- make fatal panic
+- rename parameters
 - don't show empty line when removing a progressbar
 
 ### Documentation Changes
+- comment WithBoolean
 - less to-do checks
+- add unit test count badge
+- document test utils
+- **contributing:** update test template
+- **contributing:** add test template to contributing guides
+- **contributing:** add printer nil check example
 
 ### Features
 - **progressbar:** add RemoveWhenDone
+
+### Test
+- add tests color and style
+- add tests to root print functions
+- add tests to progressbar
+- add tests to terminal
+- add tests to theme
+- fix internal percentage test
+- add tests to Spinner
+- add tests for TablePrinter
+- special tests for special statements
+- complete PrefixPrinter tests
+- add PrefixPrinter tests
+- rename HeaderPrinter tests
+- complete HeaderPrinter tests
+- add ParagraphPrinter tests
+- add HeaderPrinter tests
+- make unit test system check different types
+- add SectionPrinter tests
+- implement test utils
+- add rgb tests
+
+### Tests
+- add internal percentage tests
+- add BasicTextPrinter tests
+- test PrefixPrinter special cases
 
 
 <a name="v0.6.1"></a>
