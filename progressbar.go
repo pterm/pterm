@@ -165,7 +165,7 @@ func (p *Progressbar) Add(count int) *Progressbar {
 	var after string
 
 	width := GetTerminalWidth()
-	currentPercentage := int(internal.PercentageRound(float64(int64(p.Total)), float64(int64(p.Current)), float64(width)))
+	currentPercentage := int(internal.PercentageRound(float64(int64(p.Total)), float64(int64(p.Current))))
 
 	decoratorCount := Gray("[") + LightWhite(p.Current) + Gray("/") + LightWhite(p.Total) + Gray("]")
 
