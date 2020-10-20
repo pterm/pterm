@@ -21,6 +21,13 @@ func TestHeaderPrinterPrintMethods(t *testing.T) {
 		})
 	})
 
+	t.Run("PrintWithFullWidth", func(t *testing.T) {
+		internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
+			p2 := p.WithFullWidth()
+			p2.Print(a)
+		})
+	})
+
 	t.Run("Printf", func(t *testing.T) {
 		internal.TestPrintfContains(t, func(w io.Writer, format string, a interface{}) {
 			p.Printf(format, a)

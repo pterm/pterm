@@ -7,45 +7,56 @@ import (
 	"testing"
 )
 
-func TestParagraphPrinter_Print(t *testing.T) {
-	p := DefaultParagraph
-	internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
-		p.Print(a)
-	})
+func TestParagraphPrinterNilPrint(t *testing.T) {
+	p := ParagraphPrinter{}
+	p.Println("Hello, World!")
 }
 
-func TestParagraphPrinter_Printf(t *testing.T) {
+func TestParagraphPrinterPrintMethods(t *testing.T) {
 	p := DefaultParagraph
-	internal.TestPrintfContains(t, func(w io.Writer, format string, a interface{}) {
-		p.Printf(format, a)
-	})
-}
 
-func TestParagraphPrinter_Println(t *testing.T) {
-	p := DefaultParagraph
-	internal.TestPrintlnContains(t, func(w io.Writer, a interface{}) {
-		p.Println(a)
+	t.Run("Print", func(t *testing.T) {
+		internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
+			p.Print(a)
+		})
 	})
-}
 
-func TestParagraphPrinter_Sprint(t *testing.T) {
-	p := DefaultParagraph
-	internal.TestSprintContains(t, func(a interface{}) string {
-		return p.Sprint(a)
+	t.Run("PrintWithLongText", func(t *testing.T) {
+		assert.NotEmpty(t, p.Print("This is a longer text to test the paragraph printer. I don't know when this text will be long enough so I will just write until I get the feeling that it's enough. Maybe about now."))
 	})
-}
 
-func TestParagraphPrinter_Sprintf(t *testing.T) {
-	p := DefaultParagraph
-	internal.TestSprintfContains(t, func(format string, a interface{}) string {
-		return p.Sprintf(format, a)
+	t.Run("PrintWithoutText", func(t *testing.T) {
+		assert.NotEmpty(t, p.Print(""))
 	})
-}
 
-func TestParagraphPrinter_Sprintln(t *testing.T) {
-	p := DefaultParagraph
-	internal.TestSprintlnContains(t, func(a interface{}) string {
-		return p.Sprintln(a)
+	t.Run("Printf", func(t *testing.T) {
+		internal.TestPrintfContains(t, func(w io.Writer, format string, a interface{}) {
+			p.Printf(format, a)
+		})
+	})
+
+	t.Run("Println", func(t *testing.T) {
+		internal.TestPrintlnContains(t, func(w io.Writer, a interface{}) {
+			p.Println(a)
+		})
+	})
+
+	t.Run("Sprint", func(t *testing.T) {
+		internal.TestSprintContains(t, func(a interface{}) string {
+			return p.Sprint(a)
+		})
+	})
+
+	t.Run("Sprintf", func(t *testing.T) {
+		internal.TestSprintfContains(t, func(format string, a interface{}) string {
+			return p.Sprintf(format, a)
+		})
+	})
+
+	t.Run("Sprintln", func(t *testing.T) {
+		internal.TestSprintlnContains(t, func(a interface{}) string {
+			return p.Sprintln(a)
+		})
 	})
 }
 
