@@ -30,14 +30,14 @@ func (p SectionPrinter) WithLevel(level int) *SectionPrinter {
 }
 
 // WithTopPadding returns a new SectionPrinter with a specific top padding.
-func (p SectionPrinter) WithTopPadding(level int) *SectionPrinter {
-	p.TopPadding = level
+func (p SectionPrinter) WithTopPadding(padding int) *SectionPrinter {
+	p.TopPadding = padding
 	return &p
 }
 
 // WithBottomPadding returns a new SectionPrinter with a specific top padding.
-func (p SectionPrinter) WithBottomPadding(level int) *SectionPrinter {
-	p.BottomPadding = level
+func (p SectionPrinter) WithBottomPadding(padding int) *SectionPrinter {
+	p.BottomPadding = padding
 	return &p
 }
 
