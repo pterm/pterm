@@ -91,8 +91,8 @@ func (p PrefixPrinter) WithScope(scope Scope) *PrefixPrinter {
 }
 
 // WithMessageStyle adds a custom prefix to the printer.
-func (p PrefixPrinter) WithMessageStyle(style Style) *PrefixPrinter {
-	p.MessageStyle = &style
+func (p PrefixPrinter) WithMessageStyle(style *Style) *PrefixPrinter {
+	p.MessageStyle = style
 	return &p
 }
 
