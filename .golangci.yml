@@ -15,6 +15,7 @@ linters-settings:
       - exitAfterDefer
       - hugeParam
       - ptrToRefParam
+      - paramTypeCombine
   #  maligned:
   #    suggest-new: true
   misspell:
@@ -85,8 +86,6 @@ issues:
     # https://github.com/go-critic/go-critic/issues/926
     - linters:
         - gocritic
-      text:
-        - "unnecessaryDefer:"
-        - "paramTypeCombine:"
+      text: "unnecessaryDefer:"
 service:
   golangci-lint-version: 1.31.x # use the fixed version to not introduce new linters unexpectedly
