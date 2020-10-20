@@ -83,7 +83,7 @@ func (p RGB) Sprintf(format string, a ...interface{}) string {
 // Print formats using the default formats for its operands and writes to standard output.
 // Spaces are added between operands when neither is a string.
 // It returns the number of bytes written and any write error encountered.
-func (p *RGB) Print(a ...interface{}) *TextPrinter {
+func (p RGB) Print(a ...interface{}) *TextPrinter {
 	Print(p.Sprint(a...))
 	tp := TextPrinter(p)
 	return &tp
@@ -92,7 +92,7 @@ func (p *RGB) Print(a ...interface{}) *TextPrinter {
 // Println formats using the default formats for its operands and writes to standard output.
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
-func (p *RGB) Println(a ...interface{}) *TextPrinter {
+func (p RGB) Println(a ...interface{}) *TextPrinter {
 	Println(p.Sprint(a...))
 	tp := TextPrinter(p)
 	return &tp
@@ -100,7 +100,7 @@ func (p *RGB) Println(a ...interface{}) *TextPrinter {
 
 // Printf formats according to a format specifier and writes to standard output.
 // It returns the number of bytes written and any write error encountered.
-func (p *RGB) Printf(format string, a ...interface{}) *TextPrinter {
+func (p RGB) Printf(format string, a ...interface{}) *TextPrinter {
 	Print(p.Sprintf(format, a...))
 	tp := TextPrinter(p)
 	return &tp
