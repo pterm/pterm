@@ -53,17 +53,36 @@ func main() {
 		log.Fatal(err)
 	}
 
-	beforeRegex := regexp.MustCompile(`(?ms).*<!-- examples:start -->`)
-	afterRegex := regexp.MustCompile(`(?ms)<!-- examples:end -->.*`)
-
-	before := beforeRegex.FindAllString(string(readmeContent), 1)[0]
-	after := afterRegex.FindAllString(string(readmeContent), 1)[0]
-
 	var newReadmeContent string
+	var unitTestCountBytes []byte
 
-	newReadmeContent += before + "\n"
+	cmd := exec.Command("bash", "-c", "go test -v ./... | grep -c RUN")
+	unitTestCountBytes, err = cmd.Output()
+	if err != nil {
+		log.Println(err)
+	}
+
+	unitTestCount := strings.ReplaceAll(string(unitTestCountBytes), "\n", "")
+
+	beforeUnitTestBadgeRegex := regexp.MustCompile(`(?ms).*<!-- unittestcount:start -->`)
+	afterUnitTestBadgeRegex := regexp.MustCompile(`(?ms)<!-- unittestcount:end -->.*`)
+
+	beforeUnitTestBadge := beforeUnitTestBadgeRegex.FindAllString(string(readmeContent), 1)[0]
+	afterUnitTestBadge := afterUnitTestBadgeRegex.FindAllString(string(readmeContent), 1)[0]
+
+	newReadmeContent = beforeUnitTestBadge + "\n"
+	newReadmeContent += `<img src="https://img.shields.io/badge/Unit_Tests-` + unitTestCount + `-brightgreen?style=flat-square" alt="Forks">`
+	newReadmeContent += afterUnitTestBadge + "\n"
+
+	beforeExamplesRegex := regexp.MustCompile(`(?ms).*<!-- examples:start -->`)
+	afterExamplesRegex := regexp.MustCompile(`(?ms)<!-- examples:end -->.*`)
+
+	beforeExamples := beforeExamplesRegex.FindAllString(newReadmeContent, 1)[0]
+	afterExamples := afterExamplesRegex.FindAllString(newReadmeContent, 1)[0]
+
+	newReadmeContent = beforeExamples + "\n"
 	newReadmeContent += readmeExamples
-	newReadmeContent += after + "\n"
+	newReadmeContent += afterExamples + "\n"
 
 	err = ioutil.WriteFile("./README.md", []byte(newReadmeContent), 0600)
 	if err != nil {

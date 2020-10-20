@@ -17,6 +17,11 @@
 <img src="https://img.shields.io/github/forks/pterm/pterm.svg?style=flat-square" alt="Forks">
 </a>
 
+<a href="https://github.com/pterm/pterm">
+<!-- unittestcount:start -->
+<img src="https://img.shields.io/badge/Unit_Tests-435-brightgreen?style=flat-square" alt="Forks"><!-- unittestcount:end -->
+</a>
+
 <a href="https://github.com/pterm/pterm/issues">
 <img src="https://img.shields.io/github/issues/pterm/pterm.svg?style=flat-square" alt="Issues">
 </a>
@@ -663,6 +668,11 @@ func main() {
 > GitHub [@pterm](https://github.com/pterm) &nbsp;&middot;&nbsp;
 > Maintainer [@MarvinJWendt](https://github.com/MarvinJWendt)
 > | [MarvinJWendt.com](https://marvinjwendt.com)
+
+
+
+
+
 
 
 
