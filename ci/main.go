@@ -59,7 +59,7 @@ func main() {
 	cmd := exec.Command("bash", "-c", "go test -v ./... | grep -c RUN")
 	unitTestCountBytes, err = cmd.Output()
 	if err != nil {
-		log.Println(err)
+		log.Panic(err)
 	}
 
 	unitTestCount := strings.ReplaceAll(string(unitTestCountBytes), "\n", "")
