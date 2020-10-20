@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Code Refactoring
+- don't show empty line when removing a progressbar
+
 ### Documentation Changes
 - less to-do checks
 
