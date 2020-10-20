@@ -64,25 +64,9 @@ func main() {
 
 	unitTestCount := strings.ReplaceAll(string(unitTestCountBytes), "\n", "")
 
-	beforeUnitTestBadgeRegex := regexp.MustCompile(`(?ms).*<!-- unittestcount:start -->`)
-	afterUnitTestBadgeRegex := regexp.MustCompile(`(?ms)<!-- unittestcount:end -->.*`)
-
-	beforeUnitTestBadge := beforeUnitTestBadgeRegex.FindAllString(string(readmeContent), 1)[0]
-	afterUnitTestBadge := afterUnitTestBadgeRegex.FindAllString(string(readmeContent), 1)[0]
-
-	newReadmeContent = beforeUnitTestBadge + "\n"
-	newReadmeContent += `<img src="https://img.shields.io/badge/Unit_Tests-` + unitTestCount + `-brightgreen?style=flat-square" alt="Forks">`
-	newReadmeContent += afterUnitTestBadge + "\n"
-
-	beforeExamplesRegex := regexp.MustCompile(`(?ms).*<!-- examples:start -->`)
-	afterExamplesRegex := regexp.MustCompile(`(?ms)<!-- examples:end -->.*`)
-
-	beforeExamples := beforeExamplesRegex.FindAllString(newReadmeContent, 1)[0]
-	afterExamples := afterExamplesRegex.FindAllString(newReadmeContent, 1)[0]
-
-	newReadmeContent = beforeExamples + "\n"
-	newReadmeContent += readmeExamples
-	newReadmeContent += afterExamples + "\n"
+	newReadmeContent = writeBetween("unittestcount", string(readmeContent), `<img src="https://img.shields.io/badge/Unit_Tests-`+unitTestCount+`-brightgreen?style=flat-square" alt="Forks">`)
+	newReadmeContent = writeBetween("unittestcount2", newReadmeContent, "**`"+unitTestCount+"`**")
+	newReadmeContent = writeBetween("examples", newReadmeContent, "\n"+readmeExamples+"\n")
 
 	err = ioutil.WriteFile("./README.md", []byte(newReadmeContent), 0600)
 	if err != nil {
@@ -152,6 +136,19 @@ func processFile(f os.FileInfo) {
 	os.Remove(animationDataPath)
 
 	wg.Done()
+}
+
+func writeBetween(name string, original string, insertText string) string {
+	beforeRegex := regexp.MustCompile(`(?ms).*<!-- ` + name + `:start -->`)
+	afterRegex := regexp.MustCompile(`(?ms)<!-- ` + name + `:end -->.*`)
+	before := beforeRegex.FindAllString(original, 1)[0]
+	after := afterRegex.FindAllString(original, 1)[0]
+
+	ret := before
+	ret += insertText
+	ret += after
+
+	return ret
 }
 
 func execute(command string) {
