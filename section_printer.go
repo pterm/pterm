@@ -44,6 +44,10 @@ func (p SectionPrinter) WithBottomPadding(padding int) *SectionPrinter {
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
 func (p SectionPrinter) Sprint(a ...interface{}) string {
+	if p.Style == nil {
+		p.Style = NewStyle()
+	}
+
 	var ret string
 
 	for i := 0; i < p.TopPadding; i++ {
