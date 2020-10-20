@@ -31,7 +31,16 @@
 <img src="https://img.shields.io/badge/platform-windows%20%7C%20macos%20%7C%20linux-informational?style=for-the-badge" alt="Downloads">
 </a>
 
-<hr/>
+<a href="https://github.com/pterm/pterm/">
+<img src="https://raw.githubusercontent.com/pterm/pterm/master/_examples/demo/animation.svg" alt="Dops">
+</a>
+
+</p>
+
+<br/>
+<br/>
+
+---
 
 <p align="center">
 <strong><a href="#-installation">Installation</a></strong>
@@ -43,17 +52,38 @@
 <strong><a href="./CONTRIBUTING.md">Contributing</a></strong>
 </p>
 
-<hr/>
-
-<a href="https://github.com/pterm/pterm/">
-<img src="https://raw.githubusercontent.com/pterm/pterm/master/_examples/demo/animation.svg" alt="Dops">
-</a>
-
-</p>
-
 ---
 
-## ⚠  NOTICE
+## 🥅 Goal of PTerm
+
+> PTerm is designed to beautify the terminal output of your program.
+
+### • 🪀 Easy to use
+
+Our first priority is to keep PTerm as easy to use as possible. With many [examples](#-examples) for each individual component, getting started with PTerm is extremely easy. All components are similar in design and implement interfaces to simplify mixing individual components together.
+
+### • 🤹‍♀️ Cross-Platform
+
+We take special precautions to ensure that PTerm works on as many operating systems and terminals as possible. Whether it's `Windows CMD`, `macOS iTerm2` or in the backend (for example inside a `GitHub Action` or other CI systems), PTerm **guarantees** beautiful output!\
+\
+*PTerm is actively tested on `Windows`, `Linux (Debian & Ubuntu)` and `macOS`.*
+
+### • ✨ Consistent Colors
+
+PTerm uses the [ANSI color scheme](https://en.wikipedia.org/wiki/ANSI_escape_code#3/4_bit) which is widely used by terminals to ensure consistent colors in different terminal themes.
+If that's not enough, PTerm can be used to access the full RGB color scheme (16 million colors) in terminals that support `TrueColor`.
+
+![ANSI Colors](https://user-images.githubusercontent.com/31022056/96002009-f10c3a80-0e38-11eb-8d90-f3150150599c.png)
+
+### • 📚 Component system
+
+PTerm consists of many components, called `Printers`, which can be used individually or together to generate pretty console output.
+
+### • 🛠 Configurable
+
+PTerm can be used by without any configuration. However, you can easily configure each component with little code, so everyone has the freedom to design their own terminal output.
+
+## ⚠ NOTICE
 
 PTerm is currently under development. It is very likely that not all things will remain as they are at the moment. However, PTerm is still functional. The versioning of PTerm follows the SemVer guidelines. Breaking Changes are explicitly mentioned in the changelogs and the version will be increased accordingly. Everybody is welcome to improve PTerm, whether by making suggestions or pull requests. Thanks ❤
 
@@ -104,15 +134,12 @@ import (
 	"github.com/pterm/pterm"
 )
 
-var (
-	pseudoProgramList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chrome pseudo-outlook pseudo-explorer "+
-		"pseudo-dops pseudo-git pseudo-vsc pseudo-intellij pseudo-minecraft pseudo-scoop pseudo-chocolatey", " ")
-)
-
 func main() {
 	// Change this to time.Millisecond*200 to speed up the demo.
 	// Useful when debugging.
 	const second = time.Second
+	var pseudoProgramList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chrome pseudo-outlook pseudo-explorer "+
+		"pseudo-dops pseudo-git pseudo-vsc pseudo-intellij pseudo-minecraft pseudo-scoop pseudo-chocolatey", " ")
 
 	pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
 		"PTDP - PTerm Demo Program")
@@ -259,7 +286,7 @@ func main() {
 
 	pterm.Error.Prefix = pterm.Prefix{
 		Text:  "OVERRIDE",
-		Style: pterm.Style{pterm.BgCyan, pterm.FgRed},
+		Style: pterm.NewStyle(pterm.BgCyan, pterm.FgRed),
 	}
 
 	pterm.Error.Println("This is the default Error after the prefix was overridden")
@@ -321,6 +348,29 @@ func main() {
 
 	pterm.Println("This text is written with the default Println() function. No intelligent splitting here." +
 		"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam")
+}
+
+```
+
+</details>
+
+### print-basic-text
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/print-basic-text/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	pterm.DefaultBasicText.Println("Default basic text printer.")
+	pterm.DefaultBasicText.Println("Can be used in any" + pterm.LightMagenta(" TextPrinter ") + "context.")
+	pterm.DefaultBasicText.Println("For example to resolve progressbars and spinners.")
 }
 
 ```
@@ -564,6 +614,47 @@ func main() {
 
 </details>
 
+### theme
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/theme/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"github.com/pterm/pterm"
+	"reflect"
+	"time"
+)
+
+func main() {
+	pterm.Info.Println("These are the default theme styles.\n" +
+		"You can modify them easily to your personal preference,\n" +
+		"or create new themes from scratch :)")
+	pterm.Println()
+
+	v := reflect.ValueOf(pterm.ThemeDefault)
+	typeOfS := v.Type()
+
+	if typeOfS == reflect.TypeOf(pterm.Theme{}) {
+		for i := 0; i < v.NumField(); i++ {
+			field, ok := v.Field(i).Interface().(pterm.Style)
+			if ok {
+				field.Println(typeOfS.Field(i).Name)
+			}
+			time.Sleep(time.Millisecond * 250)
+		}
+	}
+}
+
+```
+
+</details>
+
 <!-- examples:end -->
 
   
@@ -572,6 +663,25 @@ func main() {
 > GitHub [@pterm](https://github.com/pterm) &nbsp;&middot;&nbsp;
 > Maintainer [@MarvinJWendt](https://github.com/MarvinJWendt)
 > | [MarvinJWendt.com](https://marvinjwendt.com)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -21,8 +21,8 @@ var (
 		LineCharacter:             "█",
 		LastCharacter:             "█",
 		ElapsedTimeRoundingFactor: time.Second,
-		BarStyle:                  Style{FgLightCyan},
-		TitleStyle:                Style{FgCyan},
+		BarStyle:                  &ThemeDefault.ProgressbarBarStyle,
+		TitleStyle:                &ThemeDefault.ProgressbarTitleStyle,
 		ShowTitle:                 true,
 		ShowCount:                 true,
 		ShowPercentage:            true,
@@ -47,8 +47,8 @@ type Progressbar struct {
 	ShowTitle       bool
 	ShowPercentage  bool
 
-	TitleStyle Style
-	BarStyle   Style
+	TitleStyle *Style
+	BarStyle   *Style
 
 	IsActive bool
 
@@ -122,13 +122,13 @@ func (p Progressbar) WithShowPercentage(b ...bool) *Progressbar {
 }
 
 // WithTitleStyle sets the style of the title.
-func (p Progressbar) WithTitleStyle(style Style) *Progressbar {
+func (p Progressbar) WithTitleStyle(style *Style) *Progressbar {
 	p.TitleStyle = style
 	return &p
 }
 
 // WithBarStyle sets the style of the bar.
-func (p Progressbar) WithBarStyle(style Style) *Progressbar {
+func (p Progressbar) WithBarStyle(style *Style) *Progressbar {
 	p.BarStyle = style
 	return &p
 }
@@ -141,6 +141,17 @@ func (p *Progressbar) Increment() *Progressbar {
 
 // Add to current value.
 func (p *Progressbar) Add(count int) *Progressbar {
+	if p.TitleStyle == nil {
+		p.TitleStyle = NewStyle()
+	}
+	if p.BarStyle == nil {
+		p.BarStyle = NewStyle()
+	}
+
+	if p.Total == 0 {
+		return nil
+	}
+
 	p.Current += count
 
 	var before string
@@ -215,15 +226,17 @@ func (p *Progressbar) Stop() *Progressbar {
 // GenericStart runs Start, but returns a LivePrinter.
 // This is used for the interface LivePrinter.
 // You most likely want to use Start instead of this in your program.
-func (p Progressbar) GenericStart() LivePrinter {
-	return p.Start()
+func (p Progressbar) GenericStart() *LivePrinter {
+	lp := LivePrinter(p.Start())
+	return &lp
 }
 
 // GenericStop runs Stop, but returns a LivePrinter.
 // This is used for the interface LivePrinter.
 // You most likely want to use Stop instead of this in your program.
-func (p Progressbar) GenericStop() LivePrinter {
-	return p.Stop()
+func (p Progressbar) GenericStop() *LivePrinter {
+	lp := LivePrinter(p.Stop())
+	return &lp
 }
 
 // GetElapsedTime returns the elapsed time, since the progressbar was started.

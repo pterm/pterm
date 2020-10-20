@@ -9,12 +9,12 @@ import (
 // DefaultSpinner is the default spinner.
 var DefaultSpinner = Spinner{
 	Sequence:       []string{"▀ ", " ▀", " ▄", "▄ "},
-	Style:          Style{FgLightCyan},
+	Style:          &ThemeDefault.SpinnerStyle,
 	Delay:          time.Millisecond * 200,
-	MessageStyle:   Style{FgLightWhite},
-	SuccessPrinter: Success,
-	FailPrinter:    Error,
-	WarningPrinter: Warning,
+	MessageStyle:   ThemeDefault.SpinnerTextStyle,
+	SuccessPrinter: &Success,
+	FailPrinter:    &Error,
+	WarningPrinter: &Warning,
 }
 
 // Spinner is a loading animation, which can be used if the progress is unknown.
@@ -23,7 +23,7 @@ var DefaultSpinner = Spinner{
 type Spinner struct {
 	Text           string
 	Sequence       []string
-	Style          Style
+	Style          *Style
 	Delay          time.Duration
 	MessageStyle   Style
 	SuccessPrinter TextPrinter
@@ -47,7 +47,7 @@ func (s Spinner) WithSequence(sequence ...string) *Spinner {
 }
 
 // WithStyle adds a style to the spinner.
-func (s Spinner) WithStyle(style Style) *Spinner {
+func (s Spinner) WithStyle(style *Style) *Spinner {
 	s.Style = style
 	return &s
 }
@@ -113,22 +113,28 @@ func (s *Spinner) Stop() {
 // GenericStart runs Start, but returns a LivePrinter.
 // This is used for the interface LivePrinter.
 // You most likely want to use Start instead of this in your program.
-func (s Spinner) GenericStart() LivePrinter {
+func (s *Spinner) GenericStart() *LivePrinter {
 	s.Start()
-	return &s
+	lp := LivePrinter(s)
+	return &lp
 }
 
 // GenericStop runs Stop, but returns a LivePrinter.
 // This is used for the interface LivePrinter.
 // You most likely want to use Stop instead of this in your program.
-func (s *Spinner) GenericStop() LivePrinter {
+func (s *Spinner) GenericStop() *LivePrinter {
 	s.Stop()
-	return s
+	lp := LivePrinter(s)
+	return &lp
 }
 
 // Success displays the success printer.
 // If no message is given, the text of the spinner will be reused as the default message.
 func (s *Spinner) Success(message ...interface{}) {
+	if s.SuccessPrinter == nil {
+		s.SuccessPrinter = &Success
+	}
+
 	if len(message) == 0 {
 		message = []interface{}{s.Text}
 	}
@@ -140,6 +146,10 @@ func (s *Spinner) Success(message ...interface{}) {
 // Fail displays the fail printer.
 // If no message is given, the text of the spinner will be reused as the default message.
 func (s *Spinner) Fail(message ...interface{}) {
+	if s.FailPrinter == nil {
+		s.FailPrinter = &Error
+	}
+
 	if len(message) == 0 {
 		message = []interface{}{s.Text}
 	}
@@ -151,6 +161,10 @@ func (s *Spinner) Fail(message ...interface{}) {
 // Warning displays the warning printer.
 // If no message is given, the text of the spinner will be reused as the default message.
 func (s *Spinner) Warning(message ...interface{}) {
+	if s.WarningPrinter == nil {
+		s.WarningPrinter = &Warning
+	}
+
 	if len(message) == 0 {
 		message = []interface{}{s.Text}
 	}

@@ -1,23 +1,86 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Bug Fixes
+- fix RGB methods
+
+### Documentation Changes
+- **examples:** fix override-default-printer example
+
+
+<a name="v0.6.0"></a>
+## [v0.6.0] - 2020-10-19
+### Ci
+- disable gocritic in test files
+- disable some checks for test files
+- don't lint test files
+- don't check for pointer returns
+- don't check for pointer returns
+
+### Code Refactoring
+- make printers accept pointers to styles
+- remove emojis to comply with cross-platform policy
+- change LivePrinter interface to pointer output
+- change TextPrinter interface to pointer output
+
+### Documentation Changes
+- add to do list to PR template ([#52](https://github.com/pterm/pterm/issues/52))
+- add documentation to theme
+
+### Features
+- add BasicTextPrinter
+- add theme support to section and table printer
+- add theme support to spinner
+- add theme support to headers
+- add template support for progressbars
+- add default theme
+
+### Style
+- code styling
+
+### Test
+- **benchmark:** fix spinner benchmark
+
+### BREAKING CHANGE
+
+All printers only accept pointers as any `Style` attribute.
+
+LivePrinter now requires to return a pointer.
+
+TextPrinter now requires to return a pointer.
+
+
+<a name="v0.5.1"></a>
+## [v0.5.1] - 2020-10-14
 ### Chore
 - **deps:** update deps
 
 ### Ci
+- add codeowners file
+- update animations
+- write breaking changes into unreleased changelog version
 - disable cursor in animations
 
 ### Code Refactoring
 - declare function name as `WithCSVReader`
 
 ### Documentation Changes
+- **contributing:** change header name
 - **examples:** add every ANSI color to examples
+- **readme:** put header under demo
+- **readme:** update readme
+- **readme:** add goal to readme
 - **readme:** center header
 - **readme:** fix header links
+- **readme:** add space between demo and header
+- **readme:** add space between demo and header
+- **readme:** add easy to use section
+- **readme:** style readme
 - **readme:** replace emoji strings with actual emojis
-- **readme:** update readme
 
 ### Features
+- add ability to disable output ([#44](https://github.com/pterm/pterm/issues/44))
+- add `Srender` to `RenderPrinter` interface
 - add csv table support ([#42](https://github.com/pterm/pterm/issues/42))
 - add HEX to RGB converter in `RGB` ([#41](https://github.com/pterm/pterm/issues/41))
 - add theme to generated animations
@@ -349,7 +412,9 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.6.0...HEAD
+[v0.6.0]: https://github.com/pterm/pterm/compare/v0.5.1...v0.6.0
+[v0.5.1]: https://github.com/pterm/pterm/compare/v0.5.0...v0.5.1
 [v0.5.0]: https://github.com/pterm/pterm/compare/v0.4.1...v0.5.0
 [v0.4.1]: https://github.com/pterm/pterm/compare/v0.4.0...v0.4.1
 [v0.4.0]: https://github.com/pterm/pterm/compare/v0.3.2...v0.4.0

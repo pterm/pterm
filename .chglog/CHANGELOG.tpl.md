@@ -7,6 +7,22 @@
 ### {{ .Title }}
 {{ range .Commits }}{{ if ne .Subject "autoupdate" }}- {{ if .Scope }}**{{ .Scope }}:** {{ end }}{{ .Subject }}{{ print "\n" }}{{ end -}}{{ end }}
 {{ end -}}
+
+{{- if .Unreleased.RevertCommits -}}
+### Reverts
+{{ range .Unreleased.RevertCommits -}}
+- {{ .Revert.Header }}
+{{ end }}
+{{ end -}}
+
+{{- if .Unreleased.NoteGroups -}}
+{{ range .Unreleased.NoteGroups -}}
+### {{ .Title }}
+{{ range .Notes }}
+{{ .Body }}
+{{ end }}
+{{ end -}}
+{{ end -}}
 {{ end -}}
 {{ end -}}
 

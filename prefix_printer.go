@@ -15,58 +15,58 @@ var (
 var (
 	// Info returns a PrefixPrinter, which can be used to print text with an "info" Prefix.
 	Info = PrefixPrinter{
+		MessageStyle: &ThemeDefault.InfoMessageStyle,
 		Prefix: Prefix{
+			Style: &ThemeDefault.InfoPrefixStyle,
 			Text:  "INFO",
-			Style: NewStyle(FgBlack, BgCyan),
 		},
-		MessageStyle: NewStyle(FgLightCyan),
 	}
 
 	// Warning returns a PrefixPrinter, which can be used to print text with a "warning" Prefix.
 	Warning = PrefixPrinter{
+		MessageStyle: &ThemeDefault.WarningMessageStyle,
 		Prefix: Prefix{
+			Style: &ThemeDefault.WarningPrefixStyle,
 			Text:  "WARNING",
-			Style: NewStyle(FgBlack, BgYellow),
 		},
-		MessageStyle: NewStyle(FgYellow),
 	}
 
 	// Success returns a PrefixPrinter, which can be used to print text with a "success" Prefix.
 	Success = PrefixPrinter{
+		MessageStyle: &ThemeDefault.SuccessMessageStyle,
 		Prefix: Prefix{
+			Style: &ThemeDefault.SuccessPrefixStyle,
 			Text:  "SUCCESS",
-			Style: NewStyle(FgBlack, BgGreen),
 		},
-		MessageStyle: NewStyle(FgGreen),
 	}
 
 	// Error returns a PrefixPrinter, which can be used to print text with an "error" Prefix.
 	Error = PrefixPrinter{
+		MessageStyle: &ThemeDefault.ErrorMessageStyle,
 		Prefix: Prefix{
+			Style: &ThemeDefault.ErrorPrefixStyle,
 			Text:  "ERROR",
-			Style: NewStyle(FgBlack, BgLightRed),
 		},
-		MessageStyle: NewStyle(FgLightRed),
 	}
 
 	// Fatal returns a PrefixPrinter, which can be used to print text with an "fatal" Prefix.
 	// NOTICE: Fatal terminates the application immediately!
 	Fatal = PrefixPrinter{
+		MessageStyle: &ThemeDefault.FatalMessageStyle,
 		Prefix: Prefix{
+			Style: &ThemeDefault.FatalPrefixStyle,
 			Text:  "FATAL",
-			Style: NewStyle(FgBlack, BgLightRed),
 		},
-		MessageStyle: NewStyle(FgLightRed),
-		Fatal:        true,
+		Fatal: true,
 	}
 
 	// Description returns a PrefixPrinter, which can be used to print text with a "description" Prefix.
 	Description = PrefixPrinter{
+		MessageStyle: &ThemeDefault.DescriptionMessageStyle,
 		Prefix: Prefix{
+			Style: &ThemeDefault.DescriptionPrefixStyle,
 			Text:  "Description",
-			Style: Style{FgLightWhite, BgDarkGray},
 		},
-		MessageStyle: Style{FgLightWhite},
 	}
 )
 
@@ -74,7 +74,7 @@ var (
 type PrefixPrinter struct {
 	Prefix       Prefix
 	Scope        Scope
-	MessageStyle Style
+	MessageStyle *Style
 	Fatal        bool
 }
 
@@ -92,7 +92,7 @@ func (p PrefixPrinter) WithScope(scope Scope) *PrefixPrinter {
 
 // WithMessageStyle adds a custom prefix to the printer.
 func (p PrefixPrinter) WithMessageStyle(style Style) *PrefixPrinter {
-	p.MessageStyle = style
+	p.MessageStyle = &style
 	return &p
 }
 
@@ -107,14 +107,24 @@ func (p PrefixPrinter) WithFatal(b ...bool) *PrefixPrinter {
 
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
-func (p PrefixPrinter) Sprint(a ...interface{}) string {
+func (p *PrefixPrinter) Sprint(a ...interface{}) string {
+	if p.Prefix.Style == nil {
+		p.Prefix.Style = NewStyle()
+	}
+	if p.Scope.Style == nil {
+		p.Scope.Style = NewStyle()
+	}
+	if p.MessageStyle == nil {
+		p.MessageStyle = NewStyle()
+	}
+
 	var ret string
 	messageLines := strings.Split(Sprint(a...), "\n")
 	for i, m := range messageLines {
 		if i == 0 {
 			ret += p.GetFormattedPrefix() + " "
 			if p.Scope.Text != "" {
-				ret += NewStyle(p.Scope.Style...).Sprint(" (" + p.Scope.Text + ") ")
+				ret += NewStyle(*p.Scope.Style...).Sprint(" (" + p.Scope.Text + ") ")
 			}
 			ret += p.MessageStyle.Sprint(m)
 		} else {
@@ -139,45 +149,48 @@ func (p PrefixPrinter) Sprintf(format string, a ...interface{}) string {
 // Print formats using the default formats for its operands and writes to standard output.
 // Spaces are added between operands when neither is a string.
 // It returns the number of bytes written and any write error encountered.
-func (p PrefixPrinter) Print(a ...interface{}) TextPrinter {
+func (p *PrefixPrinter) Print(a ...interface{}) *TextPrinter {
 	Print(p.Sprint(a...))
-	checkFatal(&p)
-	return p
+	checkFatal(p)
+	tp := TextPrinter(p)
+	return &tp
 }
 
 // Println formats using the default formats for its operands and writes to standard output.
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
-func (p PrefixPrinter) Println(a ...interface{}) TextPrinter {
+func (p *PrefixPrinter) Println(a ...interface{}) *TextPrinter {
 	Print(p.Sprintln(a...))
-	checkFatal(&p)
-	return p
+	checkFatal(p)
+	tp := TextPrinter(p)
+	return &tp
 }
 
 // Printf formats according to a format specifier and writes to standard output.
 // It returns the number of bytes written and any write error encountered.
-func (p PrefixPrinter) Printf(format string, a ...interface{}) TextPrinter {
+func (p *PrefixPrinter) Printf(format string, a ...interface{}) *TextPrinter {
 	Print(Sprintf(format, a...))
-	checkFatal(&p)
-	return p
+	checkFatal(p)
+	tp := TextPrinter(p)
+	return &tp
 }
 
 // GetFormattedPrefix returns the Prefix as a styled text string.
 func (p PrefixPrinter) GetFormattedPrefix() string {
-	return NewStyle(p.Prefix.Style...).Sprint(" " + p.Prefix.Text + " ")
+	return p.Prefix.Style.Sprint(" " + p.Prefix.Text + " ")
 }
 
 // Prefix contains the data used as the beginning of a printed text via a PrefixPrinter.
 type Prefix struct {
 	Text  string
-	Style Style
+	Style *Style
 }
 
 // Scope contains the data of the optional scope of a prefix.
 // If it has a text, it will be printed after the Prefix in brackets.
 type Scope struct {
 	Text  string
-	Style Style
+	Style *Style
 }
 
 func checkFatal(p *PrefixPrinter) {

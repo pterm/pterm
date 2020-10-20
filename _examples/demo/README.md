@@ -13,15 +13,12 @@ import (
 	"github.com/pterm/pterm"
 )
 
-var (
-	pseudoProgramList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chrome pseudo-outlook pseudo-explorer "+
-		"pseudo-dops pseudo-git pseudo-vsc pseudo-intellij pseudo-minecraft pseudo-scoop pseudo-chocolatey", " ")
-)
-
 func main() {
 	// Change this to time.Millisecond*200 to speed up the demo.
 	// Useful when debugging.
 	const second = time.Second
+	var pseudoProgramList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chrome pseudo-outlook pseudo-explorer "+
+		"pseudo-dops pseudo-git pseudo-vsc pseudo-intellij pseudo-minecraft pseudo-scoop pseudo-chocolatey", " ")
 
 	pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
 		"PTDP - PTerm Demo Program")
