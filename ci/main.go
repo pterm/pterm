@@ -16,10 +16,10 @@ import (
 var wg sync.WaitGroup
 
 func main() {
-	fmt.Println("## Generating Examples")
+	log.Output(1, "## Generating Examples")
 	files, err := ioutil.ReadDir("./_examples/")
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 
 	var readmeExamples string
@@ -34,7 +34,7 @@ func main() {
 	for _, f := range files {
 		exampleCode, err := ioutil.ReadFile("./_examples/" + f.Name() + "/main.go")
 		if err != nil {
-			log.Fatal(err)
+			log.Panic(err)
 		}
 
 		readmeExamples += "### " + f.Name() + "\n\n"
@@ -46,11 +46,11 @@ func main() {
 		readmeExamples += "</details>\n\n"
 	}
 
-	fmt.Println("### Appending examples to root README.md")
+	log.Output(3, "### Appending examples to root README.md")
 
 	readmeContent, err := ioutil.ReadFile("./README.md")
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 
 	beforeRegex := regexp.MustCompile(`(?ms).*<!-- examples:start -->`)
@@ -67,38 +67,38 @@ func main() {
 
 	err = ioutil.WriteFile("./README.md", []byte(newReadmeContent), 0600)
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 }
 
 func processFile(f os.FileInfo) {
-	fmt.Println("### Generating animations for example '" + f.Name() + "'")
+	log.Output(3, "### ['"+f.Name()+"'] Generating animations for example")
 	animationDataPath := "./_examples/" + f.Name() + "/animation_data.json"
 	animationSvgPath := "./_examples/" + f.Name() + "/animation.svg"
 	exampleCode, err := ioutil.ReadFile("./_examples/" + f.Name() + "/main.go")
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 
 	if fileExists(animationDataPath) {
-		fmt.Println("#### animation_data.json already exists. Removing it.")
+		log.Output(4, "#### ['"+f.Name()+"']  animation_data.json already exists. Removing it.")
 		err = os.Remove(animationDataPath)
 		if err != nil {
-			log.Fatal(err)
+			log.Panic(err)
 		}
 	}
 	if fileExists(animationSvgPath) {
-		fmt.Println("#### animation.svg already exists. Removing it.")
+		log.Output(4, "#### ['"+f.Name()+"']  animation.svg already exists. Removing it.")
 		err := os.Remove(animationSvgPath)
 		if err != nil {
-			log.Fatal(err)
+			log.Panic(err)
 		}
 	}
 
-	fmt.Println("#### Running asciinema")
+	log.Output(4, "#### ['"+f.Name()+"'] Running asciinema")
 	execute(`asciinema rec ` + animationDataPath + ` -c "go run ./_examples/` + f.Name() + `"`)
 
-	fmt.Println("#### Adding sleep to end of animation_data.json")
+	log.Output(4, "#### ['"+f.Name()+"']  Adding sleep to end of animation_data.json")
 	animationDataLines := getLinesFromFile(animationDataPath)
 	animationDataLastLine := animationDataLines[len(animationDataLines)-1]
 	re := regexp.MustCompile(`\[\d[^,]*`).FindAllString(animationDataLastLine, 1)[0]
@@ -106,30 +106,30 @@ func processFile(f os.FileInfo) {
 	sleepString := `[` + strconv.FormatFloat(lastTime+5, 'f', 6, 64) + `, "o", "\r\nrestarting...\r\n"]`
 	animationDataFile, err := os.OpenFile(animationDataPath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
 	if err != nil {
-		log.Println(err)
+		log.Panicf("[%s] %s", f.Name(), err.Error())
 	}
 	defer animationDataFile.Close()
 	_, err = animationDataFile.WriteString(sleepString)
 	if err != nil {
-		log.Println(err)
+		log.Panicf("[%s] %s", f.Name(), err.Error())
 	}
 
-	fmt.Println("#### Generating SVG")
+	log.Output(4, "#### ['"+f.Name()+"']  Generating SVG")
 	execute(`svg-term --in ` + animationDataPath + ` --out ` + animationSvgPath + ` --no-cursor --window true --no-optimize --profile "./ci/terminal-theme.txt" --term "iterm2"`)
 
-	fmt.Println("#### Generating README.md")
+	log.Output(4, "#### ['"+f.Name()+"']  Generating README.md")
 	readmeString := "# " + f.Name() + "\n\n![Animation](animation.svg)\n\n"
 	readmeString += "```go\n"
 	readmeString += string(exampleCode)
 	readmeString += "\n```\n"
 	err = ioutil.WriteFile("./_examples/"+f.Name()+"/README.md", []byte(readmeString), 0600)
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 
-	fmt.Println("#### Adding example to global example list")
+	log.Output(4, "#### ['"+f.Name()+"']  Adding example to global example list")
 
-	fmt.Println("#### Cleaning files")
+	log.Output(4, "#### ['"+f.Name()+"']  Cleaning files")
 	os.Remove(animationDataPath)
 
 	wg.Done()
@@ -137,12 +137,12 @@ func processFile(f os.FileInfo) {
 
 func execute(command string) {
 	cmd := exec.Command("bash", "-c", command)
-	fmt.Println("Running: " + cmd.String())
-	err := cmd.Run()
-	cmd.Stderr = os.Stderr
+	log.Output(1, "Running: "+cmd.String())
+	output, err := cmd.CombinedOutput()
 	if err != nil {
-		log.Fatal(err)
+		log.Panicf("Fail Running [%s] with output [%s] and status [%s]", cmd.String(), output, err)
 	}
+	log.Output(1, fmt.Sprintf("Finish Running [%s] with output [%s]", cmd.String(), output))
 }
 
 func fileExists(filename string) bool {
