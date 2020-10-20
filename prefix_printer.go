@@ -1,7 +1,6 @@
 package pterm
 
 import (
-	"os"
 	"strings"
 
 	"github.com/pterm/pterm/internal"
@@ -195,6 +194,6 @@ type Scope struct {
 
 func checkFatal(p *PrefixPrinter) {
 	if p.Fatal {
-		os.Exit(1)
+		panic("")
 	}
 }
