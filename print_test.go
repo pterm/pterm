@@ -4,6 +4,7 @@ import (
 	"github.com/pterm/pterm/internal"
 	"github.com/stretchr/testify/assert"
 	"io"
+	"os"
 	"testing"
 )
 
@@ -198,16 +199,6 @@ func TestFprinto(t *testing.T) {
 	})
 }
 
-func TestRemoveColors(t *testing.T) {
-	for _, randomString := range internal.RandomStrings {
-		testString := Cyan(randomString)
-		assert.Equal(t, randomString, RemoveColorFromString(testString))
-	}
-}
-
-func TestStyle_Add(t *testing.T) {
-	assert.Equal(t, Style{FgRed, BgGreen}, Style{FgRed}.Add(Style{BgGreen}))
-	assert.Equal(t, Style{FgRed, BgGreen, Bold}, Style{FgRed}.Add(Style{BgGreen}).Add(Style{Bold}))
-	assert.Equal(t, Style{FgRed, BgGreen, Bold}, Style{FgRed}.Add(Style{BgGreen, Bold}))
-	assert.Equal(t, Style{FgRed, BgGreen, Bold}, Style{FgRed}.Add(Style{BgGreen}, Style{Bold}))
+func TestSetDefaultOutput(t *testing.T) {
+	SetDefaultOutput(os.Stdout)
 }
