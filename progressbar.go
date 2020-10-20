@@ -198,12 +198,12 @@ func (p *Progressbar) Add(count int) *Progressbar {
 	Printo(before + bar + after)
 
 	if p.Current == p.Total {
+		p.Stop()
 		if p.RemoveWhenDone {
 			clearLine()
+		} else {
+			Println()
 		}
-
-		p.Stop()
-		Println()
 	}
 	return p
 }
