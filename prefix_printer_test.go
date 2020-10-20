@@ -15,12 +15,29 @@ func TestPrefixPrinterNilPrint(t *testing.T) {
 }
 
 func TestPrefixPrinterPrintMethods(t *testing.T) {
-
 	for _, p := range prefixPrinters {
 		t.Run("Print", func(t *testing.T) {
 			internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
 				p.Print(a)
 			})
+		})
+
+		t.Run("PrintWithScope", func(t *testing.T) {
+			internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
+				p2 := p.WithScope(Scope{
+					Text:  "test",
+					Style: NewStyle(FgRed, BgBlue, Bold),
+				})
+				p2.Print(a)
+			})
+		})
+
+		t.Run("PrintWithMultipleLines", func(t *testing.T) {
+			p2 := p.WithScope(Scope{
+				Text:  "test",
+				Style: NewStyle(FgRed, BgBlue, Bold),
+			})
+			p2.Print("This text\nhas\nmultiple\nlines")
 		})
 
 		t.Run("Printf", func(t *testing.T) {
