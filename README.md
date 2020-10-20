@@ -286,7 +286,7 @@ func main() {
 
 	pterm.Error.Prefix = pterm.Prefix{
 		Text:  "OVERRIDE",
-		Style: pterm.Style{pterm.BgCyan, pterm.FgRed},
+		Style: pterm.NewStyle(pterm.BgCyan, pterm.FgRed),
 	}
 
 	pterm.Error.Println("This is the default Error after the prefix was overridden")
@@ -663,6 +663,7 @@ func main() {
 > GitHub [@pterm](https://github.com/pterm) &nbsp;&middot;&nbsp;
 > Maintainer [@MarvinJWendt](https://github.com/MarvinJWendt)
 > | [MarvinJWendt.com](https://marvinjwendt.com)
+
 
 
 

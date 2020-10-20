@@ -12,7 +12,7 @@ func main() {
 
 	pterm.Error.Prefix = pterm.Prefix{
 		Text:  "OVERRIDE",
-		Style: pterm.Style{pterm.BgCyan, pterm.FgRed},
+		Style: pterm.NewStyle(pterm.BgCyan, pterm.FgRed),
 	}
 
 	pterm.Error.Println("This is the default Error after the prefix was overridden")
