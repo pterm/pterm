@@ -46,6 +46,7 @@ type Progressbar struct {
 	ShowCount       bool
 	ShowTitle       bool
 	ShowPercentage  bool
+	RemoveWhenDone  bool
 
 	TitleStyle *Style
 	BarStyle   *Style
@@ -133,6 +134,12 @@ func (p Progressbar) WithBarStyle(style *Style) *Progressbar {
 	return &p
 }
 
+// WithRemoveWhenDone sets if the progressbar should be removed when it is done.
+func (p Progressbar) WithRemoveWhenDone(b ...bool) *Progressbar {
+	p.RemoveWhenDone = internal.WithBoolean(b)
+	return &p
+}
+
 // Increment current value by one.
 func (p *Progressbar) Increment() *Progressbar {
 	p.Add(1)
@@ -192,7 +199,11 @@ func (p *Progressbar) Add(count int) *Progressbar {
 
 	if p.Current == p.Total {
 		p.Stop()
-		Println()
+		if p.RemoveWhenDone {
+			clearLine()
+		} else {
+			Println()
+		}
 	}
 	return p
 }
