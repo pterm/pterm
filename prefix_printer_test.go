@@ -2,9 +2,12 @@ package pterm
 
 import (
 	"github.com/pterm/pterm/internal"
+	"github.com/stretchr/testify/assert"
 	"io"
 	"testing"
 )
+
+var prefixPrinters = []PrefixPrinter{Info, Success, Warning, Error, *Fatal.WithFatal(false)}
 
 func TestPrefixPrinterNilPrint(t *testing.T) {
 	p := PrefixPrinter{}
@@ -12,7 +15,6 @@ func TestPrefixPrinterNilPrint(t *testing.T) {
 }
 
 func TestPrefixPrinterPrintMethods(t *testing.T) {
-	prefixPrinters := []PrefixPrinter{Info, Success, Warning, Error, *Fatal.WithFatal(false)}
 
 	for _, p := range prefixPrinters {
 		t.Run("Print", func(t *testing.T) {
@@ -54,25 +56,67 @@ func TestPrefixPrinterPrintMethods(t *testing.T) {
 }
 
 func TestPrefixPrinter_GetFormattedPrefix(t *testing.T) {
-
+	for _, p := range prefixPrinters {
+		t.Run("", func(t *testing.T) {
+			assert.NotEmpty(t, p.GetFormattedPrefix())
+		})
+	}
 }
 
 func TestPrefixPrinter_WithFatal(t *testing.T) {
+	for _, p := range prefixPrinters {
+		t.Run("", func(t *testing.T) {
+			p2 := p.WithFatal()
 
+			assert.Equal(t, true, p2.Fatal)
+		})
+	}
 }
 
 func TestPrefixPrinter_WithMessageStyle(t *testing.T) {
+	for _, p := range prefixPrinters {
+		t.Run("", func(t *testing.T) {
+			s := NewStyle(FgRed, BgBlue, Bold)
+			p2 := p.WithMessageStyle(s)
 
+			assert.Equal(t, s, p2.MessageStyle)
+		})
+	}
 }
 
 func TestPrefixPrinter_WithPrefix(t *testing.T) {
+	for _, p := range prefixPrinters {
+		t.Run("", func(t *testing.T) {
+			s := Prefix{
+				Text:  "test",
+				Style: NewStyle(FgRed, BgBlue, Bold),
+			}
+			p2 := p.WithPrefix(s)
 
+			assert.Equal(t, s, p2.Prefix)
+		})
+	}
 }
 
 func TestPrefixPrinter_WithScope(t *testing.T) {
+	for _, p := range prefixPrinters {
+		t.Run("", func(t *testing.T) {
+			s := Scope{
+				Text:  "test",
+				Style: NewStyle(FgRed, BgBlue, Bold),
+			}
+			p2 := p.WithScope(s)
 
+			assert.Equal(t, s, p2.Scope)
+		})
+	}
 }
 
 func Test_checkFatal(t *testing.T) {
-
+	for _, p := range prefixPrinters {
+		p2 := p.WithFatal()
+		assert.Panics(t, func() {
+			p2.Println("Hello, World!")
+		})
+	}
 }
