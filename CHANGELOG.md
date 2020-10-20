@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Ci
+- better error handling in CI System ([#61](https://github.com/pterm/pterm/issues/61))
+
 ### Code Refactoring
 - don't show empty line when removing a progressbar
 
