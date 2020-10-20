@@ -226,11 +226,6 @@ func (p Progressbar) Start() *Progressbar {
 // Stop the progressbar.
 func (p *Progressbar) Stop() *Progressbar {
 	p.IsActive = false
-	for i, bar := range ActiveProgressBars {
-		if p == bar {
-			ActiveProgressBars = append(ActiveProgressBars[:i], ActiveProgressBars[i+1:]...)
-		}
-	}
 	return p
 }
 
