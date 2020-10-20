@@ -7,12 +7,12 @@ import (
 	"testing"
 )
 
-func TestTemplatePrinterNilPrint(t *testing.T) {
+func TestHeaderPrinterNilPrint(t *testing.T) {
 	p := HeaderPrinter{}
 	p.Println("Hello, World!")
 }
 
-func TestTemplatePrinterPrintMethods(t *testing.T) {
+func TestHeaderPrinterPrintMethods(t *testing.T) {
 	p := DefaultHeader
 
 	t.Run("Print", func(t *testing.T) {
