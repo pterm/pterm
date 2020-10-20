@@ -2,13 +2,52 @@
 
 ## Writing Tests
 
-Every printer must be tested with a nil check.
+This is the base of every printer test
 
 ```go
-// SectionPrinter example
-func TestSectionPrinterNilPrint(t *testing.T) {
-	p := SectionPrinter{}
+func TestTemplatePrinterNilPrint(t *testing.T) {
+	p := TemplatePrinter{}
 	p.Println("Hello, World!")
+}
+
+func TestTemplatePrinterPrintMethods(t *testing.T) {
+	p := DefaultTemplate
+
+	t.Run("Print", func(t *testing.T) {
+		internal.TestPrintContains(t, func(w io.Writer, a string) {
+			p.Print(a)
+		})
+	})
+
+	t.Run("Printf", func(t *testing.T) {
+		internal.TestPrintfContains(t, func(w io.Writer, format string, a string) {
+			p.Printf(format, a)
+		})
+	})
+
+	t.Run("Println", func(t *testing.T) {
+		internal.TestPrintlnContains(t, func(w io.Writer, a string) {
+			p.Println(a)
+		})
+	})
+
+	t.Run("Sprint", func(t *testing.T) {
+		internal.TestSprintContains(t, func(a string) string {
+			return p.Sprint(a)
+		})
+	})
+
+	t.Run("Sprintf", func(t *testing.T) {
+		internal.TestSprintfContains(t, func(format string, a string) string {
+			return p.Sprintf(format, a)
+		})
+	})
+
+	t.Run("Sprintln", func(t *testing.T) {
+		internal.TestSprintlnContains(t, func(a string) string {
+			return p.Sprintln(a)
+		})
+	})
 }
 ```
 
