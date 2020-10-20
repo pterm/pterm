@@ -2,6 +2,7 @@ package pterm
 
 import (
 	"github.com/pterm/pterm/internal"
+	"github.com/stretchr/testify/assert"
 	"io"
 	"testing"
 )
@@ -52,17 +53,31 @@ func TestTemplatePrinterPrintMethods(t *testing.T) {
 }
 
 func TestHeaderPrinter_WithBackgroundStyle(t *testing.T) {
+	s := NewStyle(FgRed, BgGray, Bold)
+	p := HeaderPrinter{}
+	p2 := p.WithBackgroundStyle(s)
 
+	assert.Equal(t, s, p2.BackgroundStyle)
 }
 
 func TestHeaderPrinter_WithFullWidth(t *testing.T) {
+	p := HeaderPrinter{}
+	p2 := p.WithFullWidth()
 
+	assert.Equal(t, true, p2.FullWidth)
 }
 
 func TestHeaderPrinter_WithMargin(t *testing.T) {
+	p := HeaderPrinter{}
+	p2 := p.WithMargin(1337)
 
+	assert.Equal(t, 1337, p2.Margin)
 }
 
 func TestHeaderPrinter_WithTextStyle(t *testing.T) {
+	s := NewStyle(FgRed, BgGray, Bold)
+	p := HeaderPrinter{}
+	p2 := p.WithTextStyle(s)
 
+	assert.Equal(t, s, p2.TextStyle)
 }
