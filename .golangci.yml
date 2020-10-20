@@ -85,6 +85,8 @@ issues:
     # https://github.com/go-critic/go-critic/issues/926
     - linters:
         - gocritic
-      text: "unnecessaryDefer:"
+      text:
+        - "unnecessaryDefer:"
+        - "paramTypeCombine:"
 service:
   golangci-lint-version: 1.31.x # use the fixed version to not introduce new linters unexpectedly
