@@ -1,5 +1,17 @@
 # Contributing to PTerm
 
+## Writing Tests
+
+Every printer must be tested with a nil check.
+
+```go
+// SectionPrinter example
+func TestSectionPrinterNilPrint(t *testing.T) {
+	p := SectionPrinter{}
+	p.Println("Hello, World!")
+}
+```
+
 ## Template Snippets
 
 ### TextPrinter Template
