@@ -17,6 +17,10 @@
 <img src="https://img.shields.io/github/forks/pterm/pterm.svg?style=flat-square" alt="Forks">
 </a>
 
+<a href="https://github.com/pterm/pterm">
+<!-- unittestcount:start --><img src="https://img.shields.io/badge/Unit_Tests-1165-brightgreen?style=flat-square" alt="Forks"><!-- unittestcount:end -->
+</a>
+
 <a href="https://github.com/pterm/pterm/issues">
 <img src="https://img.shields.io/github/issues/pterm/pterm.svg?style=flat-square" alt="Issues">
 </a>
@@ -67,6 +71,11 @@ Our first priority is to keep PTerm as easy to use as possible. With many [examp
 We take special precautions to ensure that PTerm works on as many operating systems and terminals as possible. Whether it's `Windows CMD`, `macOS iTerm2` or in the backend (for example inside a `GitHub Action` or other CI systems), PTerm **guarantees** beautiful output!\
 \
 *PTerm is actively tested on `Windows`, `Linux (Debian & Ubuntu)` and `macOS`.*
+
+### • 🧪 Well tested
+
+We test PTerm continuously. However, since a human cannot test everything all the time, we have our own test system with which we currently run <!-- unittestcount2:start -->**`1165`**<!-- unittestcount2:end -->
+automated tests to ensure that PTerm has no bugs. 
 
 ### • ✨ Consistent Colors
 
@@ -655,6 +664,7 @@ func main() {
 
 </details>
 
+
 <!-- examples:end -->
 
   
@@ -663,6 +673,13 @@ func main() {
 > GitHub [@pterm](https://github.com/pterm) &nbsp;&middot;&nbsp;
 > Maintainer [@MarvinJWendt](https://github.com/MarvinJWendt)
 > | [MarvinJWendt.com](https://marvinjwendt.com)
+
+
+
+
+
+
+
 
 
 

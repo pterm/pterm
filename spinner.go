@@ -11,7 +11,7 @@ var DefaultSpinner = Spinner{
 	Sequence:       []string{"▀ ", " ▀", " ▄", "▄ "},
 	Style:          &ThemeDefault.SpinnerStyle,
 	Delay:          time.Millisecond * 200,
-	MessageStyle:   ThemeDefault.SpinnerTextStyle,
+	MessageStyle:   &ThemeDefault.SpinnerTextStyle,
 	SuccessPrinter: &Success,
 	FailPrinter:    &Error,
 	WarningPrinter: &Warning,
@@ -25,7 +25,7 @@ type Spinner struct {
 	Sequence       []string
 	Style          *Style
 	Delay          time.Duration
-	MessageStyle   Style
+	MessageStyle   *Style
 	SuccessPrinter TextPrinter
 	FailPrinter    TextPrinter
 	WarningPrinter TextPrinter
@@ -59,7 +59,7 @@ func (s Spinner) WithDelay(delay time.Duration) *Spinner {
 }
 
 // WithMessageStyle adds a style to the spinner message.
-func (s Spinner) WithMessageStyle(style Style) *Spinner {
+func (s Spinner) WithMessageStyle(style *Style) *Spinner {
 	s.MessageStyle = style
 	return &s
 }

@@ -53,17 +53,20 @@ func main() {
 		log.Panic(err)
 	}
 
-	beforeRegex := regexp.MustCompile(`(?ms).*<!-- examples:start -->`)
-	afterRegex := regexp.MustCompile(`(?ms)<!-- examples:end -->.*`)
-
-	before := beforeRegex.FindAllString(string(readmeContent), 1)[0]
-	after := afterRegex.FindAllString(string(readmeContent), 1)[0]
-
 	var newReadmeContent string
+	var unitTestCountBytes []byte
 
-	newReadmeContent += before + "\n"
-	newReadmeContent += readmeExamples
-	newReadmeContent += after + "\n"
+	cmd := exec.Command("bash", "-c", "go test -v ./... | grep -c RUN")
+	unitTestCountBytes, err = cmd.Output()
+	if err != nil {
+		log.Panic(err)
+	}
+
+	unitTestCount := strings.ReplaceAll(string(unitTestCountBytes), "\n", "")
+
+	newReadmeContent = writeBetween("unittestcount", string(readmeContent), `<img src="https://img.shields.io/badge/Unit_Tests-`+unitTestCount+`-brightgreen?style=flat-square" alt="Forks">`)
+	newReadmeContent = writeBetween("unittestcount2", newReadmeContent, "**`"+unitTestCount+"`**")
+	newReadmeContent = writeBetween("examples", newReadmeContent, "\n"+readmeExamples+"\n")
 
 	err = ioutil.WriteFile("./README.md", []byte(newReadmeContent), 0600)
 	if err != nil {
@@ -133,6 +136,19 @@ func processFile(f os.FileInfo) {
 	os.Remove(animationDataPath)
 
 	wg.Done()
+}
+
+func writeBetween(name string, original string, insertText string) string {
+	beforeRegex := regexp.MustCompile(`(?ms).*<!-- ` + name + `:start -->`)
+	afterRegex := regexp.MustCompile(`(?ms)<!-- ` + name + `:end -->.*`)
+	before := beforeRegex.FindAllString(original, 1)[0]
+	after := afterRegex.FindAllString(original, 1)[0]
+
+	ret := before
+	ret += insertText
+	ret += after
+
+	return ret
 }
 
 func execute(command string) {
