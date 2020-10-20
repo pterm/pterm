@@ -9,6 +9,7 @@ import (
 	"testing"
 )
 
+// TestPrintContains can be used to test Print methods.
 func TestPrintContains(t *testing.T, logic func(w io.Writer, a string)) {
 	s := CaptureStdout(func(w io.Writer) {
 		logic(w, "Hello, World!")
@@ -16,6 +17,7 @@ func TestPrintContains(t *testing.T, logic func(w io.Writer, a string)) {
 	assert.Contains(t, s, "Hello, World!")
 }
 
+// TestPrintfContains can be used to test Printf methods.
 func TestPrintfContains(t *testing.T, logic func(w io.Writer, format string, a string)) {
 	s := CaptureStdout(func(w io.Writer) {
 		logic(w, "Hello, %s!", "World")
@@ -23,18 +25,22 @@ func TestPrintfContains(t *testing.T, logic func(w io.Writer, format string, a s
 	assert.Contains(t, s, "Hello, World!")
 }
 
+// TestPrintlnContains can be used to test Println methods.
 func TestPrintlnContains(t *testing.T, logic func(w io.Writer, a string)) {
 	TestPrintContains(t, logic)
 }
 
+// TestSprintContains can be used to test Sprint methods.
 func TestSprintContains(t *testing.T, logic func(a string) string) {
 	assert.Contains(t, logic("Hello, World!"), "Hello, World!")
 }
 
+// TestSprintfContains can be used to test Sprintf methods.
 func TestSprintfContains(t *testing.T, logic func(format string, a string) string) {
 	assert.Contains(t, logic("Hello, %s!", "World"), "Hello, World!")
 }
 
+// TestSprintlnContains can be used to test Sprintln methods.
 func TestSprintlnContains(t *testing.T, logic func(a string) string) {
 	TestSprintContains(t, logic)
 }

@@ -20,9 +20,9 @@ func TestNewRGB(t *testing.T) {
 		want RGB
 	}{
 		{name: "1", args: args{0, 0, 0}, want: RGB{0, 0, 0}},
-		{name: "2", args: args{255, 255, 255}, want: RGB{255, 255, 255}},
-		{name: "2", args: args{127, 127, 127}, want: RGB{127, 127, 127}},
-		{name: "2", args: args{1, 2, 3}, want: RGB{1, 2, 3}},
+		{name: "3", args: args{255, 255, 255}, want: RGB{255, 255, 255}},
+		{name: "4", args: args{127, 127, 127}, want: RGB{127, 127, 127}},
+		{name: "5", args: args{1, 2, 3}, want: RGB{1, 2, 3}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
