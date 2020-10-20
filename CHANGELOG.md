@@ -2,6 +2,7 @@
 ## [Unreleased]
 
 ### Ci
+- escape coverage filepath
 - fix codecov
 - upload coverage report
 
