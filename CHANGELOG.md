@@ -6,6 +6,9 @@
 - fix codecov
 - upload coverage report
 
+### Code Refactoring
+- change `LineCharacter` to `BarCharacter` ([#70](https://github.com/pterm/pterm/issues/70))
+
 ### Documentation Changes
 - **contributing:** update contributing guides
 - **examples:** color fade demo, fade from cyan to magenta ([#68](https://github.com/pterm/pterm/issues/68))
@@ -15,6 +18,10 @@
 
 ### Features
 - add `BulletListPrinter` ([#67](https://github.com/pterm/pterm/issues/67))
+
+### BREAKING CHANGE
+
+Changed `LineCharacter` to `BarCharacter`.
 
 
 <a name="v0.7.0"></a>
