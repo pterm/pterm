@@ -59,6 +59,8 @@
 |
 <strong><a href="#-examples">Examples</a></strong>
 |
+<strong><a href="https://github.com/pterm/pterm/discussions?discussions_q=category%3AQ%26A">Q&A</a></strong>
+|
 <strong><a href="./CONTRIBUTING.md">Contributing</a></strong>
 </p>
 
