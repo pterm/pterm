@@ -17,10 +17,6 @@
 <img src="https://img.shields.io/github/forks/pterm/pterm.svg?style=flat-square" alt="Forks">
 </a>
 
-<a href="https://github.com/pterm/pterm">
-<!-- unittestcount:start --><img src="https://img.shields.io/badge/Unit_Tests-2827-brightgreen?style=flat-square" alt="Forks"><!-- unittestcount:end -->
-</a>
-
 <a href="https://github.com/pterm/pterm/issues">
 <img src="https://img.shields.io/github/issues/pterm/pterm.svg?style=flat-square" alt="Issues">
 </a>
@@ -33,6 +29,16 @@
 
 <a href="https://github.com/dops-cli/dops/releases">
 <img src="https://img.shields.io/badge/platform-windows%20%7C%20macos%20%7C%20linux-informational?style=for-the-badge" alt="Downloads">
+</a>
+
+<br/>
+
+<a href="https://codecov.io/gh/pterm/pterm">
+<img src="https://img.shields.io/codecov/c/gh/pterm/pterm?color=magenta&logo=codecov&style=flat-square" alt="Downloads">
+</a>
+
+<a href="https://codecov.io/gh/pterm/pterm">
+<!-- unittestcount:start --><img src="https://img.shields.io/badge/Unit_Tests-2827-brightgreen?style=flat-square" alt="Forks"><!-- unittestcount:end -->
 </a>
 
 <a href="https://github.com/pterm/pterm/">
