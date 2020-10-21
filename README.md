@@ -31,6 +31,16 @@
 <img src="https://img.shields.io/badge/platform-windows%20%7C%20macos%20%7C%20linux-informational?style=for-the-badge" alt="Downloads">
 </a>
 
+<br/>
+
+<a href="https://codecov.io/gh/pterm/pterm">
+<img src="https://img.shields.io/codecov/c/gh/pterm/pterm?color=magenta&logo=codecov&style=flat-square" alt="Downloads">
+</a>
+
+<a href="https://codecov.io/gh/pterm/pterm">
+<!-- unittestcount:start --><img src="https://img.shields.io/badge/Unit_Tests-2827-magenta?style=flat-square" alt="Forks"><!-- unittestcount:end -->
+</a>
+
 <a href="https://github.com/pterm/pterm/">
 <img src="https://raw.githubusercontent.com/pterm/pterm/master/_examples/demo/animation.svg" alt="Dops">
 </a>
@@ -48,6 +58,8 @@
 <strong><a href="#-documentation">Documentation</a></strong>
 |
 <strong><a href="#-examples">Examples</a></strong>
+|
+<strong><a href="https://github.com/pterm/pterm/discussions?discussions_q=category%3AQ%26A">Q&A</a></strong>
 |
 <strong><a href="./CONTRIBUTING.md">Contributing</a></strong>
 </p>
@@ -67,6 +79,11 @@ Our first priority is to keep PTerm as easy to use as possible. With many [examp
 We take special precautions to ensure that PTerm works on as many operating systems and terminals as possible. Whether it's `Windows CMD`, `macOS iTerm2` or in the backend (for example inside a `GitHub Action` or other CI systems), PTerm **guarantees** beautiful output!\
 \
 *PTerm is actively tested on `Windows`, `Linux (Debian & Ubuntu)` and `macOS`.*
+
+### • 🧪 Well tested
+
+We test PTerm continuously. However, since a human cannot test everything all the time, we have our own test system with which we currently run <!-- unittestcount2:start -->**`2827`**<!-- unittestcount2:end -->
+automated tests to ensure that PTerm has no bugs. 
 
 ### • ✨ Consistent Colors
 
@@ -655,6 +672,7 @@ func main() {
 
 </details>
 
+
 <!-- examples:end -->
 
   
@@ -663,6 +681,17 @@ func main() {
 > GitHub [@pterm](https://github.com/pterm) &nbsp;&middot;&nbsp;
 > Maintainer [@MarvinJWendt](https://github.com/MarvinJWendt)
 > | [MarvinJWendt.com](https://marvinjwendt.com)
+
+
+
+
+
+
+
+
+
+
+
 
 
 

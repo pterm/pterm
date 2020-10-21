@@ -15,6 +15,7 @@ linters-settings:
       - exitAfterDefer
       - hugeParam
       - ptrToRefParam
+      - paramTypeCombine
   #  maligned:
   #    suggest-new: true
   misspell:

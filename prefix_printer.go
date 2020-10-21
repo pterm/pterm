@@ -1,7 +1,6 @@
 package pterm
 
 import (
-	"os"
 	"strings"
 
 	"github.com/pterm/pterm/internal"
@@ -91,8 +90,8 @@ func (p PrefixPrinter) WithScope(scope Scope) *PrefixPrinter {
 }
 
 // WithMessageStyle adds a custom prefix to the printer.
-func (p PrefixPrinter) WithMessageStyle(style Style) *PrefixPrinter {
-	p.MessageStyle = &style
+func (p PrefixPrinter) WithMessageStyle(style *Style) *PrefixPrinter {
+	p.MessageStyle = style
 	return &p
 }
 
@@ -195,6 +194,6 @@ type Scope struct {
 
 func checkFatal(p *PrefixPrinter) {
 	if p.Fatal {
-		os.Exit(1)
+		panic("")
 	}
 }

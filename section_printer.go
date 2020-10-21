@@ -2,7 +2,7 @@ package pterm
 
 // DefaultSection is the default section printer.
 var DefaultSection = SectionPrinter{
-	Style:         ThemeDefault.SectionStyle,
+	Style:         &ThemeDefault.SectionStyle,
 	Level:         1,
 	TopPadding:    1,
 	BottomPadding: 1,
@@ -11,14 +11,14 @@ var DefaultSection = SectionPrinter{
 // SectionPrinter prints a new section title.
 // It can be used to structure longer text, or different chapters of your program.
 type SectionPrinter struct {
-	Style         Style
+	Style         *Style
 	Level         int
 	TopPadding    int
 	BottomPadding int
 }
 
 // WithStyle returns a new SectionPrinter with a specific style.
-func (p SectionPrinter) WithStyle(style Style) *SectionPrinter {
+func (p SectionPrinter) WithStyle(style *Style) *SectionPrinter {
 	p.Style = style
 	return &p
 }
@@ -30,20 +30,24 @@ func (p SectionPrinter) WithLevel(level int) *SectionPrinter {
 }
 
 // WithTopPadding returns a new SectionPrinter with a specific top padding.
-func (p SectionPrinter) WithTopPadding(level int) *SectionPrinter {
-	p.TopPadding = level
+func (p SectionPrinter) WithTopPadding(padding int) *SectionPrinter {
+	p.TopPadding = padding
 	return &p
 }
 
 // WithBottomPadding returns a new SectionPrinter with a specific top padding.
-func (p SectionPrinter) WithBottomPadding(level int) *SectionPrinter {
-	p.BottomPadding = level
+func (p SectionPrinter) WithBottomPadding(padding int) *SectionPrinter {
+	p.BottomPadding = padding
 	return &p
 }
 
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
 func (p SectionPrinter) Sprint(a ...interface{}) string {
+	if p.Style == nil {
+		p.Style = NewStyle()
+	}
+
 	var ret string
 
 	for i := 0; i < p.TopPadding; i++ {

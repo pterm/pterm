@@ -96,8 +96,8 @@ func (t Theme) WithInfoPrefixStyle(style Style) Theme {
 }
 
 // WithSuccessMessageStyle returns a new theme with overridden value.
-func (t Theme) WithSuccessMessageStyle(style *Style) Theme {
-	t.SuccessMessageStyle = *style
+func (t Theme) WithSuccessMessageStyle(style Style) Theme {
+	t.SuccessMessageStyle = style
 	return t
 }
 
