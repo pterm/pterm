@@ -9,6 +9,7 @@
 ### Documentation Changes
 - **readme:** change unit tests badge color to magenta
 - **readme:** add coverage badge
+- **readme:** add Q&A to readme
 
 
 <a name="v0.7.0"></a>
