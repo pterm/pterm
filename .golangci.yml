@@ -16,6 +16,7 @@ linters-settings:
       - hugeParam
       - ptrToRefParam
       - paramTypeCombine
+      - unnamedResult
   #  maligned:
   #    suggest-new: true
   misspell:
