@@ -7,6 +7,7 @@
 - upload coverage report
 
 ### Documentation Changes
+- **contributing:** update contributing guides
 - **readme:** change unit tests badge color to magenta
 - **readme:** add coverage badge
 - **readme:** add Q&A to readme
