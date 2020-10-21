@@ -64,7 +64,7 @@ func main() {
 
 	unitTestCount := strings.ReplaceAll(string(unitTestCountBytes), "\n", "")
 
-	newReadmeContent = writeBetween("unittestcount", string(readmeContent), `<img src="https://img.shields.io/badge/Unit_Tests-`+unitTestCount+`-brightgreen?style=flat-square" alt="Forks">`)
+	newReadmeContent = writeBetween("unittestcount", string(readmeContent), `<img src="https://img.shields.io/badge/Unit_Tests-`+unitTestCount+`-magenta?style=flat-square" alt="Forks">`)
 	newReadmeContent = writeBetween("unittestcount2", newReadmeContent, "**`"+unitTestCount+"`**")
 	newReadmeContent = writeBetween("examples", newReadmeContent, "\n"+readmeExamples+"\n")
 
