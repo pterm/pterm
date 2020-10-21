@@ -31,7 +31,7 @@ var (
 		TableSeparatorStyle:     Style{FgGray},
 		SectionStyle:            Style{Bold, FgYellow},
 		ListTextStyle:           Style{FgWhite},
-		ListBulletStyle:         Style{FgWhite},
+		ListBulletStyle:         Style{FgGray},
 	}
 )
 
