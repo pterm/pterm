@@ -1,8 +1,6 @@
 package main
 
 import (
-	"time"
-
 	"github.com/pterm/pterm"
 )
 
@@ -38,26 +36,4 @@ func main() {
 		{Level: 5, Text: "Hello World"},
 		{Level: 6, Text: "Hello World"},
 	}).Render()
-
-	for {
-		for i := 0; i < pterm.GetTerminalWidth()-6; i++ {
-
-			pterm.ListItem{
-				Level: i,
-				Text:  "PENIS",
-			}.Render()
-
-			time.Sleep(time.Millisecond * 10)
-		}
-
-		for i := pterm.GetTerminalWidth() - 6; i > 0; i-- {
-
-			pterm.ListItem{
-				Level: i,
-				Text:  "PENIS",
-			}.Render()
-
-			time.Sleep(time.Millisecond * 10)
-		}
-	}
 }
