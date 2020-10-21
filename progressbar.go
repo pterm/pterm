@@ -18,7 +18,7 @@ var (
 	// DefaultProgressbar is the default progressbar.
 	DefaultProgressbar = Progressbar{
 		Total:                     100,
-		LineCharacter:             "█",
+		BarCharacter:              "█",
 		LastCharacter:             "█",
 		ElapsedTimeRoundingFactor: time.Second,
 		BarStyle:                  &ThemeDefault.ProgressbarBarStyle,
@@ -37,7 +37,7 @@ type Progressbar struct {
 	Total                     int
 	Current                   int
 	UpdateDelay               time.Duration
-	LineCharacter             string
+	BarCharacter              string
 	LastCharacter             string
 	ElapsedTimeRoundingFactor time.Duration
 	BarFiller                 string
@@ -80,9 +80,9 @@ func (p Progressbar) WithUpdateDelay(delay time.Duration) *Progressbar {
 	return &p
 }
 
-// WithLineCharacter sets the line character of the progressbar.
-func (p Progressbar) WithLineCharacter(char string) *Progressbar {
-	p.LineCharacter = char
+// WithBarCharacter sets the bar character of the progressbar.
+func (p Progressbar) WithBarCharacter(char string) *Progressbar {
+	p.BarCharacter = char
 	return &p
 }
 
@@ -194,7 +194,7 @@ func (p *Progressbar) Add(count int) *Progressbar {
 	barCurrentLength := (p.Current * barMaxLength) / p.Total
 	barFiller := strings.Repeat(p.BarFiller, barMaxLength-barCurrentLength)
 
-	bar := p.BarStyle.Sprint(strings.Repeat(p.LineCharacter, barCurrentLength)+p.LastCharacter) + barFiller
+	bar := p.BarStyle.Sprint(strings.Repeat(p.BarCharacter, barCurrentLength)+p.LastCharacter) + barFiller
 	Printo(before + bar + after)
 
 	if p.Current == p.Total {

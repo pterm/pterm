@@ -82,11 +82,11 @@ func TestProgressbar_WithLastCharacter(t *testing.T) {
 	assert.Equal(t, ">", p2.LastCharacter)
 }
 
-func TestProgressbar_WithLineCharacter(t *testing.T) {
+func TestProgressbar_WithBarCharacter(t *testing.T) {
 	p := Progressbar{}
-	p2 := p.WithLineCharacter("-")
+	p2 := p.WithBarCharacter("-")
 
-	assert.Equal(t, "-", p2.LineCharacter)
+	assert.Equal(t, "-", p2.BarCharacter)
 }
 
 func TestProgressbar_WithRemoveWhenDone(t *testing.T) {
