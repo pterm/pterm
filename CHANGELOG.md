@@ -8,6 +8,7 @@
 
 ### Documentation Changes
 - **contributing:** update contributing guides
+- **examples:** color fade demo, fade from cyan to magenta ([#68](https://github.com/pterm/pterm/issues/68))
 - **readme:** change unit tests badge color to magenta
 - **readme:** add coverage badge
 - **readme:** add Q&A to readme
