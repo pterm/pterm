@@ -12,6 +12,9 @@
 - **readme:** add coverage badge
 - **readme:** add Q&A to readme
 
+### Features
+- add `BulletListPrinter` ([#67](https://github.com/pterm/pterm/issues/67))
+
 
 <a name="v0.7.0"></a>
 ## [v0.7.0] - 2020-10-20

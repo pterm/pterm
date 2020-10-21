@@ -38,7 +38,7 @@
 </a>
 
 <a href="https://codecov.io/gh/pterm/pterm">
-<!-- unittestcount:start --><img src="https://img.shields.io/badge/Unit_Tests-2827-magenta?style=flat-square" alt="Forks"><!-- unittestcount:end -->
+<!-- unittestcount:start --><img src="https://img.shields.io/badge/Unit_Tests-2885-magenta?style=flat-square" alt="Forks"><!-- unittestcount:end -->
 </a>
 
 <a href="https://github.com/pterm/pterm/">
@@ -82,7 +82,7 @@ We take special precautions to ensure that PTerm works on as many operating syst
 
 ### • 🧪 Well tested
 
-We test PTerm continuously. However, since a human cannot test everything all the time, we have our own test system with which we currently run <!-- unittestcount2:start -->**`2827`**<!-- unittestcount2:end -->
+We test PTerm continuously. However, since a human cannot test everything all the time, we have our own test system with which we currently run <!-- unittestcount2:start -->**`2885`**<!-- unittestcount2:end -->
 automated tests to ensure that PTerm has no bugs. 
 
 ### • ✨ Consistent Colors
@@ -132,6 +132,63 @@ If you want to contribute to the development of PTerm, you are very welcome to d
 ## 🧪 Examples
 
 <!-- examples:start -->
+### bulletlist
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/bulletlist/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	pterm.DefaultBulletList.WithItems([]pterm.BulletListItem{
+		{Level: 0, Text: "Level 0"},
+		{Level: 1, Text: "Level 1"},
+		{Level: 2, Text: "Level 2"},
+	}).Render()
+
+	pterm.NewListFromString(`0
+ 1
+  2
+   3`, " ").Render()
+}
+
+```
+
+</details>
+
+### bulletlist-custom
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/bulletlist-custom/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	pterm.DefaultBulletList.WithItems([]pterm.BulletListItem{
+		{Level: 0, Text: "Blue", TextStyle: pterm.NewStyle(pterm.FgBlue), BulletStyle: pterm.NewStyle(pterm.FgRed)},
+		{Level: 1, Text: "Green", TextStyle: pterm.NewStyle(pterm.FgGreen), Bullet: "-", BulletStyle: pterm.NewStyle(pterm.FgLightWhite)},
+		{Level: 2, Text: "Cyan", TextStyle: pterm.NewStyle(pterm.FgCyan), Bullet: ">", BulletStyle: pterm.NewStyle(pterm.FgYellow)},
+	}).Render()
+}
+
+```
+
+</details>
+
 ### demo
 
 ![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/demo/animation.svg)
