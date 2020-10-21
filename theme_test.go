@@ -124,3 +124,19 @@ func TestTheme_WithWarningPrefixStyle(t *testing.T) {
 
 	assert.Equal(t, s, p2.WarningPrefixStyle)
 }
+
+func TestTheme_WithListBulletStyle(t *testing.T) {
+	s := Style{FgRed, BgBlue, Bold}
+	p := Theme{}
+	p2 := p.WithListBulletStyle(s)
+
+	assert.Equal(t, s, p2.ListBulletStyle)
+}
+
+func TestTheme_WithListTextStyle(t *testing.T) {
+	s := Style{FgRed, BgBlue, Bold}
+	p := Theme{}
+	p2 := p.WithListTextStyle(s)
+
+	assert.Equal(t, s, p2.ListTextStyle)
+}

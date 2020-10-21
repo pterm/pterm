@@ -30,6 +30,8 @@ var (
 		TableHeaderStyle:        Style{FgLightCyan},
 		TableSeparatorStyle:     Style{FgGray},
 		SectionStyle:            Style{Bold, FgYellow},
+		ListTextStyle:           Style{FgWhite},
+		ListBulletStyle:         Style{FgGray},
 	}
 )
 
@@ -63,6 +65,8 @@ type Theme struct {
 	TableHeaderStyle        Style
 	TableSeparatorStyle     Style
 	SectionStyle            Style
+	ListTextStyle           Style
+	ListBulletStyle         Style
 }
 
 // WithPrimaryStyle returns a new theme with overridden value.
@@ -152,5 +156,17 @@ func (t Theme) WithDescriptionMessageStyle(style Style) Theme {
 // WithDescriptionPrefixStyle returns a new theme with overridden value.
 func (t Theme) WithDescriptionPrefixStyle(style Style) Theme {
 	t.DescriptionPrefixStyle = style
+	return t
+}
+
+// WithListTextStyle returns a new theme with overridden value.
+func (t Theme) WithListTextStyle(style Style) Theme {
+	t.ListTextStyle = style
+	return t
+}
+
+// WithListBulletStyle returns a new theme with overridden value.
+func (t Theme) WithListBulletStyle(style Style) Theme {
+	t.ListBulletStyle = style
 	return t
 }
