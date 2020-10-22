@@ -82,6 +82,8 @@ We take special precautions to ensure that PTerm works on as many operating syst
 
 ### • 🧪 Well tested
 
+> PTerm has a 100% test coverage, which means that every line of code inside PTerm gets tested automatically
+
 We test PTerm continuously. However, since a human cannot test everything all the time, we have our own test system with which we currently run <!-- unittestcount2:start -->**`3460`**<!-- unittestcount2:end -->
 automated tests to ensure that PTerm has no bugs. 
 
