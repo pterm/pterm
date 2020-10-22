@@ -1,7 +1,7 @@
 <!--suppress HtmlDeprecatedAttribute -->
 
 <h1 align="center">💻 PTerm | Pretty Terminal</h1>
-<p align="center">A golang module to print pretty letters</p>
+<p align="center">A golang module to print pretty text</p>
 
 <p align="center">
 
@@ -401,12 +401,12 @@ import "github.com/pterm/pterm"
 
 func main() {
 	pterm.DefaultParagraph.Println("This is the default paragraph printer. As you can see, no words are separated, " +
-		"but the letters is split at the spaces. This is useful for continuous letters of all kinds. You can manually change the line width if you want to." +
+		"but the text is split at the spaces. This is useful for continuous text of all kinds. You can manually change the line width if you want to." +
 		"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam")
 
 	pterm.Println()
 
-	pterm.Println("This letters is written with the default Println() function. No intelligent splitting here." +
+	pterm.Println("This text is written with the default Println() function. No intelligent splitting here." +
 		"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam")
 }
 
@@ -431,12 +431,12 @@ func main() {
 
 	// Custom MaxWidth
 	pterm.DefaultParagraph.WithMaxWidth(60).Println("This is a custom paragraph printer. As you can see, no words are separated, " +
-		"but the letters is split at the spaces. This is useful for continuous letters of all kinds. You can manually change the line width if you want to." +
+		"but the text is split at the spaces. This is useful for continuous text of all kinds. You can manually change the line width if you want to." +
 		"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam")
 
 	pterm.Println()
 
-	pterm.Println("This letters is written with the default Println() function. No intelligent splitting here." +
+	pterm.Println("This text is written with the default Println() function. No intelligent splitting here." +
 		"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam")
 }
 
@@ -444,9 +444,9 @@ func main() {
 
 </details>
 
-### print-basic-letters
+### print-basic-text
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/print-basic-letters/animation.svg)
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/print-basic-text/animation.svg)
 
 <details>
 
@@ -458,7 +458,7 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	pterm.DefaultBasicText.Println("Default basic letters printer.")
+	pterm.DefaultBasicText.Println("Default basic text printer.")
 	pterm.DefaultBasicText.Println("Can be used in any" + pterm.LightMagenta(" TextPrinter ") + "context.")
 	pterm.DefaultBasicText.Println("For example to resolve progressbars and spinners.")
 }
@@ -508,9 +508,9 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	pterm.NewRGB(178, 44, 199).Println("This letters is printed with a custom RGB!")
-	pterm.NewRGB(15, 199, 209).Println("This letters is printed with a custom RGB!")
-	pterm.NewRGB(201, 144, 30).Println("This letters is printed with a custom RGB!")
+	pterm.NewRGB(178, 44, 199).Println("This text is printed with a custom RGB!")
+	pterm.NewRGB(15, 199, 209).Println("This text is printed with a custom RGB!")
+	pterm.NewRGB(201, 144, 30).Println("This text is printed with a custom RGB!")
 }
 
 ```
@@ -614,9 +614,9 @@ import "github.com/pterm/pterm"
 
 func main() {
 	pterm.DefaultSection.Println("This is a section!")
-	pterm.Info.Println("And here is some letters.\nThis letters could be anything.\nBasically it's just a placeholder")
+	pterm.Info.Println("And here is some text.\nThis text could be anything.\nBasically it's just a placeholder")
 	pterm.DefaultSection.Println("This is another section!")
-	pterm.Info.Println("And this is\nmore placeholder letters")
+	pterm.Info.Println("And this is\nmore placeholder text")
 }
 
 ```
