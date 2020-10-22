@@ -38,7 +38,7 @@
 </a>
 
 <a href="https://codecov.io/gh/pterm/pterm">
-<!-- unittestcount:start --><img src="https://img.shields.io/badge/Unit_Tests-3460-magenta?style=flat-square" alt="Forks"><!-- unittestcount:end -->
+<!-- unittestcount:start --><img src="https://img.shields.io/badge/Unit_Tests-3469-magenta?style=flat-square" alt="Forks"><!-- unittestcount:end -->
 </a>
 
 <a href="https://github.com/pterm/pterm/">
@@ -84,7 +84,7 @@ We take special precautions to ensure that PTerm works on as many operating syst
 
 > PTerm has a 100% test coverage, which means that every line of code inside PTerm gets tested automatically
 
-We test PTerm continuously. However, since a human cannot test everything all the time, we have our own test system with which we currently run <!-- unittestcount2:start -->**`3460`**<!-- unittestcount2:end -->
+We test PTerm continuously. However, since a human cannot test everything all the time, we have our own test system with which we currently run <!-- unittestcount2:start -->**`3469`**<!-- unittestcount2:end -->
 automated tests to ensure that PTerm has no bugs. 
 
 ### • ✨ Consistent Colors
@@ -134,6 +134,32 @@ If you want to contribute to the development of PTerm, you are very welcome to d
 ## 🧪 Examples
 
 <!-- examples:start -->
+### bigtext
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/bigtext/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	pterm.DefaultBigText.WithLetters(pterm.NewLettersFromText("PTerm")).Render()
+
+	pterm.DefaultBigText.WithLetters(
+		pterm.NewLettersFromTextWithStyle("P", pterm.NewStyle(pterm.FgCyan)),
+		pterm.NewLettersFromTextWithStyle("Term", pterm.NewStyle(pterm.FgLightMagenta))).
+		Render()
+}
+
+```
+
+</details>
+
 ### bulletlist
 
 ![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/bulletlist/animation.svg)
@@ -266,8 +292,11 @@ func pseudoApplicationHeader() *pterm.TextPrinter {
 }
 
 func introScreen() {
-	pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
-		"PTDP - PTerm Demo Program")
+	pterm.DefaultBigText.WithLetters(
+		pterm.NewLettersFromTextWithStyle("P", pterm.NewStyle(pterm.FgCyan)),
+		pterm.NewLettersFromTextWithStyle("Term", pterm.NewStyle(pterm.FgLightMagenta))).
+		Render()
+
 	pterm.Info.Println("This animation was generated with the latest version of PTerm!" +
 		"\nPTerm works on nearly every terminal and operating system." +
 		"\nIt's super easy to use!" +
