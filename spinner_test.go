@@ -120,8 +120,8 @@ func TestSpinnerDifferentVariations(t *testing.T) {
 		fields fields
 		args   args
 	}{
-		{name: "WithText", fields: fields{Text: "test"}, args: args{}},
-		{name: "WithText", fields: fields{}, args: args{[]interface{}{"test"}}},
+		{name: "WithLetters", fields: fields{Text: "test"}, args: args{}},
+		{name: "WithLetters", fields: fields{}, args: args{[]interface{}{"test"}}},
 		{name: "WithRemoveWhenDone", fields: fields{RemoveWhenDone: true}, args: args{}},
 	}
 	for _, tt := range tests {

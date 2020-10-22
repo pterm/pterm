@@ -4,7 +4,7 @@ import "github.com/pterm/pterm/internal"
 
 var (
 	// DefaultHeader returns the printer for a default header text.
-	// Defaults to LightWhite, Bold Text and a Gray DefaultHeader background.
+	// Defaults to LightWhite, Bold Letters and a Gray DefaultHeader background.
 	DefaultHeader = HeaderPrinter{
 		TextStyle:       &ThemeDefault.HeaderTextStyle,
 		BackgroundStyle: &ThemeDefault.HeaderBackgroundStyle,

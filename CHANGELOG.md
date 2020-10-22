@@ -443,7 +443,7 @@ removed `Println` aliases
 ### Features
 - add spinners
 - shorten printer names and add builder methods to printers
-- add `Printo` to override printed text
+- add `Printo` to override printed letters
 - add `FullWidth` to `HeaderPrinter`
 - add terminal size detection
 
@@ -493,7 +493,7 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - add `HeaderPrinter`
 - add exported version variable
 - add example `override-default-printer`
-- change prefix text color to `LightWhite`
+- change prefix letters color to `LightWhite`
 
 
 <a name="v0.0.0"></a>

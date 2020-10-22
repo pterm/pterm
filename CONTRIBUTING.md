@@ -63,13 +63,13 @@ func (p TemplatePrinter) Printf(format string, a ...interface{}) *TextPrinter {
 
 ```go
 // Srender renders the Template as a string.
-func (p Table) Srender() string {
+func (p Template) Srender() string {
 	
 }
 
 // Render prints the Template to the terminal.
-func (p Table) Render() {
-
+func (p BigTextPrinter) Render() {
+	Println(p.Srender())
 }
 ```
 
@@ -77,7 +77,7 @@ func (p Table) Render() {
 
 ```go
 // Start the spinner.
-func (s Spinner) Start(text ...interface{}) *Template { // TODO: Replace Template with actual printer.
+func (s Spinner) Start(letters ...interface{}) *Template { // TODO: Replace Template with actual printer.
 	// TODO: start logic
 	return &s
 }

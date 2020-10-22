@@ -32,6 +32,7 @@ var (
 		SectionStyle:            Style{Bold, FgYellow},
 		ListTextStyle:           Style{FgWhite},
 		ListBulletStyle:         Style{FgGray},
+		LetterStyle:             Style{FgDefault},
 	}
 )
 
@@ -67,6 +68,7 @@ type Theme struct {
 	SectionStyle            Style
 	ListTextStyle           Style
 	ListBulletStyle         Style
+	LetterStyle             Style
 }
 
 // WithPrimaryStyle returns a new theme with overridden value.
@@ -168,5 +170,11 @@ func (t Theme) WithListTextStyle(style Style) Theme {
 // WithListBulletStyle returns a new theme with overridden value.
 func (t Theme) WithListBulletStyle(style Style) Theme {
 	t.ListBulletStyle = style
+	return t
+}
+
+// WithLetterStyle returns a new theme with overridden value.
+func (t Theme) WithLetterStyle(style Style) Theme {
+	t.LetterStyle = style
 	return t
 }

@@ -6,7 +6,7 @@ import (
 	"github.com/pterm/pterm/internal"
 )
 
-// NewListFromStrings returns a BulletList with Text using the NewListItemFromString method.
+// NewListFromStrings returns a BulletList with Letters using the NewListItemFromString method.
 func NewListFromStrings(s []string, padding string) BulletList {
 	var lis []BulletListItem
 	for _, line := range s {
@@ -15,7 +15,7 @@ func NewListFromStrings(s []string, padding string) BulletList {
 	return *DefaultBulletList.WithItems(lis)
 }
 
-// NewListItemFromString returns a ListItem with a Text. The padding is counted in the Text to define the Level of the ListItem.
+// NewListItemFromString returns a ListItem with a Letters. The padding is counted in the Letters to define the Level of the ListItem.
 func NewListItemFromString(text string, padding string) BulletListItem {
 	s, l := internal.RemoveAndCountPrefix(text, padding)
 	return BulletListItem{
@@ -86,7 +86,7 @@ func (p BulletListItem) Srender() string {
 	return strings.Repeat(" ", p.Level) + p.BulletStyle.Sprint(p.Bullet) + " " + p.TextStyle.Sprint(p.Text)
 }
 
-// NewListFromString returns a BulletList with Text using the NewListItemFromString method, splitting after return (\n).
+// NewListFromString returns a BulletList with Letters using the NewListItemFromString method, splitting after return (\n).
 func NewListFromString(s string, padding string) BulletList {
 	return NewListFromStrings(strings.Split(s, "\n"), padding)
 }

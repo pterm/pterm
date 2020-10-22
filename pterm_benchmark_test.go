@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-var benchmarkText = "This is a Benchmark Text"
+var benchmarkText = "This is a Benchmark Letters"
 
 func BenchmarkFmtPrint(b *testing.B) {
 	for i := 0; i < b.N; i++ {

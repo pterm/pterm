@@ -72,6 +72,11 @@ func TestSprintlnContains(t *testing.T, logic func(a interface{}) string) {
 	}
 }
 
+// TestDoesOutput can be used to test if something is outputted to stdout.
+func TestDoesOutput(t *testing.T, logic func(w io.Writer)) {
+	assert.NotEmpty(t, CaptureStdout(logic))
+}
+
 // CaptureStdout captures everything written to the terminal and returns it as a string.
 func CaptureStdout(f func(w io.Writer)) string {
 	originalStdout := os.Stdout

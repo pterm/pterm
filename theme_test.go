@@ -140,3 +140,11 @@ func TestTheme_WithListTextStyle(t *testing.T) {
 
 	assert.Equal(t, s, p2.ListTextStyle)
 }
+
+func TestTheme_WithLetterStyle(t *testing.T) {
+	s := Style{FgRed, BgBlue, Bold}
+	p := Theme{}
+	p2 := p.WithLetterStyle(s)
+
+	assert.Equal(t, s, p2.LetterStyle)
+}
