@@ -69,6 +69,9 @@ func introScreen() {
 		pterm.NewLettersFromTextWithStyle("Term", pterm.NewStyle(pterm.FgLightMagenta))).
 		Render()
 
+	pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
+		"PTDP - PTerm Demo Program")
+
 	pterm.Info.Println("This animation was generated with the latest version of PTerm!" +
 		"\nPTerm works on nearly every terminal and operating system." +
 		"\nIt's super easy to use!" +
