@@ -110,7 +110,7 @@ func processFile(f os.FileInfo) {
 	animationDataLastLine := animationDataLines[len(animationDataLines)-1]
 	re := regexp.MustCompile(`\[\d[^,]*`).FindAllString(animationDataLastLine, 1)[0]
 	lastTime, _ := strconv.ParseFloat(strings.ReplaceAll(re, "[", ""), 10)
-	sleepString := `[` + strconv.FormatFloat(lastTime+5, 'f', 6, 64) + `, "o", "\r\nrestarting...\r\n"]`
+	sleepString := `[` + strconv.FormatFloat(lastTime+5, 'f', 6, 64) + `, "o", "\nRestarting animation...\n"]`
 	animationDataFile, err := os.OpenFile(animationDataPath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
 	if err != nil {
 		log.Panicf("[%s] %s", f.Name(), err.Error())
