@@ -38,7 +38,7 @@
 </a>
 
 <a href="https://codecov.io/gh/pterm/pterm">
-<!-- unittestcount:start --><img src="https://img.shields.io/badge/Unit_Tests-2885-magenta?style=flat-square" alt="Forks"><!-- unittestcount:end -->
+<!-- unittestcount:start --><img src="https://img.shields.io/badge/Unit_Tests-3460-magenta?style=flat-square" alt="Forks"><!-- unittestcount:end -->
 </a>
 
 <a href="https://github.com/pterm/pterm/">
@@ -82,7 +82,7 @@ We take special precautions to ensure that PTerm works on as many operating syst
 
 ### • 🧪 Well tested
 
-We test PTerm continuously. However, since a human cannot test everything all the time, we have our own test system with which we currently run <!-- unittestcount2:start -->**`2885`**<!-- unittestcount2:end -->
+We test PTerm continuously. However, since a human cannot test everything all the time, we have our own test system with which we currently run <!-- unittestcount2:start -->**`3460`**<!-- unittestcount2:end -->
 automated tests to ensure that PTerm has no bugs. 
 
 ### • ✨ Consistent Colors
@@ -208,13 +208,62 @@ import (
 	"github.com/pterm/pterm"
 )
 
-func main() {
-	// Change this to time.Millisecond*200 to speed up the demo.
-	// Useful when debugging.
-	const second = time.Second
-	var pseudoProgramList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chrome pseudo-outlook pseudo-explorer "+
-		"pseudo-dops pseudo-git pseudo-vsc pseudo-intellij pseudo-minecraft pseudo-scoop pseudo-chocolatey", " ")
+// Change this to time.Millisecond*200 to speed up the demo.
+// Useful when debugging.
+const second = time.Second
 
+var pseudoProgramList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chrome pseudo-outlook pseudo-explorer "+
+	"pseudo-dops pseudo-git pseudo-vsc pseudo-intellij pseudo-minecraft pseudo-scoop pseudo-chocolatey", " ")
+
+func main() {
+	introScreen()
+	clear()
+	pseudoApplicationHeader()
+	time.Sleep(second)
+	fetchingPseudoInstallList()
+	downloadingPseudoList()
+	installingPseudoList()
+}
+
+func installingPseudoList() {
+	pterm.DefaultSection.Println("Installing pseudo programs")
+
+	p := pterm.DefaultProgressbar.WithTotal(len(pseudoProgramList)).WithTitle("Installing stuff").Start()
+	for i := 0; i < p.Total; i++ {
+		p.Title = "Installing " + pseudoProgramList[i]
+		if pseudoProgramList[i] == "pseudo-minecraft" {
+			pterm.Warning.Println("Could not install pseudo-minecraft\nThe company policy forbids games.")
+		} else {
+			pterm.Success.Println("Installing " + pseudoProgramList[i])
+			p.Increment()
+		}
+		time.Sleep(second)
+	}
+	p.Stop()
+}
+
+func downloadingPseudoList() {
+	p := pterm.DefaultProgressbar.WithTotal(len(pseudoProgramList)).WithTitle("Downloading stuff").Start()
+	for i := 0; i < p.Total; i++ {
+		p.Title = "Downloading " + pseudoProgramList[i]
+		pterm.Success.Println("Downloading " + pseudoProgramList[i])
+		p.Increment()
+		time.Sleep(time.Millisecond * 500)
+	}
+}
+
+func fetchingPseudoInstallList() {
+	setupSpinner := pterm.DefaultSpinner.Start("Fetching pseudo install list...")
+	time.Sleep(second * 4)
+	setupSpinner.Success()
+}
+
+func pseudoApplicationHeader() *pterm.TextPrinter {
+	return pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
+		"Pseudo Application created with PTerm")
+}
+
+func introScreen() {
 	pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
 		"PTDP - PTerm Demo Program")
 	pterm.Info.Println("This animation was generated with the latest version of PTerm!" +
@@ -225,7 +274,6 @@ func main() {
 		"\n" +
 		"\nThis demo was updated at: " + pterm.Green(time.Now().Format("02 Jan 2006 - 15:04:05 MST")))
 	pterm.Println()
-
 	introSpinner := pterm.DefaultSpinner.WithRemoveWhenDone(true).Start("Waiting for 15 seconds...")
 	time.Sleep(second)
 	for i := 14; i > 0; i-- {
@@ -237,40 +285,6 @@ func main() {
 		time.Sleep(second)
 	}
 	introSpinner.Stop()
-
-	clear()
-
-	pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
-		"Pseudo Application created with PTerm")
-
-	time.Sleep(second)
-
-	setupSpinner := pterm.DefaultSpinner.Start("Fetching pseudo install list...")
-	time.Sleep(second * 4)
-	setupSpinner.Success()
-
-	p := pterm.DefaultProgressbar.WithTotal(len(pseudoProgramList)).WithTitle("Downloading stuff").Start()
-	for i := 0; i < p.Total; i++ {
-		p.Title = "Downloading " + pseudoProgramList[i]
-		pterm.Success.Println("Downloading " + pseudoProgramList[i])
-		p.Increment()
-		time.Sleep(time.Millisecond * 500)
-	}
-	pterm.Success.Println("Downloaded all pseudo programs!")
-
-	pterm.DefaultSection.Println("Installing pseudo programs")
-
-	p = pterm.DefaultProgressbar.WithTotal(len(pseudoProgramList)).WithTitle("Installing stuff").Start()
-	for i := 0; i < p.Total; i++ {
-		p.Title = "Installing " + pseudoProgramList[i]
-		if pseudoProgramList[i] == "pseudo-minecraft" {
-			pterm.Warning.Println("Could not install pseudo-minecraft\nThe company policy forbids games.")
-		} else {
-			pterm.Success.Println("Installing " + pseudoProgramList[i])
-			p.Increment()
-		}
-		time.Sleep(second)
-	}
 }
 
 func clear() {

@@ -12,12 +12,17 @@
 ### Documentation Changes
 - **contributing:** update contributing guides
 - **examples:** color fade demo, fade from cyan to magenta ([#68](https://github.com/pterm/pterm/issues/68))
+- **examples:** refactor demo
+- **readme:** add Q&A to readme
 - **readme:** change unit tests badge color to magenta
 - **readme:** add coverage badge
-- **readme:** add Q&A to readme
 
 ### Features
+- use level of section printer
 - add `BulletListPrinter` ([#67](https://github.com/pterm/pterm/issues/67))
+
+### Test
+- test that `%s` won't fail to print
 
 ### BREAKING CHANGE
 
