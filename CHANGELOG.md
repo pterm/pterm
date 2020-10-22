@@ -2,6 +2,7 @@
 ## [Unreleased]
 
 ### Ci
+- add restarting text
 - more logs in CI
 - remove goroutines to test efficiency
 - escape coverage filepath
