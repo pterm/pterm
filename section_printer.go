@@ -1,20 +1,24 @@
 package pterm
 
+import "strings"
+
 // DefaultSection is the default section printer.
 var DefaultSection = SectionPrinter{
-	Style:         &ThemeDefault.SectionStyle,
-	Level:         1,
-	TopPadding:    1,
-	BottomPadding: 1,
+	Style:           &ThemeDefault.SectionStyle,
+	Level:           1,
+	TopPadding:      1,
+	BottomPadding:   1,
+	IndentCharacter: "#",
 }
 
 // SectionPrinter prints a new section title.
 // It can be used to structure longer text, or different chapters of your program.
 type SectionPrinter struct {
-	Style         *Style
-	Level         int
-	TopPadding    int
-	BottomPadding int
+	Style           *Style
+	Level           int
+	IndentCharacter string
+	TopPadding      int
+	BottomPadding   int
 }
 
 // WithStyle returns a new SectionPrinter with a specific style.
@@ -26,6 +30,12 @@ func (p SectionPrinter) WithStyle(style *Style) *SectionPrinter {
 // WithLevel returns a new SectionPrinter with a specific level.
 func (p SectionPrinter) WithLevel(level int) *SectionPrinter {
 	p.Level = level
+	return &p
+}
+
+// WithIndentCharacter returns a new SectionPrinter with a specific IndentCharacter.
+func (p SectionPrinter) WithIndentCharacter(char string) *SectionPrinter {
+	p.IndentCharacter = char
 	return &p
 }
 
@@ -52,6 +62,10 @@ func (p SectionPrinter) Sprint(a ...interface{}) string {
 
 	for i := 0; i < p.TopPadding; i++ {
 		ret += "\n"
+	}
+
+	if p.Level > 0 {
+		ret += strings.Repeat(p.IndentCharacter, p.Level) + " "
 	}
 
 	ret += p.Style.Sprint(a...)

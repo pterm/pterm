@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-var printables = []interface{}{"Hello, World!", 1337, true, false, 'c', 1.5, -1337, "\\"}
+var printables = []interface{}{"Hello, World!", 1337, true, false, 'c', 1.5, -1337, "\\", "%s"}
 
 // TestPrintContains can be used to test Print methods.
 func TestPrintContains(t *testing.T, logic func(w io.Writer, a interface{})) {
