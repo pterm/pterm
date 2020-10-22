@@ -77,7 +77,7 @@ func (p BigTextPrinter) Render() {
 
 ```go
 // Start the spinner.
-func (s Spinner) Start(letters ...interface{}) *Template { // TODO: Replace Template with actual printer.
+func (s Spinner) Start(text...interface{}) *Template { // TODO: Replace Template with actual printer.
 	// TODO: start logic
 	return &s
 }
