@@ -35,24 +35,27 @@ func (p TemplatePrinter) Sprintf(format string, a ...interface{}) string {
 // Print formats using the default formats for its operands and writes to standard output.
 // Spaces are added between operands when neither is a string.
 // It returns the number of bytes written and any write error encountered.
-func (p TemplatePrinter) Print(a ...interface{}) TextPrinter {
+func (p TemplatePrinter) Print(a ...interface{}) *TextPrinter {
 	Print(p.Sprint(a...))
-	return &p
+	tp := TextPrinter(p)
+	return &tp
 }
 
 // Println formats using the default formats for its operands and writes to standard output.
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
-func (p TemplatePrinter) Println(a ...interface{}) TextPrinter {
+func (p TemplatePrinter) Println(a ...interface{}) *TextPrinter {
 	Println(p.Sprint(a...))
-	return &p
+    tp := TextPrinter(p)
+    return &tp
 }
 
 // Printf formats according to a format specifier and writes to standard output.
 // It returns the number of bytes written and any write error encountered.
-func (p TemplatePrinter) Printf(format string, a ...interface{}) TextPrinter {
+func (p TemplatePrinter) Printf(format string, a ...interface{}) *TextPrinter {
 	Print(p.Sprintf(format, a...))
-	return &p
+	tp := TextPrinter(p)
+	return &tp
 }
 ```
 
@@ -60,13 +63,13 @@ func (p TemplatePrinter) Printf(format string, a ...interface{}) TextPrinter {
 
 ```go
 // Srender renders the Template as a string.
-func (p Table) Srender() string {
+func (p Template) Srender() string {
 	
 }
 
 // Render prints the Template to the terminal.
-func (p Table) Render() {
-
+func (p BigTextPrinter) Render() {
+	Println(p.Srender())
 }
 ```
 
@@ -74,7 +77,7 @@ func (p Table) Render() {
 
 ```go
 // Start the spinner.
-func (s Spinner) Start(text ...interface{}) *Template { // TODO: Replace Template with actual printer.
+func (s Spinner) Start(text...interface{}) *Template { // TODO: Replace Template with actual printer.
 	// TODO: start logic
 	return &s
 }
