@@ -84,3 +84,11 @@ func TestSectionPrinter_WithTopPadding(t *testing.T) {
 	assert.Equal(t, 1337, p2.TopPadding)
 	assert.Empty(t, p.TopPadding)
 }
+
+func TestSectionPrinter_WithIndentCharacter(t *testing.T) {
+	p := SectionPrinter{}
+	p2 := p.WithIndentCharacter("#")
+
+	assert.Equal(t, "#", p2.IndentCharacter)
+	assert.Empty(t, p.IndentCharacter)
+}
