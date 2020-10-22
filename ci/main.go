@@ -55,11 +55,15 @@ func main() {
 	var newReadmeContent string
 	var unitTestCountBytes []byte
 
+	log.Output(3, "### Counting unit tests...")
+
 	cmd := exec.Command("bash", "-c", "go test -v ./... | grep -c RUN")
 	unitTestCountBytes, err = cmd.Output()
 	if err != nil {
 		log.Panic(err)
 	}
+
+	log.Output(4, "#### Replacing strings in readme")
 
 	unitTestCount := strings.ReplaceAll(string(unitTestCountBytes), "\n", "")
 
@@ -67,6 +71,7 @@ func main() {
 	newReadmeContent = writeBetween("unittestcount2", newReadmeContent, "**`"+unitTestCount+"`**")
 	newReadmeContent = writeBetween("examples", newReadmeContent, "\n"+readmeExamples+"\n")
 
+	log.Output(4, "### Writing readme")
 	err = ioutil.WriteFile("./README.md", []byte(newReadmeContent), 0600)
 	if err != nil {
 		log.Panic(err)
