@@ -16,6 +16,7 @@
 - **readme:** add Q&A to readme
 - **readme:** change unit tests badge color to magenta
 - **readme:** add coverage badge
+- **readme:** add test coverage to readme
 
 ### Features
 - use level of section printer
