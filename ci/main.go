@@ -10,10 +10,9 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-	"sync"
 )
 
-var wg sync.WaitGroup
+// var wg sync.WaitGroup
 
 func main() {
 	log.Output(1, "## Generating Examples")
@@ -25,11 +24,11 @@ func main() {
 	var readmeExamples string
 
 	for _, f := range files {
-		wg.Add(1)
-		go processFile(f)
+		// wg.Add(1)
+		processFile(f)
 	}
 
-	wg.Wait()
+	// wg.Wait()
 
 	for _, f := range files {
 		exampleCode, err := ioutil.ReadFile("./_examples/" + f.Name() + "/main.go")
@@ -135,7 +134,7 @@ func processFile(f os.FileInfo) {
 	log.Output(4, "#### ['"+f.Name()+"']  Cleaning files")
 	os.Remove(animationDataPath)
 
-	wg.Done()
+	// wg.Done()
 }
 
 func writeBetween(name string, original string, insertText string) string {
