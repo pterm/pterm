@@ -68,7 +68,7 @@
 
 ## 🥅 Goal of PTerm
 
-> PTerm is designed to beautify the terminal output of your program.
+PTerm is designed to create a **platform independent way to create beautiful terminal output**. Most modules that want to improve the terminal output do not guarantee platform independence - PTerm does. PTerm follows the **most common methods for displaying color in a terminal**. With PTerm, it is possible to create beautiful output **even in low-level environments**. 
 
 ### • 🪀 Easy to use
 
