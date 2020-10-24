@@ -10,18 +10,19 @@
 - upload coverage report
 
 ### Code Refactoring
+- make `BigTextPrinter` release ready
 - change `LineCharacter` to `BarCharacter` ([#70](https://github.com/pterm/pterm/issues/70))
 
 ### Documentation Changes
 - **contributing:** update contributing guides
-- **examples:** add header to demo
-- **examples:** refactor demo
 - **examples:** color fade demo, fade from cyan to magenta ([#68](https://github.com/pterm/pterm/issues/68))
+- **examples:** refactor demo
+- **examples:** add header to demo
+- **readme:** add test coverage to readme
 - **readme:** change unit tests badge color to magenta
 - **readme:** add coverage badge
-- **readme:** add Q&A to readme
-- **readme:** add test coverage to readme
 - **readme:** update readme
+- **readme:** add Q&A to readme
 
 ### Features
 - add `BigTextPrinter` ([#75](https://github.com/pterm/pterm/issues/75))
