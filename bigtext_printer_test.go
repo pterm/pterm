@@ -14,7 +14,7 @@ func TestBigTextPrinterNilPrint(t *testing.T) {
 
 func TestBigTextPrinter_Render(t *testing.T) {
 	internal.TestDoesOutput(t, func(w io.Writer) {
-		DefaultBigText.WithLetters(NewLettersFromText("Hello")).Render()
+		DefaultBigText.WithLetters(NewLettersFromString("Hello")).Render()
 	})
 }
 
@@ -74,7 +74,7 @@ func TestNewLettersFromText(t *testing.T) {
 			Style:  &ThemeDefault.LetterStyle,
 		},
 	}
-	p := NewLettersFromText("ab")
+	p := NewLettersFromString("ab")
 
 	assert.Equal(t, e, p)
 }
@@ -90,7 +90,7 @@ func TestNewLettersFromTextWithStyle(t *testing.T) {
 			Style:  NewStyle(FgRed, BgBlue, Bold),
 		},
 	}
-	p := NewLettersFromTextWithStyle("ab", NewStyle(FgRed, BgBlue, Bold))
+	p := NewLettersFromStringWithStyle("ab", NewStyle(FgRed, BgBlue, Bold))
 
 	assert.Equal(t, e, p)
 }

@@ -9,14 +9,14 @@ import (
 // Letters is a slice of Letter.
 type Letters []Letter
 
-// NewLettersFromText creates a Letters object from a string, which is prefilled with the LetterStyle from ThemeDefault.
+// NewLettersFromString creates a Letters object from a string, which is prefilled with the LetterStyle from ThemeDefault.
 // You can override the ThemeDefault LetterStyle if you want to.
-func NewLettersFromText(text string) Letters {
-	return NewLettersFromTextWithStyle(text, &ThemeDefault.LetterStyle)
+func NewLettersFromString(text string) Letters {
+	return NewLettersFromStringWithStyle(text, &ThemeDefault.LetterStyle)
 }
 
-// NewLettersFromTextWithStyle creates a Letters object from a string and applies a Style to it.
-func NewLettersFromTextWithStyle(text string, style *Style) Letters {
+// NewLettersFromStringWithStyle creates a Letters object from a string and applies a Style to it.
+func NewLettersFromStringWithStyle(text string, style *Style) Letters {
 	s := strings.Split(text, "")
 	l := Letters{}
 
@@ -72,7 +72,7 @@ func (p BigTextPrinter) WithLetters(letters ...Letters) *BigTextPrinter {
 	return &p
 }
 
-// Srender renders the Template as a string.
+// Srender renders the BigText as a string.
 func (p BigTextPrinter) Srender() string {
 	var ret string
 	var bigLetters Letters
@@ -114,7 +114,7 @@ func (p BigTextPrinter) Srender() string {
 	return ret
 }
 
-// Render prints the Template to the terminal.
+// Render prints the BigText to the terminal.
 func (p BigTextPrinter) Render() {
 	Println(p.Srender())
 }
