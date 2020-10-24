@@ -1,6 +1,12 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Documentation Changes
+- **readme:** add short description
+
+
+<a name="v0.8.0"></a>
+## [v0.8.0] - 2020-10-24
 ### Ci
 - add restarting text
 - more logs in CI
@@ -512,7 +518,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.7.0...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.8.0...HEAD
+[v0.8.0]: https://github.com/pterm/pterm/compare/v0.7.0...v0.8.0
 [v0.7.0]: https://github.com/pterm/pterm/compare/v0.6.1...v0.7.0
 [v0.6.1]: https://github.com/pterm/pterm/compare/v0.6.0...v0.6.1
 [v0.6.0]: https://github.com/pterm/pterm/compare/v0.5.1...v0.6.0
