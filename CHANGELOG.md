@@ -2,6 +2,9 @@
 ## [Unreleased]
 
 ### Documentation Changes
+- change bug emoji
+- update bug issue template
+- add issue templates
 - **readme:** add short description
 
 
