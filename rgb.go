@@ -54,13 +54,34 @@ func NewRGBFromHEX(hex string) (RGB, error) {
 	}, nil
 }
 
-// Fade fades one RGB value to another RGB value, by giving the function a minimum, maximum and current value.
-func (p RGB) Fade(min, max, current float32, end RGB) RGB {
-	return RGB{
-		R: uint8(internal.MapRangeToRange(min, max, float32(p.R), float32(end.R), current)),
-		G: uint8(internal.MapRangeToRange(min, max, float32(p.G), float32(end.G), current)),
-		B: uint8(internal.MapRangeToRange(min, max, float32(p.B), float32(end.B), current)),
+// Fade fades one RGB value (over other RGB values) to another RGB value, by giving the function a minimum, maximum and current value.
+func (p RGB) Fade(min, max, current float32, end ...RGB) RGB {
+	if min < 0 {
+		max -= min
+		current -= min
+		min = 0
 	}
+	if len(end) == 1 {
+		return RGB{
+			R: uint8(internal.MapRangeToRange(min, max, float32(p.R), float32(end[0].R), current)),
+			G: uint8(internal.MapRangeToRange(min, max, float32(p.G), float32(end[0].G), current)),
+			B: uint8(internal.MapRangeToRange(min, max, float32(p.B), float32(end[0].B), current)),
+		}
+	} else if len(end) > 1 {
+		f := (max - min) / float32(len(end))
+		tempCurrent := current
+		if f > current {
+			return p.Fade(min, f, current, end[0])
+		} else {
+			for i := 0; i < len(end)-1; i++ {
+				tempCurrent -= f
+				if f > tempCurrent {
+					return end[i].Fade(min, min+f, tempCurrent, end[i+1])
+				}
+			}
+		}
+	}
+	return p
 }
 
 // Sprint formats using the default formats for its operands and returns the resulting string.

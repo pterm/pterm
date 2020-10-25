@@ -81,7 +81,7 @@ func TestRGB_Fade(t *testing.T) {
 		min     float32
 		max     float32
 		current float32
-		end     RGB
+		end     []RGB
 	}
 	tests := []struct {
 		name   string
@@ -89,10 +89,15 @@ func TestRGB_Fade(t *testing.T) {
 		args   args
 		want   RGB
 	}{
-		{name: "Middle", fields: fields{0, 0, 0}, args: args{min: 0, max: 100, current: 50, end: RGB{255, 255, 255}}, want: RGB{127, 127, 127}},
-		{name: "ZeroToZero", fields: fields{0, 0, 0}, args: args{min: 0, max: 100, current: 50, end: RGB{0, 0, 0}}, want: RGB{0, 0, 0}},
-		{name: "DifferentValues", fields: fields{0, 1, 2}, args: args{min: 0, max: 100, current: 50, end: RGB{0, 1, 2}}, want: RGB{0, 1, 2}},
-		{name: "NegativeRangeMiddle", fields: fields{0, 0, 0}, args: args{min: -50, max: 50, current: 0, end: RGB{255, 255, 255}}, want: RGB{127, 127, 127}},
+		{name: "Middle", fields: fields{0, 0, 0}, args: args{min: 0, max: 100, current: 50, end: []RGB{{255, 255, 255}}}, want: RGB{127, 127, 127}},
+		{name: "ZeroToZero", fields: fields{0, 0, 0}, args: args{min: 0, max: 100, current: 50, end: []RGB{{0, 0, 0}}}, want: RGB{0, 0, 0}},
+		{name: "DifferentValues", fields: fields{0, 1, 2}, args: args{min: 0, max: 100, current: 50, end: []RGB{{0, 1, 2}}}, want: RGB{0, 1, 2}},
+		{name: "NegativeRangeMiddle", fields: fields{0, 0, 0}, args: args{min: -50, max: 50, current: 0, end: []RGB{{255, 255, 255}}}, want: RGB{127, 127, 127}},
+		{name: "NegativeRangeMiddleMultipleRGB", fields: fields{0, 0, 0}, args: args{min: -50, max: 50, current: 0, end: []RGB{{127, 127, 127}, {255, 255, 255}}}, want: RGB{127, 127, 127}},
+		{name: "MiddleMultipleRGB", fields: fields{0, 0, 0}, args: args{min: 0, max: 100, current: 50, end: []RGB{{127, 127, 127}, {255, 255, 255}}}, want: RGB{127, 127, 127}},
+		{name: "1/4MultipleRGB", fields: fields{0, 0, 0}, args: args{min: 0, max: 100, current: 25, end: []RGB{{255, 255, 255}, {255, 255, 255}}}, want: RGB{127, 127, 127}},
+		{name: "MiddleMultipleRGBPositiveMin", fields: fields{0, 0, 0}, args: args{min: 10, max: 110, current: 60, end: []RGB{{127, 127, 127}, {255, 255, 255}}}, want: RGB{127, 127, 127}},
+		{name: "MiddleNoRGB", fields: fields{0, 0, 0}, args: args{min: 10, max: 110, current: 60, end: []RGB{}}, want: RGB{0, 0, 0}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -101,7 +106,7 @@ func TestRGB_Fade(t *testing.T) {
 				G: tt.fields.G,
 				B: tt.fields.B,
 			}
-			if got := p.Fade(tt.args.min, tt.args.max, tt.args.current, tt.args.end); !reflect.DeepEqual(got, tt.want) {
+			if got := p.Fade(tt.args.min, tt.args.max, tt.args.current, tt.args.end...); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Fade() = %v, want %v", got, tt.want)
 			}
 		})
