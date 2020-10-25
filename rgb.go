@@ -54,7 +54,7 @@ func NewRGBFromHEX(hex string) (RGB, error) {
 	}, nil
 }
 
-// Fade fades one RGB value to another RGB value, by giving the function a minimum, maximum and current value.
+// Fade fades one RGB value (over other RGB values) to another RGB value, by giving the function a minimum, maximum and current value.
 func (p RGB) Fade(min, max, current float32, end ...RGB) RGB {
 	if min < 0 {
 		max -= min
