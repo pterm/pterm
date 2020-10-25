@@ -1,11 +1,19 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Code Refactoring
+- refactor doc
+- refactor code
+
 ### Documentation Changes
 - change bug emoji
 - update bug issue template
 - add issue templates
+- **examples:** add multiple color fade example
 - **readme:** add short description
+
+### Features
+- add fade from one RGB over several RGBs to another RGB
 
 
 <a name="v0.8.0"></a>

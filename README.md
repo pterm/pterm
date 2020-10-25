@@ -38,7 +38,7 @@
 </a>
 
 <a href="https://codecov.io/gh/pterm/pterm">
-<!-- unittestcount:start --><img src="https://img.shields.io/badge/Unit_Tests-3469-magenta?style=flat-square" alt="Forks"><!-- unittestcount:end -->
+<!-- unittestcount:start --><img src="https://img.shields.io/badge/Unit_Tests-3474-magenta?style=flat-square" alt="Forks"><!-- unittestcount:end -->
 </a>
 
 <a href="https://github.com/pterm/pterm/">
@@ -84,7 +84,7 @@ We take special precautions to ensure that PTerm works on as many operating syst
 
 > PTerm has a 100% test coverage, which means that every line of code inside PTerm gets tested automatically
 
-We test PTerm continuously. However, since a human cannot test everything all the time, we have our own test system with which we currently run <!-- unittestcount2:start -->**`3469`**<!-- unittestcount2:end -->
+We test PTerm continuously. However, since a human cannot test everything all the time, we have our own test system with which we currently run <!-- unittestcount2:start -->**`3474`**<!-- unittestcount2:end -->
 automated tests to ensure that PTerm has no bugs. 
 
 ### • ✨ Consistent Colors
@@ -519,6 +519,36 @@ func main() {
 	to := pterm.NewRGB(255, 0, 255)
 	for i := 0; i < pterm.GetTerminalHeight(); i++ {
 		from.Fade(0, float32(pterm.GetTerminalHeight()), float32(i), to).Println("Hello, World!")
+	}
+}
+
+```
+
+</details>
+
+### print-color-fade-multiple
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/print-color-fade-multiple/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	from := pterm.NewRGB(0, 255, 255)
+	to := pterm.NewRGB(255, 0, 255)
+	to2 := pterm.NewRGB(255, 0, 0)
+	to3 := pterm.NewRGB(0, 255, 0)
+	to4 := pterm.NewRGB(255, 255, 255)
+	for i := 0; i < pterm.GetTerminalHeight(); i++ {
+		from.Fade(0, float32(pterm.GetTerminalHeight()), float32(i), to, to2, to3, to4).Println("Hello, World!")
 	}
 }
 
