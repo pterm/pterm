@@ -57,8 +57,8 @@ func NewRGBFromHEX(hex string) (RGB, error) {
 // Fade fades one RGB value to another RGB value, by giving the function a minimum, maximum and current value.
 func (p RGB) Fade(min, max, current float32, end ...RGB) RGB {
 	if min < 0 {
-		max = max - min
-		current = current - min
+		max -= min
+		current -= min
 		min = 0
 	}
 	if len(end) == 1 {
@@ -74,7 +74,7 @@ func (p RGB) Fade(min, max, current float32, end ...RGB) RGB {
 			return p.Fade(min, f, current, end[0])
 		} else {
 			for i := 0; i < len(end)-1; i++ {
-				tempCurrent = tempCurrent - f
+				tempCurrent -= f
 				if f > tempCurrent {
 					return end[i].Fade(min, min+f, tempCurrent, end[i+1])
 				}

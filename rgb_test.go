@@ -95,7 +95,7 @@ func TestRGB_Fade(t *testing.T) {
 		{name: "NegativeRangeMiddle", fields: fields{0, 0, 0}, args: args{min: -50, max: 50, current: 0, end: []RGB{{255, 255, 255}}}, want: RGB{127, 127, 127}},
 		{name: "NegativeRangeMiddleMultipleRGB", fields: fields{0, 0, 0}, args: args{min: -50, max: 50, current: 0, end: []RGB{{127, 127, 127}, {255, 255, 255}}}, want: RGB{127, 127, 127}},
 		{name: "MiddleMultipleRGB", fields: fields{0, 0, 0}, args: args{min: 0, max: 100, current: 50, end: []RGB{{127, 127, 127}, {255, 255, 255}}}, want: RGB{127, 127, 127}},
-		{name: "MiddleMultipleRGB", fields: fields{0, 0, 0}, args: args{min: 0, max: 100, current: 25, end: []RGB{{255, 255, 255}, {255, 255, 255}}}, want: RGB{127, 127, 127}},
+		{name: "1/4MultipleRGB", fields: fields{0, 0, 0}, args: args{min: 0, max: 100, current: 25, end: []RGB{{255, 255, 255}, {255, 255, 255}}}, want: RGB{127, 127, 127}},
 		{name: "MiddleMultipleRGBPositiveMin", fields: fields{0, 0, 0}, args: args{min: 10, max: 110, current: 60, end: []RGB{{127, 127, 127}, {255, 255, 255}}}, want: RGB{127, 127, 127}},
 		{name: "MiddleNoRGB", fields: fields{0, 0, 0}, args: args{min: 10, max: 110, current: 60, end: []RGB{}}, want: RGB{0, 0, 0}},
 	}
