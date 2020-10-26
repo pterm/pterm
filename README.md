@@ -154,6 +154,8 @@ If you want to contribute to the development of PTerm, you are very welcome to d
 
 ## 🧪 Examples
 
+You can find all the examples, with their source code, here: [`./_examples`](./_examples)
+
 <!-- examples:start -->
 ### bigtext
 
