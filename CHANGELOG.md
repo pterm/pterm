@@ -43,6 +43,9 @@
 - **readme:** use real emoji for features list
 - **readme:** add source link to demo
 
+### Test
+- add progressbar tests
+
 
 <a name="v0.8.1"></a>
 ## [v0.8.1] - 2020-10-26
