@@ -33,9 +33,10 @@ var (
 
 // Progressbar shows a progress animation in the terminal.
 type Progressbar struct {
-	Title                     string
-	Total                     int
-	Current                   int
+	Title   string
+	Total   int
+	Current int
+	// Deprecated: Not used anymore.
 	UpdateDelay               time.Duration
 	BarCharacter              string
 	LastCharacter             string
@@ -199,11 +200,6 @@ func (p *Progressbar) Add(count int) *Progressbar {
 
 	if p.Current == p.Total {
 		p.Stop()
-		if p.RemoveWhenDone {
-			clearLine()
-		} else {
-			Println()
-		}
 	}
 	return p
 }
@@ -225,7 +221,16 @@ func (p Progressbar) Start() *Progressbar {
 
 // Stop the progressbar.
 func (p *Progressbar) Stop() *Progressbar {
+	if !p.IsActive {
+		return p
+	}
 	p.IsActive = false
+	if p.RemoveWhenDone {
+		clearLine()
+		Printo()
+	} else {
+		Println()
+	}
 	return p
 }
 
