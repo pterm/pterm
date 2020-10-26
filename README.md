@@ -66,6 +66,27 @@
 
 ---
 
+## :star: Features
+- [bigtext](#bigtext)
+- [bulletlist](#bulletlist)
+- [bulletlist-custom](#bulletlist-custom)
+- [demo](#demo)
+- [header](#header)
+- [header-custom](#header-custom)
+- [override-default-printers](#override-default-printers)
+- [paragraph](#paragraph)
+- [paragraph-custom](#paragraph-custom)
+- [print-basic-text](#print-basic-text)
+- [print-color-fade](#print-color-fade)
+- [print-color-fade-multiple](#print-color-fade-multiple)
+- [print-color-rgb](#print-color-rgb)
+- [print-with-color](#print-with-color)
+- [progressbar](#progressbar)
+- [section](#section)
+- [spinner](#spinner)
+- [table](#table)
+- [theme](#theme)
+
 ## 🥅 Goal of PTerm
 
 PTerm is designed to create a **platform independent way to create beautiful terminal output**. Most modules that want to improve the terminal output do not guarantee platform independence - PTerm does. PTerm follows the **most common methods for displaying color in a terminal**. With PTerm, it is possible to create beautiful output **even in low-level environments**. 
