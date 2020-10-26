@@ -1,8 +1,15 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Chore
+- **deps:** update dependencies
+
+### Ci
+- replace log panic with fatal
+- proxy cmd stdout to os stdout
+
 ### Documentation Changes
-- **examples:** update `HeaderPrinter` example
+- **examples:** update `HeaderPrinter` custom example
 - **examples:** update `BulletListPrinter` example
 - **examples:** update `BigTextPrinter` example
 - **examples:** update `BulletListPrinter` custom example
@@ -13,15 +20,15 @@
 - **examples:** update `DefaultSection` example
 - **examples:** update `DefaultProgressbar` example
 - **examples:** update `print-with-color` example
-- **examples:** update `print-color-rgb` example
+- **examples:** change color fade multiple example ([#85](https://github.com/pterm/pterm/issues/85))
 - **examples:** update `print-color-fade-multiple` example
 - **examples:** update `print-color-fade` example
 - **examples:** update `BasicTextPrinter` example
 - **examples:** update `ParagraphPrinter` custom example
 - **examples:** update `ParagraphPrinter` example
 - **examples:** update `override-default-printers` example
-- **examples:** update `HeaderPrinter` custom example
-- **examples:** change color fade multiple example ([#85](https://github.com/pterm/pterm/issues/85))
+- **examples:** update `print-color-rgb` example
+- **examples:** update `HeaderPrinter` example
 - **godoc:** add package description
 - **readme:** add features list to README ([#84](https://github.com/pterm/pterm/issues/84))
 - **readme:** add link to examples location
