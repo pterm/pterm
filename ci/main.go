@@ -58,6 +58,8 @@ func main() {
 	log.Output(3, "### Counting unit tests...")
 
 	cmd := exec.Command("bash", "-c", "go test -v ./... | grep -c RUN")
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stdout
 	unitTestCountBytes, err = cmd.Output()
 	if err != nil {
 		log.Panic(err)
