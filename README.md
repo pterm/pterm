@@ -148,8 +148,11 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
+	// Print a large text with the LetterStyle from the standard theme.
+	// Useful for title screens.
 	pterm.DefaultBigText.WithLetters(pterm.NewLettersFromString("PTerm")).Render()
 
+	// Print a large text with differently colored letters.
 	pterm.DefaultBigText.WithLetters(
 		pterm.NewLettersFromStringWithStyle("P", pterm.NewStyle(pterm.FgCyan)),
 		pterm.NewLettersFromStringWithStyle("Term", pterm.NewStyle(pterm.FgLightMagenta))).
@@ -174,12 +177,15 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
+	// Print a list with different levels.
+	// Useful to generate lists automatically from data.
 	pterm.DefaultBulletList.WithItems([]pterm.BulletListItem{
 		{Level: 0, Text: "Level 0"},
 		{Level: 1, Text: "Level 1"},
 		{Level: 2, Text: "Level 2"},
 	}).Render()
 
+	// Convert a text to a list and print it.
 	pterm.NewListFromString(`0
  1
   2
@@ -206,6 +212,7 @@ import (
 )
 
 func main() {
+	// Print a customized list with different styles and levels.
 	pterm.DefaultBulletList.WithItems([]pterm.BulletListItem{
 		{Level: 0, Text: "Blue", TextStyle: pterm.NewStyle(pterm.FgBlue), BulletStyle: pterm.NewStyle(pterm.FgRed)},
 		{Level: 1, Text: "Green", TextStyle: pterm.NewStyle(pterm.FgGreen), Bullet: "-", BulletStyle: pterm.NewStyle(pterm.FgLightWhite)},
@@ -343,6 +350,7 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
+	// Print a default header.
 	pterm.DefaultHeader.Println("This is the default header!")
 }
 
@@ -368,10 +376,10 @@ func main() {
 
 	// Build on top of DefaultHeader
 	pterm.DefaultHeader. // Use DefaultHeader as base
-				WithMargin(15).                                    // Set Margin to 15
-				WithBackgroundStyle(pterm.NewStyle(pterm.BgCyan)). // Set BackgroundStyle to Cyan
-				WithTextStyle(pterm.NewStyle(pterm.FgBlack)).      // Set TextStyle to Black
-				Println("This is a custom header!")                // Print header
+				WithMargin(15).
+				WithBackgroundStyle(pterm.NewStyle(pterm.BgCyan)).
+				WithTextStyle(pterm.NewStyle(pterm.FgBlack)).
+				Println("This is a custom header!")
 	// Instead of printing the header you can set it to a variable.
 	// You can then reuse your custom header.
 
@@ -382,17 +390,17 @@ func main() {
 		Margin:          20,
 	}
 
+	// Print header.
 	newHeader.Println("This is a custom header!")
-
 }
 
 ```
 
 </details>
 
-### override-default-printer
+### override-default-printers
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/override-default-printer/animation.svg)
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/override-default-printers/animation.svg)
 
 <details>
 
@@ -404,13 +412,16 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
+	// Print default error.
 	pterm.Error.Println("This is the default Error")
 
+	// Customize default error.
 	pterm.Error.Prefix = pterm.Prefix{
 		Text:  "OVERRIDE",
 		Style: pterm.NewStyle(pterm.BgCyan, pterm.FgRed),
 	}
 
+	// Print new default error.
 	pterm.Error.Println("This is the default Error after the prefix was overridden")
 }
 
@@ -432,12 +443,15 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
+	// Print long text with default paragraph printer.
 	pterm.DefaultParagraph.Println("This is the default paragraph printer. As you can see, no words are separated, " +
 		"but the text is split at the spaces. This is useful for continuous text of all kinds. You can manually change the line width if you want to." +
 		"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam")
 
+	// Print one line space.
 	pterm.Println()
 
+	// Print long text without paragraph printer.
 	pterm.Println("This text is written with the default Println() function. No intelligent splitting here." +
 		"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam")
 }
@@ -460,14 +474,15 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-
-	// Custom MaxWidth
+	// Print a paragraph with a custom maximal width.
 	pterm.DefaultParagraph.WithMaxWidth(60).Println("This is a custom paragraph printer. As you can see, no words are separated, " +
 		"but the text is split at the spaces. This is useful for continuous text of all kinds. You can manually change the line width if you want to." +
 		"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam")
 
+	// Print one line space.
 	pterm.Println()
 
+	// Print text without a paragraph printer.
 	pterm.Println("This text is written with the default Println() function. No intelligent splitting here." +
 		"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam")
 }
@@ -490,9 +505,13 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
+	// A BasicText printer is used to print text, without special formatting.
+	// As it implements the TextPrinter interface, you can use it in combination with other printers.
 	pterm.DefaultBasicText.Println("Default basic text printer.")
 	pterm.DefaultBasicText.Println("Can be used in any" + pterm.LightMagenta(" TextPrinter ") + "context.")
 	pterm.DefaultBasicText.Println("For example to resolve progressbars and spinners.")
+	// If you just want to print text, you should use this instead:
+	// 	pterm.Println("Hello, World!")
 }
 
 ```
@@ -515,12 +534,16 @@ import (
 )
 
 func main() {
+	// Print info.
 	pterm.Info.Println("RGB colors only work in Terminals which support TrueColor.")
 
-	from := pterm.NewRGB(0, 255, 255)
-	to := pterm.NewRGB(255, 0, 255)
+	from := pterm.NewRGB(0, 255, 255) // This RGB value is used as the gradients start point.
+	to := pterm.NewRGB(255, 0, 255)   // This RGB value is used as the gradients end point.
+
+	// For loop over the range of the terminal height.
 	for i := 0; i < pterm.GetTerminalHeight()-2; i++ {
-		from.Fade(0, float32(pterm.GetTerminalHeight()), float32(i), to).Println("Hello, World!")
+		// Print string which is colored with the faded RGB value.
+		from.Fade(0, float32(pterm.GetTerminalHeight()-2), float32(i), to).Println("Hello, World!")
 	}
 }
 
@@ -544,15 +567,19 @@ import (
 )
 
 func main() {
+	// Print info.
 	pterm.Info.Println("RGB colors only work in Terminals which support TrueColor.")
 
-	from := pterm.NewRGB(0, 255, 255)
-	to := pterm.NewRGB(255, 0, 255)
-	to2 := pterm.NewRGB(255, 0, 0)
-	to3 := pterm.NewRGB(0, 255, 0)
-	to4 := pterm.NewRGB(255, 255, 255)
+	from := pterm.NewRGB(0, 255, 255)  // This RGB value is used as the gradients start point.
+	to := pterm.NewRGB(255, 0, 255)    // This RGB value is used as the gradients first point.
+	to2 := pterm.NewRGB(255, 0, 0)     // This RGB value is used as the gradients second point.
+	to3 := pterm.NewRGB(0, 255, 0)     // This RGB value is used as the gradients third point.
+	to4 := pterm.NewRGB(255, 255, 255) // This RGB value is used as the gradients end point.
+
+	// For loop over the range of the terminal height.
 	for i := 0; i < pterm.GetTerminalHeight()-2; i++ {
-		from.Fade(0, float32(pterm.GetTerminalHeight()), float32(i), to, to2, to3, to4).Println("Hello, World!")
+		// Print string which is colored with the faded RGB value.
+		from.Fade(0, float32(pterm.GetTerminalHeight()-2), float32(i), to, to2, to3, to4).Println("Hello, World!")
 	}
 }
 
@@ -574,6 +601,8 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
+	// Print strings with a custom RGB color.
+	// NOTICE: This only works with terminals which support TrueColor.
 	pterm.NewRGB(178, 44, 199).Println("This text is printed with a custom RGB!")
 	pterm.NewRGB(15, 199, 209).Println("This text is printed with a custom RGB!")
 	pterm.NewRGB(201, 144, 30).Println("This text is printed with a custom RGB!")
@@ -597,9 +626,11 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Simple Println with different colored words.
+	// Print different colored words.
 	pterm.Println(pterm.Red("Hello, ") + pterm.Green("World") + pterm.Cyan("!"))
 	pterm.Println(pterm.Red("Even " + pterm.Cyan("nested ") + pterm.Green("colors ") + "are supported!"))
+
+	// Print strings with set color.
 	pterm.FgBlack.Println("FgBlack")
 	pterm.FgRed.Println("FgRed")
 	pterm.FgGreen.Println("FgGreen")
@@ -608,7 +639,7 @@ func main() {
 	pterm.FgMagenta.Println("FgMagenta")
 	pterm.FgCyan.Println("FgCyan")
 	pterm.FgWhite.Println("FgWhite")
-
+	pterm.Println() // Print one line space.
 	pterm.FgLightRed.Println("FgLightRed")
 	pterm.FgLightGreen.Println("FgLightGreen")
 	pterm.FgLightYellow.Println("FgLightYellow")
@@ -640,25 +671,20 @@ import (
 	"github.com/pterm/pterm"
 )
 
+// Slice of strings with placeholder text.
 var fakeInstallList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chrome pseudo-outlook pseudo-explorer "+
 	"pseudo-dops pseudo-git pseudo-vsc pseudo-intellij pseudo-minecraft pseudo-scoop pseudo-chocolatey", " ")
 
-var vki int
-
 func main() {
+	// Create progressbar as fork from the default progressbar.
 	p := pterm.DefaultProgressbar.WithTotal(len(fakeInstallList)).WithTitle("Downloading stuff").Start()
 
 	for i := 0; i < p.Total; i++ {
-		p.Title = "Downloading " + fakeInstallList[vki]
-		pterm.Success.Println("Downloading " + fakeInstallList[vki])
-		vki++
-		p.Increment()
-		time.Sleep(time.Millisecond * 350)
+		p.Title = "Downloading " + fakeInstallList[i]              // Update the title of the progressbar.
+		pterm.Success.Println("Downloading " + fakeInstallList[i]) // If a progressbar is running, each print will be printed above the progressbar.
+		p.Increment()                                              // Increment the progressbar by one. Use Add(x int) to increment by a custom amount.
+		time.Sleep(time.Millisecond * 350)                         // Sleep 350 milliseconds.
 	}
-
-	pterm.Success.Println("Finished downloading!")
-
-	time.Sleep(time.Second * 5)
 }
 
 ```
@@ -679,9 +705,14 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
+	// Print a section with level one.
 	pterm.DefaultSection.Println("This is a section!")
+	// Print placeholder.
 	pterm.Info.Println("And here is some text.\nThis text could be anything.\nBasically it's just a placeholder")
-	pterm.DefaultSection.Println("This is another section!")
+
+	// Print a section with level two.
+	pterm.DefaultSection.WithLevel(2).Println("This is another section!")
+	// Print placeholder.
 	pterm.Info.Println("And this is\nmore placeholder text")
 }
 
@@ -707,37 +738,29 @@ import (
 )
 
 func main() {
+	// Create and start a fork of the default spinner.
 	spinnerSuccess := pterm.DefaultSpinner.Start("Doing something important... (will succeed)")
+	time.Sleep(time.Second * 3) // Simulate 3 seconds of processing something.
+	spinnerSuccess.Success()    // Resolve spinner with success message.
 
-	time.Sleep(time.Second * 3) // Simulate 3 seconds of processing something
-
-	spinnerSuccess.Success()
-
+	// Create and start a fork of the default spinner.
 	spinnerWarning := pterm.DefaultSpinner.Start("Doing something important... (will warn)")
+	time.Sleep(time.Second * 3) // Simulate 3 seconds of processing something.
+	spinnerWarning.Warning()    // Resolve spinner with warning message.
 
-	time.Sleep(time.Second * 3) // Simulate 3 seconds of processing something
-
-	spinnerWarning.Warning()
-
+	// Create and start a fork of the default spinner.
 	spinnerFail := pterm.DefaultSpinner.Start("Doing something important... (will fail)")
+	time.Sleep(time.Second * 3) // Simulate 3 seconds of processing something.
+	spinnerFail.Fail()          // Resolve spinner with error message.
 
-	time.Sleep(time.Second * 3) // Simulate 3 seconds of processing something
-
-	spinnerFail.Fail()
-
+	// Create and start a fork of the default spinner.
 	spinnerLiveText := pterm.DefaultSpinner.Start("Doing a lot of stuff...")
-
-	time.Sleep(time.Second * 2)
-
-	spinnerLiveText.UpdateText("It's really much")
-
-	time.Sleep(time.Second * 2)
-
-	spinnerLiveText.UpdateText("We're nearly done!")
-
-	time.Sleep(time.Second * 2)
-
-	spinnerLiveText.Success("Finally!")
+	time.Sleep(time.Second * 2)                      // Simulate 2 seconds of processing something.
+	spinnerLiveText.UpdateText("It's really much")   // Update spinner text.
+	time.Sleep(time.Second * 2)                      // Simulate 2 seconds of processing something.
+	spinnerLiveText.UpdateText("We're nearly done!") // Update spinner text.
+	time.Sleep(time.Second * 2)                      // Simulate 2 seconds of processing something.
+	spinnerLiveText.Success("Finally!")              // Resolve spinner with success message.
 }
 
 ```
@@ -758,6 +781,8 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
+	// Create a fork of the default table, fill it with data and print it.
+	// Data can also be generated and inserted later.
 	pterm.DefaultTable.WithHasHeader().WithData(pterm.TableData{
 		{"Firstname", "Lastname", "Email"},
 		{"Paul", "Dean", "nisi.dictum.augue@velitAliquam.co.uk"},
@@ -788,11 +813,14 @@ import (
 )
 
 func main() {
+	// Print info.
 	pterm.Info.Println("These are the default theme styles.\n" +
 		"You can modify them easily to your personal preference,\n" +
 		"or create new themes from scratch :)")
-	pterm.Println()
 
+	pterm.Println() // Print one line space.
+
+	// Print every value of the default theme with its own style.
 	v := reflect.ValueOf(pterm.ThemeDefault)
 	typeOfS := v.Type()
 

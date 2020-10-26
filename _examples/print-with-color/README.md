@@ -8,9 +8,11 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Simple Println with different colored words.
+	// Print different colored words.
 	pterm.Println(pterm.Red("Hello, ") + pterm.Green("World") + pterm.Cyan("!"))
 	pterm.Println(pterm.Red("Even " + pterm.Cyan("nested ") + pterm.Green("colors ") + "are supported!"))
+
+	// Print strings with set color.
 	pterm.FgBlack.Println("FgBlack")
 	pterm.FgRed.Println("FgRed")
 	pterm.FgGreen.Println("FgGreen")
@@ -19,7 +21,7 @@ func main() {
 	pterm.FgMagenta.Println("FgMagenta")
 	pterm.FgCyan.Println("FgCyan")
 	pterm.FgWhite.Println("FgWhite")
-
+	pterm.Println() // Print one line space.
 	pterm.FgLightRed.Println("FgLightRed")
 	pterm.FgLightGreen.Println("FgLightGreen")
 	pterm.FgLightYellow.Println("FgLightYellow")
