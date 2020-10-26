@@ -7,11 +7,14 @@ import (
 )
 
 func main() {
+	// Print info.
 	pterm.Info.Println("These are the default theme styles.\n" +
 		"You can modify them easily to your personal preference,\n" +
 		"or create new themes from scratch :)")
-	pterm.Println()
 
+	pterm.Println() // Print one line space.
+
+	// Print every value of the default theme with its own style.
 	v := reflect.ValueOf(pterm.ThemeDefault)
 	typeOfS := v.Type()
 
