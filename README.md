@@ -66,26 +66,19 @@
 
 ---
 
-## :star: Features
-- [bigtext](#bigtext)
-- [bulletlist](#bulletlist)
-- [bulletlist-custom](#bulletlist-custom)
-- [demo](#demo)
-- [header](#header)
-- [header-custom](#header-custom)
-- [override-default-printers](#override-default-printers)
-- [paragraph](#paragraph)
-- [paragraph-custom](#paragraph-custom)
-- [print-basic-text](#print-basic-text)
-- [print-color-fade](#print-color-fade)
-- [print-color-fade-multiple](#print-color-fade-multiple)
-- [print-color-rgb](#print-color-rgb)
-- [print-with-color](#print-with-color)
-- [progressbar](#progressbar)
-- [section](#section)
-- [spinner](#spinner)
-- [table](#table)
-- [theme](#theme)
+## :star: Main Features
+
+- [Big Text](#bigtext)
+- [Bullet List](#bulletlist)
+- [Header](#header)
+- [Paragraph](#paragraph)
+- [Print With Color](#print-with-color)
+  - [Print With RGB Color](#print-color-rgb)
+- [Progressbar](#progressbar)
+- [Section](#section)
+- [Spinner](#spinner)
+- [Table](#table)
+- [Theme Support](#theme)
 
 ## 🥅 Goal of PTerm
 
