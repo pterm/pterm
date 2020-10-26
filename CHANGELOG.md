@@ -1,6 +1,12 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Documentation Changes
+- **readme:** add source link to demo
+
+
+<a name="v0.8.1"></a>
+## [v0.8.1] - 2020-10-26
 ### Code Refactoring
 - refactor doc
 - refactor code
@@ -9,10 +15,10 @@
 - change bug emoji
 - add issue templates
 - update bug issue template
-- **examples:** shrink fade TrueColor info
 - **examples:** add multiple color fade example
 - **examples:** add TrueColor info to fade examples
 - **examples:** add space to fade examples
+- **examples:** shrink fade TrueColor info
 - **readme:** add short description
 
 ### Features
@@ -532,7 +538,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.8.0...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.8.1...HEAD
+[v0.8.1]: https://github.com/pterm/pterm/compare/v0.8.0...v0.8.1
 [v0.8.0]: https://github.com/pterm/pterm/compare/v0.7.0...v0.8.0
 [v0.7.0]: https://github.com/pterm/pterm/compare/v0.6.1...v0.7.0
 [v0.6.1]: https://github.com/pterm/pterm/compare/v0.6.0...v0.6.1
