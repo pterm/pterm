@@ -76,6 +76,7 @@ func (p Progressbar) WithCurrent(current int) *Progressbar {
 }
 
 // WithUpdateDelay sets the update delay of the progressbar.
+// Deprecated: Not used anymore.
 func (p Progressbar) WithUpdateDelay(delay time.Duration) *Progressbar {
 	p.UpdateDelay = delay
 	return &p
