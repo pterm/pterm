@@ -7,35 +7,27 @@ import (
 )
 
 func main() {
+	// Create and start a fork of the default spinner.
 	spinnerSuccess := pterm.DefaultSpinner.Start("Doing something important... (will succeed)")
+	time.Sleep(time.Second * 3) // Simulate 3 seconds of processing something.
+	spinnerSuccess.Success()    // Resolve spinner with success message.
 
-	time.Sleep(time.Second * 3) // Simulate 3 seconds of processing something
-
-	spinnerSuccess.Success()
-
+	// Create and start a fork of the default spinner.
 	spinnerWarning := pterm.DefaultSpinner.Start("Doing something important... (will warn)")
+	time.Sleep(time.Second * 3) // Simulate 3 seconds of processing something.
+	spinnerWarning.Warning()    // Resolve spinner with warning message.
 
-	time.Sleep(time.Second * 3) // Simulate 3 seconds of processing something
-
-	spinnerWarning.Warning()
-
+	// Create and start a fork of the default spinner.
 	spinnerFail := pterm.DefaultSpinner.Start("Doing something important... (will fail)")
+	time.Sleep(time.Second * 3) // Simulate 3 seconds of processing something.
+	spinnerFail.Fail()          // Resolve spinner with error message.
 
-	time.Sleep(time.Second * 3) // Simulate 3 seconds of processing something
-
-	spinnerFail.Fail()
-
+	// Create and start a fork of the default spinner.
 	spinnerLiveText := pterm.DefaultSpinner.Start("Doing a lot of stuff...")
-
-	time.Sleep(time.Second * 2)
-
-	spinnerLiveText.UpdateText("It's really much")
-
-	time.Sleep(time.Second * 2)
-
-	spinnerLiveText.UpdateText("We're nearly done!")
-
-	time.Sleep(time.Second * 2)
-
-	spinnerLiveText.Success("Finally!")
+	time.Sleep(time.Second * 2)                      // Simulate 2 seconds of processing something.
+	spinnerLiveText.UpdateText("It's really much")   // Update spinner text.
+	time.Sleep(time.Second * 2)                      // Simulate 2 seconds of processing something.
+	spinnerLiveText.UpdateText("We're nearly done!") // Update spinner text.
+	time.Sleep(time.Second * 2)                      // Simulate 2 seconds of processing something.
+	spinnerLiveText.Success("Finally!")              // Resolve spinner with success message.
 }
