@@ -7,10 +7,10 @@ func main() {
 
 	// Build on top of DefaultHeader
 	pterm.DefaultHeader. // Use DefaultHeader as base
-				WithMargin(15).                                    // Set Margin to 15
-				WithBackgroundStyle(pterm.NewStyle(pterm.BgCyan)). // Set BackgroundStyle to Cyan
-				WithTextStyle(pterm.NewStyle(pterm.FgBlack)).      // Set TextStyle to Black
-				Println("This is a custom header!")                // Print header
+				WithMargin(15).
+				WithBackgroundStyle(pterm.NewStyle(pterm.BgCyan)).
+				WithTextStyle(pterm.NewStyle(pterm.FgBlack)).
+				Println("This is a custom header!")
 	// Instead of printing the header you can set it to a variable.
 	// You can then reuse your custom header.
 
@@ -21,6 +21,6 @@ func main() {
 		Margin:          20,
 	}
 
+	// Print header.
 	newHeader.Println("This is a custom header!")
-
 }
