@@ -6,10 +6,11 @@
 - refactor code
 
 ### Documentation Changes
-- add issue templates
 - change bug emoji
+- add issue templates
 - update bug issue template
 - **examples:** add multiple color fade example
+- **examples:** add space to fade examples
 - **examples:** add TrueColor info to fade examples
 - **readme:** add short description
 
