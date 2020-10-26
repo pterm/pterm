@@ -15,7 +15,7 @@ func main() {
 
 	str := "RGB colors only work in Terminals which support TrueColor."
 	strs := strings.Split(str, "")
-	var fadeInfo string
+	var fadeInfo string // String which will be used to print info.
 	// For loop over the range of the string length.
 	for i := 0; i < len(str); i++ {
 		// Print string which is colored with the faded RGB value.
