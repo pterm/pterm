@@ -10,7 +10,7 @@ import (
 
 // Change this to time.Millisecond*200 to speed up the demo.
 // Useful when debugging.
-const second = time.Second
+const second = time.Millisecond
 
 var pseudoProgramList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chrome pseudo-outlook pseudo-explorer "+
 	"pseudo-dops pseudo-git pseudo-vsc pseudo-intellij pseudo-minecraft pseudo-scoop pseudo-chocolatey", " ")
@@ -20,9 +20,8 @@ func main() {
 	clear()
 	pseudoApplicationHeader()
 	time.Sleep(second)
-	fetchingPseudoInstallList()
-	downloadingPseudoList()
 	installingPseudoList()
+	// fetchingPseudoInstallList()
 }
 
 func installingPseudoList() {
@@ -40,16 +39,6 @@ func installingPseudoList() {
 		time.Sleep(second)
 	}
 	p.Stop()
-}
-
-func downloadingPseudoList() {
-	p := pterm.DefaultProgressbar.WithTotal(len(pseudoProgramList)).WithTitle("Downloading stuff").Start()
-	for i := 0; i < p.Total; i++ {
-		p.Title = "Downloading " + pseudoProgramList[i]
-		pterm.Success.Println("Downloading " + pseudoProgramList[i])
-		p.Increment()
-		time.Sleep(time.Millisecond * 500)
-	}
 }
 
 func fetchingPseudoInstallList() {
