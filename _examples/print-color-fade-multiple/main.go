@@ -13,6 +13,6 @@ func main() {
 	to3 := pterm.NewRGB(0, 255, 0)
 	to4 := pterm.NewRGB(255, 255, 255)
 	for i := 0; i < pterm.GetTerminalHeight()-2; i++ {
-		from.Fade(0, float32(pterm.GetTerminalHeight()), float32(i), to, to2, to3, to4).Println("Hello, World!")
+		from.Fade(0, float32(pterm.GetTerminalHeight()-2), float32(i), to, to2, to3, to4).Println("Hello, World!")
 	}
 }
