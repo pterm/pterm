@@ -2,14 +2,15 @@
 ## [Unreleased]
 
 ### Documentation Changes
-- **examples:** update `Theme` example
+- **examples:** update `print-color-fade` example
+- **examples:** update `Table` example
 - **examples:** update `Spinner` example
 - **examples:** update `DefaultSection` example
 - **examples:** update `DefaultProgressbar` example
 - **examples:** update `print-with-color` example
 - **examples:** update `print-color-rgb` example
 - **examples:** update `print-color-fade-multiple` example
-- **examples:** update `print-color-fade` example
+- **examples:** update `Theme` example
 - **examples:** update `BasicTextPrinter` example
 - **examples:** update `ParagraphPrinter` custom example
 - **examples:** update `ParagraphPrinter` example
@@ -19,8 +20,8 @@
 - **examples:** update `BulletListPrinter` custom example
 - **examples:** update `BulletListPrinter` example
 - **examples:** update `BigTextPrinter` example
-- **examples:** update `Table` example
 - **examples:** remove 2 lines from max terminal max height in fade
+- **readme:** add features list to README ([#84](https://github.com/pterm/pterm/issues/84))
 - **readme:** remove one space between demo and header
 - **readme:** add source link to demo
 
