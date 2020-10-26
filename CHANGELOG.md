@@ -1,12 +1,18 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Bug Fixes
+- progressbar disappears when done and something is printed after
+
 ### Chore
 - **deps:** update dependencies
 
 ### Ci
 - replace log panic with fatal
 - proxy cmd stdout to os stdout
+
+### Code Refactoring
+- deprecate `UpdateDelay` in `Progressbar`
 
 ### Documentation Changes
 - **examples:** update `HeaderPrinter` custom example
@@ -19,15 +25,15 @@
 - **examples:** update `Spinner` example
 - **examples:** update `DefaultSection` example
 - **examples:** update `DefaultProgressbar` example
-- **examples:** update `print-with-color` example
 - **examples:** change color fade multiple example ([#85](https://github.com/pterm/pterm/issues/85))
+- **examples:** update `print-color-rgb` example
 - **examples:** update `print-color-fade-multiple` example
 - **examples:** update `print-color-fade` example
 - **examples:** update `BasicTextPrinter` example
 - **examples:** update `ParagraphPrinter` custom example
 - **examples:** update `ParagraphPrinter` example
 - **examples:** update `override-default-printers` example
-- **examples:** update `print-color-rgb` example
+- **examples:** update `print-with-color` example
 - **examples:** update `HeaderPrinter` example
 - **godoc:** add package description
 - **readme:** add features list to README ([#84](https://github.com/pterm/pterm/issues/84))

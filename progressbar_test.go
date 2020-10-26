@@ -23,8 +23,8 @@ func TestProgressbar_AddTotalEqualsCurrent(t *testing.T) {
 }
 
 func TestProgressbarRemoveWhenDone(t *testing.T) {
-	p := DefaultProgressbar.WithTotal(1).WithRemoveWhenDone()
-	p.Start()
+	p := DefaultProgressbar.WithTotal(2).WithRemoveWhenDone().Start()
+	p.Stop()
 	p.Add(1)
 	assert.Equal(t, 1, p.Current)
 	assert.False(t, p.IsActive)
@@ -36,7 +36,7 @@ func TestProgressbar_GenericStart(t *testing.T) {
 }
 
 func TestProgressbar_GenericStop(t *testing.T) {
-	p := DefaultProgressbar
+	p := DefaultProgressbar.Start()
 	p.GenericStop()
 }
 
