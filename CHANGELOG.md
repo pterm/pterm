@@ -9,9 +9,10 @@
 - change bug emoji
 - add issue templates
 - update bug issue template
+- **examples:** shrink fade TrueColor info
 - **examples:** add multiple color fade example
-- **examples:** add space to fade examples
 - **examples:** add TrueColor info to fade examples
+- **examples:** add space to fade examples
 - **readme:** add short description
 
 ### Features

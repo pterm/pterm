@@ -515,7 +515,7 @@ import (
 )
 
 func main() {
-	pterm.Info.Println("Please note that RGB colors only work in Terminals which support TrueColor.")
+	pterm.Info.Println("RGB colors only work in Terminals which support TrueColor.")
 
 	from := pterm.NewRGB(0, 255, 255)
 	to := pterm.NewRGB(255, 0, 255)
@@ -544,7 +544,7 @@ import (
 )
 
 func main() {
-	pterm.Info.Println("Please note that RGB colors only work in Terminals which support TrueColor.")
+	pterm.Info.Println("RGB colors only work in Terminals which support TrueColor.")
 
 	from := pterm.NewRGB(0, 255, 255)
 	to := pterm.NewRGB(255, 0, 255)
