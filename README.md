@@ -41,8 +41,9 @@
 <!-- unittestcount:start --><img src="https://img.shields.io/badge/Unit_Tests-3474-magenta?style=flat-square" alt="Forks"><!-- unittestcount:end -->
 </a>
 
-<a href="https://github.com/pterm/pterm/">
-<img src="https://raw.githubusercontent.com/pterm/pterm/master/_examples/demo/animation.svg" alt="Dops">
+<a href="https://github.com/pterm/pterm/tree/master/_examples/demo">
+<img src="https://raw.githubusercontent.com/pterm/pterm/master/_examples/demo/animation.svg" alt="PTerm">
+<p align="center">Show Demo Code</p>
 </a>
 
 </p>
