@@ -12,7 +12,6 @@ type BasicTextPrinter struct {
 }
 
 // WithStyle adds a style to the printer.
-// unlike prefix printer, there is a single style for the message.
 func (p BasicTextPrinter) WithStyle(style *Style) *BasicTextPrinter {
 	p.Style = style
 	return &p
