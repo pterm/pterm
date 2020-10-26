@@ -2,10 +2,11 @@
 ## [Unreleased]
 
 ### Documentation Changes
-- **examples:** update `BulletListPrinter` example
-- **examples:** remove 2 lines from max terminal max height in fade
-- **examples:** update `BigTextPrinter` example
 - **examples:** update `HeaderPrinter` example
+- **examples:** update `BulletListPrinter` example
+- **examples:** update `BigTextPrinter` example
+- **examples:** update `BulletListPrinter` custom example
+- **examples:** remove 2 lines from max terminal max height in fade
 - **examples:** update `Theme` example
 - **examples:** update `Table` example
 - **examples:** update `Spinner` example
@@ -20,13 +21,13 @@
 - **examples:** update `ParagraphPrinter` example
 - **examples:** update `override-default-printers` example
 - **examples:** update `HeaderPrinter` custom example
-- **examples:** update `BulletListPrinter` custom example
+- **examples:** change color fade multiple example ([#85](https://github.com/pterm/pterm/issues/85))
 - **godoc:** add package description
-- **readme:** use real emoji for features list
 - **readme:** add features list to README ([#84](https://github.com/pterm/pterm/issues/84))
-- **readme:** remove one space between demo and header
 - **readme:** add link to examples location
+- **readme:** remove one space between demo and header
 - **readme:** shrink features list
+- **readme:** use real emoji for features list
 - **readme:** add source link to demo
 
 
