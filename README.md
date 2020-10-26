@@ -66,19 +66,19 @@
 
 ---
 
-## :star: Main Features
+## ⭐ Main Features
 
+- [Theme Support](#theme)
 - [Big Text](#bigtext)
 - [Bullet List](#bulletlist)
+- [Progressbar](#progressbar)
+- [Section](#section)
+- [Spinner](#spinner)
 - [Header](#header)
 - [Paragraph](#paragraph)
 - [Print With Color](#print-with-color)
   - [Print With RGB Color](#print-color-rgb)
-- [Progressbar](#progressbar)
-- [Section](#section)
-- [Spinner](#spinner)
 - [Table](#table)
-- [Theme Support](#theme)
 
 ## 🥅 Goal of PTerm
 
