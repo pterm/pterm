@@ -18,7 +18,7 @@ func main() {
 	var fadeInfo string // String which will be used to print info.
 	// For loop over the range of the string length.
 	for i := 0; i < len(str); i++ {
-		// Print string which is colored with the faded RGB value.
+		// Append faded letter to info string.
 		fadeInfo += from.Fade(0, float32(len(str)), float32(i), to).Sprint(strs[i])
 	}
 
