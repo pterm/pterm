@@ -131,9 +131,21 @@ func TestPrefixPrinter_WithScope(t *testing.T) {
 
 func Test_checkFatal(t *testing.T) {
 	for _, p := range prefixPrinters {
-		p2 := p.WithFatal()
-		assert.Panics(t, func() {
-			p2.Println("Hello, World!")
+		t.Run("", func(t *testing.T) {
+			p2 := p.WithFatal()
+			assert.Panics(t, func() {
+				p2.Println("Hello, World!")
+			})
+		})
+	}
+}
+
+func TestPrefixPrinter_WithDebugger(t *testing.T) {
+	for _, p := range prefixPrinters {
+		t.Run("", func(t *testing.T) {
+			p2 := p.WithDebugger()
+
+			assert.True(t, p2.Debugger)
 		})
 	}
 }

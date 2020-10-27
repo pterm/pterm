@@ -10,12 +10,12 @@ var (
 	PrintDebugMessages = false
 )
 
-// EnableDebugMessages enables the output of DebugPrinter.
+// EnableDebugMessages enables the output of debug printers.
 func EnableDebugMessages() {
 	PrintDebugMessages = true
 }
 
-// DisableDebugMessages disables the output of DebugPrinter.
+// DisableDebugMessages disables the output of debug printers.
 func DisableDebugMessages() {
 	PrintDebugMessages = false
 }
