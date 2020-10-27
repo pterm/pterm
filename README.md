@@ -203,7 +203,7 @@ func main() {
 	}).Render()
 
 	// Convert a text to a list and print it.
-	pterm.NewListFromString(`0
+	pterm.NewBulletListFromString(`0
  1
   2
    3`, " ").Render()
@@ -303,7 +303,7 @@ func installingPseudoList() {
 }
 
 func listPrinter() {
-	pterm.NewListFromString(`Good bye
+	pterm.NewBulletListFromString(`Good bye
  Have a nice day!`, " ").Render()
 }
 

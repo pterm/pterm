@@ -17,7 +17,7 @@ func main() {
 	}).Render()
 
 	// Convert a text to a list and print it.
-	pterm.NewListFromString(`0
+	pterm.NewBulletListFromString(`0
  1
   2
    3`, " ").Render()

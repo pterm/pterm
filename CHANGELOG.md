@@ -12,38 +12,40 @@
 - proxy cmd stdout to os stdout
 
 ### Code Refactoring
+- change `NewList` to `NewBulletList`
+- change `NewList` to `NewBulletList`
 - deprecate `UpdateDelay` in `Progressbar`
 
 ### Documentation Changes
-- **examples:** update `BulletListPrinter` custom example
-- **examples:** change color fade multiple example ([#85](https://github.com/pterm/pterm/issues/85))
-- **examples:** remove 2 lines from max terminal max height in fade
-- **examples:** update `HeaderPrinter` custom example
-- **examples:** update `BigTextPrinter` example
 - **examples:** redo demo ([#90](https://github.com/pterm/pterm/issues/90))
+- **examples:** remove 2 lines from max terminal max height in fade
+- **examples:** update `BigTextPrinter` example
 - **examples:** update `BulletListPrinter` example
+- **examples:** update `Table` example
+- **examples:** change color fade multiple example ([#85](https://github.com/pterm/pterm/issues/85))
+- **examples:** update `BulletListPrinter` custom example
 - **examples:** add more delay between table and end
 - **examples:** update `Theme` example
-- **examples:** update `Table` example
+- **examples:** update `HeaderPrinter` custom example
 - **examples:** update `Spinner` example
 - **examples:** update `DefaultSection` example
 - **examples:** update `DefaultProgressbar` example
 - **examples:** update `print-with-color` example
-- **examples:** update `print-color-rgb` example
+- **examples:** update `HeaderPrinter` example
 - **examples:** update `print-color-fade-multiple` example
 - **examples:** update `print-color-fade` example
 - **examples:** update `BasicTextPrinter` example
 - **examples:** update `ParagraphPrinter` custom example
-- **examples:** update `ParagraphPrinter` example
+- **examples:** update `print-color-rgb` example
 - **examples:** update `override-default-printers` example
-- **examples:** update `HeaderPrinter` example
+- **examples:** update `ParagraphPrinter` example
 - **godoc:** add package description
-- **readme:** add prefix to features
-- **readme:** add features list to README ([#84](https://github.com/pterm/pterm/issues/84))
 - **readme:** add link to examples location
-- **readme:** remove one space between demo and header
+- **readme:** add features list to README ([#84](https://github.com/pterm/pterm/issues/84))
 - **readme:** shrink features list
+- **readme:** remove one space between demo and header
 - **readme:** use real emoji for features list
+- **readme:** add prefix to features
 - **readme:** add source link to demo
 
 ### Features
@@ -53,6 +55,10 @@
 ### Test
 - add debugger tests to `PrefixPrinter`
 - add progressbar tests
+
+### BREAKING CHANGE
+
+Changed `NewList` to `NewBulletList`.
 
 
 <a name="v0.8.1"></a>
