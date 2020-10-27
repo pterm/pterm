@@ -6,17 +6,17 @@ import (
 	"github.com/pterm/pterm/internal"
 )
 
-// NewListFromStrings returns a BulletList with Text using the NewListItemFromString method.
-func NewListFromStrings(s []string, padding string) BulletList {
+// NewBulletListFromStrings returns a BulletList with Text using the NewTreeListItemFromString method.
+func NewBulletListFromStrings(s []string, padding string) BulletList {
 	var lis []BulletListItem
 	for _, line := range s {
-		lis = append(lis, NewListItemFromString(line, padding))
+		lis = append(lis, NewBulletListItemFromString(line, padding))
 	}
 	return *DefaultBulletList.WithItems(lis)
 }
 
-// NewListItemFromString returns a ListItem with a Text. The padding is counted in the Text to define the Level of the ListItem.
-func NewListItemFromString(text string, padding string) BulletListItem {
+// NewBulletListItemFromString returns a ListItem with a Text. The padding is counted in the Text to define the Level of the ListItem.
+func NewBulletListItemFromString(text string, padding string) BulletListItem {
 	s, l := internal.RemoveAndCountPrefix(text, padding)
 	return BulletListItem{
 		Level: l,
@@ -86,9 +86,9 @@ func (p BulletListItem) Srender() string {
 	return strings.Repeat(" ", p.Level) + p.BulletStyle.Sprint(p.Bullet) + " " + p.TextStyle.Sprint(p.Text)
 }
 
-// NewListFromString returns a BulletList with Text using the NewListItemFromString method, splitting after return (\n).
-func NewListFromString(s string, padding string) BulletList {
-	return NewListFromStrings(strings.Split(s, "\n"), padding)
+// NewBulletListFromString returns a BulletList with Text using the NewTreeListItemFromString method, splitting after return (\n).
+func NewBulletListFromString(s string, padding string) BulletList {
+	return NewBulletListFromStrings(strings.Split(s, "\n"), padding)
 }
 
 // DefaultBulletList contains standards, which can be used to print a BulletList.
