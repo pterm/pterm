@@ -17,7 +17,7 @@ var (
 		MessageStyle: &ThemeDefault.InfoMessageStyle,
 		Prefix: Prefix{
 			Style: &ThemeDefault.InfoPrefixStyle,
-			Text:  " INFO  ",
+			Text:  "INFO",
 		},
 	}
 
