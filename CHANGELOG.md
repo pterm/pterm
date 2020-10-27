@@ -1,6 +1,12 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Code Refactoring
+- make the prefix of `Info` smaller again
+
+
+<a name="v0.9.0"></a>
+## [v0.9.0] - 2020-10-27
 ### Bug Fixes
 - progressbar disappears when done and something is printed after
 
@@ -18,21 +24,21 @@
 - deprecate `UpdateDelay` in `Progressbar`
 
 ### Documentation Changes
-- **examples:** update `print-color-rgb` example
+- **examples:** update `print-with-color` example
 - **examples:** remove 2 lines from max terminal max height in fade
 - **examples:** update `BigTextPrinter` example
+- **examples:** update `Theme` example
 - **examples:** update `BulletListPrinter` example
-- **examples:** update `Table` example
 - **examples:** change color fade multiple example ([#85](https://github.com/pterm/pterm/issues/85))
 - **examples:** update `BulletListPrinter` custom example
-- **examples:** redo demo ([#90](https://github.com/pterm/pterm/issues/90))
-- **examples:** update `Theme` example
 - **examples:** add more delay between table and end
+- **examples:** redo demo ([#90](https://github.com/pterm/pterm/issues/90))
+- **examples:** update `Table` example
 - **examples:** update `Spinner` example
 - **examples:** update `DefaultSection` example
 - **examples:** update `DefaultProgressbar` example
-- **examples:** update `print-with-color` example
 - **examples:** update `HeaderPrinter` example
+- **examples:** update `print-color-rgb` example
 - **examples:** update `print-color-fade-multiple` example
 - **examples:** update `print-color-fade` example
 - **examples:** update `BasicTextPrinter` example
@@ -41,8 +47,8 @@
 - **examples:** update `override-default-printers` example
 - **examples:** update `ParagraphPrinter` example
 - **godoc:** add package description
-- **readme:** add link to examples location
 - **readme:** add features list to README ([#84](https://github.com/pterm/pterm/issues/84))
+- **readme:** add link to examples location
 - **readme:** shrink features list
 - **readme:** remove one space between demo and header
 - **readme:** use real emoji for features list
@@ -597,7 +603,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.8.1...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.9.0...HEAD
+[v0.9.0]: https://github.com/pterm/pterm/compare/v0.8.1...v0.9.0
 [v0.8.1]: https://github.com/pterm/pterm/compare/v0.8.0...v0.8.1
 [v0.8.0]: https://github.com/pterm/pterm/compare/v0.7.0...v0.8.0
 [v0.7.0]: https://github.com/pterm/pterm/compare/v0.6.1...v0.7.0
