@@ -146,13 +146,6 @@ func TestProgressbar_WithTotal(t *testing.T) {
 	assert.Equal(t, 1337, p2.Total)
 }
 
-func TestProgressbar_WithUpdateDelay(t *testing.T) {
-	p := Progressbar{}
-	p2 := p.WithUpdateDelay(time.Hour)
-
-	assert.Equal(t, time.Hour, p2.UpdateDelay)
-}
-
 func TestProgressbar_parseElapsedTime(t *testing.T) {
 	p := Progressbar{}
 	p.Start()

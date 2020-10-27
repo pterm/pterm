@@ -33,11 +33,9 @@ var (
 
 // Progressbar shows a progress animation in the terminal.
 type Progressbar struct {
-	Title   string
-	Total   int
-	Current int
-	// Deprecated: Not used anymore.
-	UpdateDelay               time.Duration
+	Title                     string
+	Total                     int
+	Current                   int
 	BarCharacter              string
 	LastCharacter             string
 	ElapsedTimeRoundingFactor time.Duration
@@ -72,13 +70,6 @@ func (p Progressbar) WithTotal(total int) *Progressbar {
 // WithCurrent sets the current value of the progressbar.
 func (p Progressbar) WithCurrent(current int) *Progressbar {
 	p.Current = current
-	return &p
-}
-
-// WithUpdateDelay sets the update delay of the progressbar.
-// Deprecated: Not used anymore.
-func (p Progressbar) WithUpdateDelay(delay time.Duration) *Progressbar {
-	p.UpdateDelay = delay
 	return &p
 }
 
@@ -210,10 +201,6 @@ func (p Progressbar) Start() *Progressbar {
 	p.IsActive = true
 	ActiveProgressBars = append(ActiveProgressBars, &p)
 	p.startedAt = time.Now()
-
-	if p.UpdateDelay == 0 {
-		p.UpdateDelay = time.Millisecond * 100
-	}
 
 	p.Add(0)
 
