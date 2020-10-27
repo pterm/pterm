@@ -15,17 +15,18 @@
 - deprecate `UpdateDelay` in `Progressbar`
 
 ### Documentation Changes
-- **examples:** update `HeaderPrinter` custom example
-- **examples:** update `BulletListPrinter` example
+- **examples:** redo demo ([#90](https://github.com/pterm/pterm/issues/90))
 - **examples:** update `BigTextPrinter` example
-- **examples:** update `BulletListPrinter` custom example
+- **examples:** update `BulletListPrinter` example
 - **examples:** remove 2 lines from max terminal max height in fade
+- **examples:** update `BulletListPrinter` custom example
+- **examples:** change color fade multiple example ([#85](https://github.com/pterm/pterm/issues/85))
 - **examples:** update `Theme` example
 - **examples:** update `Table` example
 - **examples:** update `Spinner` example
 - **examples:** update `DefaultSection` example
-- **examples:** update `DefaultProgressbar` example
-- **examples:** change color fade multiple example ([#85](https://github.com/pterm/pterm/issues/85))
+- **examples:** update `HeaderPrinter` custom example
+- **examples:** update `print-with-color` example
 - **examples:** update `print-color-rgb` example
 - **examples:** update `print-color-fade-multiple` example
 - **examples:** update `print-color-fade` example
@@ -33,7 +34,7 @@
 - **examples:** update `ParagraphPrinter` custom example
 - **examples:** update `ParagraphPrinter` example
 - **examples:** update `override-default-printers` example
-- **examples:** update `print-with-color` example
+- **examples:** update `DefaultProgressbar` example
 - **examples:** update `HeaderPrinter` example
 - **godoc:** add package description
 - **readme:** add features list to README ([#84](https://github.com/pterm/pterm/issues/84))

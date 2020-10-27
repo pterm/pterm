@@ -252,6 +252,7 @@ func main() {
 package main
 
 import (
+	"math/rand"
 	"strconv"
 	"strings"
 	"time"
@@ -271,9 +272,15 @@ func main() {
 	clear()
 	pseudoApplicationHeader()
 	time.Sleep(second)
-	fetchingPseudoInstallList()
-	downloadingPseudoList()
 	installingPseudoList()
+	time.Sleep(second * 2)
+	pterm.DefaultSection.WithLevel(2).Println("Program Install Report")
+	installedProgramsSize()
+	time.Sleep(second * 2)
+	pterm.DefaultSection.Println("TrueColor Support")
+	fadeText()
+	pterm.DefaultSection.Println("Bullet List Printer")
+	listPrinter()
 }
 
 func installingPseudoList() {
@@ -288,25 +295,41 @@ func installingPseudoList() {
 			pterm.Success.Println("Installing " + pseudoProgramList[i])
 			p.Increment()
 		}
-		time.Sleep(second)
+		time.Sleep(second / 2)
 	}
 	p.Stop()
 }
 
-func downloadingPseudoList() {
-	p := pterm.DefaultProgressbar.WithTotal(len(pseudoProgramList)).WithTitle("Downloading stuff").Start()
-	for i := 0; i < p.Total; i++ {
-		p.Title = "Downloading " + pseudoProgramList[i]
-		pterm.Success.Println("Downloading " + pseudoProgramList[i])
-		p.Increment()
-		time.Sleep(time.Millisecond * 500)
-	}
+func listPrinter() {
+	pterm.NewListFromString(`Good bye
+ Have a nice day!`, " ").Render()
 }
 
-func fetchingPseudoInstallList() {
-	setupSpinner := pterm.DefaultSpinner.Start("Fetching pseudo install list...")
-	time.Sleep(second * 4)
-	setupSpinner.Success()
+func fadeText() {
+	from := pterm.NewRGB(0, 255, 255) // This RGB value is used as the gradients start point.
+	to := pterm.NewRGB(255, 0, 255)   // This RGB value is used as the gradients first point.
+
+	str := "If your terminal has TrueColor support, you can use RGB colors!\nYou can even fade them :)"
+	strs := strings.Split(str, "")
+	var fadeInfo string // String which will be used to print info.
+	// For loop over the range of the string length.
+	for i := 0; i < len(str); i++ {
+		// Append faded letter to info string.
+		fadeInfo += from.Fade(0, float32(len(str)), float32(i), to).Sprint(strs[i])
+	}
+	pterm.Info.Println(fadeInfo)
+}
+
+func installedProgramsSize() {
+	d := pterm.TableData{{"Program Name", "Status", "Size"}}
+	for _, s := range pseudoProgramList {
+		if s != "pseudo-minecraft" {
+			d = append(d, []string{s, pterm.LightGreen("pass"), strconv.Itoa(randomInt(7, 200)) + "mb"})
+		} else {
+			d = append(d, []string{pterm.LightRed(s), pterm.LightRed("fail"), "0mb"})
+		}
+	}
+	pterm.DefaultTable.WithHasHeader().WithData(d).Render()
 }
 
 func pseudoApplicationHeader() *pterm.TextPrinter {
@@ -346,6 +369,11 @@ func introScreen() {
 
 func clear() {
 	print("\033[H\033[2J")
+}
+
+func randomInt(min, max int) int {
+	rand.Seed(time.Now().UnixNano())
+	return rand.Intn(max-min+1) + min
 }
 
 ```
