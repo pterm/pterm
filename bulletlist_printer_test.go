@@ -10,7 +10,7 @@ import (
 	"github.com/pterm/pterm/internal"
 )
 
-func TestListPrinterNilPrint(t *testing.T) {
+func TestBulletListPrinterNilPrint(t *testing.T) {
 	p := BulletList{}
 	p.Render()
 }
@@ -84,19 +84,19 @@ func TestBulletList_WithTextStyle(t *testing.T) {
 	assert.Empty(t, p.TextStyle)
 }
 
-func TestListItem_Render(t *testing.T) {
+func TestBulletListItem_Render(t *testing.T) {
 	internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
 		DefaultListItem.WithText(fmt.Sprint(a)).Render()
 	})
 }
 
-func TestListItem_Srender(t *testing.T) {
+func TestBulletListItem_Srender(t *testing.T) {
 	internal.TestSprintContains(t, func(a interface{}) string {
 		return DefaultListItem.WithText(fmt.Sprint(a)).Srender()
 	})
 }
 
-func TestListItem_WithBullet(t *testing.T) {
+func TestBulletListItem_WithBullet(t *testing.T) {
 	p := BulletListItem{}
 	p2 := p.WithBullet("-")
 
@@ -104,7 +104,7 @@ func TestListItem_WithBullet(t *testing.T) {
 	assert.Empty(t, p.Bullet)
 }
 
-func TestListItem_WithBulletStyle(t *testing.T) {
+func TestBulletListItem_WithBulletStyle(t *testing.T) {
 	p := BulletListItem{}
 	s := NewStyle(FgRed, BgRed, Bold)
 	p2 := p.WithBulletStyle(s)
@@ -113,7 +113,7 @@ func TestListItem_WithBulletStyle(t *testing.T) {
 	assert.Empty(t, p.BulletStyle)
 }
 
-func TestListItem_WithLevel(t *testing.T) {
+func TestBulletListItem_WithLevel(t *testing.T) {
 	p := BulletListItem{}
 	p2 := p.WithLevel(1)
 
@@ -121,7 +121,7 @@ func TestListItem_WithLevel(t *testing.T) {
 	assert.Empty(t, p.Level)
 }
 
-func TestListItem_WithText(t *testing.T) {
+func TestBulletListItem_WithText(t *testing.T) {
 	p := BulletListItem{}
 	p2 := p.WithText("test")
 
@@ -129,7 +129,7 @@ func TestListItem_WithText(t *testing.T) {
 	assert.Empty(t, p.Text)
 }
 
-func TestListItem_WithTextStyle(t *testing.T) {
+func TestBulletListItem_WithTextStyle(t *testing.T) {
 	p := BulletListItem{}
 	s := NewStyle(FgRed, BgRed, Bold)
 	p2 := p.WithTextStyle(s)
@@ -138,7 +138,7 @@ func TestListItem_WithTextStyle(t *testing.T) {
 	assert.Empty(t, p.TextStyle)
 }
 
-func TestNewListFromString(t *testing.T) {
+func TestNewBulletListFromString(t *testing.T) {
 	p := *DefaultBulletList.WithItems([]BulletListItem{
 		{Level: 0, Text: "0"},
 		{Level: 1, Text: "1"},
@@ -154,7 +154,7 @@ func TestNewListFromString(t *testing.T) {
    3
     4
      5`
-	p2 := NewListFromString(s, " ")
+	p2 := NewBulletListFromString(s, " ")
 
 	assert.Equal(t, p, p2)
 }

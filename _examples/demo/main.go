@@ -51,7 +51,7 @@ func installingPseudoList() {
 }
 
 func listPrinter() {
-	pterm.NewListFromString(`Good bye
+	pterm.NewBulletListFromString(`Good bye
  Have a nice day!`, " ").Render()
 }
 
