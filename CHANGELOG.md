@@ -12,21 +12,22 @@
 - proxy cmd stdout to os stdout
 
 ### Code Refactoring
+- remove `UpdateDelay` from `Progressbar`
 - change `NewList` to `NewBulletList`
 - change `NewList` to `NewBulletList`
 - deprecate `UpdateDelay` in `Progressbar`
 
 ### Documentation Changes
-- **examples:** redo demo ([#90](https://github.com/pterm/pterm/issues/90))
+- **examples:** update `print-color-rgb` example
 - **examples:** remove 2 lines from max terminal max height in fade
 - **examples:** update `BigTextPrinter` example
 - **examples:** update `BulletListPrinter` example
 - **examples:** update `Table` example
 - **examples:** change color fade multiple example ([#85](https://github.com/pterm/pterm/issues/85))
 - **examples:** update `BulletListPrinter` custom example
-- **examples:** add more delay between table and end
+- **examples:** redo demo ([#90](https://github.com/pterm/pterm/issues/90))
 - **examples:** update `Theme` example
-- **examples:** update `HeaderPrinter` custom example
+- **examples:** add more delay between table and end
 - **examples:** update `Spinner` example
 - **examples:** update `DefaultSection` example
 - **examples:** update `DefaultProgressbar` example
@@ -36,7 +37,7 @@
 - **examples:** update `print-color-fade` example
 - **examples:** update `BasicTextPrinter` example
 - **examples:** update `ParagraphPrinter` custom example
-- **examples:** update `print-color-rgb` example
+- **examples:** update `HeaderPrinter` custom example
 - **examples:** update `override-default-printers` example
 - **examples:** update `ParagraphPrinter` example
 - **godoc:** add package description
@@ -57,6 +58,8 @@
 - add progressbar tests
 
 ### BREAKING CHANGE
+
+Removed `UpdateDelay` from `Progressbar`. It's no longer used. The Progressbar automatically updates on every change to the current value.
 
 Changed `NewList` to `NewBulletList`.
 
