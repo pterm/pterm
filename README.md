@@ -69,6 +69,7 @@
 ## ⭐ Main Features
 
 - [Theme Support](#theme)
+- [Prefix](#prefix)
 - [Big Text](#bigtext)
 - [Bullet List](#bulletlist)
 - [Progressbar](#progressbar)

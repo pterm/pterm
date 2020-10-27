@@ -17,7 +17,7 @@ var (
 		MessageStyle: &ThemeDefault.InfoMessageStyle,
 		Prefix: Prefix{
 			Style: &ThemeDefault.InfoPrefixStyle,
-			Text:  "INFO",
+			Text:  " INFO  ",
 		},
 	}
 
@@ -44,7 +44,7 @@ var (
 		MessageStyle: &ThemeDefault.ErrorMessageStyle,
 		Prefix: Prefix{
 			Style: &ThemeDefault.ErrorPrefixStyle,
-			Text:  "ERROR",
+			Text:  " ERROR ",
 		},
 	}
 
@@ -54,9 +54,20 @@ var (
 		MessageStyle: &ThemeDefault.FatalMessageStyle,
 		Prefix: Prefix{
 			Style: &ThemeDefault.FatalPrefixStyle,
-			Text:  "FATAL",
+			Text:  " FATAL ",
 		},
 		Fatal: true,
+	}
+
+	// Debug Prints debug messages. By default it will only print if PrintDebugMessages is true.
+	// You can change PrintDebugMessages with EnableDebugMessages and DisableDebugMessages, or by setting the variable itself.
+	Debug = PrefixPrinter{
+		MessageStyle: &ThemeDefault.DebugMessageStyle,
+		Prefix: Prefix{
+			Text:  " DEBUG ",
+			Style: &ThemeDefault.DebugPrefixStyle,
+		},
+		Debugger: true,
 	}
 
 	// Description returns a PrefixPrinter, which can be used to print text with a "description" Prefix.
@@ -75,6 +86,9 @@ type PrefixPrinter struct {
 	Scope        Scope
 	MessageStyle *Style
 	Fatal        bool
+	// If Debugger is true, the printer will only print if PrintDebugMessages is set to true.
+	// You can change PrintDebugMessages with EnableDebugMessages and DisableDebugMessages, or by setting the variable itself.
+	Debugger bool
 }
 
 // WithPrefix adds a custom prefix to the printer.
@@ -104,9 +118,21 @@ func (p PrefixPrinter) WithFatal(b ...bool) *PrefixPrinter {
 	return &p
 }
 
+// WithDebugger returns a new Printer with specific Debugger value.
+// If Debugger is true, the printer will only print if PrintDebugMessages is set to true.
+// You can change PrintDebugMessages with EnableDebugMessages and DisableDebugMessages, or by setting the variable itself.
+func (p PrefixPrinter) WithDebugger(b ...bool) *PrefixPrinter {
+	p.Debugger = internal.WithBoolean(b)
+	return &p
+}
+
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
 func (p *PrefixPrinter) Sprint(a ...interface{}) string {
+	if p.Debugger && !PrintDebugMessages {
+		return ""
+	}
+
 	if p.Prefix.Style == nil {
 		p.Prefix.Style = NewStyle()
 	}
@@ -137,11 +163,17 @@ func (p *PrefixPrinter) Sprint(a ...interface{}) string {
 // Sprintln formats using the default formats for its operands and returns the resulting string.
 // Spaces are always added between operands and a newline is appended.
 func (p PrefixPrinter) Sprintln(a ...interface{}) string {
+	if p.Debugger && !PrintDebugMessages {
+		return ""
+	}
 	return p.Sprint(a...) + "\n"
 }
 
 // Sprintf formats according to a format specifier and returns the resulting string.
 func (p PrefixPrinter) Sprintf(format string, a ...interface{}) string {
+	if p.Debugger && !PrintDebugMessages {
+		return ""
+	}
 	return p.Sprint(Sprintf(format, a...))
 }
 
@@ -149,9 +181,12 @@ func (p PrefixPrinter) Sprintf(format string, a ...interface{}) string {
 // Spaces are added between operands when neither is a string.
 // It returns the number of bytes written and any write error encountered.
 func (p *PrefixPrinter) Print(a ...interface{}) *TextPrinter {
+	tp := TextPrinter(p)
+	if p.Debugger && !PrintDebugMessages {
+		return &tp
+	}
 	Print(p.Sprint(a...))
 	checkFatal(p)
-	tp := TextPrinter(p)
 	return &tp
 }
 
@@ -159,18 +194,24 @@ func (p *PrefixPrinter) Print(a ...interface{}) *TextPrinter {
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
 func (p *PrefixPrinter) Println(a ...interface{}) *TextPrinter {
+	tp := TextPrinter(p)
+	if p.Debugger && !PrintDebugMessages {
+		return &tp
+	}
 	Print(p.Sprintln(a...))
 	checkFatal(p)
-	tp := TextPrinter(p)
 	return &tp
 }
 
 // Printf formats according to a format specifier and writes to standard output.
 // It returns the number of bytes written and any write error encountered.
 func (p *PrefixPrinter) Printf(format string, a ...interface{}) *TextPrinter {
+	tp := TextPrinter(p)
+	if p.Debugger && !PrintDebugMessages {
+		return &tp
+	}
 	Print(Sprintf(format, a...))
 	checkFatal(p)
-	tp := TextPrinter(p)
 	return &tp
 }
 
