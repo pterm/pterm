@@ -30,9 +30,10 @@ func main() {
 	time.Sleep(second * 2)
 	pterm.DefaultSection.WithLevel(2).Println("Program Install Report")
 	installedProgramsSize()
-	time.Sleep(second * 2)
+	time.Sleep(second * 4)
 	pterm.DefaultSection.Println("TrueColor Support")
 	fadeText()
+	time.Sleep(second)
 	pterm.DefaultSection.Println("Bullet List Printer")
 	listPrinter()
 }
