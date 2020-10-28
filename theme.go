@@ -32,6 +32,10 @@ var (
 		SectionStyle:            Style{Bold, FgYellow},
 		ListTextStyle:           Style{FgWhite},
 		ListBulletStyle:         Style{FgGray},
+		ListCornerStyle:         Style{FgGray},
+		ListCornerOngoingStyle:  Style{FgGray},
+		ListBranchStyle:         Style{FgGray},
+		ListRootStyle:           Style{FgGray},
 		LetterStyle:             Style{FgDefault},
 	}
 )
@@ -68,6 +72,10 @@ type Theme struct {
 	SectionStyle            Style
 	ListTextStyle           Style
 	ListBulletStyle         Style
+	ListCornerStyle         Style
+	ListCornerOngoingStyle  Style
+	ListBranchStyle         Style
+	ListRootStyle           Style
 	LetterStyle             Style
 }
 

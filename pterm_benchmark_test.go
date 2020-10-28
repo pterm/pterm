@@ -80,6 +80,19 @@ func BenchmarkProgressbar(b *testing.B) {
 	}
 }
 
+func BenchmarkTreeList_Render(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		var tis []TreeListItem
+		for i := 0; i < 10000; i++ {
+			tis = append(tis, TreeListItem{
+				ItemName: "Test",
+			})
+		}
+		SetDefaultOutput(os.NewFile(0, os.DevNull))
+		DefaultTreeList.WithItems(tis).Render()
+	}
+}
+
 func proxyToDevNull() {
 	SetDefaultOutput(os.NewFile(0, os.DevNull))
 }
