@@ -1,7 +1,10 @@
 package pterm
 
+import "strings"
+
 type TreeListItem struct {
-	Children []TreeListItem
+	Children []*TreeListItem
+	Parent   *TreeListItem
 	ItemName string
 }
 
@@ -85,27 +88,47 @@ func (p TreeList) Render() {
 
 // Srender renders the list as a string.
 func (p TreeList) Srender() string {
-	return temp(p.ListItem, p, "")
+	for i, item := range p.TreeItems {
+
+	}
+
+	// return temp(p.ListItem, p, "")
 }
 
-func temp(list []TreeListItem, p TreeList, prefix string) string {
-	var ret string
-	for i, item := range list {
-		if len(list) > i+1 {
-			if item.Children == nil {
-				ret += prefix + p.Style.Sprint(p.CornerOngoing) + p.Style.Sprint(p.Horizontal) + item.ItemName + "\n"
-			} else {
-				ret += prefix + p.Style.Sprint(p.CornerOngoing) + p.Style.Sprint(p.T) + item.ItemName + "\n"
-				ret += temp(item.Children, p, prefix+p.Style.Sprint(p.Vertical))
-			}
-		} else if len(list) == i+1 {
-			if item.Children == nil {
-				ret += prefix + p.Style.Sprint(p.Corner) + p.Style.Sprint(p.Horizontal) + item.ItemName + "\n"
-			} else {
-				ret += prefix + p.Style.Sprint(p.Corner) + p.Style.Sprint(p.T) + item.ItemName + "\n"
-				ret += temp(item.Children, p, prefix+" ")
-			}
+func isLastInLvl(list TreeItems, position int) bool {
+	startLvl := list[position].Level
+	for i := position + 1; i < len(list); i++ {
+		if startLvl == list[i].Level {
+			return false
 		}
 	}
-	return ret
+	return true
 }
+
+func retModifiedPrefix(prefix, change string, position int) string {
+	strSlice := strings.Split(prefix, "")
+	strSlice[position] = change
+	return strings.Join(strSlice, "")
+}
+
+// func temp(list []TreeListItem, p TreeList, prefix string) string {
+// 	var ret string
+// 	for i, item := range list {
+// 		if len(list) > i+1 {
+// 			if item.Children == nil {
+// 				ret += prefix + p.Style.Sprint(p.CornerOngoing) + p.Style.Sprint(p.Horizontal) + item.ItemName + "\n"
+// 			} else {
+// 				ret += prefix + p.Style.Sprint(p.CornerOngoing) + p.Style.Sprint(p.T) + item.ItemName + "\n"
+// 				ret += temp(item.Children, p, prefix+p.Style.Sprint(p.Vertical))
+// 			}
+// 		} else if len(list) == i+1 {
+// 			if item.Children == nil {
+// 				ret += prefix + p.Style.Sprint(p.Corner) + p.Style.Sprint(p.Horizontal) + item.ItemName + "\n"
+// 			} else {
+// 				ret += prefix + p.Style.Sprint(p.Corner) + p.Style.Sprint(p.T) + item.ItemName + "\n"
+// 				ret += temp(item.Children, p, prefix+" ")
+// 			}
+// 		}
+// 	}
+// 	return ret
+// }
