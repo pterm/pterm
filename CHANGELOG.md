@@ -1,8 +1,19 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Documentation Changes
+- **examples:** add `disable-color` example
+
+### Features
+- add option to disable and enable colors
+
+
+<a name="v0.9.1"></a>
+## [v0.9.1] - 2020-10-27
 ### Code Refactoring
 - make the prefix of `Info` smaller again
+
+### Documentation Changes
 
 
 <a name="v0.9.0"></a>
@@ -603,7 +614,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.9.0...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.9.1...HEAD
+[v0.9.1]: https://github.com/pterm/pterm/compare/v0.9.0...v0.9.1
 [v0.9.0]: https://github.com/pterm/pterm/compare/v0.8.1...v0.9.0
 [v0.8.1]: https://github.com/pterm/pterm/compare/v0.8.0...v0.8.1
 [v0.8.0]: https://github.com/pterm/pterm/compare/v0.7.0...v0.8.0
