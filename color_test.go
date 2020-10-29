@@ -1,6 +1,7 @@
 package pterm
 
 import (
+	"github.com/gookit/color"
 	"github.com/pterm/pterm/internal"
 	"github.com/stretchr/testify/assert"
 	"io"
@@ -115,4 +116,21 @@ func TestStyle_String(t *testing.T) {
 
 func Test_colors2code(t *testing.T) {
 	assert.NotEmpty(t, colors2code(FgRed, FgBlue))
+}
+
+func TestEnableColor(t *testing.T) {
+	EnableColor()
+	assert.True(t, color.Enable)
+	assert.True(t, PrintColor)
+}
+
+func TestDisableColor(t *testing.T) {
+	DisableColor()
+	assert.False(t, color.Enable)
+	assert.False(t, PrintColor)
+}
+
+func TestDisabledColorDoesPrintPlainString(t *testing.T) {
+	DisableColor()
+	assert.Equal(t, "Hello, World!", FgRed.Sprint("Hello, World!"))
 }
