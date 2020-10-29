@@ -7,6 +7,21 @@ import (
 	"github.com/gookit/color"
 )
 
+// PrintColor is false if PTerm should not print colored output.
+var PrintColor = true
+
+// EnableColor enables colors.
+func EnableColor() {
+	color.Enable = true
+	PrintColor = true
+}
+
+// DisableColor disables colors.
+func DisableColor() {
+	color.Enable = false
+	PrintColor = false
+}
+
 // Foreground colors. basic foreground colors 30 - 37.
 const (
 	FgBlack Color = iota + 30
