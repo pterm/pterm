@@ -1,6 +1,12 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Chore
+- **deps:** update dependencies
+
+
+<a name="v0.9.2"></a>
+## [v0.9.2] - 2020-10-29
 ### Documentation Changes
 - **examples:** add `disable-color` example
 
@@ -614,7 +620,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.9.1...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.9.2...HEAD
+[v0.9.2]: https://github.com/pterm/pterm/compare/v0.9.1...v0.9.2
 [v0.9.1]: https://github.com/pterm/pterm/compare/v0.9.0...v0.9.1
 [v0.9.0]: https://github.com/pterm/pterm/compare/v0.8.1...v0.9.0
 [v0.8.1]: https://github.com/pterm/pterm/compare/v0.8.0...v0.8.1
