@@ -33,7 +33,7 @@ var (
 		ListTextStyle:           Style{FgWhite},
 		ListBulletStyle:         Style{FgGray},
 		TreeStyle:               Style{FgGray},
-		TreeTextStyle:           Style{FgGray},
+		TreeTextStyle:           Style{FgDefault},
 		LetterStyle:             Style{FgDefault},
 		DebugMessageStyle:       Style{FgGray},
 		DebugPrefixStyle:        Style{FgBlack, BgGray},
