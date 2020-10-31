@@ -141,10 +141,10 @@ func TestTree_WithRoot(t *testing.T) {
 	assert.Empty(t, p.Root)
 }
 
-func TestTree_WithStyle(t *testing.T) {
+func TestTree_WithTreeStyle(t *testing.T) {
 	p := Tree{}
 	s := NewStyle(FgRed, BgRed, Bold)
-	p2 := p.WithStyle(s)
+	p2 := p.WithTreeStyle(s)
 
 	assert.Equal(t, s, p2.TreeStyle)
 	assert.Empty(t, p.TreeStyle)

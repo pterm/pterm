@@ -39,8 +39,8 @@ type Tree struct {
 	RightDownLeftString  string
 }
 
-// WithStyle returns a new list with a specific bullet style.
-func (p Tree) WithStyle(style *Style) *Tree {
+// WithTreeStyle returns a new list with a specific tree style.
+func (p Tree) WithTreeStyle(style *Style) *Tree {
 	p.TreeStyle = style
 	return &p
 }
@@ -51,31 +51,31 @@ func (p Tree) WithTextStyle(style *Style) *Tree {
 	return &p
 }
 
-// WithTopRightCornerString returns a new list with a specific bullet.
+// WithTopRightCornerString returns a new list with a specific TopRightCornerString.
 func (p Tree) WithTopRightCornerString(s string) *Tree {
 	p.TopRightCornerString = s
 	return &p
 }
 
-// WithTopRightDownStringOngoing returns a new list with a specific bullet.
+// WithTopRightDownStringOngoing returns a new list with a specific TopRightDownString.
 func (p Tree) WithTopRightDownStringOngoing(s string) *Tree {
 	p.TopRightDownString = s
 	return &p
 }
 
-// WithHorizontalString returns a new list with a specific bullet.
+// WithHorizontalString returns a new list with a specific HorizontalString.
 func (p Tree) WithHorizontalString(s string) *Tree {
 	p.HorizontalString = s
 	return &p
 }
 
-// WithVerticalString returns a new list with a specific bullet.
+// WithVerticalString returns a new list with a specific VerticalString.
 func (p Tree) WithVerticalString(s string) *Tree {
 	p.VerticalString = s
 	return &p
 }
 
-// WithRoot returns a new list with a specific bullet.
+// WithRoot returns a new list with a specific Root.
 func (p Tree) WithRoot(root TreeNode) *Tree {
 	p.Root = root
 	return &p
@@ -124,7 +124,7 @@ func walkOverTree(list []TreeNode, p Tree, prefix string) string {
 }
 
 // NewTreeFromLeveledList converts a TreeItems list to a TreeNode and returns it.
-func NewTreeFromLeveledList(leveledListItems []LeveledListItem) TreeNode {
+func NewTreeFromLeveledList(leveledListItems LeveledList) TreeNode {
 	if len(leveledListItems) == 0 {
 		return TreeNode{}
 	}
