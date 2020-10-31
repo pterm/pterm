@@ -8,8 +8,8 @@ func main() {
 	// You can use a LeveledList here, for easy generation.
 	leveledList := pterm.LeveledList{
 		pterm.LeveledListItem{Level: 0, Text: "C:"},
-		pterm.LeveledListItem{Level: 1, Text: "User"},
-		pterm.LeveledListItem{Level: 1, Text: "log"},
+		pterm.LeveledListItem{Level: 1, Text: "Users"},
+		pterm.LeveledListItem{Level: 1, Text: "Windows"},
 		pterm.LeveledListItem{Level: 1, Text: "Programs"},
 		pterm.LeveledListItem{Level: 1, Text: "Programs(x86)"},
 		pterm.LeveledListItem{Level: 1, Text: "dev"},
