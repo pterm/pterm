@@ -1,21 +1,25 @@
 package pterm
 
-type Tree struct {
-	Children []Tree
+// TreeNode is used as items in a Tree.
+type TreeNode struct {
+	Children []TreeNode
 	Text     string
 }
 
+// LeveledList is a list, which contains multiple LeveledListItem.
 type LeveledList []LeveledListItem
 
+// LeveledListItem combines a text with a specific level.
+// The level is the indent, which would normally be seen in a BulletList.
 type LeveledListItem struct {
 	Level int
 	Text  string
 }
 
-// DefaultTreeList contains standards, which can be used to print a TreeList.
-var DefaultTreeList = TreeList{
-	Style:                &ThemeDefault.ListCornerStyle, // TODO: Add own `TreeStyle` to theme.
-	TextStyle:            &ThemeDefault.ListTextStyle,   // TODO: Add own `TreeTextStyle` to theme.
+// DefaultTree contains standards, which can be used to render a Tree.
+var DefaultTree = Tree{
+	TreeStyle:            &ThemeDefault.TreeStyle,
+	TextStyle:            &ThemeDefault.TreeTextStyle,
 	TopRightCornerString: "└",
 	HorizontalString:     "─",
 	TopRightDownString:   "├",
@@ -23,10 +27,10 @@ var DefaultTreeList = TreeList{
 	RightDownLeftString:  "┬",
 }
 
-// TreeList is able to render a list.
-type TreeList struct {
-	Root                 Tree
-	Style                *Style
+// Tree is able to render a list.
+type Tree struct {
+	Root                 TreeNode
+	TreeStyle            *Style
 	TextStyle            *Style
 	TopRightCornerString string
 	TopRightDownString   string
@@ -36,72 +40,75 @@ type TreeList struct {
 }
 
 // WithStyle returns a new list with a specific bullet style.
-func (p TreeList) WithStyle(style *Style) *TreeList {
-	p.Style = style
+func (p Tree) WithStyle(style *Style) *Tree {
+	p.TreeStyle = style
 	return &p
 }
 
 // WithTextStyle returns a new list with a specific text style.
-func (p TreeList) WithTextStyle(style *Style) *TreeList {
+func (p Tree) WithTextStyle(style *Style) *Tree {
 	p.TextStyle = style
 	return &p
 }
 
 // WithTopRightCornerString returns a new list with a specific bullet.
-func (p TreeList) WithTopRightCornerString(s string) *TreeList {
+func (p Tree) WithTopRightCornerString(s string) *Tree {
 	p.TopRightCornerString = s
 	return &p
 }
 
 // WithTopRightDownStringOngoing returns a new list with a specific bullet.
-func (p TreeList) WithTopRightDownStringOngoing(s string) *TreeList {
+func (p Tree) WithTopRightDownStringOngoing(s string) *Tree {
 	p.TopRightDownString = s
 	return &p
 }
 
 // WithHorizontalString returns a new list with a specific bullet.
-func (p TreeList) WithHorizontalString(s string) *TreeList {
+func (p Tree) WithHorizontalString(s string) *Tree {
 	p.HorizontalString = s
 	return &p
 }
 
 // WithVerticalString returns a new list with a specific bullet.
-func (p TreeList) WithVerticalString(s string) *TreeList {
+func (p Tree) WithVerticalString(s string) *Tree {
 	p.VerticalString = s
 	return &p
 }
 
 // WithRoot returns a new list with a specific bullet.
-func (p TreeList) WithRoot(root Tree) *TreeList {
+func (p Tree) WithRoot(root TreeNode) *Tree {
 	p.Root = root
 	return &p
 }
 
 // Render prints the list to the terminal.
-func (p TreeList) Render() {
+func (p Tree) Render() {
 	Println(p.Srender())
 }
 
 // Srender renders the list as a string.
-func (p TreeList) Srender() string {
+func (p Tree) Srender() string {
 	return walkOverTree(p.Root.Children, p, "")
 }
 
-func walkOverTree(list []Tree, p TreeList, prefix string) string {
+// walkOverTree is a recursive function,
+// which analyzes a Tree and connects the items with specific characters.
+// Returns Tree as string.
+func walkOverTree(list []TreeNode, p Tree, prefix string) string {
 	var ret string
 	for i, item := range list {
-		if len(list) > i+1 {
-			if len(item.Children) == 0 {
-				ret += prefix + p.Style.Sprint(p.TopRightDownString) + p.Style.Sprint(p.HorizontalString) + item.Text + "\n"
-			} else {
-				ret += prefix + p.Style.Sprint(p.TopRightDownString) + p.Style.Sprint(p.RightDownLeftString) + item.Text + "\n"
-				ret += walkOverTree(item.Children, p, prefix+p.Style.Sprint(p.VerticalString))
+		if len(list) > i+1 { // if not last in list
+			if len(item.Children) == 0 { // if there are no children
+				ret += prefix + p.TreeStyle.Sprint(p.TopRightDownString) + p.TreeStyle.Sprint(p.HorizontalString) + item.Text + "\n"
+			} else { // if there are children
+				ret += prefix + p.TreeStyle.Sprint(p.TopRightDownString) + p.TreeStyle.Sprint(p.RightDownLeftString) + item.Text + "\n"
+				ret += walkOverTree(item.Children, p, prefix+p.TreeStyle.Sprint(p.VerticalString))
 			}
-		} else if len(list) == i+1 {
-			if len(item.Children) == 0 {
-				ret += prefix + p.Style.Sprint(p.TopRightCornerString) + p.Style.Sprint(p.HorizontalString) + item.Text + "\n"
-			} else {
-				ret += prefix + p.Style.Sprint(p.TopRightCornerString) + p.Style.Sprint(p.RightDownLeftString) + item.Text + "\n"
+		} else if len(list) == i+1 { // if last in list
+			if len(item.Children) == 0 { // if there are no children
+				ret += prefix + p.TreeStyle.Sprint(p.TopRightCornerString) + p.TreeStyle.Sprint(p.HorizontalString) + item.Text + "\n"
+			} else { // if there are children
+				ret += prefix + p.TreeStyle.Sprint(p.TopRightCornerString) + p.TreeStyle.Sprint(p.RightDownLeftString) + item.Text + "\n"
 				ret += walkOverTree(item.Children, p, prefix+" ")
 			}
 		}
@@ -109,26 +116,26 @@ func walkOverTree(list []Tree, p TreeList, prefix string) string {
 	return ret
 }
 
-// NewTreeFromLeveledList converts a TreeItems list to a Tree and returns it.
-func NewTreeFromLeveledList(lvledList []LeveledListItem) Tree {
-	root := &Tree{
-		Children: []Tree{},
-		Text:     lvledList[0].Text,
+// NewTreeFromLeveledList converts a TreeItems list to a TreeNode and returns it.
+func NewTreeFromLeveledList(leveledListItems []LeveledListItem) TreeNode {
+	root := &TreeNode{
+		Children: []TreeNode{},
+		Text:     leveledListItems[0].Text,
 	}
 
-	for _, record := range lvledList {
+	for _, record := range leveledListItems {
 		last := root
 		for i := 0; i < record.Level; i++ {
 			var lastIndex int
 			if len(last.Children) > 0 {
 				lastIndex = len(last.Children) - 1
 			} else {
-				last.Children = append(last.Children, Tree{})
+				last.Children = append(last.Children, TreeNode{})
 			}
 			last = &last.Children[lastIndex]
 		}
-		last.Children = append(last.Children, Tree{
-			Children: []Tree{},
+		last.Children = append(last.Children, TreeNode{
+			Children: []TreeNode{},
 			Text:     record.Text,
 		})
 	}
