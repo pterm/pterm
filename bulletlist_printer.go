@@ -15,7 +15,7 @@ func NewBulletListFromStrings(s []string, padding string) BulletList {
 	return *DefaultBulletList.WithItems(lis)
 }
 
-// NewBulletListItemFromString returns a ListItem with a Text. The padding is counted in the Text to define the Level of the ListItem.
+// NewBulletListItemFromString returns a BulletListItem with a Text. The padding is counted in the Text to define the Level of the ListItem.
 func NewBulletListItemFromString(text string, padding string) BulletListItem {
 	s, l := internal.RemoveAndCountPrefix(text, padding)
 	return BulletListItem{
@@ -40,42 +40,42 @@ type BulletListItem struct {
 	BulletStyle *Style
 }
 
-// WithLevel returns a new ListItem with a specific Level.
+// WithLevel returns a new BulletListItem with a specific Level.
 func (p BulletListItem) WithLevel(level int) BulletListItem {
 	p.Level = level
 	return p
 }
 
-// WithText returns a new ListItem with a specific Text.
+// WithText returns a new BulletListItem with a specific Text.
 func (p BulletListItem) WithText(text string) BulletListItem {
 	p.Text = text
 	return p
 }
 
-// WithTextStyle returns a new ListItem with a specific TextStyle.
+// WithTextStyle returns a new BulletListItem with a specific TextStyle.
 func (p BulletListItem) WithTextStyle(style *Style) BulletListItem {
 	p.TextStyle = style
 	return p
 }
 
-// WithBullet returns a new ListItem with a specific Prefix.
+// WithBullet returns a new BulletListItem with a specific Prefix.
 func (p BulletListItem) WithBullet(bullet string) BulletListItem {
 	p.Bullet = bullet
 	return p
 }
 
-// WithBulletStyle returns a new ListItem with a specific BulletStyle.
+// WithBulletStyle returns a new BulletListItem with a specific BulletStyle.
 func (p BulletListItem) WithBulletStyle(style *Style) BulletListItem {
 	p.BulletStyle = style
 	return p
 }
 
-// Render renders the ListItem as a string.
+// Render renders the BulletListItem as a string.
 func (p BulletListItem) Render() {
 	Println(p.Srender())
 }
 
-// Srender renders the ListItem as a string.
+// Srender renders the BulletListItem as a string.
 func (p BulletListItem) Srender() string {
 	if p.TextStyle == nil {
 		p.TextStyle = NewStyle()

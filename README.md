@@ -76,6 +76,7 @@
 - [Section](#section)
 - [Spinner](#spinner)
 - [Header](#header)
+- [Tree](#tree)
 - [Paragraph](#paragraph)
 - [Print With Color](#print-with-color)
   - [Print With RGB Color](#print-color-rgb)

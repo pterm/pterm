@@ -164,3 +164,19 @@ func TestTheme_WithDebugPrefixStyle(t *testing.T) {
 
 	assert.Equal(t, s, p2.DebugPrefixStyle)
 }
+
+func TestTheme_WithTreeStyle(t *testing.T) {
+	s := Style{FgRed, BgBlue, Bold}
+	p := Theme{}
+	p2 := p.WithTreeStyle(s)
+
+	assert.Equal(t, s, p2.TreeStyle)
+}
+
+func TestTheme_WithTreeTextStyle(t *testing.T) {
+	s := Style{FgRed, BgBlue, Bold}
+	p := Theme{}
+	p2 := p.WithTreeTextStyle(s)
+
+	assert.Equal(t, s, p2.TreeTextStyle)
+}
