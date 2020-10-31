@@ -21,10 +21,10 @@ var DefaultTree = Tree{
 	TreeStyle:            &ThemeDefault.TreeStyle,
 	TextStyle:            &ThemeDefault.TreeTextStyle,
 	TopRightCornerString: "└",
-	HorizontalString:     "─",
+	HorizontalString:     "──",
 	TopRightDownString:   "├",
 	VerticalString:       "│",
-	RightDownLeftString:  "┬",
+	RightDownLeftString:  "─┬",
 }
 
 // Tree is able to render a list.
@@ -109,14 +109,14 @@ func walkOverTree(list []TreeNode, p Tree, prefix string) string {
 				ret += prefix + p.TreeStyle.Sprint(p.TopRightDownString) + p.TreeStyle.Sprint(p.HorizontalString) + p.TextStyle.Sprint(item.Text) + "\n"
 			} else { // if there are children
 				ret += prefix + p.TreeStyle.Sprint(p.TopRightDownString) + p.TreeStyle.Sprint(p.RightDownLeftString) + p.TextStyle.Sprint(item.Text) + "\n"
-				ret += walkOverTree(item.Children, p, prefix+p.TreeStyle.Sprint(p.VerticalString))
+				ret += walkOverTree(item.Children, p, prefix+p.TreeStyle.Sprint(p.VerticalString)+" ")
 			}
 		} else if len(list) == i+1 { // if last in list
 			if len(item.Children) == 0 { // if there are no children
 				ret += prefix + p.TreeStyle.Sprint(p.TopRightCornerString) + p.TreeStyle.Sprint(p.HorizontalString) + p.TextStyle.Sprint(item.Text) + "\n"
 			} else { // if there are children
 				ret += prefix + p.TreeStyle.Sprint(p.TopRightCornerString) + p.TreeStyle.Sprint(p.RightDownLeftString) + p.TextStyle.Sprint(item.Text) + "\n"
-				ret += walkOverTree(item.Children, p, prefix+" ")
+				ret += walkOverTree(item.Children, p, prefix+"  ")
 			}
 		}
 	}
