@@ -38,7 +38,7 @@
 </a>
 
 <a href="https://codecov.io/gh/pterm/pterm">
-<!-- unittestcount:start --><img src="https://img.shields.io/badge/Unit_Tests-4643-magenta?style=flat-square" alt="Forks"><!-- unittestcount:end -->
+<!-- unittestcount:start --><img src="https://img.shields.io/badge/Unit_Tests-4667-magenta?style=flat-square" alt="Forks"><!-- unittestcount:end -->
 </a>
 
 <a href="https://github.com/pterm/pterm/tree/master/_examples/demo">
@@ -100,7 +100,7 @@ We take special precautions to ensure that PTerm works on as many operating syst
 
 > PTerm has a 100% test coverage, which means that every line of code inside PTerm gets tested automatically
 
-We test PTerm continuously. However, since a human cannot test everything all the time, we have our own test system with which we currently run <!-- unittestcount2:start -->**`4643`**<!-- unittestcount2:end -->
+We test PTerm continuously. However, since a human cannot test everything all the time, we have our own test system with which we currently run <!-- unittestcount2:start -->**`4667`**<!-- unittestcount2:end -->
 automated tests to ensure that PTerm has no bugs. 
 
 ### • ✨ Consistent Colors
@@ -1063,6 +1063,59 @@ func main() {
 			time.Sleep(time.Millisecond * 250)
 		}
 	}
+}
+
+```
+
+</details>
+
+### tree
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/tree/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	// You can use a LeveledList here, for easy generation.
+	leveledList := pterm.LeveledList{
+		pterm.LeveledListItem{Level: 0, Text: "C:"},
+		pterm.LeveledListItem{Level: 1, Text: "User"},
+		pterm.LeveledListItem{Level: 1, Text: "log"},
+		pterm.LeveledListItem{Level: 1, Text: "Programs"},
+		pterm.LeveledListItem{Level: 1, Text: "Programs(x86)"},
+		pterm.LeveledListItem{Level: 1, Text: "dev"},
+		pterm.LeveledListItem{Level: 0, Text: "D:"},
+		pterm.LeveledListItem{Level: 0, Text: "E:"},
+		pterm.LeveledListItem{Level: 1, Text: "Movies"},
+		pterm.LeveledListItem{Level: 1, Text: "Music"},
+		pterm.LeveledListItem{Level: 2, Text: "LinkinPark"},
+		pterm.LeveledListItem{Level: 1, Text: "Games"},
+		pterm.LeveledListItem{Level: 2, Text: "Shooter"},
+		pterm.LeveledListItem{Level: 3, Text: "CallOfDuty"},
+		pterm.LeveledListItem{Level: 3, Text: "CS:GO"},
+		pterm.LeveledListItem{Level: 3, Text: "Battlefield"},
+		pterm.LeveledListItem{Level: 4, Text: "Battlefield 1"},
+		pterm.LeveledListItem{Level: 4, Text: "Battlefield 2"},
+		pterm.LeveledListItem{Level: 0, Text: "F:"},
+		pterm.LeveledListItem{Level: 1, Text: "dev"},
+		pterm.LeveledListItem{Level: 2, Text: "dops"},
+		pterm.LeveledListItem{Level: 2, Text: "PTerm"},
+	}
+
+	// Generate tree from LeveledList.
+	root := pterm.NewTreeFromLeveledList(leveledList)
+
+	// Render Tree
+	pterm.DefaultTree.WithRoot(root).Render()
 }
 
 ```
