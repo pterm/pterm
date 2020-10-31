@@ -8,6 +8,8 @@
 ### Code Refactoring
 - clean up `Tree`
 - **theme:** change `TreeTextStyle` to `FgDefault`
+- **tree:** add Indent to control the spacing between levels and changed docs(examples)
+- **tree:** add more spacing between levels
 - **tree:** refactor `Tree` code and write tests for `Tree`
 - **tree:** refactor `Tree` code
 - **tree:** refactor `Tree` code
@@ -15,10 +17,12 @@
 - **tree:** refactor `Tree` code and write tests for `Tree`
 
 ### Documentation Changes
+- **examples:** add `Tree` to demo
 - **examples:** refactor `Tree` example
 - **examples:** refactor `treelist` example
 - **examples:** add example for `Tree`
 - **examples:** add example for `Tree`
+- **examples:** add `Tree` to demo
 - **examples:** refactor `treelist` example
 - **examples:** refactor `treelist` example
 - **readme:** add `Tree` to features

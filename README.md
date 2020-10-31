@@ -38,7 +38,7 @@
 </a>
 
 <a href="https://codecov.io/gh/pterm/pterm">
-<!-- unittestcount:start --><img src="https://img.shields.io/badge/Unit_Tests-4667-magenta?style=flat-square" alt="Forks"><!-- unittestcount:end -->
+<!-- unittestcount:start --><img src="https://img.shields.io/badge/Unit_Tests-4669-magenta?style=flat-square" alt="Forks"><!-- unittestcount:end -->
 </a>
 
 <a href="https://github.com/pterm/pterm/tree/master/_examples/demo">
@@ -100,7 +100,7 @@ We take special precautions to ensure that PTerm works on as many operating syst
 
 > PTerm has a 100% test coverage, which means that every line of code inside PTerm gets tested automatically
 
-We test PTerm continuously. However, since a human cannot test everything all the time, we have our own test system with which we currently run <!-- unittestcount2:start -->**`4667`**<!-- unittestcount2:end -->
+We test PTerm continuously. However, since a human cannot test everything all the time, we have our own test system with which we currently run <!-- unittestcount2:start -->**`4669`**<!-- unittestcount2:end -->
 automated tests to ensure that PTerm has no bugs. 
 
 ### • ✨ Consistent Colors
@@ -279,11 +279,40 @@ func main() {
 	pterm.DefaultSection.WithLevel(2).Println("Program Install Report")
 	installedProgramsSize()
 	time.Sleep(second * 4)
+	pterm.DefaultSection.Println("Tree Printer")
+	installedTree()
+	time.Sleep(second * 4)
 	pterm.DefaultSection.Println("TrueColor Support")
 	fadeText()
 	time.Sleep(second)
 	pterm.DefaultSection.Println("Bullet List Printer")
 	listPrinter()
+}
+
+func installedTree() {
+	leveledList := pterm.LeveledList{
+		pterm.LeveledListItem{Level: 0, Text: "C:"},
+		pterm.LeveledListItem{Level: 1, Text: "Users"},
+		pterm.LeveledListItem{Level: 1, Text: "Go"},
+		pterm.LeveledListItem{Level: 1, Text: "Windows"},
+		pterm.LeveledListItem{Level: 1, Text: "Programs"},
+	}
+	for _, s := range pseudoProgramList {
+		if s != "pseudo-minecraft" {
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 2, Text: s})
+		}
+		if s == "pseudo-chrome" {
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Tabs"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Extensions"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "Refined GitHub"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "GitHub Notifier"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "GitHub Dark Theme"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Bookmarks"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "PTerm"})
+		}
+	}
+
+	pterm.DefaultTree.WithRoot(pterm.NewTreeFromLeveledList(leveledList)).Render()
 }
 
 func installingPseudoList() {
@@ -1088,8 +1117,8 @@ func main() {
 	// You can use a LeveledList here, for easy generation.
 	leveledList := pterm.LeveledList{
 		pterm.LeveledListItem{Level: 0, Text: "C:"},
-		pterm.LeveledListItem{Level: 1, Text: "User"},
-		pterm.LeveledListItem{Level: 1, Text: "log"},
+		pterm.LeveledListItem{Level: 1, Text: "Users"},
+		pterm.LeveledListItem{Level: 1, Text: "Windows"},
 		pterm.LeveledListItem{Level: 1, Text: "Programs"},
 		pterm.LeveledListItem{Level: 1, Text: "Programs(x86)"},
 		pterm.LeveledListItem{Level: 1, Text: "dev"},
