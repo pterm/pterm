@@ -88,6 +88,13 @@ func (p Tree) Render() {
 
 // Srender renders the list as a string.
 func (p Tree) Srender() string {
+	if p.TreeStyle == nil {
+		p.TreeStyle = NewStyle()
+	}
+	if p.TextStyle == nil {
+		p.TextStyle = NewStyle()
+	}
+
 	return walkOverTree(p.Root.Children, p, "")
 }
 
@@ -127,11 +134,7 @@ func NewTreeFromLeveledList(leveledListItems []LeveledListItem) TreeNode {
 		last := root
 		for i := 0; i < record.Level; i++ {
 			var lastIndex int
-			if len(last.Children) > 0 {
-				lastIndex = len(last.Children) - 1
-			} else {
-				last.Children = append(last.Children, TreeNode{})
-			}
+			lastIndex = len(last.Children) - 1
 			last = &last.Children[lastIndex]
 		}
 		last.Children = append(last.Children, TreeNode{
