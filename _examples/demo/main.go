@@ -11,7 +11,7 @@ import (
 
 // Change this to time.Millisecond*200 to speed up the demo.
 // Useful when debugging.
-const second = time.Millisecond
+const second = time.Second
 
 var pseudoProgramList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chrome pseudo-outlook pseudo-explorer "+
 	"pseudo-dops pseudo-git pseudo-vsc pseudo-intellij pseudo-minecraft pseudo-scoop pseudo-chocolatey", " ")
