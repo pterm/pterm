@@ -5,8 +5,8 @@ import (
 )
 
 func main() {
-
-	tis2 := pterm.LeveledList{
+	// You can use a LeveledList here, for easy generation.
+	leveledList := pterm.LeveledList{
 		pterm.LeveledListItem{Level: 0, Text: "C:"},
 		pterm.LeveledListItem{Level: 1, Text: "User"},
 		pterm.LeveledListItem{Level: 1, Text: "log"},
@@ -31,7 +31,9 @@ func main() {
 		pterm.LeveledListItem{Level: 2, Text: "PTerm"},
 	}
 
-	tis3 := pterm.NewTreeFromLeveledList(tis2)
+	// Generate tree from LeveledList.
+	root := pterm.NewTreeFromLeveledList(leveledList)
 
-	pterm.DefaultTree.WithRoot(tis3).Render()
+	// Render Tree
+	pterm.DefaultTree.WithRoot(root).Render()
 }
