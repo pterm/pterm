@@ -11,7 +11,7 @@ import (
 
 // Change this to time.Millisecond*200 to speed up the demo.
 // Useful when debugging.
-const second = time.Second
+const second = time.Millisecond
 
 var pseudoProgramList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chrome pseudo-outlook pseudo-explorer "+
 	"pseudo-dops pseudo-git pseudo-vsc pseudo-intellij pseudo-minecraft pseudo-scoop pseudo-chocolatey", " ")
@@ -39,8 +39,9 @@ func main() {
 func installedTree() {
 	leveledList := pterm.LeveledList{
 		pterm.LeveledListItem{Level: 0, Text: "C:"},
-		pterm.LeveledListItem{Level: 1, Text: "User"},
-		pterm.LeveledListItem{Level: 1, Text: "log"},
+		pterm.LeveledListItem{Level: 1, Text: "Users"},
+		pterm.LeveledListItem{Level: 1, Text: "Go"},
+		pterm.LeveledListItem{Level: 1, Text: "Windows"},
 		pterm.LeveledListItem{Level: 1, Text: "Programs"},
 	}
 	for _, s := range pseudoProgramList {
@@ -49,7 +50,7 @@ func installedTree() {
 		}
 		if s == "pseudo-chrome" {
 			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Tabs"})
-			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-PlugIns"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Extensions"})
 			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "Refined GitHub"})
 			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "GitHub Notifier"})
 			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "GitHub Dark Theme"})

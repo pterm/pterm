@@ -1,5 +1,9 @@
 package pterm
 
+import (
+	"strings"
+)
+
 // TreeNode is used as items in a Tree.
 type TreeNode struct {
 	Children []TreeNode
@@ -21,10 +25,11 @@ var DefaultTree = Tree{
 	TreeStyle:            &ThemeDefault.TreeStyle,
 	TextStyle:            &ThemeDefault.TreeTextStyle,
 	TopRightCornerString: "└",
-	HorizontalString:     "──",
+	HorizontalString:     "─",
 	TopRightDownString:   "├",
 	VerticalString:       "│",
-	RightDownLeftString:  "─┬",
+	RightDownLeftString:  "┬",
+	Indent:               2,
 }
 
 // Tree is able to render a list.
@@ -37,6 +42,7 @@ type Tree struct {
 	HorizontalString     string
 	VerticalString       string
 	RightDownLeftString  string
+	Indent               int
 }
 
 // WithTreeStyle returns a new list with a specific tree style.
@@ -81,6 +87,16 @@ func (p Tree) WithRoot(root TreeNode) *Tree {
 	return &p
 }
 
+// WithIndent returns a new list with a specific amount of spacing between the levels.
+// Indent must be at least 1.
+func (p Tree) WithIndent(indent int) *Tree {
+	if indent < 1 {
+		indent = 1
+	}
+	p.Indent = indent
+	return &p
+}
+
 // Render prints the list to the terminal.
 func (p Tree) Render() {
 	Println(p.Srender())
@@ -106,17 +122,21 @@ func walkOverTree(list []TreeNode, p Tree, prefix string) string {
 	for i, item := range list {
 		if len(list) > i+1 { // if not last in list
 			if len(item.Children) == 0 { // if there are no children
-				ret += prefix + p.TreeStyle.Sprint(p.TopRightDownString) + p.TreeStyle.Sprint(p.HorizontalString) + p.TextStyle.Sprint(item.Text) + "\n"
+				ret += prefix + p.TreeStyle.Sprint(p.TopRightDownString) + strings.Repeat(p.TreeStyle.Sprint(p.HorizontalString), p.Indent) +
+					p.TextStyle.Sprint(item.Text) + "\n"
 			} else { // if there are children
-				ret += prefix + p.TreeStyle.Sprint(p.TopRightDownString) + p.TreeStyle.Sprint(p.RightDownLeftString) + p.TextStyle.Sprint(item.Text) + "\n"
-				ret += walkOverTree(item.Children, p, prefix+p.TreeStyle.Sprint(p.VerticalString)+" ")
+				ret += prefix + p.TreeStyle.Sprint(p.TopRightDownString) + strings.Repeat(p.TreeStyle.Sprint(p.HorizontalString), p.Indent-1) +
+					p.TreeStyle.Sprint(p.RightDownLeftString) + p.TextStyle.Sprint(item.Text) + "\n"
+				ret += walkOverTree(item.Children, p, prefix+p.TreeStyle.Sprint(p.VerticalString)+strings.Repeat(" ", p.Indent-1))
 			}
 		} else if len(list) == i+1 { // if last in list
 			if len(item.Children) == 0 { // if there are no children
-				ret += prefix + p.TreeStyle.Sprint(p.TopRightCornerString) + p.TreeStyle.Sprint(p.HorizontalString) + p.TextStyle.Sprint(item.Text) + "\n"
+				ret += prefix + p.TreeStyle.Sprint(p.TopRightCornerString) + strings.Repeat(p.TreeStyle.Sprint(p.HorizontalString), p.Indent) +
+					p.TextStyle.Sprint(item.Text) + "\n"
 			} else { // if there are children
-				ret += prefix + p.TreeStyle.Sprint(p.TopRightCornerString) + p.TreeStyle.Sprint(p.RightDownLeftString) + p.TextStyle.Sprint(item.Text) + "\n"
-				ret += walkOverTree(item.Children, p, prefix+"  ")
+				ret += prefix + p.TreeStyle.Sprint(p.TopRightCornerString) + strings.Repeat(p.TreeStyle.Sprint(p.HorizontalString), p.Indent-1) +
+					p.TreeStyle.Sprint(p.RightDownLeftString) + p.TextStyle.Sprint(item.Text) + "\n"
+				ret += walkOverTree(item.Children, p, prefix+strings.Repeat(" ", p.Indent))
 			}
 		}
 	}

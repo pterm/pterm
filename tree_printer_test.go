@@ -182,3 +182,19 @@ func TestTree_WithVerticalString(t *testing.T) {
 	assert.Equal(t, "-", p2.VerticalString)
 	assert.Empty(t, p.VerticalString)
 }
+
+func TestTree_WithIndent(t *testing.T) {
+	p := Tree{}
+	p2 := p.WithIndent(3)
+
+	assert.Equal(t, 3, p2.Indent)
+	assert.Empty(t, p.Indent)
+}
+
+func TestTree_WithIndentInvalid(t *testing.T) {
+	p := Tree{}
+	p2 := p.WithIndent(0)
+
+	assert.Equal(t, 1, p2.Indent)
+	assert.Empty(t, p.Indent)
+}
