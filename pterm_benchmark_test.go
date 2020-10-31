@@ -82,10 +82,10 @@ func BenchmarkProgressbar(b *testing.B) {
 
 func BenchmarkTreeList_Render(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		var tis []TreeListItem
-		for i := 0; i < 10000; i++ {
-			tis = append(tis, TreeListItem{
-				ItemName: "Test",
+		var tis TreeListItem
+		for i := 0; i < 10; i++ {
+			tis.Children = append(tis.Children, TreeListItem{
+				Text: "Test",
 			})
 		}
 		SetDefaultOutput(os.NewFile(0, os.DevNull))

@@ -2,7 +2,7 @@ package pterm
 
 type TreeListItem struct {
 	Children []TreeListItem
-	ItemName string
+	Text     string
 }
 
 type LvlTreeListItem struct {
@@ -25,7 +25,7 @@ var DefaultTreeList = TreeList{
 
 // TreeList is able to render a list.
 type TreeList struct {
-	ListItem []TreeListItem
+	ListItem TreeListItem
 	// LvlTreeListItems     LvlTreeListItems
 	TextStyle     *Style
 	Corner        string
@@ -73,7 +73,7 @@ func (p TreeList) WithRoot(Root string) *TreeList {
 }
 
 // WithItems returns a new list with a specific bullet.
-func (p TreeList) WithItems(items []TreeListItem) *TreeList {
+func (p TreeList) WithItems(items TreeListItem) *TreeList {
 	p.ListItem = items
 	return &p
 }
@@ -85,65 +85,56 @@ func (p TreeList) Render() {
 
 // Srender renders the list as a string.
 func (p TreeList) Srender() string {
-	return temp(p.ListItem, p, "")
+	return temp(p.ListItem.Children, p, "")
 }
 
-func (items LvlTreeListItems) ConvertLeveledListToTreeListItems(lvl, startPos int) []TreeListItem {
-	count := 0
-	var treeListItems []TreeListItem
-	for i := startPos; i < len(items); i++ {
-		if hasNextLowerLevel(items, i) && lvl != 0 {
-			treeListItems = append(treeListItems, TreeListItem{Children: nil, ItemName: items[i].Text})
-			return treeListItems
-		}
-		if items[i].Level == lvl {
-			treeListItems = append(treeListItems, TreeListItem{Children: nil, ItemName: items[i].Text})
-			if hasChildren(items, i) {
-				treeListItems[count].Children = items.ConvertLeveledListToTreeListItems(lvl+1, i+1)
-			}
-			count++
-		}
+// ConvertLeveledListToTreeListItems converts a LvlTreeListItems list to a TreeListItem and returns it.
+func ConvertLeveledListToTreeListItems(lvledList LvlTreeListItems) TreeListItem {
+
+	var root *TreeListItem
+	root = &TreeListItem{
+		Children: []TreeListItem{},
+		Text:     lvledList[0].Text,
 	}
-	return treeListItems
+
+	for _, record := range lvledList {
+		last := root
+		for i := 0; i < record.Level; i++ {
+			var lastIndex int
+			if len(last.Children) > 0 {
+				lastIndex = len(last.Children) - 1
+			} else {
+				last.Children = append(last.Children, TreeListItem{})
+			}
+			last = &last.Children[lastIndex]
+		}
+		last.Children = append(last.Children, TreeListItem{
+			Children: []TreeListItem{},
+			Text:     record.Text,
+		})
+	}
+
+	return *root
 }
 
 func temp(list []TreeListItem, p TreeList, prefix string) string {
 	var ret string
 	for i, item := range list {
 		if len(list) > i+1 {
-			if item.Children == nil {
-				ret += prefix + p.Style.Sprint(p.CornerOngoing) + p.Style.Sprint(p.Horizontal) + item.ItemName + "\n"
+			if len(item.Children) == 0 {
+				ret += prefix + p.Style.Sprint(p.CornerOngoing) + p.Style.Sprint(p.Horizontal) + item.Text + "\n"
 			} else {
-				ret += prefix + p.Style.Sprint(p.CornerOngoing) + p.Style.Sprint(p.T) + item.ItemName + "\n"
+				ret += prefix + p.Style.Sprint(p.CornerOngoing) + p.Style.Sprint(p.T) + item.Text + "\n"
 				ret += temp(item.Children, p, prefix+p.Style.Sprint(p.Vertical))
 			}
 		} else if len(list) == i+1 {
-			if item.Children == nil {
-				ret += prefix + p.Style.Sprint(p.Corner) + p.Style.Sprint(p.Horizontal) + item.ItemName + "\n"
+			if len(item.Children) == 0 {
+				ret += prefix + p.Style.Sprint(p.Corner) + p.Style.Sprint(p.Horizontal) + item.Text + "\n"
 			} else {
-				ret += prefix + p.Style.Sprint(p.Corner) + p.Style.Sprint(p.T) + item.ItemName + "\n"
+				ret += prefix + p.Style.Sprint(p.Corner) + p.Style.Sprint(p.T) + item.Text + "\n"
 				ret += temp(item.Children, p, prefix+" ")
 			}
 		}
 	}
 	return ret
-}
-
-func hasChildren(list LvlTreeListItems, i int) bool {
-	if len(list) < i+2 {
-		return false
-	}
-	if list[i+1].Level > list[i].Level {
-		return true
-	}
-	return false
-}
-func hasNextLowerLevel(list LvlTreeListItems, i int) bool {
-	if len(list) < i+2 {
-		return false
-	}
-	if list[i+1].Level < list[i].Level {
-		return true
-	}
-	return false
 }
