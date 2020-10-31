@@ -106,16 +106,16 @@ func walkOverTree(list []TreeNode, p Tree, prefix string) string {
 	for i, item := range list {
 		if len(list) > i+1 { // if not last in list
 			if len(item.Children) == 0 { // if there are no children
-				ret += prefix + p.TreeStyle.Sprint(p.TopRightDownString) + p.TreeStyle.Sprint(p.HorizontalString) + item.Text + "\n"
+				ret += prefix + p.TreeStyle.Sprint(p.TopRightDownString) + p.TreeStyle.Sprint(p.HorizontalString) + p.TextStyle.Sprint(item.Text) + "\n"
 			} else { // if there are children
-				ret += prefix + p.TreeStyle.Sprint(p.TopRightDownString) + p.TreeStyle.Sprint(p.RightDownLeftString) + item.Text + "\n"
+				ret += prefix + p.TreeStyle.Sprint(p.TopRightDownString) + p.TreeStyle.Sprint(p.RightDownLeftString) + p.TextStyle.Sprint(item.Text) + "\n"
 				ret += walkOverTree(item.Children, p, prefix+p.TreeStyle.Sprint(p.VerticalString))
 			}
 		} else if len(list) == i+1 { // if last in list
 			if len(item.Children) == 0 { // if there are no children
-				ret += prefix + p.TreeStyle.Sprint(p.TopRightCornerString) + p.TreeStyle.Sprint(p.HorizontalString) + item.Text + "\n"
+				ret += prefix + p.TreeStyle.Sprint(p.TopRightCornerString) + p.TreeStyle.Sprint(p.HorizontalString) + p.TextStyle.Sprint(item.Text) + "\n"
 			} else { // if there are children
-				ret += prefix + p.TreeStyle.Sprint(p.TopRightCornerString) + p.TreeStyle.Sprint(p.RightDownLeftString) + item.Text + "\n"
+				ret += prefix + p.TreeStyle.Sprint(p.TopRightCornerString) + p.TreeStyle.Sprint(p.RightDownLeftString) + p.TextStyle.Sprint(item.Text) + "\n"
 				ret += walkOverTree(item.Children, p, prefix+" ")
 			}
 		}
@@ -125,13 +125,29 @@ func walkOverTree(list []TreeNode, p Tree, prefix string) string {
 
 // NewTreeFromLeveledList converts a TreeItems list to a TreeNode and returns it.
 func NewTreeFromLeveledList(leveledListItems []LeveledListItem) TreeNode {
+	if len(leveledListItems) == 0 {
+		return TreeNode{}
+	}
+
 	root := &TreeNode{
 		Children: []TreeNode{},
 		Text:     leveledListItems[0].Text,
 	}
 
-	for _, record := range leveledListItems {
+	for i, record := range leveledListItems {
 		last := root
+
+		if record.Level < 0 {
+			record.Level = 0
+			leveledListItems[i].Level = 0
+		}
+
+		if len(leveledListItems)-1 != i {
+			if leveledListItems[i+1].Level-1 > record.Level {
+				leveledListItems[i+1].Level = record.Level + 1
+			}
+		}
+
 		for i := 0; i < record.Level; i++ {
 			lastIndex := len(last.Children) - 1
 			last = &last.Children[lastIndex]

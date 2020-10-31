@@ -59,6 +59,66 @@ func TestTree_NewTreeFromLeveledList(t *testing.T) {
 	assert.Empty(t, p.Root)
 }
 
+func TestTree_NewTreeFromLeveledListLevelInvalidIncrease(t *testing.T) {
+	p := DefaultTree
+	p2 := p.WithRoot(NewTreeFromLeveledList(LeveledList{
+		LeveledListItem{Level: 0, Text: "0.0"},
+		LeveledListItem{Level: 1, Text: "0.1"},
+		LeveledListItem{Level: 1, Text: "0.2"},
+		LeveledListItem{Level: 0, Text: "1.0"},
+		LeveledListItem{Level: 0, Text: "2.0"},
+		LeveledListItem{Level: 1, Text: "2.1"},
+		LeveledListItem{Level: 1, Text: "2.2"},
+		LeveledListItem{Level: 2, Text: "2.2.1"},
+		LeveledListItem{Level: 10, Text: "2.3"}}))
+
+	assert.Equal(t, NewTreeFromLeveledList(LeveledList{
+		LeveledListItem{Level: 0, Text: "0.0"},
+		LeveledListItem{Level: 1, Text: "0.1"},
+		LeveledListItem{Level: 1, Text: "0.2"},
+		LeveledListItem{Level: 0, Text: "1.0"},
+		LeveledListItem{Level: 0, Text: "2.0"},
+		LeveledListItem{Level: 1, Text: "2.1"},
+		LeveledListItem{Level: 1, Text: "2.2"},
+		LeveledListItem{Level: 2, Text: "2.2.1"},
+		LeveledListItem{Level: 3, Text: "2.3"}}), p2.Root)
+	assert.Empty(t, p.Root)
+}
+
+func TestTree_NewTreeFromLeveledListEmptyList(t *testing.T) {
+	p := DefaultTree
+	p2 := p.WithRoot(NewTreeFromLeveledList(LeveledList{}))
+
+	assert.Equal(t, NewTreeFromLeveledList(LeveledList{}), p2.Root)
+	assert.Empty(t, p.Root)
+}
+
+func TestTree_NewTreeFromLeveledListNegativeLevel(t *testing.T) {
+	p := DefaultTree
+	p2 := p.WithRoot(NewTreeFromLeveledList(LeveledList{
+		LeveledListItem{Level: 0, Text: "0.0"},
+		LeveledListItem{Level: 1, Text: "0.1"},
+		LeveledListItem{Level: 1, Text: "0.2"},
+		LeveledListItem{Level: 0, Text: "1.0"},
+		LeveledListItem{Level: 0, Text: "2.0"},
+		LeveledListItem{Level: 1, Text: "2.1"},
+		LeveledListItem{Level: 1, Text: "2.2"},
+		LeveledListItem{Level: 2, Text: "2.2.1"},
+		LeveledListItem{Level: -5, Text: "2.3"}}))
+
+	assert.Equal(t, NewTreeFromLeveledList(LeveledList{
+		LeveledListItem{Level: 0, Text: "0.0"},
+		LeveledListItem{Level: 1, Text: "0.1"},
+		LeveledListItem{Level: 1, Text: "0.2"},
+		LeveledListItem{Level: 0, Text: "1.0"},
+		LeveledListItem{Level: 0, Text: "2.0"},
+		LeveledListItem{Level: 1, Text: "2.1"},
+		LeveledListItem{Level: 1, Text: "2.2"},
+		LeveledListItem{Level: 2, Text: "2.2.1"},
+		LeveledListItem{Level: 0, Text: "2.3"}}), p2.Root)
+	assert.Empty(t, p.Root)
+}
+
 func TestTree_WithHorizontalString(t *testing.T) {
 	p := Tree{}
 	p2 := p.WithHorizontalString("-")
