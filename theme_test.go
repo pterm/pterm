@@ -148,3 +148,19 @@ func TestTheme_WithLetterStyle(t *testing.T) {
 
 	assert.Equal(t, s, p2.LetterStyle)
 }
+
+func TestTheme_WithDebugMessageStyle(t *testing.T) {
+	s := Style{FgRed, BgBlue, Bold}
+	p := Theme{}
+	p2 := p.WithDebugMessageStyle(s)
+
+	assert.Equal(t, s, p2.DebugMessageStyle)
+}
+
+func TestTheme_WithDebugPrefixStyle(t *testing.T) {
+	s := Style{FgRed, BgBlue, Bold}
+	p := Theme{}
+	p2 := p.WithDebugPrefixStyle(s)
+
+	assert.Equal(t, s, p2.DebugPrefixStyle)
+}

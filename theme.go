@@ -37,6 +37,8 @@ var (
 		ListBranchStyle:         Style{FgGray},
 		ListRootStyle:           Style{FgGray},
 		LetterStyle:             Style{FgDefault},
+		DebugMessageStyle:       Style{FgGray},
+		DebugPrefixStyle:        Style{FgBlack, BgGray},
 	}
 )
 
@@ -77,6 +79,8 @@ type Theme struct {
 	ListBranchStyle         Style
 	ListRootStyle           Style
 	LetterStyle             Style
+	DebugMessageStyle       Style
+	DebugPrefixStyle        Style
 }
 
 // WithPrimaryStyle returns a new theme with overridden value.
@@ -184,5 +188,17 @@ func (t Theme) WithListBulletStyle(style Style) Theme {
 // WithLetterStyle returns a new theme with overridden value.
 func (t Theme) WithLetterStyle(style Style) Theme {
 	t.LetterStyle = style
+	return t
+}
+
+// WithDebugMessageStyle returns a new theme with overridden value.
+func (t Theme) WithDebugMessageStyle(style Style) Theme {
+	t.DebugMessageStyle = style
+	return t
+}
+
+// WithDebugPrefixStyle returns a new theme with overridden value.
+func (t Theme) WithDebugPrefixStyle(style Style) Theme {
+	t.DebugPrefixStyle = style
 	return t
 }

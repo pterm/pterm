@@ -38,7 +38,7 @@
 </a>
 
 <a href="https://codecov.io/gh/pterm/pterm">
-<!-- unittestcount:start --><img src="https://img.shields.io/badge/Unit_Tests-3474-magenta?style=flat-square" alt="Forks"><!-- unittestcount:end -->
+<!-- unittestcount:start --><img src="https://img.shields.io/badge/Unit_Tests-4643-magenta?style=flat-square" alt="Forks"><!-- unittestcount:end -->
 </a>
 
 <a href="https://github.com/pterm/pterm/tree/master/_examples/demo">
@@ -69,6 +69,7 @@
 ## ⭐ Main Features
 
 - [Theme Support](#theme)
+- [Prefix](#prefix)
 - [Big Text](#bigtext)
 - [Bullet List](#bulletlist)
 - [Progressbar](#progressbar)
@@ -98,7 +99,7 @@ We take special precautions to ensure that PTerm works on as many operating syst
 
 > PTerm has a 100% test coverage, which means that every line of code inside PTerm gets tested automatically
 
-We test PTerm continuously. However, since a human cannot test everything all the time, we have our own test system with which we currently run <!-- unittestcount2:start -->**`3474`**<!-- unittestcount2:end -->
+We test PTerm continuously. However, since a human cannot test everything all the time, we have our own test system with which we currently run <!-- unittestcount2:start -->**`4643`**<!-- unittestcount2:end -->
 automated tests to ensure that PTerm has no bugs. 
 
 ### • ✨ Consistent Colors
@@ -202,7 +203,7 @@ func main() {
 	}).Render()
 
 	// Convert a text to a list and print it.
-	pterm.NewListFromString(`0
+	pterm.NewBulletListFromString(`0
  1
   2
    3`, " ").Render()
@@ -302,7 +303,149 @@ func installingPseudoList() {
 }
 
 func listPrinter() {
-	pterm.NewListFromString(`Good bye
+	pterm.NewBulletListFromString(`Good bye
+ Have a nice day!`, " ").Render()
+}
+
+func fadeText() {
+	from := pterm.NewRGB(0, 255, 255) // This RGB value is used as the gradients start point.
+	to := pterm.NewRGB(255, 0, 255)   // This RGB value is used as the gradients first point.
+
+	str := "If your terminal has TrueColor support, you can use RGB colors!\nYou can even fade them :)"
+	strs := strings.Split(str, "")
+	var fadeInfo string // String which will be used to print info.
+	// For loop over the range of the string length.
+	for i := 0; i < len(str); i++ {
+		// Append faded letter to info string.
+		fadeInfo += from.Fade(0, float32(len(str)), float32(i), to).Sprint(strs[i])
+	}
+	pterm.Info.Println(fadeInfo)
+}
+
+func installedProgramsSize() {
+	d := pterm.TableData{{"Program Name", "Status", "Size"}}
+	for _, s := range pseudoProgramList {
+		if s != "pseudo-minecraft" {
+			d = append(d, []string{s, pterm.LightGreen("pass"), strconv.Itoa(randomInt(7, 200)) + "mb"})
+		} else {
+			d = append(d, []string{pterm.LightRed(s), pterm.LightRed("fail"), "0mb"})
+		}
+	}
+	pterm.DefaultTable.WithHasHeader().WithData(d).Render()
+}
+
+func pseudoApplicationHeader() *pterm.TextPrinter {
+	return pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
+		"Pseudo Application created with PTerm")
+}
+
+func introScreen() {
+	pterm.DefaultBigText.WithLetters(
+		pterm.NewLettersFromStringWithStyle("P", pterm.NewStyle(pterm.FgCyan)),
+		pterm.NewLettersFromStringWithStyle("Term", pterm.NewStyle(pterm.FgLightMagenta))).
+		Render()
+
+	pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
+		"PTDP - PTerm Demo Program")
+
+	pterm.Info.Println("This animation was generated with the latest version of PTerm!" +
+		"\nPTerm works on nearly every terminal and operating system." +
+		"\nIt's super easy to use!" +
+		"\nIf you want, you can customize everything :)" +
+		"\nYou can see the code of this demo in the " + pterm.LightMagenta("./_examples/demo") + " directory." +
+		"\n" +
+		"\nThis demo was updated at: " + pterm.Green(time.Now().Format("02 Jan 2006 - 15:04:05 MST")))
+	pterm.Println()
+	introSpinner := pterm.DefaultSpinner.WithRemoveWhenDone(true).Start("Waiting for 15 seconds...")
+	time.Sleep(second)
+	for i := 14; i > 0; i-- {
+		if i > 1 {
+			introSpinner.UpdateText("Waiting for " + strconv.Itoa(i) + " seconds...")
+		} else {
+			introSpinner.UpdateText("Waiting for " + strconv.Itoa(i) + " second...")
+		}
+		time.Sleep(second)
+	}
+	introSpinner.Stop()
+}
+
+func clear() {
+	print("\033[H\033[2J")
+}
+
+func randomInt(min, max int) int {
+	rand.Seed(time.Now().UnixNano())
+	return rand.Intn(max-min+1) + min
+}
+
+```
+
+</details>
+
+### disable-color
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/disable-color/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"math/rand"
+	"strconv"
+	"strings"
+	"time"
+
+	"github.com/pterm/pterm"
+)
+
+// Change this to time.Millisecond*200 to speed up the demo.
+// Useful when debugging.
+const second = time.Second
+
+var pseudoProgramList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chrome pseudo-outlook pseudo-explorer "+
+	"pseudo-dops pseudo-git pseudo-vsc pseudo-intellij pseudo-minecraft pseudo-scoop pseudo-chocolatey", " ")
+
+func main() {
+	pterm.DisableColor()
+	introScreen()
+	clear()
+	pseudoApplicationHeader()
+	time.Sleep(second)
+	installingPseudoList()
+	time.Sleep(second * 2)
+	pterm.DefaultSection.WithLevel(2).Println("Program Install Report")
+	installedProgramsSize()
+	time.Sleep(second * 4)
+	pterm.DefaultSection.Println("TrueColor Support")
+	fadeText()
+	time.Sleep(second)
+	pterm.DefaultSection.Println("Bullet List Printer")
+	listPrinter()
+}
+
+func installingPseudoList() {
+	pterm.DefaultSection.Println("Installing pseudo programs")
+
+	p := pterm.DefaultProgressbar.WithTotal(len(pseudoProgramList)).WithTitle("Installing stuff").Start()
+	for i := 0; i < p.Total; i++ {
+		p.Title = "Installing " + pseudoProgramList[i]
+		if pseudoProgramList[i] == "pseudo-minecraft" {
+			pterm.Warning.Println("Could not install pseudo-minecraft\nThe company policy forbids games.")
+		} else {
+			pterm.Success.Println("Installing " + pseudoProgramList[i])
+			p.Increment()
+		}
+		time.Sleep(second / 2)
+	}
+	p.Stop()
+}
+
+func listPrinter() {
+	pterm.NewBulletListFromString(`Good bye
  Have a nice day!`, " ").Render()
 }
 
@@ -530,6 +673,36 @@ func main() {
 	// Print text without a paragraph printer.
 	pterm.Println("This text is written with the default Println() function. No intelligent splitting here." +
 		"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam")
+}
+
+```
+
+</details>
+
+### prefix
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/prefix/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	// Enable debug messages.
+	pterm.EnableDebugMessages()
+
+	pterm.Debug.Println("Hello, World!")   // Print Debug.
+	pterm.Info.Println("Hello, World!")    // Print Info.
+	pterm.Success.Println("Hello, World!") // Print Success.
+	pterm.Warning.Println("Hello, World!") // Print Warning.
+	pterm.Error.Println("Hello, World!")   // Print Error.
+	// Temporarily set Fatal to false, so that the CI won't crash.
+	pterm.Fatal.WithFatal(false).Println("Hello, World!") // Print Fatal.
 }
 
 ```

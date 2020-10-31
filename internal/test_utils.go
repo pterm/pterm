@@ -77,6 +77,18 @@ func TestDoesOutput(t *testing.T, logic func(w io.Writer)) {
 	assert.NotEmpty(t, CaptureStdout(logic))
 }
 
+// TestEmpty checks that a function does not return a string.
+func TestEmpty(t *testing.T, logic func(a interface{}) string) {
+	for _, printable := range printables {
+		assert.Empty(t, logic(printable))
+	}
+}
+
+// TestDoesNotOutput can be used, to test that something does not output anything to stdout.
+func TestDoesNotOutput(t *testing.T, logic func(w io.Writer)) {
+	assert.Empty(t, CaptureStdout(logic))
+}
+
 // CaptureStdout captures everything written to the terminal and returns it as a string.
 func CaptureStdout(f func(w io.Writer)) string {
 	originalStdout := os.Stdout

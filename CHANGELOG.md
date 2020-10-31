@@ -1,6 +1,29 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Chore
+- **deps:** update dependencies
+
+
+<a name="v0.9.2"></a>
+## [v0.9.2] - 2020-10-29
+### Documentation Changes
+- **examples:** add `disable-color` example
+
+### Features
+- add option to disable and enable colors
+
+
+<a name="v0.9.1"></a>
+## [v0.9.1] - 2020-10-27
+### Code Refactoring
+- make the prefix of `Info` smaller again
+
+### Documentation Changes
+
+
+<a name="v0.9.0"></a>
+## [v0.9.0] - 2020-10-27
 ### Bug Fixes
 - progressbar disappears when done and something is printed after
 
@@ -12,41 +35,56 @@
 - proxy cmd stdout to os stdout
 
 ### Code Refactoring
+- remove `UpdateDelay` from `Progressbar`
+- change `NewList` to `NewBulletList`
+- change `NewList` to `NewBulletList`
 - deprecate `UpdateDelay` in `Progressbar`
 
 ### Documentation Changes
-- **examples:** add more delay between table and end
+- **examples:** update `print-with-color` example
 - **examples:** remove 2 lines from max terminal max height in fade
 - **examples:** update `BigTextPrinter` example
+- **examples:** update `Theme` example
 - **examples:** update `BulletListPrinter` example
 - **examples:** change color fade multiple example ([#85](https://github.com/pterm/pterm/issues/85))
 - **examples:** update `BulletListPrinter` custom example
+- **examples:** add more delay between table and end
 - **examples:** redo demo ([#90](https://github.com/pterm/pterm/issues/90))
-- **examples:** update `Theme` example
 - **examples:** update `Table` example
 - **examples:** update `Spinner` example
-- **examples:** update `HeaderPrinter` custom example
+- **examples:** update `DefaultSection` example
 - **examples:** update `DefaultProgressbar` example
-- **examples:** update `print-with-color` example
+- **examples:** update `HeaderPrinter` example
 - **examples:** update `print-color-rgb` example
 - **examples:** update `print-color-fade-multiple` example
 - **examples:** update `print-color-fade` example
 - **examples:** update `BasicTextPrinter` example
 - **examples:** update `ParagraphPrinter` custom example
-- **examples:** update `ParagraphPrinter` example
+- **examples:** update `HeaderPrinter` custom example
 - **examples:** update `override-default-printers` example
-- **examples:** update `DefaultSection` example
-- **examples:** update `HeaderPrinter` example
+- **examples:** update `ParagraphPrinter` example
 - **godoc:** add package description
 - **readme:** add features list to README ([#84](https://github.com/pterm/pterm/issues/84))
 - **readme:** add link to examples location
-- **readme:** remove one space between demo and header
 - **readme:** shrink features list
+- **readme:** remove one space between demo and header
 - **readme:** use real emoji for features list
+- **readme:** add prefix to features
 - **readme:** add source link to demo
 
+### Features
+- add `Debug` `PrefixPrinter`
+- add support for enabling and disabling debug messages
+
 ### Test
+- add debugger tests to `PrefixPrinter`
 - add progressbar tests
+
+### BREAKING CHANGE
+
+Removed `UpdateDelay` from `Progressbar`. It's no longer used. The Progressbar automatically updates on every change to the current value.
+
+Changed `NewList` to `NewBulletList`.
 
 
 <a name="v0.8.1"></a>
@@ -582,7 +620,10 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.8.1...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.9.2...HEAD
+[v0.9.2]: https://github.com/pterm/pterm/compare/v0.9.1...v0.9.2
+[v0.9.1]: https://github.com/pterm/pterm/compare/v0.9.0...v0.9.1
+[v0.9.0]: https://github.com/pterm/pterm/compare/v0.8.1...v0.9.0
 [v0.8.1]: https://github.com/pterm/pterm/compare/v0.8.0...v0.8.1
 [v0.8.0]: https://github.com/pterm/pterm/compare/v0.7.0...v0.8.0
 [v0.7.0]: https://github.com/pterm/pterm/compare/v0.6.1...v0.7.0

@@ -1,8 +1,3 @@
-# demo
-
-![Animation](animation.svg)
-
-```go
 package main
 
 import (
@@ -22,6 +17,7 @@ var pseudoProgramList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chro
 	"pseudo-dops pseudo-git pseudo-vsc pseudo-intellij pseudo-minecraft pseudo-scoop pseudo-chocolatey", " ")
 
 func main() {
+	pterm.DisableColor()
 	introScreen()
 	clear()
 	pseudoApplicationHeader()
@@ -130,5 +126,3 @@ func randomInt(min, max int) int {
 	rand.Seed(time.Now().UnixNano())
 	return rand.Intn(max-min+1) + min
 }
-
-```

@@ -1,4 +1,4 @@
-# demo
+# disable-color
 
 ![Animation](animation.svg)
 
@@ -22,6 +22,7 @@ var pseudoProgramList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chro
 	"pseudo-dops pseudo-git pseudo-vsc pseudo-intellij pseudo-minecraft pseudo-scoop pseudo-chocolatey", " ")
 
 func main() {
+	pterm.DisableColor()
 	introScreen()
 	clear()
 	pseudoApplicationHeader()
