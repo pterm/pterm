@@ -133,8 +133,7 @@ func NewTreeFromLeveledList(leveledListItems []LeveledListItem) TreeNode {
 	for _, record := range leveledListItems {
 		last := root
 		for i := 0; i < record.Level; i++ {
-			var lastIndex int
-			lastIndex = len(last.Children) - 1
+			lastIndex := len(last.Children) - 1
 			last = &last.Children[lastIndex]
 		}
 		last.Children = append(last.Children, TreeNode{
