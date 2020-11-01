@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Ci
+- change font of animation SVGs
+
 ### Code Refactoring
 - **theme:** change `ProgressbarBarStyle` to `FgCyan` ([#106](https://github.com/pterm/pterm/issues/106))
 - **theme:** change white to default color in `Theme` ([#103](https://github.com/pterm/pterm/issues/103))
