@@ -39,7 +39,6 @@ func main() {
 func installedTree() {
 	leveledList := pterm.LeveledList{
 		pterm.LeveledListItem{Level: 0, Text: "C:"},
-		pterm.LeveledListItem{Level: 1, Text: "Users"},
 		pterm.LeveledListItem{Level: 1, Text: "Go"},
 		pterm.LeveledListItem{Level: 1, Text: "Windows"},
 		pterm.LeveledListItem{Level: 1, Text: "Programs"},
@@ -52,7 +51,6 @@ func installedTree() {
 			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Tabs"})
 			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Extensions"})
 			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "Refined GitHub"})
-			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "GitHub Notifier"})
 			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "GitHub Dark Theme"})
 			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Bookmarks"})
 			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "PTerm"})
@@ -118,7 +116,7 @@ func pseudoApplicationHeader() *pterm.TextPrinter {
 
 func introScreen() {
 	pterm.DefaultBigText.WithLetters(
-		pterm.NewLettersFromStringWithStyle("P", pterm.NewStyle(pterm.FgCyan)),
+		pterm.NewLettersFromStringWithStyle("P", pterm.NewStyle(pterm.FgLightCyan)),
 		pterm.NewLettersFromStringWithStyle("Term", pterm.NewStyle(pterm.FgLightMagenta))).
 		Render()
 

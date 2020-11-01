@@ -1,6 +1,22 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Ci
+- change font of animation SVGs to `consolas`
+- change font of animation SVGs
+
+### Code Refactoring
+- **theme:** change `ProgressbarBarStyle` to `FgCyan` ([#106](https://github.com/pterm/pterm/issues/106))
+- **theme:** change white to default color in `Theme` ([#103](https://github.com/pterm/pterm/issues/103))
+
+### Documentation Changes
+- **examples:** update `disable-color` example ([#107](https://github.com/pterm/pterm/issues/107))
+- **examples:** change color of `BigLetter` P of PTerm to `FgLightCyan` ([#105](https://github.com/pterm/pterm/issues/105))
+- **examples:** change length of tree example in demo
+
+
+<a name="v0.9.3"></a>
+## [v0.9.3] - 2020-10-31
 ### Chore
 - approach for an interactive solution
 - **deps:** update dependencies
@@ -652,7 +668,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.9.2...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.9.3...HEAD
+[v0.9.3]: https://github.com/pterm/pterm/compare/v0.9.2...v0.9.3
 [v0.9.2]: https://github.com/pterm/pterm/compare/v0.9.1...v0.9.2
 [v0.9.1]: https://github.com/pterm/pterm/compare/v0.9.0...v0.9.1
 [v0.9.0]: https://github.com/pterm/pterm/compare/v0.8.1...v0.9.0
