@@ -448,11 +448,38 @@ func main() {
 	pterm.DefaultSection.WithLevel(2).Println("Program Install Report")
 	installedProgramsSize()
 	time.Sleep(second * 4)
+	pterm.DefaultSection.Println("Tree Printer")
+	installedTree()
+	time.Sleep(second * 4)
 	pterm.DefaultSection.Println("TrueColor Support")
 	fadeText()
 	time.Sleep(second)
 	pterm.DefaultSection.Println("Bullet List Printer")
 	listPrinter()
+}
+
+func installedTree() {
+	leveledList := pterm.LeveledList{
+		pterm.LeveledListItem{Level: 0, Text: "C:"},
+		pterm.LeveledListItem{Level: 1, Text: "Go"},
+		pterm.LeveledListItem{Level: 1, Text: "Windows"},
+		pterm.LeveledListItem{Level: 1, Text: "Programs"},
+	}
+	for _, s := range pseudoProgramList {
+		if s != "pseudo-minecraft" {
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 2, Text: s})
+		}
+		if s == "pseudo-chrome" {
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Tabs"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Extensions"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "Refined GitHub"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "GitHub Dark Theme"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Bookmarks"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "PTerm"})
+		}
+	}
+
+	pterm.DefaultTree.WithRoot(pterm.NewTreeFromLeveledList(leveledList)).Render()
 }
 
 func installingPseudoList() {
@@ -511,7 +538,7 @@ func pseudoApplicationHeader() *pterm.TextPrinter {
 
 func introScreen() {
 	pterm.DefaultBigText.WithLetters(
-		pterm.NewLettersFromStringWithStyle("P", pterm.NewStyle(pterm.FgCyan)),
+		pterm.NewLettersFromStringWithStyle("P", pterm.NewStyle(pterm.FgLightCyan)),
 		pterm.NewLettersFromStringWithStyle("Term", pterm.NewStyle(pterm.FgLightMagenta))).
 		Render()
 

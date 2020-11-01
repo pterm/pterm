@@ -10,6 +10,7 @@
 - **theme:** change white to default color in `Theme` ([#103](https://github.com/pterm/pterm/issues/103))
 
 ### Documentation Changes
+- **examples:** update `disable-color` example ([#107](https://github.com/pterm/pterm/issues/107))
 - **examples:** change color of `BigLetter` P of PTerm to `FgLightCyan` ([#105](https://github.com/pterm/pterm/issues/105))
 - **examples:** change length of tree example in demo
 
