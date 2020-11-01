@@ -9,6 +9,7 @@
 - change font of animation SVGs
 
 ### Code Refactoring
+- ignore errors where no errors can occur
 - **theme:** change `ListTextStyle` to `BulletListTextStyle` ([#104](https://github.com/pterm/pterm/issues/104))
 - **theme:** change `ProgressbarBarStyle` to `FgCyan` ([#106](https://github.com/pterm/pterm/issues/106))
 - **theme:** change white to default color in `Theme` ([#103](https://github.com/pterm/pterm/issues/103))
@@ -19,9 +20,12 @@
 - **examples:** change length of tree example in demo
 
 ### Features
+- make printers return errors
 - add `DisableOutput()` and `EnableOutput()` ([#108](https://github.com/pterm/pterm/issues/108))
 
 ### BREAKING CHANGE
+
+Interface of `RenderablePrinter` and `LivePrinter` changed.
 
 The global variable `DisableOutput` was renamed to `Output`.
 
