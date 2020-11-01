@@ -124,6 +124,28 @@ func processFile(f os.FileInfo) {
 	log.Output(4, "#### ['"+f.Name()+"']  Generating SVG")
 	execute(`svg-term --in ` + animationDataPath + ` --out ` + animationSvgPath + ` --no-cursor --window true --no-optimize --profile "./ci/terminal-theme.txt" --term "iterm2"`)
 
+	log.Output(4, "#### ['"+f.Name()+"']  Overwriting SVG font")
+
+	svgContent, err := ioutil.ReadFile(animationSvgPath)
+	if err != nil {
+		log.Panicf("[%s] %s", f.Name(), err.Error())
+	}
+
+	svgContent = []byte(strings.ReplaceAll(string(svgContent), `font-family:`, `font-family:'JetBrainsMono',`))
+	svgContent = []byte(strings.ReplaceAll(string(svgContent), `font-family="`, `font-family="JetBrainsMono,`))
+
+	svgContent = []byte(strings.Replace(string(svgContent), "<style>", `<style>@font-face{
+  font-family: 'JetBrainsMono';
+  src: url('https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2') format('woff2'),
+    url('https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono/web/woff/JetBrainsMono-Regular.woff') format('woff'),
+    url('https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono/ttf/JetBrainsMono-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}`, 1))
+
+	os.Remove(animationSvgPath)
+	ioutil.WriteFile(animationSvgPath, svgContent, 0600)
+
 	log.Output(4, "#### ['"+f.Name()+"']  Generating README.md")
 	readmeString := "# " + f.Name() + "\n\n![Animation](animation.svg)\n\n"
 	readmeString += "```go\n"
