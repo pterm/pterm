@@ -4,11 +4,21 @@
 package pterm
 
 var (
-	// DisableOutput completely disables output from pterm. Can be used in CLI application quiet mode.
-	DisableOutput = false
+	// Output completely disables output from pterm. Can be used in CLI application quiet mode.
+	Output = false
 	// PrintDebugMessages sets if messages printed by the DebugPrinter should be printed.
 	PrintDebugMessages = false
 )
+
+// EnableOutput enables the output of PTerm.
+func EnableOutput() {
+	Output = true
+}
+
+// DisableOutput disables the output of PTerm.
+func DisableOutput() {
+	Output = false
+}
 
 // EnableDebugMessages enables the output of debug printers.
 func EnableDebugMessages() {
