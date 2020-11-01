@@ -1,7 +1,12 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Code Refactoring
+- **theme:** change `ProgressbarBarStyle` to `FgCyan` ([#106](https://github.com/pterm/pterm/issues/106))
+- **theme:** change white to default color in `Theme` ([#103](https://github.com/pterm/pterm/issues/103))
+
 ### Documentation Changes
+- **examples:** change color of `BigLetter` P of PTerm to `FgLightCyan` ([#105](https://github.com/pterm/pterm/issues/105))
 - **examples:** change length of tree example in demo
 
 
