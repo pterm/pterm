@@ -27,8 +27,8 @@ func NewBulletListItemFromString(text string, padding string) BulletListItem {
 // DefaultListItem contains standards, which can be used to print a ListItem.
 var DefaultListItem = BulletListItem{
 	Bullet:      "•",
-	TextStyle:   &ThemeDefault.ListTextStyle,
-	BulletStyle: &ThemeDefault.ListBulletStyle,
+	TextStyle:   &ThemeDefault.BulletListTextStyle,
+	BulletStyle: &ThemeDefault.BulletListBulletStyle,
 }
 
 // BulletListItem is able to render a ListItem.
@@ -81,7 +81,7 @@ func (p BulletListItem) Srender() string {
 		p.TextStyle = NewStyle()
 	}
 	if p.BulletStyle == nil {
-		p.BulletStyle = &ThemeDefault.ListBulletStyle
+		p.BulletStyle = &ThemeDefault.BulletListBulletStyle
 	}
 	return strings.Repeat(" ", p.Level) + p.BulletStyle.Sprint(p.Bullet) + " " + p.TextStyle.Sprint(p.Text)
 }
@@ -94,8 +94,8 @@ func NewBulletListFromString(s string, padding string) BulletList {
 // DefaultBulletList contains standards, which can be used to print a BulletList.
 var DefaultBulletList = BulletList{
 	Bullet:      "•",
-	TextStyle:   &ThemeDefault.ListTextStyle,
-	BulletStyle: &ThemeDefault.ListBulletStyle,
+	TextStyle:   &ThemeDefault.BulletListTextStyle,
+	BulletStyle: &ThemeDefault.BulletListBulletStyle,
 }
 
 // BulletList is able to render a list.
