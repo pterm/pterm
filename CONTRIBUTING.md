@@ -69,7 +69,13 @@ func (p Template) Srender() string {
 
 // Render prints the Template to the terminal.
 func (p BigTextPrinter) Render() {
-	Println(p.Srender())
+	s, err := p.Srender()
+    if err != nil {
+        return err
+    }
+    Println(s)
+
+    return nil
 }
 ```
 

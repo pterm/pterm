@@ -73,7 +73,7 @@ func (p Table) WithCSVReader(reader *csv.Reader) *Table {
 }
 
 // Srender renders the Table as a string.
-func (p Table) Srender() string {
+func (p Table) Srender() (string, error) {
 	if p.Style == nil {
 		p.Style = NewStyle()
 	}
@@ -117,10 +117,13 @@ func (p Table) Srender() string {
 
 	ret = strings.TrimSuffix(ret, "\n")
 
-	return ret
+	return ret, nil
 }
 
 // Render prints the Table to the terminal.
-func (p Table) Render() {
-	Println(p.Srender())
+func (p Table) Render() error {
+	s, _ := p.Srender()
+	Println(s)
+
+	return nil
 }

@@ -4,8 +4,8 @@ package pterm
 // Example for renderable content is a Table.
 type RenderPrinter interface {
 	// Render the XXX to the terminal.
-	Render()
+	Render() error
 
 	// Srender returns the rendered string of XXX.
-	Srender() string
+	Srender() (string, error)
 }

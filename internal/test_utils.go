@@ -54,6 +54,17 @@ func TestSprintContains(t *testing.T, logic func(a interface{}) string) {
 	}
 }
 
+// TestSprintContainsWithoutError can be used to test Sprint methods which return an error.
+func TestSprintContainsWithoutError(t *testing.T, logic func(a interface{}) (string, error)) {
+	for _, printable := range printables {
+		t.Run(fmt.Sprint(printable), func(t *testing.T) {
+			s, err := logic(printable)
+			assert.Contains(t, s, fmt.Sprint(printable))
+			assert.NoError(t, err)
+		})
+	}
+}
+
 // TestSprintfContains can be used to test Sprintf methods.
 func TestSprintfContains(t *testing.T, logic func(format string, a interface{}) string) {
 	for _, printable := range printables {
