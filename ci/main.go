@@ -131,8 +131,8 @@ func processFile(f os.FileInfo) {
 		log.Panicf("[%s] %s", f.Name(), err.Error())
 	}
 
-	svgContent = []byte(strings.ReplaceAll(string(svgContent), `font-family:`, `font-family:'JetBrainsMono',`))
-	svgContent = []byte(strings.ReplaceAll(string(svgContent), `font-family="`, `font-family="JetBrainsMono,`))
+	svgContent = []byte(strings.ReplaceAll(string(svgContent), `font-family:`, `font-family:Consolas,`))
+	svgContent = []byte(strings.ReplaceAll(string(svgContent), `font-family="`, `font-family="Consolas,`))
 
 	svgContent = []byte(strings.Replace(string(svgContent), "<style>", `<style>@font-face{
   font-family: 'JetBrainsMono';
