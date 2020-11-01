@@ -37,7 +37,7 @@ func Sprinto(a ...interface{}) string {
 // Spaces are added between operands when neither is a string.
 // It returns the number of bytes written and any write error encountered.
 func Print(a ...interface{}) {
-	if DisableOutput {
+	if Output {
 		return
 	}
 
@@ -76,7 +76,7 @@ func Printf(format string, a ...interface{}) {
 // Spaces are added between operands when neither is a string.
 // It returns the number of bytes written and any write error encountered.
 func Fprint(writer io.Writer, a ...interface{}) {
-	if DisableOutput {
+	if Output {
 		return
 	}
 
@@ -98,7 +98,7 @@ func Fprintln(writer io.Writer, a ...interface{}) {
 // time.Sleep(time.Second)
 // pterm.Oprint("Hello, Earth!")
 func Printo(a ...interface{}) {
-	if DisableOutput {
+	if Output {
 		return
 	}
 
