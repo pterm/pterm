@@ -2,6 +2,7 @@
 ## [Unreleased]
 
 ### Ci
+- change font of animation SVGs to `consolas`
 - change font of animation SVGs
 
 ### Code Refactoring
