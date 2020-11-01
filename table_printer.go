@@ -122,10 +122,7 @@ func (p Table) Srender() (string, error) {
 
 // Render prints the Table to the terminal.
 func (p Table) Render() error {
-	s, err := p.Srender()
-	if err != nil {
-		return err
-	}
+	s, _ := p.Srender()
 	Println(s)
 
 	return nil

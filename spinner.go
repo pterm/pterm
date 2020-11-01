@@ -115,10 +115,7 @@ func (s *Spinner) Stop() error {
 // This is used for the interface LivePrinter.
 // You most likely want to use Start instead of this in your program.
 func (s *Spinner) GenericStart() (*LivePrinter, error) {
-	_, err := s.Start()
-	if err != nil {
-		return nil, err
-	}
+	_, _ = s.Start()
 	lp := LivePrinter(s)
 	return &lp, nil
 }
@@ -127,10 +124,7 @@ func (s *Spinner) GenericStart() (*LivePrinter, error) {
 // This is used for the interface LivePrinter.
 // You most likely want to use Stop instead of this in your program.
 func (s *Spinner) GenericStop() (*LivePrinter, error) {
-	err := s.Stop()
-	if err != nil {
-		return nil, err
-	}
+	_ = s.Stop()
 	lp := LivePrinter(s)
 	return &lp, nil
 }

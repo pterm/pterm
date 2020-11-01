@@ -99,10 +99,7 @@ func (p Tree) WithIndent(indent int) *Tree {
 
 // Render prints the list to the terminal.
 func (p Tree) Render() error {
-	s, err := p.Srender()
-	if err != nil {
-		return err
-	}
+	s, _ := p.Srender()
 	Println(s)
 
 	return nil

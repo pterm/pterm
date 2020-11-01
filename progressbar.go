@@ -226,10 +226,7 @@ func (p *Progressbar) Stop() (*Progressbar, error) {
 // This is used for the interface LivePrinter.
 // You most likely want to use Start instead of this in your program.
 func (p Progressbar) GenericStart() (*LivePrinter, error) {
-	p2, err := p.Start()
-	if err != nil {
-		return nil, err
-	}
+	p2, _ := p.Start()
 	lp := LivePrinter(p2)
 	return &lp, nil
 }
@@ -238,10 +235,7 @@ func (p Progressbar) GenericStart() (*LivePrinter, error) {
 // This is used for the interface LivePrinter.
 // You most likely want to use Stop instead of this in your program.
 func (p Progressbar) GenericStop() (*LivePrinter, error) {
-	p2, err := p.Stop()
-	if err != nil {
-		return nil, err
-	}
+	p2, _ := p.Stop()
 	lp := LivePrinter(p2)
 	return &lp, nil
 }

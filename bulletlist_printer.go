@@ -132,10 +132,7 @@ func (l BulletList) WithBulletStyle(style *Style) *BulletList {
 
 // Render prints the list to the terminal.
 func (l BulletList) Render() error {
-	s, err := l.Srender()
-	if err != nil {
-		return err
-	}
+	s, _ := l.Srender()
 	Println(s)
 
 	return nil
