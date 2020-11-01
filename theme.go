@@ -20,7 +20,7 @@ var (
 		DescriptionMessageStyle: Style{FgWhite},
 		DescriptionPrefixStyle:  Style{FgLightWhite, BgDarkGray},
 		ScopeStyle:              Style{FgGray},
-		ProgressbarBarStyle:     Style{FgLightCyan},
+		ProgressbarBarStyle:     Style{FgCyan},
 		ProgressbarTitleStyle:   Style{FgLightCyan},
 		HeaderTextStyle:         Style{FgLightWhite, Bold},
 		HeaderBackgroundStyle:   Style{BgGray},
