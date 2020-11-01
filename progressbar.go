@@ -197,20 +197,20 @@ func (p *Progressbar) Add(count int) *Progressbar {
 }
 
 // Start the progressbar.
-func (p Progressbar) Start() *Progressbar {
+func (p Progressbar) Start() (*Progressbar, error) {
 	p.IsActive = true
 	ActiveProgressBars = append(ActiveProgressBars, &p)
 	p.startedAt = time.Now()
 
 	p.Add(0)
 
-	return &p
+	return &p, nil
 }
 
 // Stop the progressbar.
-func (p *Progressbar) Stop() *Progressbar {
+func (p *Progressbar) Stop() (*Progressbar, error) {
 	if !p.IsActive {
-		return p
+		return p, nil
 	}
 	p.IsActive = false
 	if p.RemoveWhenDone {
@@ -219,23 +219,31 @@ func (p *Progressbar) Stop() *Progressbar {
 	} else {
 		Println()
 	}
-	return p
+	return p, nil
 }
 
 // GenericStart runs Start, but returns a LivePrinter.
 // This is used for the interface LivePrinter.
 // You most likely want to use Start instead of this in your program.
-func (p Progressbar) GenericStart() *LivePrinter {
-	lp := LivePrinter(p.Start())
-	return &lp
+func (p Progressbar) GenericStart() (*LivePrinter, error) {
+	p2, err := p.Start()
+	if err != nil {
+		return nil, err
+	}
+	lp := LivePrinter(p2)
+	return &lp, nil
 }
 
 // GenericStop runs Stop, but returns a LivePrinter.
 // This is used for the interface LivePrinter.
 // You most likely want to use Stop instead of this in your program.
-func (p Progressbar) GenericStop() *LivePrinter {
-	lp := LivePrinter(p.Stop())
-	return &lp
+func (p Progressbar) GenericStop() (*LivePrinter, error) {
+	p2, err := p.Stop()
+	if err != nil {
+		return nil, err
+	}
+	lp := LivePrinter(p2)
+	return &lp, nil
 }
 
 // GetElapsedTime returns the elapsed time, since the progressbar was started.

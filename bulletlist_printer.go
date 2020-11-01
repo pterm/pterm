@@ -131,12 +131,18 @@ func (l BulletList) WithBulletStyle(style *Style) *BulletList {
 }
 
 // Render prints the list to the terminal.
-func (l BulletList) Render() {
-	Println(l.Srender())
+func (l BulletList) Render() error {
+	s, err := l.Srender()
+	if err != nil {
+		return err
+	}
+	Println(s)
+
+	return nil
 }
 
 // Srender renders the list as a string.
-func (l BulletList) Srender() string {
+func (l BulletList) Srender() (string, error) {
 	var ret string
 	for _, item := range l.Items {
 		if item.Bullet == "" {
@@ -145,5 +151,5 @@ func (l BulletList) Srender() string {
 			ret += item.WithBullet(item.Bullet).Srender() + "\n"
 		}
 	}
-	return ret
+	return ret, nil
 }

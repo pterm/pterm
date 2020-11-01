@@ -36,7 +36,7 @@ func BenchmarkSprintWithCustomStyle(b *testing.B) {
 func BenchmarkSpinner(b *testing.B) {
 	proxyToDevNull()
 	for i := 0; i < b.N; i++ {
-		s := DefaultSpinner.WithDelay(0).Start()
+		s, _ := DefaultSpinner.WithDelay(0).Start()
 		s.Stop()
 	}
 }
@@ -71,7 +71,7 @@ func BenchmarkProgressbar(b *testing.B) {
 		proxyToDevNull()
 		b.Run("Total"+strconv.Itoa(bm.total), func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				p := DefaultProgressbar.WithTotal(bm.total).Start()
+				p, _ := DefaultProgressbar.WithTotal(bm.total).Start()
 				for i := 0; i < bm.total; i++ {
 					p.Increment()
 				}

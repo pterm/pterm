@@ -98,12 +98,18 @@ func (p Tree) WithIndent(indent int) *Tree {
 }
 
 // Render prints the list to the terminal.
-func (p Tree) Render() {
-	Println(p.Srender())
+func (p Tree) Render() error {
+	s, err := p.Srender()
+	if err != nil {
+		return err
+	}
+	Println(s)
+
+	return nil
 }
 
 // Srender renders the list as a string.
-func (p Tree) Srender() string {
+func (p Tree) Srender() (string, error) {
 	if p.TreeStyle == nil {
 		p.TreeStyle = NewStyle()
 	}
@@ -111,7 +117,7 @@ func (p Tree) Srender() string {
 		p.TextStyle = NewStyle()
 	}
 
-	return walkOverTree(p.Root.Children, p, "")
+	return walkOverTree(p.Root.Children, p, ""), nil
 }
 
 // walkOverTree is a recursive function,

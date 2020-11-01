@@ -73,7 +73,7 @@ func (p BigTextPrinter) WithLetters(letters ...Letters) *BigTextPrinter {
 }
 
 // Srender renders the BigText as a string.
-func (p BigTextPrinter) Srender() string {
+func (p BigTextPrinter) Srender() (string, error) {
 	var ret string
 	var bigLetters Letters
 	for _, l := range p.Letters {
@@ -111,12 +111,18 @@ func (p BigTextPrinter) Srender() string {
 		ret += "\n"
 	}
 
-	return ret
+	return ret, nil
 }
 
 // Render prints the BigText to the terminal.
-func (p BigTextPrinter) Render() {
-	Println(p.Srender())
+func (p BigTextPrinter) Render() error {
+	s, err := p.Srender()
+	if err != nil {
+		return err
+	}
+	Println(s)
+
+	return nil
 }
 
 // DefaultBigText contains default values for BigTextPrinter.

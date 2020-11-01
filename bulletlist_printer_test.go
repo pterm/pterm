@@ -36,7 +36,7 @@ func TestBulletList_RenderWithBullet(t *testing.T) {
 }
 
 func TestBulletList_Srender(t *testing.T) {
-	internal.TestSprintContains(t, func(a interface{}) string {
+	internal.TestSprintContainsWithoutError(t, func(a interface{}) (string, error) {
 		return DefaultBulletList.WithItems([]BulletListItem{
 			{Level: 0, Text: fmt.Sprint(a)},
 		}).Srender()

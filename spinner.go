@@ -78,7 +78,7 @@ func (s *Spinner) UpdateText(text string) {
 }
 
 // Start the spinner.
-func (s Spinner) Start(text ...interface{}) *Spinner {
+func (s Spinner) Start(text ...interface{}) (*Spinner, error) {
 	s.IsActive = true
 
 	if len(text) != 0 {
@@ -95,12 +95,12 @@ func (s Spinner) Start(text ...interface{}) *Spinner {
 			}
 		}
 	}()
-	return &s
+	return &s, nil
 }
 
 // Stop terminates the Spinner immediately.
 // The Spinner will not resolve into anything.
-func (s *Spinner) Stop() {
+func (s *Spinner) Stop() error {
 	s.IsActive = false
 	if s.RemoveWhenDone {
 		clearLine()
@@ -108,24 +108,31 @@ func (s *Spinner) Stop() {
 	} else {
 		Println()
 	}
+	return nil
 }
 
 // GenericStart runs Start, but returns a LivePrinter.
 // This is used for the interface LivePrinter.
 // You most likely want to use Start instead of this in your program.
-func (s *Spinner) GenericStart() *LivePrinter {
-	s.Start()
+func (s *Spinner) GenericStart() (*LivePrinter, error) {
+	_, err := s.Start()
+	if err != nil {
+		return nil, err
+	}
 	lp := LivePrinter(s)
-	return &lp
+	return &lp, nil
 }
 
 // GenericStop runs Stop, but returns a LivePrinter.
 // This is used for the interface LivePrinter.
 // You most likely want to use Stop instead of this in your program.
-func (s *Spinner) GenericStop() *LivePrinter {
-	s.Stop()
+func (s *Spinner) GenericStop() (*LivePrinter, error) {
+	err := s.Stop()
+	if err != nil {
+		return nil, err
+	}
 	lp := LivePrinter(s)
-	return &lp
+	return &lp, nil
 }
 
 // Success displays the success printer.
@@ -140,7 +147,7 @@ func (s *Spinner) Success(message ...interface{}) {
 	}
 	clearLine()
 	Printo(s.SuccessPrinter.Sprint(message...))
-	s.Stop()
+	_ = s.Stop()
 }
 
 // Fail displays the fail printer.
@@ -155,7 +162,7 @@ func (s *Spinner) Fail(message ...interface{}) {
 	}
 	clearLine()
 	Printo(s.FailPrinter.Sprint(message...))
-	s.Stop()
+	_ = s.Stop()
 }
 
 // Warning displays the warning printer.
@@ -170,5 +177,5 @@ func (s *Spinner) Warning(message ...interface{}) {
 	}
 	clearLine()
 	Printo(s.WarningPrinter.Sprint(message...))
-	s.Stop()
+	_ = s.Stop()
 }
