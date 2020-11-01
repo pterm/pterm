@@ -1,11 +1,15 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Chore
+- **deps:** update dependencies
+
 ### Ci
 - change font of animation SVGs to `consolas`
 - change font of animation SVGs
 
 ### Code Refactoring
+- **theme:** change `ListTextStyle` to `BulletListTextStyle` ([#104](https://github.com/pterm/pterm/issues/104))
 - **theme:** change `ProgressbarBarStyle` to `FgCyan` ([#106](https://github.com/pterm/pterm/issues/106))
 - **theme:** change white to default color in `Theme` ([#103](https://github.com/pterm/pterm/issues/103))
 
@@ -13,6 +17,13 @@
 - **examples:** update `disable-color` example ([#107](https://github.com/pterm/pterm/issues/107))
 - **examples:** change color of `BigLetter` P of PTerm to `FgLightCyan` ([#105](https://github.com/pterm/pterm/issues/105))
 - **examples:** change length of tree example in demo
+
+### Features
+- add `DisableOutput()` and `EnableOutput()` ([#108](https://github.com/pterm/pterm/issues/108))
+
+### BREAKING CHANGE
+
+The global variable `DisableOutput` was renamed to `Output`.
 
 
 <a name="v0.9.3"></a>
