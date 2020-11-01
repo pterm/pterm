@@ -316,7 +316,7 @@ func installedTree() {
 func installingPseudoList() {
 	pterm.DefaultSection.Println("Installing pseudo programs")
 
-	p := pterm.DefaultProgressbar.WithTotal(len(pseudoProgramList)).WithTitle("Installing stuff").Start()
+	p, _ := pterm.DefaultProgressbar.WithTotal(len(pseudoProgramList)).WithTitle("Installing stuff").Start()
 	for i := 0; i < p.Total; i++ {
 		p.Title = "Installing " + pseudoProgramList[i]
 		if pseudoProgramList[i] == "pseudo-minecraft" {
@@ -384,7 +384,7 @@ func introScreen() {
 		"\n" +
 		"\nThis demo was updated at: " + pterm.Green(time.Now().Format("02 Jan 2006 - 15:04:05 MST")))
 	pterm.Println()
-	introSpinner := pterm.DefaultSpinner.WithRemoveWhenDone(true).Start("Waiting for 15 seconds...")
+	introSpinner, _ := pterm.DefaultSpinner.WithRemoveWhenDone(true).Start("Waiting for 15 seconds...")
 	time.Sleep(second)
 	for i := 14; i > 0; i-- {
 		if i > 1 {
@@ -961,7 +961,7 @@ var fakeInstallList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chrome
 
 func main() {
 	// Create progressbar as fork from the default progressbar.
-	p := pterm.DefaultProgressbar.WithTotal(len(fakeInstallList)).WithTitle("Downloading stuff").Start()
+	p, _ := pterm.DefaultProgressbar.WithTotal(len(fakeInstallList)).WithTitle("Downloading stuff").Start()
 
 	for i := 0; i < p.Total; i++ {
 		p.Title = "Downloading " + fakeInstallList[i]              // Update the title of the progressbar.
@@ -1023,22 +1023,22 @@ import (
 
 func main() {
 	// Create and start a fork of the default spinner.
-	spinnerSuccess := pterm.DefaultSpinner.Start("Doing something important... (will succeed)")
+	spinnerSuccess, _ := pterm.DefaultSpinner.Start("Doing something important... (will succeed)")
 	time.Sleep(time.Second * 3) // Simulate 3 seconds of processing something.
 	spinnerSuccess.Success()    // Resolve spinner with success message.
 
 	// Create and start a fork of the default spinner.
-	spinnerWarning := pterm.DefaultSpinner.Start("Doing something important... (will warn)")
+	spinnerWarning, _ := pterm.DefaultSpinner.Start("Doing something important... (will warn)")
 	time.Sleep(time.Second * 3) // Simulate 3 seconds of processing something.
 	spinnerWarning.Warning()    // Resolve spinner with warning message.
 
 	// Create and start a fork of the default spinner.
-	spinnerFail := pterm.DefaultSpinner.Start("Doing something important... (will fail)")
+	spinnerFail, _ := pterm.DefaultSpinner.Start("Doing something important... (will fail)")
 	time.Sleep(time.Second * 3) // Simulate 3 seconds of processing something.
 	spinnerFail.Fail()          // Resolve spinner with error message.
 
 	// Create and start a fork of the default spinner.
-	spinnerLiveText := pterm.DefaultSpinner.Start("Doing a lot of stuff...")
+	spinnerLiveText, _ := pterm.DefaultSpinner.Start("Doing a lot of stuff...")
 	time.Sleep(time.Second * 2)                      // Simulate 2 seconds of processing something.
 	spinnerLiveText.UpdateText("It's really much")   // Update spinner text.
 	time.Sleep(time.Second * 2)                      // Simulate 2 seconds of processing something.

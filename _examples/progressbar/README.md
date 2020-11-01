@@ -18,7 +18,7 @@ var fakeInstallList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chrome
 
 func main() {
 	// Create progressbar as fork from the default progressbar.
-	p := pterm.DefaultProgressbar.WithTotal(len(fakeInstallList)).WithTitle("Downloading stuff").Start()
+	p, _ := pterm.DefaultProgressbar.WithTotal(len(fakeInstallList)).WithTitle("Downloading stuff").Start()
 
 	for i := 0; i < p.Total; i++ {
 		p.Title = "Downloading " + fakeInstallList[i]              // Update the title of the progressbar.
