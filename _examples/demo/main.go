@@ -63,7 +63,7 @@ func installedTree() {
 func installingPseudoList() {
 	pterm.DefaultSection.Println("Installing pseudo programs")
 
-	p := pterm.DefaultProgressbar.WithTotal(len(pseudoProgramList)).WithTitle("Installing stuff").Start()
+	p, _ := pterm.DefaultProgressbar.WithTotal(len(pseudoProgramList)).WithTitle("Installing stuff").Start()
 	for i := 0; i < p.Total; i++ {
 		p.Title = "Installing " + pseudoProgramList[i]
 		if pseudoProgramList[i] == "pseudo-minecraft" {
@@ -131,7 +131,7 @@ func introScreen() {
 		"\n" +
 		"\nThis demo was updated at: " + pterm.Green(time.Now().Format("02 Jan 2006 - 15:04:05 MST")))
 	pterm.Println()
-	introSpinner := pterm.DefaultSpinner.WithRemoveWhenDone(true).Start("Waiting for 15 seconds...")
+	introSpinner, _ := pterm.DefaultSpinner.WithRemoveWhenDone(true).Start("Waiting for 15 seconds...")
 	time.Sleep(second)
 	for i := 14; i > 0; i-- {
 		if i > 1 {
