@@ -2,8 +2,13 @@
 ## [Unreleased]
 
 ### Documentation Changes
+- **examples:** add center examples
 - **examples:** fix examples
 - **examples:** fix demo
+- **readme:** add center to features
+
+### Features
+- add `CenterPrinter`
 
 
 <a name="v0.10.0"></a>
