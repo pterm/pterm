@@ -5,8 +5,8 @@ import (
 	"strings"
 )
 
-// GetMaxStringMaxWidth returns the maximum width of a string with multiple lines.
-func GetMaxStringMaxWidth(s string) int {
+// GetStringMaxWidth returns the maximum width of a string with multiple lines.
+func GetStringMaxWidth(s string) int {
 	var max int
 	ss := strings.Split(s, "\n")
 	for _, s2 := range ss {
