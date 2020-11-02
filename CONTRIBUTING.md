@@ -62,13 +62,21 @@ func (p TemplatePrinter) Printf(format string, a ...interface{}) *TextPrinter {
 ### `RenderablePrinter` Template
 
 ```go
+package pterm
+
+type TemplatePrinter struct{
+	// TODO: Add printer settings here
+}
+
 // Srender renders the Template as a string.
-func (p Template) Srender() string {
-	
+func (p TemplatePrinter) Srender() (string, error) {
+	var ret string
+
+    return ret, nil
 }
 
 // Render prints the Template to the terminal.
-func (p BigTextPrinter) Render() {
+func (p TemplatePrinter) Render() error {
 	s, err := p.Srender()
     if err != nil {
         return err
