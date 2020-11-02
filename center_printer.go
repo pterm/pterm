@@ -17,10 +17,10 @@ type CenterPrinter struct {
 }
 
 // WithCenterEachLineSeparately centers each line separately.
-func (p CenterPrinter) WithCenterEachLineSeparately(b ...bool) CenterPrinter {
+func (p CenterPrinter) WithCenterEachLineSeparately(b ...bool) *CenterPrinter {
 	bt := internal.WithBoolean(b)
 	p.CenterEachLineSeparately = bt
-	return p
+	return &p
 }
 
 // Sprint formats using the default formats for its operands and returns the resulting string.
