@@ -98,7 +98,7 @@ func (p BigTextPrinter) Srender() (string, error) {
 		for _, letter := range bigLetters {
 			var letterLine string
 			letterLines := strings.Split(letter.String, "\n")
-			maxLetterWidth := internal.GetMaxStringMaxWidth(letter.String)
+			maxLetterWidth := internal.GetStringMaxWidth(letter.String)
 			if len(letterLines) > i {
 				letterLine = letterLines[i]
 			}
