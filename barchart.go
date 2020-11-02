@@ -8,6 +8,7 @@ import (
 	"github.com/pterm/pterm/internal"
 )
 
+// BarChartPrinter is used to print bar charts.
 type BarChartPrinter struct {
 	Bars         Bars
 	BarCharacter string
@@ -23,6 +24,7 @@ type BarChartPrinter struct {
 }
 
 var (
+	// DefaultBarChart is the default BarChartPrinter.
 	DefaultBarChart = BarChartPrinter{
 		Horizontal:   false,
 		BarCharacter: Red("██"),
