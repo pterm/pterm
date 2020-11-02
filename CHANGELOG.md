@@ -2,6 +2,7 @@
 ## [Unreleased]
 
 ### Documentation Changes
+- **examples:** fix `disable-color` example
 - **examples:** add center examples
 - **examples:** fix examples
 - **examples:** fix demo
