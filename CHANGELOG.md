@@ -1,6 +1,20 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Bug Fixes
+- **centerprinter:** make centerprinter func return pointer
+
+### Documentation Changes
+- **review:** update review checks
+- **review:** add review check file
+
+### BREAKING CHANGE
+
+make centerprinter func `WithCenterEachLineSeparately` return a pointer of centerprinter
+
+
+<a name="v0.10.1"></a>
+## [v0.10.1] - 2020-11-02
 ### Documentation Changes
 - **examples:** fix `disable-color` example
 - **examples:** add center examples
@@ -696,7 +710,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.10.0...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.10.1...HEAD
+[v0.10.1]: https://github.com/pterm/pterm/compare/v0.10.0...v0.10.1
 [v0.10.0]: https://github.com/pterm/pterm/compare/v0.9.3...v0.10.0
 [v0.9.3]: https://github.com/pterm/pterm/compare/v0.9.2...v0.9.3
 [v0.9.2]: https://github.com/pterm/pterm/compare/v0.9.1...v0.9.2
