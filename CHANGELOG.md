@@ -8,6 +8,9 @@
 - **review:** update review checks
 - **review:** add review check file
 
+### Features
+- add `PanelPrinter`
+
 ### BREAKING CHANGE
 
 make centerprinter func `WithCenterEachLineSeparately` return a pointer of centerprinter
