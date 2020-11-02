@@ -10,9 +10,8 @@ import (
 
 // BarChartPrinter is used to print bar charts.
 type BarChartPrinter struct {
-	Bars         Bars
-	BarCharacter string
-	Horizontal   bool
+	Bars       Bars
+	Horizontal bool
 	// Height sets the maximum height of a vertical bar chart.
 	// The default is calculated to fit into the terminal.
 	// Ignored if Horizontal is set to true.
@@ -20,16 +19,19 @@ type BarChartPrinter struct {
 	// Width sets the maximum width of a horizontal bar chart.
 	// The default is calculated to fit into the terminal.
 	// Ignored if Horizontal is set to false.
-	Width int
+	Width                  int
+	VerticalBarCharacter   string
+	HorizontalBarCharacter string
 }
 
 var (
 	// DefaultBarChart is the default BarChartPrinter.
 	DefaultBarChart = BarChartPrinter{
-		Horizontal:   false,
-		BarCharacter: Red("██"),
-		Height:       GetTerminalHeight() * 2 / 3,
-		Width:        GetTerminalWidth() * 2 / 3,
+		Horizontal:             false,
+		VerticalBarCharacter:   Red("██"),
+		HorizontalBarCharacter: Red("█"),
+		Height:                 GetTerminalHeight() * 2 / 3,
+		Width:                  GetTerminalWidth() * 2 / 3,
 	}
 )
 
@@ -39,9 +41,15 @@ func (p BarChartPrinter) WithBars(bars Bars) *BarChartPrinter {
 	return &p
 }
 
-// WithBarCharacter returns a new BarChartPrinter with a specific option.
-func (p BarChartPrinter) WithBarCharacter(char string) *BarChartPrinter {
-	p.BarCharacter = char
+// WithBarVerticalCharacter returns a new BarChartPrinter with a specific option.
+func (p BarChartPrinter) WithBarVerticalCharacter(char string) *BarChartPrinter {
+	p.VerticalBarCharacter = char
+	return &p
+}
+
+// WithBarHorizontalCharacter returns a new BarChartPrinter with a specific option.
+func (p BarChartPrinter) WithBarHorizontalCharacter(char string) *BarChartPrinter {
+	p.HorizontalBarCharacter = char
 	return &p
 }
 
@@ -67,7 +75,6 @@ func (p BarChartPrinter) WithWidth(value int) *BarChartPrinter {
 // Srender renders the Template as a string.
 func (p BarChartPrinter) Srender() (string, error) {
 	var ret string
-	renderedBars := make([]string, len(p.Bars))
 
 	var maxLabelHeight int
 	var maxBarValue int
@@ -83,14 +90,19 @@ func (p BarChartPrinter) Srender() (string, error) {
 	}
 
 	if p.Horizontal {
-		return "", nil
+		for _, bar := range p.Bars {
+			ret += bar.Label + strings.Repeat(p.HorizontalBarCharacter, internal.MapRangeToRange(0, float32(maxBarValue), 0, float32(p.Width), float32(bar.Value))) + "\n"
+		}
+		return ret, nil
 	} else {
+		renderedBars := make([]string, len(p.Bars))
+
 		for i, bar := range p.Bars {
 			var renderedBar string
 			bar.Value = internal.MapRangeToRange(0, float32(maxBarValue), 0, float32(p.Height), float32(bar.Value))
 			for i := 0; i < bar.Value; i++ {
 				indent := strings.Repeat(" ", internal.GetStringMaxWidth(RemoveColorFromString(bar.Label))/2)
-				renderedBar += indent + bar.Style.Sprint(p.BarCharacter) + indent + " \n"
+				renderedBar += indent + bar.Style.Sprint(p.VerticalBarCharacter) + indent + " \n"
 			}
 			labelHeight := len(strings.Split(bar.Label, "\n"))
 			renderedBars[i] = renderedBar + bar.Label + strings.Repeat("\n", maxLabelHeight-labelHeight) + " "
