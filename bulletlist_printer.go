@@ -6,8 +6,8 @@ import (
 	"github.com/pterm/pterm/internal"
 )
 
-// NewBulletListFromStrings returns a BulletList with Text using the NewTreeListItemFromString method.
-func NewBulletListFromStrings(s []string, padding string) BulletList {
+// NewBulletListFromStrings returns a BulletListPrinter with Text using the NewTreeListItemFromString method.
+func NewBulletListFromStrings(s []string, padding string) BulletListPrinter {
 	var lis []BulletListItem
 	for _, line := range s {
 		lis = append(lis, NewBulletListItemFromString(line, padding))
@@ -86,20 +86,20 @@ func (p BulletListItem) Srender() string {
 	return strings.Repeat(" ", p.Level) + p.BulletStyle.Sprint(p.Bullet) + " " + p.TextStyle.Sprint(p.Text)
 }
 
-// NewBulletListFromString returns a BulletList with Text using the NewTreeListItemFromString method, splitting after return (\n).
-func NewBulletListFromString(s string, padding string) BulletList {
+// NewBulletListFromString returns a BulletListPrinter with Text using the NewTreeListItemFromString method, splitting after return (\n).
+func NewBulletListFromString(s string, padding string) BulletListPrinter {
 	return NewBulletListFromStrings(strings.Split(s, "\n"), padding)
 }
 
-// DefaultBulletList contains standards, which can be used to print a BulletList.
-var DefaultBulletList = BulletList{
+// DefaultBulletList contains standards, which can be used to print a BulletListPrinter.
+var DefaultBulletList = BulletListPrinter{
 	Bullet:      "•",
 	TextStyle:   &ThemeDefault.BulletListTextStyle,
 	BulletStyle: &ThemeDefault.BulletListBulletStyle,
 }
 
-// BulletList is able to render a list.
-type BulletList struct {
+// BulletListPrinter is able to render a list.
+type BulletListPrinter struct {
 	Items       []BulletListItem
 	TextStyle   *Style
 	Bullet      string
@@ -107,31 +107,31 @@ type BulletList struct {
 }
 
 // WithItems returns a new list with specific Items.
-func (l BulletList) WithItems(items []BulletListItem) *BulletList {
+func (l BulletListPrinter) WithItems(items []BulletListItem) *BulletListPrinter {
 	l.Items = append(l.Items, items...)
 	return &l
 }
 
 // WithTextStyle returns a new list with a specific text style.
-func (l BulletList) WithTextStyle(style *Style) *BulletList {
+func (l BulletListPrinter) WithTextStyle(style *Style) *BulletListPrinter {
 	l.TextStyle = style
 	return &l
 }
 
 // WithBullet returns a new list with a specific bullet.
-func (l BulletList) WithBullet(bullet string) *BulletList {
+func (l BulletListPrinter) WithBullet(bullet string) *BulletListPrinter {
 	l.Bullet = bullet
 	return &l
 }
 
 // WithBulletStyle returns a new list with a specific bullet style.
-func (l BulletList) WithBulletStyle(style *Style) *BulletList {
+func (l BulletListPrinter) WithBulletStyle(style *Style) *BulletListPrinter {
 	l.BulletStyle = style
 	return &l
 }
 
 // Render prints the list to the terminal.
-func (l BulletList) Render() error {
+func (l BulletListPrinter) Render() error {
 	s, _ := l.Srender()
 	Println(s)
 
@@ -139,7 +139,7 @@ func (l BulletList) Render() error {
 }
 
 // Srender renders the list as a string.
-func (l BulletList) Srender() (string, error) {
+func (l BulletListPrinter) Srender() (string, error) {
 	var ret string
 	for _, item := range l.Items {
 		if item.Bullet == "" {
