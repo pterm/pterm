@@ -29,11 +29,34 @@ func TestPanelPrinterNilPrintWithPanels(t *testing.T) {
 func TestPanelPrinter_Render(t *testing.T) {
 	internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
 		panels := Panels{
-			{
-				{Data: Sprint(a)},
-			},
+			{{Data: Sprint(a)}},
 		}
 		p := PanelPrinter{}.WithPanels(panels)
+		err := p.Render()
+		assert.NoError(t, err)
+	})
+}
+
+func TestPanelPrinter_RenderMultiplePanels(t *testing.T) {
+	internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
+		panels := Panels{
+			{{Data: Sprint("a\nbc\ndef")}, {Data: Sprint("abcd")}},
+			{{Data: Sprint(a)}},
+		}
+		p := PanelPrinter{}.WithPanels(panels)
+		err := p.Render()
+		assert.NoError(t, err)
+	})
+}
+
+func TestPanelPrinter_RenderWithSameColumnWidth(t *testing.T) {
+	internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
+		panels := Panels{
+			{{Data: Sprint(a)}},
+			{{Data: Sprint("test")}},
+			{{Data: Sprint("Hello, World!")}},
+		}
+		p := PanelPrinter{}.WithPanels(panels).WithSameColumnWidth()
 		err := p.Render()
 		assert.NoError(t, err)
 	})
