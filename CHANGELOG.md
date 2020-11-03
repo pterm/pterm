@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Bug Fixes
+- **panel:** add invalid check for `padding` in `panel`
+
 ### Documentation Changes
 
 ### Features
@@ -8,6 +11,7 @@
 - **panel:** add an option to make columns the same length
 
 ### Test
+- **panel:** add invalid check for `padding` in `panel`
 - **panel:** add test for `WithBottomPadding`
 - **panel:** add test for `WithSameColumnWidth` & multiple `panel`
 - **panel:** add test for `WithSameColumnWidth`
