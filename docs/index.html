@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-7QZCNCZ353"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-7QZCNCZ353');
+    </script>
     <meta charset="UTF-8">
     <title>✨ PTerm - A modern go module to beautify console output</title>
     <link rel="icon" href="_assets/favicon.ico">
@@ -26,6 +35,7 @@
         maxLevel: 4,
         subMaxLevel: 10,
         coverpage: true,
+        // ga: 'G-7QZCNCZ353',
         plugins: [
             EditOnGithubPlugin.create("https://github.com/dops-cli/dops/blob/master/docs/", "", "Edit this document on GitHub")
         ],
@@ -62,10 +72,13 @@
 <script src="_assets/prism-command.js"></script>
 <script src="_assets/prism-flags.js"></script>
 
+<!-- Google Analytics -->
+<!-- <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/ga.min.js"></script> -->
+
 <script>
-    if (typeof navigator.serviceWorker !== 'undefined') {
-        navigator.serviceWorker.register('sw.js')
-    }
+    // if (typeof navigator.serviceWorker !== 'undefined') {
+    //     navigator.serviceWorker.register('sw.js')
+    // }
 </script>
 </body>
 </html>
