@@ -1,6 +1,9 @@
 - [Quick Start](quick-start.md)
 - Documentation
   - [Intro](docs/intro.md)
+  - [Big Text](docs/bigtext.md)
+  - [Override Default Printer](docs/override-default-printer.md)
 - Contributing
   - [Writing Documentation](contributing/writing-documentation.md)
+  - [Documentation Template](contributing/writing-documentation-template.md)
   - [Review Checks](contributing/review-checks.md)
