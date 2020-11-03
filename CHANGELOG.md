@@ -9,6 +9,7 @@
 
 ### Documentation Changes
 - add docs website
+- **review:** add review docs check
 - **review:** update review checks
 - **review:** add review check file
 
