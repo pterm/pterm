@@ -4,6 +4,10 @@
     cursor: pointer;
 }
 
+h4 > a > span {
+    font-size: 18px !important;
+}
+
 /*.sidebar-nav ul:not(.app-sub-sidebar) > li:not(.file)::before {*/
 /*    content: '';*/
 /*    display: block;*/
