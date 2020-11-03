@@ -19,21 +19,21 @@ import "github.com/pterm/pterm"
 func main() {
 	// Create a new header as a fork from pterm.DefaultHeader.
 	// ┌ new header variable
-	// |                 ┌ Fork it from the default header
-	// |                 |            ┌ Set options
+	// │                 ┌ Fork it from the default header
+	// │                 │            ┌ Set options
 	header := pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgRed))
 
 	// Print the header centered in your terminal.
 	//      ┌ Use the default CenterPrinter
-	//      |              ┌ Print a string ending with a new line
-	//      |              |      ┌ Use our new header to format the input string
+	//      │              ┌ Print a string ending with a new line
+	//      │              │      ┌ Use our new header to format the input string
 	pterm.DefaultCenter.Println(header.Sprint("Hello, World"))
 
 	// Print a big text to the terminal.
 	//          ┌ Use the default BigTextPrinter
-	//          |              ┌ Set the Letters option
-	//          |              |                   ┌ Generate Letters from string
-	//          |              |                   |                                ┌ Render output to the console
+	//          │              ┌ Set the Letters option
+	//          │              │                   ┌ Generate Letters from string
+	//          │              │                   │                                ┌ Render output to the console
 	_ = pterm.DefaultBigText.WithLetters(pterm.NewLettersFromString("Hello")).Render()
 
 	// ┌──────────────────────────────────────────────────────────┐
