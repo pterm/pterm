@@ -8,5 +8,5 @@
 - 🐙 Open Source 🐙
 
 [Quick Start](quick-start.md)
-[Documentation](docs/_docs.md)
+[Documentation](docs/intro.md)
 [GitHub](https://github.com/pterm/pterm/)
