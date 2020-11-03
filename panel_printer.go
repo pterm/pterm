@@ -25,6 +25,7 @@ var DefaultPanel = PanelPrinter{
 type PanelPrinter struct {
 	Panels          Panels
 	Padding         int
+	BottomPadding   int
 	SameColumnWidth bool
 }
 
@@ -37,6 +38,15 @@ func (p PanelPrinter) WithPanels(panels Panels) *PanelPrinter {
 // WithPadding returns a new PanelPrinter with specific options.
 func (p PanelPrinter) WithPadding(padding int) *PanelPrinter {
 	p.Padding = padding
+	return &p
+}
+
+// WithBottomPadding returns a new PanelPrinter with specific options.
+func (p PanelPrinter) WithBottomPadding(bottomPadding int) *PanelPrinter {
+	if bottomPadding < 0 {
+		bottomPadding = 0
+	}
+	p.BottomPadding = bottomPadding
 	return &p
 }
 
@@ -63,7 +73,7 @@ func (p PanelPrinter) Srender() (string, error) {
 		}
 	}
 
-	for _, boxLine := range p.Panels {
+	for j, boxLine := range p.Panels {
 		var maxHeight int
 
 		for _, box := range boxLine {
@@ -79,31 +89,35 @@ func (p PanelPrinter) Srender() (string, error) {
 			renderedPanels = append(renderedPanels, box.Data)
 		}
 
-		for i := 0; i < maxHeight; i++ {
-			for j, letter := range renderedPanels {
-				var letterLine string
-				letterLines := strings.Split(letter, "\n")
-				var maxLetterWidth int
-				if !p.SameColumnWidth {
-					maxLetterWidth = internal.GetStringMaxWidth(letter)
-				}
-				if len(letterLines) > i {
-					letterLine = letterLines[i]
-				}
-				letterLineLength := runewidth.StringWidth(letterLine)
-				if !p.SameColumnWidth {
-					if letterLineLength < maxLetterWidth {
-						letterLine += strings.Repeat(" ", maxLetterWidth-letterLineLength)
+		for i := 0; i <= maxHeight; i++ {
+			if maxHeight != i {
+				for j, letter := range renderedPanels {
+					var letterLine string
+					letterLines := strings.Split(letter, "\n")
+					var maxLetterWidth int
+					if !p.SameColumnWidth {
+						maxLetterWidth = internal.GetStringMaxWidth(letter)
 					}
-				} else {
-					if letterLineLength < columnMaxHeightMap[j] {
-						letterLine += strings.Repeat(" ", columnMaxHeightMap[j]-letterLineLength)
+					if len(letterLines) > i {
+						letterLine = letterLines[i]
 					}
+					letterLineLength := runewidth.StringWidth(letterLine)
+					if !p.SameColumnWidth {
+						if letterLineLength < maxLetterWidth {
+							letterLine += strings.Repeat(" ", maxLetterWidth-letterLineLength)
+						}
+					} else {
+						if letterLineLength < columnMaxHeightMap[j] {
+							letterLine += strings.Repeat(" ", columnMaxHeightMap[j]-letterLineLength)
+						}
+					}
+					letterLine += strings.Repeat(" ", p.Padding)
+					ret += letterLine
 				}
-				letterLine += strings.Repeat(" ", p.Padding)
-				ret += letterLine
+				ret += "\n"
+			} else if j+1 != len(p.Panels) {
+				ret += strings.Repeat("\n", p.BottomPadding)
 			}
-			ret += "\n"
 		}
 	}
 
