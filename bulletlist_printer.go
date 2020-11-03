@@ -41,33 +41,33 @@ type BulletListItem struct {
 }
 
 // WithLevel returns a new BulletListItem with a specific Level.
-func (p BulletListItem) WithLevel(level int) BulletListItem {
+func (p BulletListItem) WithLevel(level int) *BulletListItem {
 	p.Level = level
-	return p
+	return &p
 }
 
 // WithText returns a new BulletListItem with a specific Text.
-func (p BulletListItem) WithText(text string) BulletListItem {
+func (p BulletListItem) WithText(text string) *BulletListItem {
 	p.Text = text
-	return p
+	return &p
 }
 
 // WithTextStyle returns a new BulletListItem with a specific TextStyle.
-func (p BulletListItem) WithTextStyle(style *Style) BulletListItem {
+func (p BulletListItem) WithTextStyle(style *Style) *BulletListItem {
 	p.TextStyle = style
-	return p
+	return &p
 }
 
 // WithBullet returns a new BulletListItem with a specific Prefix.
-func (p BulletListItem) WithBullet(bullet string) BulletListItem {
+func (p BulletListItem) WithBullet(bullet string) *BulletListItem {
 	p.Bullet = bullet
-	return p
+	return &p
 }
 
 // WithBulletStyle returns a new BulletListItem with a specific BulletStyle.
-func (p BulletListItem) WithBulletStyle(style *Style) BulletListItem {
+func (p BulletListItem) WithBulletStyle(style *Style) *BulletListItem {
 	p.BulletStyle = style
-	return p
+	return &p
 }
 
 // Render renders the BulletListItem as a string.
@@ -142,10 +142,26 @@ func (l BulletListPrinter) Render() error {
 func (l BulletListPrinter) Srender() (string, error) {
 	var ret string
 	for _, item := range l.Items {
+		if item.TextStyle == nil {
+			if l.TextStyle == nil {
+				item.TextStyle = &ThemeDefault.BulletListTextStyle
+			} else {
+				item.TextStyle = l.TextStyle
+			}
+		}
+		if item.BulletStyle == nil {
+			if l.BulletStyle == nil {
+				item.BulletStyle = &ThemeDefault.BulletListBulletStyle
+			} else {
+				item.BulletStyle = l.BulletStyle
+			}
+		}
 		if item.Bullet == "" {
-			ret += item.WithBullet(l.Bullet).Srender() + "\n"
+			ret += strings.Repeat(" ", item.Level) + item.BulletStyle.Sprint(l.Bullet) + " " + item.TextStyle.Sprint(item.Text) + "\n"
+			// ret += item.WithBullet(l.Bullet).Srender() + "\n"
 		} else {
-			ret += item.WithBullet(item.Bullet).Srender() + "\n"
+			ret += strings.Repeat(" ", item.Level) + item.BulletStyle.Sprint(item.Bullet) + " " + item.TextStyle.Sprint(item.Text) + "\n"
+			// ret += item.WithBullet(item.Bullet).Srender() + "\n"
 		}
 	}
 	return ret, nil
