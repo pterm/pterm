@@ -1,4 +1,6 @@
 - [Quick Start](quick-start.md)
 - Documentation
-  - [Intro](docs/_docs.md)
-- [Contributing to PTerm](contributing.md)
+  - [Intro](docs/intro.md)
+- Contributing
+  - [Writing Documentation](contributing/review-checks.md)
+  - [Review Checks](contributing/review-checks.md)
