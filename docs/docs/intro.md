@@ -7,4 +7,4 @@ You can find the navigation in the sidebar on the left, feel free to look around
 
 ## Installing PTerm
 
-If you haven't yet imported PTerm into your project, [here](../quick-start.md) are instructions on how to do it.
+If you haven't yet imported PTerm into your project, [here](/quick-start.md) are instructions on how to do it.
