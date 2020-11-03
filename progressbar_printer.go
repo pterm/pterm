@@ -10,9 +10,9 @@ import (
 	"github.com/pterm/pterm/internal"
 )
 
-// ActiveProgressBars contains all running ProgressbarPrinters.
+// ActiveProgressBarPrinters contains all running ProgressbarPrinters.
 // Generally, there should only be one active ProgressbarPrinter at a time.
-var ActiveProgressBars []*ProgressbarPrinter
+var ActiveProgressBarPrinters []*ProgressbarPrinter
 
 var (
 	// DefaultProgressbar is the default ProgressbarPrinter.
@@ -199,7 +199,7 @@ func (p *ProgressbarPrinter) Add(count int) *ProgressbarPrinter {
 // Start the ProgressbarPrinter.
 func (p ProgressbarPrinter) Start() (*ProgressbarPrinter, error) {
 	p.IsActive = true
-	ActiveProgressBars = append(ActiveProgressBars, &p)
+	ActiveProgressBarPrinters = append(ActiveProgressBarPrinters, &p)
 	p.startedAt = time.Now()
 
 	p.Add(0)
