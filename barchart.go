@@ -28,8 +28,8 @@ var (
 	// DefaultBarChart is the default BarChartPrinter.
 	DefaultBarChart = BarChartPrinter{
 		Horizontal:             false,
-		VerticalBarCharacter:   Red("██"),
-		HorizontalBarCharacter: Red("█"),
+		VerticalBarCharacter:   "██",
+		HorizontalBarCharacter: "█",
 		Height:                 GetTerminalHeight() * 2 / 3,
 		Width:                  GetTerminalWidth() * 2 / 3,
 	}
@@ -90,9 +90,12 @@ func (p BarChartPrinter) Srender() (string, error) {
 	}
 
 	if p.Horizontal {
+		panels := Panels{[]Panel{{}, {}}}
 		for _, bar := range p.Bars {
-			ret += bar.Label + strings.Repeat(p.HorizontalBarCharacter, internal.MapRangeToRange(0, float32(maxBarValue), 0, float32(p.Width), float32(bar.Value))) + "\n"
+			panels[0][0].Data += "\n" + bar.Label
+			panels[0][1].Data += "\n" + bar.Style.Sprint(strings.Repeat(p.HorizontalBarCharacter, internal.MapRangeToRange(0, float32(maxBarValue), 0, float32(p.Width), float32(bar.Value))))
 		}
+		ret, _ = DefaultPanel.WithPanels(panels).Srender()
 		return ret, nil
 	} else {
 		renderedBars := make([]string, len(p.Bars))
