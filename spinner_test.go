@@ -8,38 +8,38 @@ import (
 	"time"
 )
 
-func TestSpinnerPrinterNilPrint(t *testing.T) {
-	p := Spinner{}
+func TestSpinnerPrinter_NilPrint(t *testing.T) {
+	p := SpinnerPrinter{}
 	p.Success()
 	p.Warning()
 	p.Fail()
 }
 
-func TestSpinner_Fail(t *testing.T) {
+func TestSpinnerPrinter_Fail(t *testing.T) {
 	p := DefaultSpinner
 	internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
 		p.Fail(a)
 	})
 }
 
-func TestSpinner_GenericStart(t *testing.T) {
+func TestSpinnerPrinter_GenericStart(t *testing.T) {
 	p := DefaultSpinner
 	p.GenericStart()
 }
 
-func TestSpinner_GenericStop(t *testing.T) {
+func TestSpinnerPrinter_GenericStop(t *testing.T) {
 	p := DefaultSpinner
 	p.GenericStop()
 }
 
-func TestSpinner_Success(t *testing.T) {
+func TestSpinnerPrinter_Success(t *testing.T) {
 	p := DefaultSpinner
 	internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
 		p.Success(a)
 	})
 }
 
-func TestSpinner_UpdateText(t *testing.T) {
+func TestSpinnerPrinter_UpdateText(t *testing.T) {
 	p := DefaultSpinner
 	p.Start()
 	p.UpdateText("test")
@@ -48,58 +48,58 @@ func TestSpinner_UpdateText(t *testing.T) {
 	p.Stop()
 }
 
-func TestSpinner_Warning(t *testing.T) {
+func TestSpinnerPrinter_Warning(t *testing.T) {
 	p := DefaultSpinner
 	internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
 		p.Warning(a)
 	})
 }
 
-func TestSpinner_WithDelay(t *testing.T) {
-	p := Spinner{}
+func TestSpinnerPrinter_WithDelay(t *testing.T) {
+	p := SpinnerPrinter{}
 	p2 := p.WithDelay(time.Second)
 
 	assert.Equal(t, time.Second, p2.Delay)
 }
 
-func TestSpinner_WithMessageStyle(t *testing.T) {
+func TestSpinnerPrinter_WithMessageStyle(t *testing.T) {
 	s := NewStyle(FgRed, BgBlue, Bold)
-	p := Spinner{}
+	p := SpinnerPrinter{}
 	p2 := p.WithMessageStyle(s)
 
 	assert.Equal(t, s, p2.MessageStyle)
 }
 
-func TestSpinner_WithRemoveWhenDone(t *testing.T) {
-	p := Spinner{}
+func TestSpinnerPrinter_WithRemoveWhenDone(t *testing.T) {
+	p := SpinnerPrinter{}
 	p2 := p.WithRemoveWhenDone()
 
 	assert.True(t, p2.RemoveWhenDone)
 }
 
-func TestSpinner_WithSequence(t *testing.T) {
-	p := Spinner{}
+func TestSpinnerPrinter_WithSequence(t *testing.T) {
+	p := SpinnerPrinter{}
 	p2 := p.WithSequence("a", "b", "c")
 
 	assert.Equal(t, []string{"a", "b", "c"}, p2.Sequence)
 }
 
-func TestSpinner_WithStyle(t *testing.T) {
+func TestSpinnerPrinter_WithStyle(t *testing.T) {
 	s := NewStyle(FgRed, BgBlue, Bold)
-	p := Spinner{}
+	p := SpinnerPrinter{}
 	p2 := p.WithStyle(s)
 
 	assert.Equal(t, s, p2.Style)
 }
 
-func TestSpinner_WithText(t *testing.T) {
-	p := Spinner{}
+func TestSpinnerPrinter_WithText(t *testing.T) {
+	p := SpinnerPrinter{}
 	p2 := p.WithText("test")
 
 	assert.Equal(t, "test", p2.Text)
 }
 
-func TestSpinnerDifferentVariations(t *testing.T) {
+func TestSpinnerPrinter_DifferentVariations(t *testing.T) {
 	type fields struct {
 		Text           string
 		Sequence       []string
@@ -126,7 +126,7 @@ func TestSpinnerDifferentVariations(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			s := Spinner{
+			s := SpinnerPrinter{
 				Text:           tt.fields.Text,
 				Sequence:       tt.fields.Sequence,
 				Style:          tt.fields.Style,
