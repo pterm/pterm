@@ -23,6 +23,14 @@ func TestBulletListPrinter_Render(t *testing.T) {
 	})
 }
 
+func TestBulletListPrinter_RenderWithoutStyle(t *testing.T) {
+	internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
+		BulletListPrinter{}.WithItems([]BulletListItem{
+			{Level: 0, Text: fmt.Sprint(a)},
+		}).Render()
+	})
+}
+
 func TestBulletListPrinter_RenderWithBullet(t *testing.T) {
 	internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
 		DefaultBulletList.WithItems([]BulletListItem{
@@ -82,18 +90,6 @@ func TestBulletListPrinter_WithTextStyle(t *testing.T) {
 
 	assert.Equal(t, s, p2.TextStyle)
 	assert.Empty(t, p.TextStyle)
-}
-
-func TestBulletListItem_Render(t *testing.T) {
-	internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
-		DefaultListItem.WithText(fmt.Sprint(a)).Render()
-	})
-}
-
-func TestBulletListItem_Srender(t *testing.T) {
-	internal.TestSprintContains(t, func(a interface{}) string {
-		return DefaultListItem.WithText(fmt.Sprint(a)).Srender()
-	})
 }
 
 func TestBulletListItem_WithBullet(t *testing.T) {
