@@ -70,22 +70,6 @@ func (p BulletListItem) WithBulletStyle(style *Style) *BulletListItem {
 	return &p
 }
 
-// Render renders the BulletListItem as a string.
-func (p BulletListItem) Render() {
-	Println(p.Srender())
-}
-
-// Srender renders the BulletListItem as a string.
-func (p BulletListItem) Srender() string {
-	if p.TextStyle == nil {
-		p.TextStyle = NewStyle()
-	}
-	if p.BulletStyle == nil {
-		p.BulletStyle = &ThemeDefault.BulletListBulletStyle
-	}
-	return strings.Repeat(" ", p.Level) + p.BulletStyle.Sprint(p.Bullet) + " " + p.TextStyle.Sprint(p.Text)
-}
-
 // NewBulletListFromString returns a BulletListPrinter with Text using the NewTreeListItemFromString method, splitting after return (\n).
 func NewBulletListFromString(s string, padding string) BulletListPrinter {
 	return NewBulletListFromStrings(strings.Split(s, "\n"), padding)
@@ -158,10 +142,8 @@ func (l BulletListPrinter) Srender() (string, error) {
 		}
 		if item.Bullet == "" {
 			ret += strings.Repeat(" ", item.Level) + item.BulletStyle.Sprint(l.Bullet) + " " + item.TextStyle.Sprint(item.Text) + "\n"
-			// ret += item.WithBullet(l.Bullet).Srender() + "\n"
 		} else {
 			ret += strings.Repeat(" ", item.Level) + item.BulletStyle.Sprint(item.Bullet) + " " + item.TextStyle.Sprint(item.Text) + "\n"
-			// ret += item.WithBullet(item.Bullet).Srender() + "\n"
 		}
 	}
 	return ret, nil
