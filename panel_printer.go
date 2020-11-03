@@ -23,8 +23,10 @@ var DefaultPanel = PanelPrinter{
 
 // PanelPrinter prints content in boxes.
 type PanelPrinter struct {
-	Panels  Panels
-	Padding int
+	Panels      Panels
+	Padding     int
+	Border      bool
+	BorderStyle *Style
 }
 
 // WithPanels returns a new PanelPrinter with specific options.
@@ -39,6 +41,19 @@ func (p PanelPrinter) WithPadding(padding int) *PanelPrinter {
 	return &p
 }
 
+// WithBorder returns a new PanelPrinter with specific options.
+func (p PanelPrinter) WithBorder(b ...bool) *PanelPrinter {
+	b2 := internal.WithBoolean(b)
+	p.Border = b2
+	return &p
+}
+
+// WithBorderStyle returns a new PanelPrinter with specific options.
+func (p PanelPrinter) WithBorderStyle(style *Style) *PanelPrinter {
+	p.BorderStyle = style
+	return &p
+}
+
 // Srender renders the Template as a string.
 func (p PanelPrinter) Srender() (string, error) {
 	var ret string
@@ -46,20 +61,40 @@ func (p PanelPrinter) Srender() (string, error) {
 	for _, boxLine := range p.Panels {
 		var maxHeight int
 
-		for _, box := range boxLine {
-			height := len(strings.Split(box.Data, "\n"))
-			if height > maxHeight {
-				maxHeight = height
-			}
-		}
-
 		var renderedPanels []string
 
 		for _, box := range boxLine {
 			renderedPanels = append(renderedPanels, box.Data)
 		}
 
-		for i := 0; i <= maxHeight; i++ {
+		if p.Border {
+			var panels []string
+			var tmh int
+			for _, panel := range renderedPanels {
+				h := len(strings.Split(panel, "\n"))
+				if h > tmh {
+					tmh = h
+				}
+			}
+			for _, panel := range renderedPanels {
+				panel += strings.Repeat("\n", tmh-len(strings.Split(panel, "\n")))
+				s, _ := DefaultPanel.WithPanels(Panels{[]Panel{{Data: panel}}}).Srender()
+				panels = append(panels, s)
+			}
+			for i, panel := range panels {
+				renderedPanels[i] = boxed(panel)
+			}
+
+		}
+
+		for _, box := range renderedPanels {
+			height := len(strings.Split(box, "\n"))
+			if height > maxHeight {
+				maxHeight = height
+			}
+		}
+
+		for i := 0; i < maxHeight; i++ {
 			for _, letter := range renderedPanels {
 				var letterLine string
 				letterLines := strings.Split(letter, "\n")
@@ -77,7 +112,6 @@ func (p PanelPrinter) Srender() (string, error) {
 			ret += "\n"
 		}
 	}
-
 	return ret, nil
 }
 
@@ -87,4 +121,20 @@ func (p PanelPrinter) Render() error {
 	Println(s)
 
 	return nil
+}
+
+func boxed(s string) string {
+	maxWidth := internal.GetStringMaxWidth(s)
+	topLine := "┌" + strings.Repeat("─", maxWidth) + "┐"
+
+	ss := strings.Split(s, "\n")
+	for i, s2 := range ss {
+		if i != len(ss)-1 {
+			ss[i] = "|" + s2 + "|"
+		}
+	}
+
+	bottomLine := "└" + strings.Repeat("─", maxWidth) + "┘"
+
+	return topLine + "\n" + strings.Join(ss, "\n") + bottomLine
 }
