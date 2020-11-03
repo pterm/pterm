@@ -8,6 +8,7 @@
 - **deps:** bump github.com/gookit/color from 1.3.1 to 1.3.2
 
 ### Documentation Changes
+- add docs website
 - **review:** update review checks
 - **review:** add review check file
 
