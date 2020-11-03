@@ -33,7 +33,7 @@ func main() {
 	//          ┌ Use the default BigTextPrinter
 	//          │              ┌ Set the Letters option
 	//          │              │                   ┌ Generate Letters from string
-	//          │              │                   │                                ┌ Render output to the console
+	//          │              │                   │                            ┌ Render output to the console
 	_ = pterm.DefaultBigText.WithLetters(pterm.NewLettersFromString("Hello")).Render()
 
 	// ┌──────────────────────────────────────────────────────────┐
