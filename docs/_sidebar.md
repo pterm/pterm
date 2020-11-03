@@ -2,5 +2,5 @@
 - Documentation
   - [Intro](docs/intro.md)
 - Contributing
-  - [Writing Documentation](contributing/review-checks.md)
+  - [Writing Documentation](contributing/writing-documentation.md)
   - [Review Checks](contributing/review-checks.md)
