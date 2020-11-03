@@ -4,6 +4,9 @@
 ### Bug Fixes
 - **centerprinter:** make centerprinter func return pointer
 
+### Chore
+- **deps:** bump github.com/gookit/color from 1.3.1 to 1.3.2
+
 ### Documentation Changes
 - **review:** update review checks
 - **review:** add review check file
