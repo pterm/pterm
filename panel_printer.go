@@ -37,6 +37,9 @@ func (p PanelPrinter) WithPanels(panels Panels) *PanelPrinter {
 
 // WithPadding returns a new PanelPrinter with specific options.
 func (p PanelPrinter) WithPadding(padding int) *PanelPrinter {
+	if padding < 0 {
+		padding = 0
+	}
 	p.Padding = padding
 	return &p
 }

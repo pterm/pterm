@@ -84,6 +84,15 @@ func TestPanelPrinter_WithPadding(t *testing.T) {
 	assert.Empty(t, p.Padding)
 }
 
+func TestPanelPrinter_WithWithInvalidPadding(t *testing.T) {
+	padding := -5
+	p := PanelPrinter{}
+	p2 := p.WithPadding(padding)
+
+	assert.Equal(t, 0, p2.Padding)
+	assert.Empty(t, p.Padding)
+}
+
 func TestPanelPrinter_WithWithBottomPadding(t *testing.T) {
 	padding := 1337
 	p := PanelPrinter{}
