@@ -14,4 +14,5 @@
 | Commit messages follow conventional commit style. `If NO -> Squash`   | NO     |
 | Possible errors are declared in the `errors.go` file.                 | NO     |
 | Theme styles do not return pointers                                   | NO     |
+| Documentation in `./docs` is updated correctly.                       | NO     |
 ```
