@@ -55,7 +55,7 @@
 <p align="center">
 <strong><a href="#-installation">Installation</a></strong>
 |
-<strong><a href="#-documentation">Documentation</a></strong>
+<strong><a href="https://pterm.sh/#/docs/intro">Documentation</a></strong>
 |
 <strong><a href="#-examples">Examples</a></strong>
 |
