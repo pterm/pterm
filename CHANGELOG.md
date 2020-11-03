@@ -1,10 +1,14 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Documentation Changes
+
 ### Features
+- **panel:** add an option to make a padding beneath `panel`
 - **panel:** add an option to make columns the same length
 
 ### Test
+- **panel:** add test for `WithBottomPadding`
 - **panel:** add test for `WithSameColumnWidth` & multiple `panel`
 - **panel:** add test for `WithSameColumnWidth`
 
