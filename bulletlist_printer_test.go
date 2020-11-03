@@ -11,11 +11,11 @@ import (
 )
 
 func TestBulletListPrinterNilPrint(t *testing.T) {
-	p := BulletList{}
+	p := BulletListPrinter{}
 	p.Render()
 }
 
-func TestBulletList_Render(t *testing.T) {
+func TestBulletListPrinter_Render(t *testing.T) {
 	internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
 		DefaultBulletList.WithItems([]BulletListItem{
 			{Level: 0, Text: fmt.Sprint(a)},
@@ -23,7 +23,7 @@ func TestBulletList_Render(t *testing.T) {
 	})
 }
 
-func TestBulletList_RenderWithBullet(t *testing.T) {
+func TestBulletListPrinter_RenderWithBullet(t *testing.T) {
 	internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
 		DefaultBulletList.WithItems([]BulletListItem{
 			{
@@ -35,7 +35,7 @@ func TestBulletList_RenderWithBullet(t *testing.T) {
 	})
 }
 
-func TestBulletList_Srender(t *testing.T) {
+func TestBulletListPrinter_Srender(t *testing.T) {
 	internal.TestSprintContainsWithoutError(t, func(a interface{}) (string, error) {
 		return DefaultBulletList.WithItems([]BulletListItem{
 			{Level: 0, Text: fmt.Sprint(a)},
@@ -43,16 +43,16 @@ func TestBulletList_Srender(t *testing.T) {
 	})
 }
 
-func TestBulletList_WithBullet(t *testing.T) {
-	p := BulletList{}
+func TestBulletListPrinter_WithBullet(t *testing.T) {
+	p := BulletListPrinter{}
 	p2 := p.WithBullet("-")
 
 	assert.Equal(t, "-", p2.Bullet)
 	assert.Empty(t, p.Bullet)
 }
 
-func TestBulletList_WithBulletStyle(t *testing.T) {
-	p := BulletList{}
+func TestBulletListPrinter_WithBulletStyle(t *testing.T) {
+	p := BulletListPrinter{}
 	s := NewStyle(FgRed, BgRed, Bold)
 	p2 := p.WithBulletStyle(s)
 
@@ -60,8 +60,8 @@ func TestBulletList_WithBulletStyle(t *testing.T) {
 	assert.Empty(t, p.BulletStyle)
 }
 
-func TestBulletList_WithItems(t *testing.T) {
-	p := BulletList{}
+func TestBulletListPrinter_WithItems(t *testing.T) {
+	p := BulletListPrinter{}
 	li := []BulletListItem{{
 		Level:       0,
 		Text:        "test",
@@ -75,8 +75,8 @@ func TestBulletList_WithItems(t *testing.T) {
 	assert.Empty(t, p.Items)
 }
 
-func TestBulletList_WithTextStyle(t *testing.T) {
-	p := BulletList{}
+func TestBulletListPrinter_WithTextStyle(t *testing.T) {
+	p := BulletListPrinter{}
 	s := NewStyle(FgRed, BgRed, Bold)
 	p2 := p.WithTextStyle(s)
 
