@@ -10,13 +10,13 @@ import (
 	"github.com/pterm/pterm/internal"
 )
 
-// ActiveProgressBars contains all running progressbars.
-// Generally, there should only be one active Progressbar at a time.
-var ActiveProgressBars []*Progressbar
+// ActiveProgressBars contains all running ProgressbarPrinters.
+// Generally, there should only be one active ProgressbarPrinter at a time.
+var ActiveProgressBars []*ProgressbarPrinter
 
 var (
-	// DefaultProgressbar is the default progressbar.
-	DefaultProgressbar = Progressbar{
+	// DefaultProgressbar is the default ProgressbarPrinter.
+	DefaultProgressbar = ProgressbarPrinter{
 		Total:                     100,
 		BarCharacter:              "█",
 		LastCharacter:             "█",
@@ -31,8 +31,8 @@ var (
 	}
 )
 
-// Progressbar shows a progress animation in the terminal.
-type Progressbar struct {
+// ProgressbarPrinter shows a progress animation in the terminal.
+type ProgressbarPrinter struct {
 	Title                     string
 	Total                     int
 	Current                   int
@@ -55,92 +55,92 @@ type Progressbar struct {
 	startedAt time.Time
 }
 
-// WithTitle sets the name of the progressbar.
-func (p Progressbar) WithTitle(name string) *Progressbar {
+// WithTitle sets the name of the ProgressbarPrinter.
+func (p ProgressbarPrinter) WithTitle(name string) *ProgressbarPrinter {
 	p.Title = name
 	return &p
 }
 
-// WithTotal sets the total value of the progressbar.
-func (p Progressbar) WithTotal(total int) *Progressbar {
+// WithTotal sets the total value of the ProgressbarPrinter.
+func (p ProgressbarPrinter) WithTotal(total int) *ProgressbarPrinter {
 	p.Total = total
 	return &p
 }
 
-// WithCurrent sets the current value of the progressbar.
-func (p Progressbar) WithCurrent(current int) *Progressbar {
+// WithCurrent sets the current value of the ProgressbarPrinter.
+func (p ProgressbarPrinter) WithCurrent(current int) *ProgressbarPrinter {
 	p.Current = current
 	return &p
 }
 
-// WithBarCharacter sets the bar character of the progressbar.
-func (p Progressbar) WithBarCharacter(char string) *Progressbar {
+// WithBarCharacter sets the bar character of the ProgressbarPrinter.
+func (p ProgressbarPrinter) WithBarCharacter(char string) *ProgressbarPrinter {
 	p.BarCharacter = char
 	return &p
 }
 
-// WithLastCharacter sets the last character of the progressbar.
-func (p Progressbar) WithLastCharacter(char string) *Progressbar {
+// WithLastCharacter sets the last character of the ProgressbarPrinter.
+func (p ProgressbarPrinter) WithLastCharacter(char string) *ProgressbarPrinter {
 	p.LastCharacter = char
 	return &p
 }
 
 // WithElapsedTimeRoundingFactor sets the rounding factor of the elapsed time.
-func (p Progressbar) WithElapsedTimeRoundingFactor(duration time.Duration) *Progressbar {
+func (p ProgressbarPrinter) WithElapsedTimeRoundingFactor(duration time.Duration) *ProgressbarPrinter {
 	p.ElapsedTimeRoundingFactor = duration
 	return &p
 }
 
-// WithShowElapsedTime sets if the elapsed time should be displayed in the progressbar.
-func (p Progressbar) WithShowElapsedTime(b ...bool) *Progressbar {
+// WithShowElapsedTime sets if the elapsed time should be displayed in the ProgressbarPrinter.
+func (p ProgressbarPrinter) WithShowElapsedTime(b ...bool) *ProgressbarPrinter {
 	p.ShowElapsedTime = internal.WithBoolean(b)
 	return &p
 }
 
-// WithShowCount sets if the total and current count should be displayed in the progressbar.
-func (p Progressbar) WithShowCount(b ...bool) *Progressbar {
+// WithShowCount sets if the total and current count should be displayed in the ProgressbarPrinter.
+func (p ProgressbarPrinter) WithShowCount(b ...bool) *ProgressbarPrinter {
 	p.ShowCount = internal.WithBoolean(b)
 	return &p
 }
 
-// WithShowTitle sets if the title should be displayed in the progressbar.
-func (p Progressbar) WithShowTitle(b ...bool) *Progressbar {
+// WithShowTitle sets if the title should be displayed in the ProgressbarPrinter.
+func (p ProgressbarPrinter) WithShowTitle(b ...bool) *ProgressbarPrinter {
 	p.ShowTitle = internal.WithBoolean(b)
 	return &p
 }
 
-// WithShowPercentage sets if the completed percentage should be displayed in the progressbar.
-func (p Progressbar) WithShowPercentage(b ...bool) *Progressbar {
+// WithShowPercentage sets if the completed percentage should be displayed in the ProgressbarPrinter.
+func (p ProgressbarPrinter) WithShowPercentage(b ...bool) *ProgressbarPrinter {
 	p.ShowPercentage = internal.WithBoolean(b)
 	return &p
 }
 
 // WithTitleStyle sets the style of the title.
-func (p Progressbar) WithTitleStyle(style *Style) *Progressbar {
+func (p ProgressbarPrinter) WithTitleStyle(style *Style) *ProgressbarPrinter {
 	p.TitleStyle = style
 	return &p
 }
 
 // WithBarStyle sets the style of the bar.
-func (p Progressbar) WithBarStyle(style *Style) *Progressbar {
+func (p ProgressbarPrinter) WithBarStyle(style *Style) *ProgressbarPrinter {
 	p.BarStyle = style
 	return &p
 }
 
-// WithRemoveWhenDone sets if the progressbar should be removed when it is done.
-func (p Progressbar) WithRemoveWhenDone(b ...bool) *Progressbar {
+// WithRemoveWhenDone sets if the ProgressbarPrinter should be removed when it is done.
+func (p ProgressbarPrinter) WithRemoveWhenDone(b ...bool) *ProgressbarPrinter {
 	p.RemoveWhenDone = internal.WithBoolean(b)
 	return &p
 }
 
 // Increment current value by one.
-func (p *Progressbar) Increment() *Progressbar {
+func (p *ProgressbarPrinter) Increment() *ProgressbarPrinter {
 	p.Add(1)
 	return p
 }
 
 // Add to current value.
-func (p *Progressbar) Add(count int) *Progressbar {
+func (p *ProgressbarPrinter) Add(count int) *ProgressbarPrinter {
 	if p.TitleStyle == nil {
 		p.TitleStyle = NewStyle()
 	}
@@ -196,8 +196,8 @@ func (p *Progressbar) Add(count int) *Progressbar {
 	return p
 }
 
-// Start the progressbar.
-func (p Progressbar) Start() (*Progressbar, error) {
+// Start the ProgressbarPrinter.
+func (p ProgressbarPrinter) Start() (*ProgressbarPrinter, error) {
 	p.IsActive = true
 	ActiveProgressBars = append(ActiveProgressBars, &p)
 	p.startedAt = time.Now()
@@ -207,8 +207,8 @@ func (p Progressbar) Start() (*Progressbar, error) {
 	return &p, nil
 }
 
-// Stop the progressbar.
-func (p *Progressbar) Stop() (*Progressbar, error) {
+// Stop the ProgressbarPrinter.
+func (p *ProgressbarPrinter) Stop() (*ProgressbarPrinter, error) {
 	if !p.IsActive {
 		return p, nil
 	}
@@ -225,7 +225,7 @@ func (p *Progressbar) Stop() (*Progressbar, error) {
 // GenericStart runs Start, but returns a LivePrinter.
 // This is used for the interface LivePrinter.
 // You most likely want to use Start instead of this in your program.
-func (p Progressbar) GenericStart() (*LivePrinter, error) {
+func (p ProgressbarPrinter) GenericStart() (*LivePrinter, error) {
 	p2, _ := p.Start()
 	lp := LivePrinter(p2)
 	return &lp, nil
@@ -234,18 +234,18 @@ func (p Progressbar) GenericStart() (*LivePrinter, error) {
 // GenericStop runs Stop, but returns a LivePrinter.
 // This is used for the interface LivePrinter.
 // You most likely want to use Stop instead of this in your program.
-func (p Progressbar) GenericStop() (*LivePrinter, error) {
+func (p ProgressbarPrinter) GenericStop() (*LivePrinter, error) {
 	p2, _ := p.Stop()
 	lp := LivePrinter(p2)
 	return &lp, nil
 }
 
-// GetElapsedTime returns the elapsed time, since the progressbar was started.
-func (p *Progressbar) GetElapsedTime() time.Duration {
+// GetElapsedTime returns the elapsed time, since the ProgressbarPrinter was started.
+func (p *ProgressbarPrinter) GetElapsedTime() time.Duration {
 	return time.Since(p.startedAt)
 }
 
-func (p *Progressbar) parseElapsedTime() string {
+func (p *ProgressbarPrinter) parseElapsedTime() string {
 	s := p.GetElapsedTime().Round(p.ElapsedTimeRoundingFactor).String()
 	return s
 }
