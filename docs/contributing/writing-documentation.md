@@ -23,6 +23,12 @@ func HelloWorld(s string) string {
 
 To edit the official documentation of PTerm, you can submit a Pull Request, which changes the markdown files in [`./docs`](https://github.com/pterm/pterm/tree/master/docs).
 
+### Documentation template
+
+```markdown
+
+```
+
 ## Special Formatting
 
 > [!TIP]
