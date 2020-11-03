@@ -23,8 +23,9 @@ var DefaultPanel = PanelPrinter{
 
 // PanelPrinter prints content in boxes.
 type PanelPrinter struct {
-	Panels  Panels
-	Padding int
+	Panels          Panels
+	Padding         int
+	SameColumnWidth bool
 }
 
 // WithPanels returns a new PanelPrinter with specific options.
@@ -39,9 +40,28 @@ func (p PanelPrinter) WithPadding(padding int) *PanelPrinter {
 	return &p
 }
 
+// WithSameColumnWidth returns a new PanelPrinter with specific options.
+func (p PanelPrinter) WithSameColumnWidth(b ...bool) *PanelPrinter {
+	b2 := internal.WithBoolean(b)
+	p.SameColumnWidth = b2
+	return &p
+}
+
 // Srender renders the Template as a string.
 func (p PanelPrinter) Srender() (string, error) {
 	var ret string
+
+	columnMaxHeightMap := make(map[int]int)
+
+	if p.SameColumnWidth {
+		for _, panel := range p.Panels {
+			for i, p2 := range panel {
+				if columnMaxHeightMap[i] < internal.GetStringMaxWidth(p2.Data) {
+					columnMaxHeightMap[i] = internal.GetStringMaxWidth(p2.Data)
+				}
+			}
+		}
+	}
 
 	for _, boxLine := range p.Panels {
 		var maxHeight int
@@ -59,17 +79,26 @@ func (p PanelPrinter) Srender() (string, error) {
 			renderedPanels = append(renderedPanels, box.Data)
 		}
 
-		for i := 0; i <= maxHeight; i++ {
-			for _, letter := range renderedPanels {
+		for i := 0; i < maxHeight; i++ {
+			for j, letter := range renderedPanels {
 				var letterLine string
 				letterLines := strings.Split(letter, "\n")
-				maxLetterWidth := internal.GetStringMaxWidth(letter)
+				var maxLetterWidth int
+				if !p.SameColumnWidth {
+					maxLetterWidth = internal.GetStringMaxWidth(letter)
+				}
 				if len(letterLines) > i {
 					letterLine = letterLines[i]
 				}
 				letterLineLength := runewidth.StringWidth(letterLine)
-				if letterLineLength < maxLetterWidth {
-					letterLine += strings.Repeat(" ", maxLetterWidth-letterLineLength)
+				if !p.SameColumnWidth {
+					if letterLineLength < maxLetterWidth {
+						letterLine += strings.Repeat(" ", maxLetterWidth-letterLineLength)
+					}
+				} else {
+					if letterLineLength < columnMaxHeightMap[j] {
+						letterLine += strings.Repeat(" ", columnMaxHeightMap[j]-letterLineLength)
+					}
 				}
 				letterLine += strings.Repeat(" ", p.Padding)
 				ret += letterLine
