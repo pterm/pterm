@@ -2,6 +2,8 @@
 - Documentation
   - [Intro](docs/intro.md)
   - [Big Text](docs/bigtext.md)
+  - [Bullet List](docs/bulletlist.md)
+  - [Bullet List Item](docs/bulletlistitem.md)
   - [Override Default Printer](docs/override-default-printer.md)
 - Contributing
   - [Writing Documentation](contributing/writing-documentation.md)
