@@ -2,6 +2,18 @@
 ## [Unreleased]
 
 ### Bug Fixes
+- **panel:** Fix output when input is colored
+
+### Ci
+- fix unit test count glitch
+
+### Performance Improvements
+- **header:** calculate margin faster
+
+
+<a name="v0.12.0"></a>
+## [v0.12.0] - 2020-11-04
+### Bug Fixes
 - **panel:** add invalid check for `padding` in `panel`
 
 ### Code Refactoring
@@ -793,7 +805,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.11.0...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.0...HEAD
+[v0.12.0]: https://github.com/pterm/pterm/compare/v0.11.0...v0.12.0
 [v0.11.0]: https://github.com/pterm/pterm/compare/v0.10.1...v0.11.0
 [v0.10.1]: https://github.com/pterm/pterm/compare/v0.10.0...v0.10.1
 [v0.10.0]: https://github.com/pterm/pterm/compare/v0.9.3...v0.10.0
