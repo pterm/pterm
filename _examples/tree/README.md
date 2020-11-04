@@ -39,7 +39,7 @@ func main() {
 	// Generate tree from LeveledList.
 	root := pterm.NewTreeFromLeveledList(leveledList)
 
-	// Render Tree
+	// Render TreePrinter
 	pterm.DefaultTree.WithRoot(root).Render()
 }
 

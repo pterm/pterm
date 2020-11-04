@@ -4,17 +4,71 @@
 ### Bug Fixes
 - **panel:** add invalid check for `padding` in `panel`
 
+### Code Refactoring
+- make all printer names end with `Printer` ([#134](https://github.com/pterm/pterm/issues/134))
+- **bulletlist:** `BulletListItem` remove `Render` and `Srender`
+- **bulletlist:** `BulletListItem` is no renderable anymore
+- **bulletlist:** change `BulletList` to `BulletListPrinter`
+- **progressbar:** change `ActiveProgressbars` to `ActiveProgressbarPrinters`
+- **progressbar:** change directory name `progressbar` to `progressbar_printer`
+- **progressbar:** change `Progressbar` to `ProgressbarPrinter`
+- **spinner:** change `Spinner` to `SpinnerPrinter`
+- **spinner:** change directory name `spinner` to `spinner_printer`
+- **table:** change `Table` to `TablePrinter`
+- **tree:** change `Tree` to `TreePrinter`
+
 ### Documentation Changes
+- **tree:** change `Tree` to `TreePrinter`
 
 ### Features
 - **panel:** add an option to make a padding beneath `panel`
 - **panel:** add an option to make columns the same length
 
 ### Test
+- **bulletlist:** `BulletListItem` remove `Render` and `Srender`
+- **bulletlist:** change `BulletList` to `BulletListPrinter`
 - **panel:** add invalid check for `padding` in `panel`
 - **panel:** add test for `WithBottomPadding`
 - **panel:** add test for `WithSameColumnWidth` & multiple `panel`
 - **panel:** add test for `WithSameColumnWidth`
+- **progressbar:** change `Progressbar` to `ProgressbarPrinter`
+- **progressbar:** change directory name `progressbar_test` to `progressbar_printer_test`
+- **spinner:** change directory name `spinner_test` to `spinner_printer_test`
+- **spinner:** change `Spinner` to `SpinnerPrinter`
+- **table:** change `Table` to `TablePrinter`
+- **tree:** change `Tree` to `TreePrinter`
+
+### BREAKING CHANGE
+
+Change names of printers which didn't end with `Printer`. Every printer name ends with `Printer` now to fit into the new naming convention.
+
+change `ActiveProgressbars` to `ActiveProgressbarPrinters`
+
+`BulletListItem` is no renderable anymore, removed `Render` and `Srender`
+
+`BulletListItem` is no renderable anymore, removed `Render` and `Srender`
+
+`BulletListItem` is no renderable anymore
+
+change `Tree` to `TreePrinter` to unify the naming scheme
+
+change `Tree` to `TreePrinter` to unify the naming scheme
+
+change `Table` to `TablePrinter` to unify the naming scheme
+
+change `Table` to `TablePrinter` to unify the naming scheme
+
+change `Spinner` to `SpinnerPrinter` to unify the naming scheme
+
+change `Spinner` to `SpinnerPrinter` to unify the naming scheme
+
+change `Progressbar` to `ProgressbarPrinter` to unify the naming scheme
+
+change `Progressbar` to `ProgressbarPrinter` to unify the naming scheme
+
+change `BulletList` to `BulletListPrinter` to unify the naming scheme
+
+change `BulletList` to `BulletListPrinter` to unify the naming scheme
 
 
 <a name="v0.11.0"></a>
