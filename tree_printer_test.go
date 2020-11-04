@@ -12,11 +12,11 @@ import (
 
 func TestTreePrinterNilPrint(t *testing.T) {
 	proxyToDevNull()
-	Tree{}.Render()
-	Tree{}.WithRoot(NewTreeFromLeveledList(LeveledList{LeveledListItem{Text: "Hello, World!", Level: 0}})).Render()
+	TreePrinter{}.Render()
+	TreePrinter{}.WithRoot(NewTreeFromLeveledList(LeveledList{LeveledListItem{Text: "Hello, World!", Level: 0}})).Render()
 }
 
-func TestTree_Render(t *testing.T) {
+func TestTreePrinter_Render(t *testing.T) {
 	internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
 		DefaultTree.WithRoot(NewTreeFromLeveledList([]LeveledListItem{
 			{Level: 0, Text: fmt.Sprint(a)},
@@ -33,7 +33,7 @@ func TestTree_Render(t *testing.T) {
 	})
 }
 
-func TestTree_NewTreeFromLeveledList(t *testing.T) {
+func TestTreePrinter_NewTreeFromLeveledList(t *testing.T) {
 	p := DefaultTree
 	p2 := p.WithRoot(NewTreeFromLeveledList(LeveledList{
 		LeveledListItem{Level: 0, Text: "0.0"},
@@ -59,7 +59,7 @@ func TestTree_NewTreeFromLeveledList(t *testing.T) {
 	assert.Empty(t, p.Root)
 }
 
-func TestTree_NewTreeFromLeveledListLevelInvalidIncrease(t *testing.T) {
+func TestTreePrinter_NewTreeFromLeveledListLevelInvalidIncrease(t *testing.T) {
 	p := DefaultTree
 	p2 := p.WithRoot(NewTreeFromLeveledList(LeveledList{
 		LeveledListItem{Level: 0, Text: "0.0"},
@@ -85,7 +85,7 @@ func TestTree_NewTreeFromLeveledListLevelInvalidIncrease(t *testing.T) {
 	assert.Empty(t, p.Root)
 }
 
-func TestTree_NewTreeFromLeveledListEmptyList(t *testing.T) {
+func TestTreePrinter_NewTreeFromLeveledListEmptyList(t *testing.T) {
 	p := DefaultTree
 	p2 := p.WithRoot(NewTreeFromLeveledList(LeveledList{}))
 
@@ -93,7 +93,7 @@ func TestTree_NewTreeFromLeveledListEmptyList(t *testing.T) {
 	assert.Empty(t, p.Root)
 }
 
-func TestTree_NewTreeFromLeveledListNegativeLevel(t *testing.T) {
+func TestTreePrinter_NewTreeFromLeveledListNegativeLevel(t *testing.T) {
 	p := DefaultTree
 	p2 := p.WithRoot(NewTreeFromLeveledList(LeveledList{
 		LeveledListItem{Level: 0, Text: "0.0"},
@@ -119,16 +119,16 @@ func TestTree_NewTreeFromLeveledListNegativeLevel(t *testing.T) {
 	assert.Empty(t, p.Root)
 }
 
-func TestTree_WithHorizontalString(t *testing.T) {
-	p := Tree{}
+func TestTreePrinter_WithHorizontalString(t *testing.T) {
+	p := TreePrinter{}
 	p2 := p.WithHorizontalString("-")
 
 	assert.Equal(t, "-", p2.HorizontalString)
 	assert.Empty(t, p.HorizontalString)
 }
 
-func TestTree_WithRoot(t *testing.T) {
-	p := Tree{}
+func TestTreePrinter_WithRoot(t *testing.T) {
+	p := TreePrinter{}
 	p2 := p.WithRoot(TreeNode{
 		Children: nil,
 		Text:     "Hello, World!",
@@ -141,8 +141,8 @@ func TestTree_WithRoot(t *testing.T) {
 	assert.Empty(t, p.Root)
 }
 
-func TestTree_WithTreeStyle(t *testing.T) {
-	p := Tree{}
+func TestTreePrinter_WithTreeStyle(t *testing.T) {
+	p := TreePrinter{}
 	s := NewStyle(FgRed, BgRed, Bold)
 	p2 := p.WithTreeStyle(s)
 
@@ -150,8 +150,8 @@ func TestTree_WithTreeStyle(t *testing.T) {
 	assert.Empty(t, p.TreeStyle)
 }
 
-func TestTree_WithTextStyle(t *testing.T) {
-	p := Tree{}
+func TestTreePrinter_WithTextStyle(t *testing.T) {
+	p := TreePrinter{}
 	s := NewStyle(FgRed, BgRed, Bold)
 	p2 := p.WithTextStyle(s)
 
@@ -159,40 +159,40 @@ func TestTree_WithTextStyle(t *testing.T) {
 	assert.Empty(t, p.TextStyle)
 }
 
-func TestTree_WithTopRightCornerString(t *testing.T) {
-	p := Tree{}
+func TestTreePrinter_WithTopRightCornerString(t *testing.T) {
+	p := TreePrinter{}
 	p2 := p.WithTopRightCornerString("-")
 
 	assert.Equal(t, "-", p2.TopRightCornerString)
 	assert.Empty(t, p.TopRightCornerString)
 }
 
-func TestTree_WithTopRightDownStringOngoing(t *testing.T) {
-	p := Tree{}
+func TestTreePrinter_WithTopRightDownStringOngoing(t *testing.T) {
+	p := TreePrinter{}
 	p2 := p.WithTopRightDownStringOngoing("-")
 
 	assert.Equal(t, "-", p2.TopRightDownString)
 	assert.Empty(t, p.TopRightDownString)
 }
 
-func TestTree_WithVerticalString(t *testing.T) {
-	p := Tree{}
+func TestTreePrinter_WithVerticalString(t *testing.T) {
+	p := TreePrinter{}
 	p2 := p.WithVerticalString("-")
 
 	assert.Equal(t, "-", p2.VerticalString)
 	assert.Empty(t, p.VerticalString)
 }
 
-func TestTree_WithIndent(t *testing.T) {
-	p := Tree{}
+func TestTreePrinter_WithIndent(t *testing.T) {
+	p := TreePrinter{}
 	p2 := p.WithIndent(3)
 
 	assert.Equal(t, 3, p2.Indent)
 	assert.Empty(t, p.Indent)
 }
 
-func TestTree_WithIndentInvalid(t *testing.T) {
-	p := Tree{}
+func TestTreePrinter_WithIndentInvalid(t *testing.T) {
+	p := TreePrinter{}
 	p2 := p.WithIndent(0)
 
 	assert.Equal(t, 1, p2.Indent)
