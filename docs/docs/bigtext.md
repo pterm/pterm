@@ -1,11 +1,11 @@
-# Big Text Printer
+# BigTextPrinter
 
 <!-- 
 Replace all of the following strings with the current printer.
         bigtext BigText BigTextPrinter DefaultBigText
 -->
 
-![Big Text Printer Example](https://raw.githubusercontent.com/pterm/pterm/master/_examples/bigtext/animation.svg)
+![BigTextPrinter Example](https://raw.githubusercontent.com/pterm/pterm/master/_examples/bigtext/animation.svg)
 
 <p align="center"><a href="https://github.com/pterm/pterm/blob/master/_examples/bigtext/main.go" target="_blank">(Show source of demo)</a></p>
 

@@ -1,11 +1,11 @@
-# Bullet List Printer
+# BulletListPrinter
 
 <!-- 
 Replace all of the following strings with the current printer.
         bulletlist BulletList BulletListPrinter DefaultBulletList
 -->
 
-![Bullet List Printer Example](https://raw.githubusercontent.com/pterm/pterm/master/_examples/bulletlist/animation.svg)
+![BulletListPrinter Example](https://raw.githubusercontent.com/pterm/pterm/master/_examples/bulletlist/animation.svg)
 
 <p align="center"><a href="https://github.com/pterm/pterm/blob/master/_examples/bulletlist/main.go" target="_blank">(Show source of demo)</a></p>
 

@@ -1,11 +1,11 @@
-# Center Printer
+# CenterPrinter
 
 <!-- 
 Replace all of the following strings with the current printer.
         center Center CenterPrinter DefaultCenter
 -->
 
-![Big Text Printer Example](https://raw.githubusercontent.com/pterm/pterm/master/_examples/center/animation.svg)
+![CenterPrinter Example](https://raw.githubusercontent.com/pterm/pterm/master/_examples/center/animation.svg)
 
 <p align="center"><a href="https://github.com/pterm/pterm/blob/master/_examples/center/main.go" target="_blank">(Show source of demo)</a></p>
 

@@ -1,4 +1,4 @@
-# Bullet List Printer
+# BulletListItem
 
 <!-- 
 Replace all of the following strings with the current printer.
