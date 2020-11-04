@@ -92,6 +92,10 @@ func (p PanelPrinter) Srender() (string, error) {
 			renderedPanels = append(renderedPanels, box.Data)
 		}
 
+		for i, panel := range renderedPanels {
+			renderedPanels[i] = strings.ReplaceAll(panel, "\n", Reset.Sprint()+"\n")
+		}
+
 		for i := 0; i <= maxHeight; i++ {
 			if maxHeight != i {
 				for j, letter := range renderedPanels {
@@ -104,7 +108,7 @@ func (p PanelPrinter) Srender() (string, error) {
 					if len(letterLines) > i {
 						letterLine = letterLines[i]
 					}
-					letterLineLength := runewidth.StringWidth(letterLine)
+					letterLineLength := runewidth.StringWidth(RemoveColorFromString(letterLine))
 					if !p.SameColumnWidth {
 						if letterLineLength < maxLetterWidth {
 							letterLine += strings.Repeat(" ", maxLetterWidth-letterLineLength)
