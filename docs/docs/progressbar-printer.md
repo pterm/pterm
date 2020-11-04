@@ -15,7 +15,10 @@ Replace all of the following strings with the current printer.
 ### Basic usage
 
 ```go
-pterm.DefaultProgressbar.WithTotal(10).Start()
+progressbar := pterm.DefaultProgressbar.WithTotal(totalSteps).Start()
+// Logic here
+progressbar.Increase()
+// More logic
 ```
 
 ### Options
