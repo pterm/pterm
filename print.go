@@ -92,11 +92,10 @@ func Fprintln(writer io.Writer, a ...interface{}) {
 
 // Printo overrides the current line in a terminal.
 // If the current line is empty, the text will be printed like with pterm.Print.
-// To create a new line, which
 // Example:
-// pterm.Printo("Hello, World")
-// time.Sleep(time.Second)
-// pterm.Oprint("Hello, Earth!")
+//   pterm.Printo("Hello, World")
+//   time.Sleep(time.Second)
+//   pterm.Printo("Hello, Earth!")
 func Printo(a ...interface{}) {
 	if Output {
 		return
