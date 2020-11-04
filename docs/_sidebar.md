@@ -16,7 +16,7 @@
     - [Tree](docs/printer/tree.md)
   - Global Functions
   - Types
-    - [BulletListItem](docs/bulletlistitem.md)
+    - [BulletListItem](docs/types/bulletlistitem.md)
   - Variables
   - [Override Default Printer](docs/override-default-printer.md)
 - Contributing
