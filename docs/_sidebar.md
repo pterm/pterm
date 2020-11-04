@@ -10,6 +10,7 @@
   - [Progressbar](docs/progressbar.md)
   - [Section](docs/section.md)
   - [Spinner](docs/spinner.md)
+  - [Table](docs/table.md)
   - [Override Default Printer](docs/override-default-printer.md)
 - Contributing
   - [Writing Documentation](contributing/writing-documentation.md)
