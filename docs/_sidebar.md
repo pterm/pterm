@@ -7,6 +7,7 @@
   - [Center](docs/center.md)
   - [Header](docs/header.md)
   - [Paragraph](docs/paragraph.md)
+  - [Progressbar](docs/progressbar.md)
   - [Override Default Printer](docs/override-default-printer.md)
 - Contributing
   - [Writing Documentation](contributing/writing-documentation.md)
