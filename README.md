@@ -53,9 +53,13 @@
 ---
 
 <p align="center">
+<strong><a href="https://pterm.sh">PTerm.sh</a></strong>
+|
 <strong><a href="#-installation">Installation</a></strong>
 |
-<strong><a href="#-documentation">Documentation</a></strong>
+<strong><a href="https://pterm.sh/#/docs/intro">Documentation</a></strong>
+|
+<strong><a href="https://pterm.sh/#/quick-start">Quick Start</a></strong>
 |
 <strong><a href="#-examples">Examples</a></strong>
 |
@@ -1239,8 +1243,8 @@ func main() {
 ---
 
 > GitHub [@pterm](https://github.com/pterm) &nbsp;&middot;&nbsp;
-> Maintainer [@MarvinJWendt](https://github.com/MarvinJWendt)
-> | [MarvinJWendt.com](https://marvinjwendt.com)
+> Author [@MarvinJWendt](https://github.com/MarvinJWendt)
+> | [PTerm.sh](https://pterm.sh)
 
 
 
