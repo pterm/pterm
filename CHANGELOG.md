@@ -1,11 +1,87 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Chore
+- **intellij:** add conventional commit linting defaults
+
+### Ci
+- change svg font to JetBrains Mono
+
+### Documentation Changes
+- **pterm-sh:** add print methods documentation
+- **pterm-sh:** remove variables for now
+- **pterm-sh:** move bulletlistitem.md into types directory
+- **pterm-sh:** move printer files in own directory
+- **pterm-sh:** add better structure to the documentation
+- **pterm-sh:** add functions with descriptions
+- **pterm-sh:** update sidebar
+- **pterm-sh:** add panel-printer
+- **pterm-sh:** update sidebar
+- **pterm-sh:** sort sidebar
+- **pterm-sh:** rename basictext.md to basictext-printer.md
+- **pterm-sh:** update sidebar
+- **pterm-sh:** add basictext
+- **pterm-sh:** make writing-documentation-template.md to a codeblock again
+- **pterm-sh:** add custom functions to writing-documentation-template.md
+- **pterm-sh:** change basic usage of progressbar
+- **pterm-sh:** rename printer documentation files
+- **pterm-sh:** update sidebar
+- **pterm-sh:** add tree
+- **pterm-sh:** add table
+- **pterm-sh:** update sidebar
+- **pterm-sh:** change `bool` to `...bool`
+- **pterm-sh:** add spinner
+- **pterm-sh:** update sidebar
+- **pterm-sh:** update sidebar
+- **pterm-sh:** add section
+- **pterm-sh:** add progressbar
+- **pterm-sh:** update sidebar
+- **pterm-sh:** update sidebar
+- **pterm-sh:** add paragraph
+- **pterm-sh:** change to same naming convention
+- **pterm-sh:** add header
+- **pterm-sh:** update sidebar
+- **pterm-sh:** update sidebar
+- **pterm-sh:** add center
+- **pterm-sh:** add bulletlistitem
+- **pterm-sh:** add bulletlist
+- **pterm-sh:** update sidebar
+- **pterm-sh:** update sidebar
+- **pterm-sh:** add override-default-printer.md
+- **pterm-sh:** add `BigText` documentation
+- **pterm-sh:** add documentation on how to write documentation
+- **pterm-sh:** change style.css
+- **pterm-sh:** disbale service worker
+- **pterm-sh:** add favicon
+- **pterm-sh:** fix some styling issues
+- **pterm-sh:** change `|` to `│`
+- **pterm-sh:** add quick-start.md
+- **pterm-sh:** disable share buttons
+- **pterm-sh:** add readme
+- **pterm-sh:** add review check description
+- **pterm-sh:** update documentation intro
+- **pterm-sh:** write writing-documentation.md
+- **pterm-sh:** add flat style to alerts
+- **pterm-sh:** fix coverpage link to documentation
+- **pterm-sh:** add writing-documentation.md
+- **pterm-sh:** update sidebar
+- **pterm-sh:** add contributing.md, intro.md and review-checks.md
+- **pterm-sh:** update coverpage
+- **pterm-sh:** fix link in intro
+- **pterm.sh:** update pterm logo
+- **readme:** add link to pterm documentation
+- **readme:** add links to pterm website
+
+
+<a name="v0.12.1"></a>
+## [v0.12.1] - 2020-11-04
 ### Bug Fixes
 - **panel:** Fix output when input is colored
 
 ### Ci
 - fix unit test count glitch
+
+### Documentation Changes
 
 ### Performance Improvements
 - **header:** calculate margin faster
@@ -805,7 +881,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.0...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.1...HEAD
+[v0.12.1]: https://github.com/pterm/pterm/compare/v0.12.0...v0.12.1
 [v0.12.0]: https://github.com/pterm/pterm/compare/v0.11.0...v0.12.0
 [v0.11.0]: https://github.com/pterm/pterm/compare/v0.10.1...v0.11.0
 [v0.10.1]: https://github.com/pterm/pterm/compare/v0.10.0...v0.10.1
