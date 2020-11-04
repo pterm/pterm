@@ -36,11 +36,11 @@ pterm.DefaultProgressbar.WithTotal(10).Start()
 |[Current](https://pkg.go.dev/github.com/pterm/pterm#ProgressbarPrinter.WithCurrent)|int|
 |[ElapsedTimeRoundingFactor](https://pkg.go.dev/github.com/pterm/pterm#ProgressbarPrinter.WithElapsedTimeRoundingFactor)|time.Duration|
 |[LastCharacter](https://pkg.go.dev/github.com/pterm/pterm#ProgressbarPrinter.WithLastCharacter)|string|
-|[RemoveWhenDone](https://pkg.go.dev/github.com/pterm/pterm#ProgressbarPrinter.WithRemoveWhenDone)|bool|
-|[ShowCount](https://pkg.go.dev/github.com/pterm/pterm#ProgressbarPrinter.WithShowCount)|bool|
-|[ShowElapsedTime](https://pkg.go.dev/github.com/pterm/pterm#ProgressbarPrinter.WithShowElapsedTime)|bool|
-|[ShowPercentage](https://pkg.go.dev/github.com/pterm/pterm#ProgressbarPrinter.WithShowPercentage)|bool|
-|[ShowTitle](https://pkg.go.dev/github.com/pterm/pterm#ProgressbarPrinter.WithShowTitle)|bool|
+|[RemoveWhenDone](https://pkg.go.dev/github.com/pterm/pterm#ProgressbarPrinter.WithRemoveWhenDone)|...bool|
+|[ShowCount](https://pkg.go.dev/github.com/pterm/pterm#ProgressbarPrinter.WithShowCount)|...bool|
+|[ShowElapsedTime](https://pkg.go.dev/github.com/pterm/pterm#ProgressbarPrinter.WithShowElapsedTime)|...bool|
+|[ShowPercentage](https://pkg.go.dev/github.com/pterm/pterm#ProgressbarPrinter.WithShowPercentage)|...bool|
+|[ShowTitle](https://pkg.go.dev/github.com/pterm/pterm#ProgressbarPrinter.WithShowTitle)|...bool|
 |[Title](https://pkg.go.dev/github.com/pterm/pterm#ProgressbarPrinter.WithTitle)|string|
 |[TitleStyle](https://pkg.go.dev/github.com/pterm/pterm#ProgressbarPrinter.WithTitleStyle)|[*Style](https://pkg.go.dev/github.com/pterm/pterm#Style)|
 |[Total](https://pkg.go.dev/github.com/pterm/pterm#ProgressbarPrinter.WithTotal)|int|

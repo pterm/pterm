@@ -32,7 +32,7 @@ pterm.DefaultHeader.Println("Hello, World!")
 |Option|Type|
 |------|----|
 |[BackgroundStyle](https://pkg.go.dev/github.com/pterm/pterm#BigTextPrinter.WithBackgroundStyle)|[*Style](https://pkg.go.dev/github.com/pterm/pterm#Style)|
-|[FullWidth](https://pkg.go.dev/github.com/pterm/pterm#BigTextPrinter.WithFullWidth)|bool|
+|[FullWidth](https://pkg.go.dev/github.com/pterm/pterm#BigTextPrinter.WithFullWidth)|...bool|
 |[Margin](https://pkg.go.dev/github.com/pterm/pterm#BigTextPrinter.WithMargin)|int|
 |[TextStyle](https://pkg.go.dev/github.com/pterm/pterm#BigTextPrinter.WithTextStyle)|[*Style](https://pkg.go.dev/github.com/pterm/pterm#Style)|
 

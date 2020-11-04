@@ -30,7 +30,7 @@ pterm.DefaultCenter.Println("Hello,\nWorld!")
 
 |Option|Type|
 |------|----|
-|[CenterEachLineSeparately](https://pkg.go.dev/github.com/pterm/pterm#CenterPrinter.WithCenterEachLineSeparately)|bool|
+|[CenterEachLineSeparately](https://pkg.go.dev/github.com/pterm/pterm#CenterPrinter.WithCenterEachLineSeparately)|...bool|
 
 ### Output functions
 
