@@ -21,6 +21,14 @@ progressbar.Increase()
 // More logic
 ```
 
+### Functions
+
+|Function|Description|
+|--------|-----------|
+|[Add(count int)](https://pkg.go.dev/github.com/pterm/pterm#TemplatePrinter.Add)|Add `count` to current value.|
+|[GetElapsedTime()](https://pkg.go.dev/github.com/pterm/pterm#TemplatePrinter.GetElapsedTime)|GetElapsedTime returns the elapsed time, since the ProgressbarPrinter was started.|
+|[Increment()](https://pkg.go.dev/github.com/pterm/pterm#TemplatePrinter.Increment)|Increment current value by one.|
+
 ### Options
 
 > To make a copy with modified options you can use:

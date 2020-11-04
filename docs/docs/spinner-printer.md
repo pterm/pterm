@@ -18,6 +18,15 @@ Replace all of the following strings with the current printer.
 pterm.DefaultSpinner.Start()
 ```
 
+### Functions
+
+|Function|Description|
+|--------|-----------|
+|[Fail(message ...interface{})](https://pkg.go.dev/github.com/pterm/pterm#TemplatePrinter.Fail)|Fail displays the fail printer. If no message is given, the text of the SpinnerPrinter will be reused as the default message.|
+|[Success(message ...interface{})](https://pkg.go.dev/github.com/pterm/pterm#TemplatePrinter.Success)|Success displays the success printer. If no message is given, the text of the SpinnerPrinter will be reused as the default message.|
+|[UpdateText(text string)](https://pkg.go.dev/github.com/pterm/pterm#TemplatePrinter.UpdateText)|UpdateText updates the message of the active SpinnerPrinter. Can be used live.|
+|[Warning(message ...interface{})](https://pkg.go.dev/github.com/pterm/pterm#TemplatePrinter.UpdateText)|Warning displays the warning printer. If no message is given, the text of the SpinnerPrinter will be reused as the default message.|
+
 ### Options
 
 > To make a copy with modified options you can use:

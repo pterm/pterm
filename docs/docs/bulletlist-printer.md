@@ -17,6 +17,13 @@ Replace all of the following strings with the current printer.
 pterm.DefaultBulletList.WithItems([]pterm.BulletListItem{{Level: 0, Text: "Level 0"}}).Render()
 ```
 
+### Functions
+
+|Function|Description|
+|--------|-----------|
+|[NewBulletListFromString(s string, padding string)](https://pkg.go.dev/github.com/pterm/pterm#TemplatePrinter.NewBulletListFromString)|NewBulletListFromString returns a BulletListPrinter with Text using the NewTreeListItemFromString method, splitting after return (\n).|
+|[NewBulletListFromStrings(s []string, padding string)](https://pkg.go.dev/github.com/pterm/pterm#TemplatePrinter.NewBulletListFromStrings)|NewBulletListFromStrings returns a BulletListPrinter with Text using the NewTreeListItemFromString method.|
+
 ### Options
 
 > To make a copy with modified options you can use:
