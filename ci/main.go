@@ -12,8 +12,6 @@ import (
 	"strings"
 )
 
-// var wg sync.WaitGroup
-
 func main() {
 	log.Output(1, "## Generating Examples")
 	files, err := ioutil.ReadDir("./_examples/")
@@ -24,11 +22,8 @@ func main() {
 	var readmeExamples string
 
 	for _, f := range files {
-		// wg.Add(1)
 		processFile(f)
 	}
-
-	// wg.Wait()
 
 	for _, f := range files {
 		exampleCode, err := ioutil.ReadFile("./_examples/" + f.Name() + "/main.go")
@@ -53,19 +48,18 @@ func main() {
 	}
 
 	var newReadmeContent string
-	var unitTestCountBytes []byte
 
 	log.Output(3, "### Counting unit tests...")
 
-	cmd := exec.Command("bash", "-c", "go test -v ./... | grep -c RUN")
-	unitTestCountBytes, err = cmd.Output()
+	cmd := exec.Command("bash", "-c", "go test -v ./...")
+	json, err := cmd.Output()
 	if err != nil {
 		log.Fatal(err)
 	}
+	unitTestCount := fmt.Sprint(strings.Count(string(json), "RUN"))
+	log.Output(4, "### Unit test count: "+unitTestCount)
 
 	log.Output(4, "#### Replacing strings in readme")
-
-	unitTestCount := strings.ReplaceAll(string(unitTestCountBytes), "\n", "")
 
 	newReadmeContent = writeBetween("unittestcount", string(readmeContent), `<img src="https://img.shields.io/badge/Unit_Tests-`+unitTestCount+`-magenta?style=flat-square" alt="Forks">`)
 	newReadmeContent = writeBetween("unittestcount2", newReadmeContent, "**`"+unitTestCount+"`**")
