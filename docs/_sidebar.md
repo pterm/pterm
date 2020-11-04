@@ -1,20 +1,23 @@
 - [Quick Start](quick-start.md)
 - Documentation
   - [Intro](docs/intro.md)
-  - Printer Components
-    - [BasicText](docs/basictext-printer.md)
-    - [BigText](docs/bigtext-printer.md)
-    - [BulletList](docs/bulletlist-printer.md)
-    - [Center](docs/center-printer.md)
-    - [Header](docs/header-printer.md)
-    - [Panel](docs/panel-printer.md)
-    - [Paragraph](docs/paragraph-printer.md)
-    - [Progressbar](docs/progressbar-printer.md)
-    - [Section](docs/section-printer.md)
-    - [Spinner](docs/spinner-printer.md)
-    - [Table](docs/table-printer.md)
-    - [Tree](docs/tree-printer.md)
-  - [BulletListItem](docs/bulletlistitem.md)
+  - Printers
+    - [BasicText](docs/printer/basictext.md)
+    - [BigText](docs/printer/bigtext.md)
+    - [BulletList](docs/printer/bulletlist.md)
+    - [Center](docs/printer/center.md)
+    - [Header](docs/printer/header.md)
+    - [Panel](docs/printer/panel.md)
+    - [Paragraph](docs/printer/paragraph.md)
+    - [Progressbar](docs/printer/progressbar.md)
+    - [Section](docs/printer/section.md)
+    - [Spinner](docs/printer/spinner.md)
+    - [Table](docs/printer/table.md)
+    - [Tree](docs/printer/tree.md)
+  - Global Functions
+  - Types
+    - [BulletListItem](docs/bulletlistitem.md)
+  - Variables
   - [Override Default Printer](docs/override-default-printer.md)
 - Contributing
   - [Writing Documentation](contributing/writing-documentation.md)
