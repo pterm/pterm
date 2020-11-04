@@ -17,7 +17,6 @@
   - Global Functions
   - Types
     - [BulletListItem](docs/types/bulletlistitem.md)
-  - Variables
   - [Override Default Printer](docs/override-default-printer.md)
 - Contributing
   - [Writing Documentation](contributing/writing-documentation.md)
