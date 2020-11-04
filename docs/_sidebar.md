@@ -7,6 +7,7 @@
     - [BulletList](docs/bulletlist-printer.md)
     - [Center](docs/center-printer.md)
     - [Header](docs/header-printer.md)
+    - [Panel](docs/panel-printer.md)
     - [Paragraph](docs/paragraph-printer.md)
     - [Progressbar](docs/progressbar-printer.md)
     - [Section](docs/section-printer.md)
