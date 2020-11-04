@@ -8,13 +8,14 @@
 - change svg font to JetBrains Mono
 
 ### Documentation Changes
-- **pterm-sh:** add print methods documentation
+- **code:** fix `Printo` comment
+- **pterm-sh:** update sidebar
 - **pterm-sh:** remove variables for now
 - **pterm-sh:** move bulletlistitem.md into types directory
 - **pterm-sh:** move printer files in own directory
 - **pterm-sh:** add better structure to the documentation
 - **pterm-sh:** add functions with descriptions
-- **pterm-sh:** update sidebar
+- **pterm-sh:** add print methods documentation
 - **pterm-sh:** add panel-printer
 - **pterm-sh:** update sidebar
 - **pterm-sh:** sort sidebar
@@ -54,9 +55,9 @@
 - **pterm-sh:** disbale service worker
 - **pterm-sh:** add favicon
 - **pterm-sh:** fix some styling issues
-- **pterm-sh:** change `|` to `│`
-- **pterm-sh:** add quick-start.md
 - **pterm-sh:** disable share buttons
+- **pterm-sh:** add quick-start.md
+- **pterm-sh:** fix link in intro
 - **pterm-sh:** add readme
 - **pterm-sh:** add review check description
 - **pterm-sh:** update documentation intro
@@ -67,7 +68,7 @@
 - **pterm-sh:** update sidebar
 - **pterm-sh:** add contributing.md, intro.md and review-checks.md
 - **pterm-sh:** update coverpage
-- **pterm-sh:** fix link in intro
+- **pterm-sh:** change `|` to `│`
 - **pterm.sh:** update pterm logo
 - **readme:** add link to pterm documentation
 - **readme:** add links to pterm website
