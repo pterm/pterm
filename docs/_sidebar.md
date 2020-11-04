@@ -2,9 +2,8 @@
 - Documentation
   - [Intro](docs/intro.md)
   - [BasicText](docs/basictext-printer.md)
-  - [Big Text](docs/bigtext-printer.md)
-  - [Bullet List](docs/bulletlist-printer.md)
-  - [Bullet List Item](docs/bulletlistitem.md)
+  - [BigText](docs/bigtext-printer.md)
+  - [BulletList](docs/bulletlist-printer.md)
   - [Center](docs/center-printer.md)
   - [Header](docs/header-printer.md)
   - [Paragraph](docs/paragraph-printer.md)
@@ -13,6 +12,7 @@
   - [Spinner](docs/spinner-printer.md)
   - [Table](docs/table-printer.md)
   - [Tree](docs/tree-printer.md)
+  - [BulletListItem](docs/bulletlistitem.md)
   - [Override Default Printer](docs/override-default-printer.md)
 - Contributing
   - [Writing Documentation](contributing/writing-documentation.md)
