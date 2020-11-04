@@ -6,6 +6,7 @@
 
 ### Code Refactoring
 - make all printer names end with `Printer` ([#134](https://github.com/pterm/pterm/issues/134))
+- **bulletlist:** remove `DefaultBulletListItem`
 - **bulletlist:** `BulletListItem` remove `Render` and `Srender`
 - **bulletlist:** `BulletListItem` is no renderable anymore
 - **bulletlist:** change `BulletList` to `BulletListPrinter`
@@ -39,6 +40,8 @@
 - **tree:** change `Tree` to `TreePrinter`
 
 ### BREAKING CHANGE
+
+Removed `DefaultBulletListItem`.
 
 Change names of printers which didn't end with `Printer`. Every printer name ends with `Printer` now to fit into the new naming convention.
 
