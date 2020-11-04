@@ -6,6 +6,7 @@
   - [Bullet List Item](docs/bulletlistitem.md)
   - [Center](docs/center.md)
   - [Header](docs/header.md)
+  - [Paragraph](docs/paragraph.md)
   - [Override Default Printer](docs/override-default-printer.md)
 - Contributing
   - [Writing Documentation](contributing/writing-documentation.md)
