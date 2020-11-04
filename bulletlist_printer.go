@@ -24,13 +24,6 @@ func NewBulletListItemFromString(text string, padding string) BulletListItem {
 	}
 }
 
-// DefaultListItem contains standards, which can be used to print a ListItem.
-var DefaultListItem = BulletListItem{
-	Bullet:      "•",
-	TextStyle:   &ThemeDefault.BulletListTextStyle,
-	BulletStyle: &ThemeDefault.BulletListBulletStyle,
-}
-
 // BulletListItem is able to render a ListItem.
 type BulletListItem struct {
 	Level       int
