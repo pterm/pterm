@@ -1,6 +1,7 @@
 - [Quick Start](quick-start.md)
 - Documentation
   - [Intro](docs/intro.md)
+  - [BasicText](docs/basictext.md)
   - [Big Text](docs/bigtext-printer.md)
   - [Bullet List](docs/bulletlist-printer.md)
   - [Bullet List Item](docs/bulletlistitem.md)
