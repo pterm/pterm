@@ -6,8 +6,8 @@ import (
 	"github.com/pterm/pterm/internal"
 )
 
-// DefaultSpinner is the default spinner.
-var DefaultSpinner = Spinner{
+// DefaultSpinner is the default SpinnerPrinter.
+var DefaultSpinner = SpinnerPrinter{
 	Sequence:       []string{"▀ ", " ▀", " ▄", "▄ "},
 	Style:          &ThemeDefault.SpinnerStyle,
 	Delay:          time.Millisecond * 200,
@@ -17,10 +17,10 @@ var DefaultSpinner = Spinner{
 	WarningPrinter: &Warning,
 }
 
-// Spinner is a loading animation, which can be used if the progress is unknown.
+// SpinnerPrinter is a loading animation, which can be used if the progress is unknown.
 // It's an animation loop, which can have a text and supports throwing errors or warnings.
-// A TextPrinter is used to display all outputs, after the spinner is done.
-type Spinner struct {
+// A TextPrinter is used to display all outputs, after the SpinnerPrinter is done.
+type SpinnerPrinter struct {
 	Text           string
 	Sequence       []string
 	Style          *Style
@@ -34,51 +34,51 @@ type Spinner struct {
 	IsActive bool
 }
 
-// WithText adds a text to the spinner.
-func (s Spinner) WithText(text string) *Spinner {
+// WithText adds a text to the SpinnerPrinter.
+func (s SpinnerPrinter) WithText(text string) *SpinnerPrinter {
 	s.Text = text
 	return &s
 }
 
-// WithSequence adds a sequence to the spinner.
-func (s Spinner) WithSequence(sequence ...string) *Spinner {
+// WithSequence adds a sequence to the SpinnerPrinter.
+func (s SpinnerPrinter) WithSequence(sequence ...string) *SpinnerPrinter {
 	s.Sequence = sequence
 	return &s
 }
 
-// WithStyle adds a style to the spinner.
-func (s Spinner) WithStyle(style *Style) *Spinner {
+// WithStyle adds a style to the SpinnerPrinter.
+func (s SpinnerPrinter) WithStyle(style *Style) *SpinnerPrinter {
 	s.Style = style
 	return &s
 }
 
-// WithDelay adds a delay to the spinner.
-func (s Spinner) WithDelay(delay time.Duration) *Spinner {
+// WithDelay adds a delay to the SpinnerPrinter.
+func (s SpinnerPrinter) WithDelay(delay time.Duration) *SpinnerPrinter {
 	s.Delay = delay
 	return &s
 }
 
-// WithMessageStyle adds a style to the spinner message.
-func (s Spinner) WithMessageStyle(style *Style) *Spinner {
+// WithMessageStyle adds a style to the SpinnerPrinter message.
+func (s SpinnerPrinter) WithMessageStyle(style *Style) *SpinnerPrinter {
 	s.MessageStyle = style
 	return &s
 }
 
-// WithRemoveWhenDone removes the spinner after it is done.
-func (s Spinner) WithRemoveWhenDone(b ...bool) *Spinner {
+// WithRemoveWhenDone removes the SpinnerPrinter after it is done.
+func (s SpinnerPrinter) WithRemoveWhenDone(b ...bool) *SpinnerPrinter {
 	s.RemoveWhenDone = internal.WithBoolean(b)
 	return &s
 }
 
-// UpdateText updates the message of the active spinner.
+// UpdateText updates the message of the active SpinnerPrinter.
 // Can be used live.
-func (s *Spinner) UpdateText(text string) {
+func (s *SpinnerPrinter) UpdateText(text string) {
 	clearLine()
 	s.Text = text
 }
 
-// Start the spinner.
-func (s Spinner) Start(text ...interface{}) (*Spinner, error) {
+// Start the SpinnerPrinter.
+func (s SpinnerPrinter) Start(text ...interface{}) (*SpinnerPrinter, error) {
 	s.IsActive = true
 
 	if len(text) != 0 {
@@ -98,9 +98,9 @@ func (s Spinner) Start(text ...interface{}) (*Spinner, error) {
 	return &s, nil
 }
 
-// Stop terminates the Spinner immediately.
-// The Spinner will not resolve into anything.
-func (s *Spinner) Stop() error {
+// Stop terminates the SpinnerPrinter immediately.
+// The SpinnerPrinter will not resolve into anything.
+func (s *SpinnerPrinter) Stop() error {
 	s.IsActive = false
 	if s.RemoveWhenDone {
 		clearLine()
@@ -114,7 +114,7 @@ func (s *Spinner) Stop() error {
 // GenericStart runs Start, but returns a LivePrinter.
 // This is used for the interface LivePrinter.
 // You most likely want to use Start instead of this in your program.
-func (s *Spinner) GenericStart() (*LivePrinter, error) {
+func (s *SpinnerPrinter) GenericStart() (*LivePrinter, error) {
 	_, _ = s.Start()
 	lp := LivePrinter(s)
 	return &lp, nil
@@ -123,15 +123,15 @@ func (s *Spinner) GenericStart() (*LivePrinter, error) {
 // GenericStop runs Stop, but returns a LivePrinter.
 // This is used for the interface LivePrinter.
 // You most likely want to use Stop instead of this in your program.
-func (s *Spinner) GenericStop() (*LivePrinter, error) {
+func (s *SpinnerPrinter) GenericStop() (*LivePrinter, error) {
 	_ = s.Stop()
 	lp := LivePrinter(s)
 	return &lp, nil
 }
 
 // Success displays the success printer.
-// If no message is given, the text of the spinner will be reused as the default message.
-func (s *Spinner) Success(message ...interface{}) {
+// If no message is given, the text of the SpinnerPrinter will be reused as the default message.
+func (s *SpinnerPrinter) Success(message ...interface{}) {
 	if s.SuccessPrinter == nil {
 		s.SuccessPrinter = &Success
 	}
@@ -145,8 +145,8 @@ func (s *Spinner) Success(message ...interface{}) {
 }
 
 // Fail displays the fail printer.
-// If no message is given, the text of the spinner will be reused as the default message.
-func (s *Spinner) Fail(message ...interface{}) {
+// If no message is given, the text of the SpinnerPrinter will be reused as the default message.
+func (s *SpinnerPrinter) Fail(message ...interface{}) {
 	if s.FailPrinter == nil {
 		s.FailPrinter = &Error
 	}
@@ -160,8 +160,8 @@ func (s *Spinner) Fail(message ...interface{}) {
 }
 
 // Warning displays the warning printer.
-// If no message is given, the text of the spinner will be reused as the default message.
-func (s *Spinner) Warning(message ...interface{}) {
+// If no message is given, the text of the SpinnerPrinter will be reused as the default message.
+func (s *SpinnerPrinter) Warning(message ...interface{}) {
 	if s.WarningPrinter == nil {
 		s.WarningPrinter = &Warning
 	}
