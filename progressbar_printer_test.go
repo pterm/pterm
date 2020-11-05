@@ -7,6 +7,7 @@ import (
 )
 
 func TestProgressbarPrinter_Add(t *testing.T) {
+	proxyToDevNull()
 	p := DefaultProgressbar.WithTotal(2000)
 	p.Add(1337)
 	assert.Equal(t, 1337, p.Current)
@@ -14,6 +15,7 @@ func TestProgressbarPrinter_Add(t *testing.T) {
 }
 
 func TestProgressbarPrinter_AddTotalEqualsCurrent(t *testing.T) {
+	proxyToDevNull()
 	p := DefaultProgressbar.WithTotal(1)
 	p.Start()
 	p.Add(1)
@@ -23,6 +25,7 @@ func TestProgressbarPrinter_AddTotalEqualsCurrent(t *testing.T) {
 }
 
 func TestProgressbarPrinter_RemoveWhenDone(t *testing.T) {
+	proxyToDevNull()
 	p, err := DefaultProgressbar.WithTotal(2).WithRemoveWhenDone().Start()
 	assert.NoError(t, err)
 	p.Stop()
