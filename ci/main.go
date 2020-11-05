@@ -51,7 +51,7 @@ func main() {
 
 	log.Output(3, "### Counting unit tests...")
 
-	cmd := exec.Command("bash", "-c", "go test -v ./...")
+	cmd := exec.Command("bash", "-c", "go test -v")
 	json, err := cmd.Output()
 	if err != nil {
 		log.Fatal(err)
