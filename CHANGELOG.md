@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Bug Fixes
+- fix internal `GetStringMaxWidth` max width
+
 ### Chore
 - **intellij:** add conventional commit linting defaults
 
@@ -14,10 +17,10 @@
 ### Documentation Changes
 - **code:** fix `Printo` comment
 - **panel:** update example
-- **pterm-sh:** move printer files in own directory
-- **pterm-sh:** remove variables for now
 - **pterm-sh:** move bulletlistitem.md into types directory
+- **pterm-sh:** remove variables for now
 - **pterm-sh:** add print methods documentation
+- **pterm-sh:** move printer files in own directory
 - **pterm-sh:** add better structure to the documentation
 - **pterm-sh:** add functions with descriptions
 - **pterm-sh:** update sidebar
