@@ -11,7 +11,7 @@ func main() {
 	// Declare panels in a two dimensional grid system.
 	panels := pterm.Panels{
 		{{Data: "This is the first panel"}, {Data: pterm.DefaultHeader.Sprint("Hello, World!")}, {Data: "This\npanel\ncontains\nmultiple\nlines"}},
-		{{Data: "This is another panel line"}, {Data: "This is the second panel\nwith a new line"}},
+		{{Data: pterm.Red("This is another\npanel line")}, {Data: "This is the second panel\nwith a new line"}},
 	}
 
 	// Print panels.

@@ -8,14 +8,18 @@
 - only count tests in pterm package
 - change svg font to JetBrains Mono
 
+### Code Refactoring
+- use `pterm.Sprint` to print
+
 ### Documentation Changes
 - **code:** fix `Printo` comment
-- **pterm-sh:** add functions with descriptions
+- **panel:** update example
+- **pterm-sh:** move printer files in own directory
 - **pterm-sh:** remove variables for now
 - **pterm-sh:** move bulletlistitem.md into types directory
-- **pterm-sh:** move printer files in own directory
-- **pterm-sh:** add better structure to the documentation
 - **pterm-sh:** add print methods documentation
+- **pterm-sh:** add better structure to the documentation
+- **pterm-sh:** add functions with descriptions
 - **pterm-sh:** update sidebar
 - **pterm-sh:** add panel-printer
 - **pterm-sh:** update sidebar
@@ -73,6 +77,13 @@
 - **pterm.sh:** update pterm logo
 - **readme:** add link to pterm documentation
 - **readme:** add links to pterm website
+
+### Features
+- color each line separately when using multi line input
+
+### Test
+- **basictext:** proxy print functions to DevNull
+- **progressbar:** proxy print functions to DevNull
 
 
 <a name="v0.12.1"></a>
