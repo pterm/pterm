@@ -5,17 +5,18 @@
 - **intellij:** add conventional commit linting defaults
 
 ### Ci
+- only count tests in pterm package
 - change svg font to JetBrains Mono
 
 ### Documentation Changes
 - **code:** fix `Printo` comment
-- **pterm-sh:** update sidebar
+- **pterm-sh:** add functions with descriptions
 - **pterm-sh:** remove variables for now
 - **pterm-sh:** move bulletlistitem.md into types directory
 - **pterm-sh:** move printer files in own directory
 - **pterm-sh:** add better structure to the documentation
-- **pterm-sh:** add functions with descriptions
 - **pterm-sh:** add print methods documentation
+- **pterm-sh:** update sidebar
 - **pterm-sh:** add panel-printer
 - **pterm-sh:** update sidebar
 - **pterm-sh:** sort sidebar
