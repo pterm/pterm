@@ -148,8 +148,12 @@ func (c Color) Sprintln(a ...interface{}) string {
 // Input will be colored with the parent Color.
 func (c Color) Sprint(a ...interface{}) string {
 	message := Sprint(a...)
-	message = strings.ReplaceAll(message, color.ResetSet, Sprintf("\u001B[%sm", c.String()))
-	return color.RenderCode(c.String(), message)
+	messageLines := strings.Split(message, "\n")
+	for i, line := range messageLines {
+		messageLines[i] = color.RenderCode(c.String(), strings.ReplaceAll(line, color.ResetSet, Sprintf("\u001B[%sm", c.String())))
+	}
+	message = strings.Join(messageLines, "\n")
+	return message
 }
 
 // Sprintf formats according to a format specifier and returns the resulting string.
