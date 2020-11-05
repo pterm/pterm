@@ -53,10 +53,10 @@ func Print(a ...interface{}) {
 	}
 
 	if !printed {
-		ret = color.Sprint(a...)
+		ret = color.Sprint(Sprint(a...))
 	}
 
-	color.Print(ret)
+	color.Print(Sprint(ret))
 }
 
 // Println formats using the default formats for its operands and writes to standard output.

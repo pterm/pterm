@@ -8,6 +8,7 @@ import (
 )
 
 func TestBasicTextPrinterNilPrint(t *testing.T) {
+	proxyToDevNull()
 	p := BasicTextPrinter{}
 	p.Println("Hello, World!")
 }
