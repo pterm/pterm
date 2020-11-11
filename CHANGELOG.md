@@ -1,6 +1,12 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Chore
+- **deps:** update dependencies
+
+
+<a name="v0.12.2"></a>
+## [v0.12.2] - 2020-11-05
 ### Bug Fixes
 - fix internal `GetStringMaxWidth` max width
 
@@ -17,9 +23,9 @@
 ### Documentation Changes
 - **code:** fix `Printo` comment
 - **panel:** update example
-- **pterm-sh:** move bulletlistitem.md into types directory
 - **pterm-sh:** remove variables for now
 - **pterm-sh:** add print methods documentation
+- **pterm-sh:** move bulletlistitem.md into types directory
 - **pterm-sh:** move printer files in own directory
 - **pterm-sh:** add better structure to the documentation
 - **pterm-sh:** add functions with descriptions
@@ -897,7 +903,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.1...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.2...HEAD
+[v0.12.2]: https://github.com/pterm/pterm/compare/v0.12.1...v0.12.2
 [v0.12.1]: https://github.com/pterm/pterm/compare/v0.12.0...v0.12.1
 [v0.12.0]: https://github.com/pterm/pterm/compare/v0.11.0...v0.12.0
 [v0.11.0]: https://github.com/pterm/pterm/compare/v0.10.1...v0.11.0
