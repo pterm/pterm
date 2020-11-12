@@ -2,6 +2,7 @@
 ## [Unreleased]
 
 ### Ci
+- count tests from all packages
 - read stderr to count unit tests
 - try to repeat unittest count
 
@@ -9,6 +10,9 @@
 
 ### Revert
 - "ci: try to repeat unittest count"
+
+### Style
+- remove commented code
 
 
 <a name="v0.12.3"></a>
