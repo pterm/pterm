@@ -48,33 +48,31 @@ func main() {
 		log.Panic(err)
 	}
 
-	var newReadmeContent string
+	newReadmeContent := string(readmeContent)
 
 	log.Output(3, "### Counting unit tests...")
 
-	unittestTimeout := make(chan string, 1)
+	for i := 0; i < 10; i++ {
+		unittestTimeout := make(chan string, 1)
 
-	go func() {
-		cmd := exec.Command("bash", "-c", "go test -v -p 1 .")
-		json, err := cmd.Output()
-		if err != nil {
-			log.Output(3, "Error: "+string(json))
+		go func() {
+			cmd := exec.Command("bash", "-c", "go test -v -p 1 .")
+			json, err := cmd.Output()
+			if err != nil {
+				log.Output(3, "Error: "+string(json))
+			}
+			unitTestCount := fmt.Sprint(strings.Count(string(json), "RUN"))
+			log.Output(4, "### Unit test count: "+unitTestCount)
+			unittestTimeout <- unitTestCount
+		}()
+
+		select {
+		case res := <-unittestTimeout:
+			newReadmeContent = writeBetween("unittestcount", newReadmeContent, `<img src="https://img.shields.io/badge/Unit_Tests-`+res+`-magenta?style=flat-square" alt="Forks">`)
+			newReadmeContent = writeBetween("unittestcount2", newReadmeContent, "**`"+res+"`**")
+		case <-time.After(time.Second * 3):
+			log.Output(4, "Timeout in counting unit tests!")
 		}
-		unitTestCount := fmt.Sprint(strings.Count(string(json), "RUN"))
-		log.Output(4, "### Unit test count: "+unitTestCount)
-		unittestTimeout <- unitTestCount
-	}()
-
-	log.Output(4, "#### Replacing strings in readme")
-
-	newReadmeContent = string(readmeContent)
-
-	select {
-	case res := <-unittestTimeout:
-		newReadmeContent = writeBetween("unittestcount", newReadmeContent, `<img src="https://img.shields.io/badge/Unit_Tests-`+res+`-magenta?style=flat-square" alt="Forks">`)
-		newReadmeContent = writeBetween("unittestcount2", newReadmeContent, "**`"+res+"`**")
-	case <-time.After(time.Second * 10):
-		log.Output(4, "Timeout in counting unit tests!")
 	}
 
 	newReadmeContent = writeBetween("examples", newReadmeContent, "\n"+readmeExamples+"\n")
