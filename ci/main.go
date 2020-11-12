@@ -54,6 +54,7 @@ func main() {
 	cmd := exec.Command("bash", "-c", "go test -v")
 	json, err := cmd.Output()
 	if err != nil {
+		log.Output(3, "Error: "+string(json))
 		log.Fatal(err)
 	}
 	unitTestCount := fmt.Sprint(strings.Count(string(json), "RUN"))
