@@ -2,7 +2,13 @@
 ## [Unreleased]
 
 ### Ci
+- read stderr to count unit tests
 - try to repeat unittest count
+
+### Documentation Changes
+
+### Revert
+- "ci: try to repeat unittest count"
 
 
 <a name="v0.12.3"></a>
