@@ -5,6 +5,7 @@
 - **deps:** update dependencies
 
 ### Ci
+- disable ubuntu and macOS tests
 - disable parallel unit test counting
 - fix generation of readmes
 - disable bodyclose
