@@ -16,6 +16,7 @@
 ### Documentation Changes
 
 ### Test
+- different test logic for rgb printing
 - add better test names for `RGB` tests
 
 
