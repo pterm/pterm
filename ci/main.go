@@ -10,6 +10,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func main() {
@@ -51,19 +52,29 @@ func main() {
 
 	log.Output(3, "### Counting unit tests...")
 
-	cmd := exec.Command("bash", "-c", "go test -v")
-	json, err := cmd.Output()
-	if err != nil {
-		log.Output(3, "Error: "+string(json))
-		log.Fatal(err)
-	}
-	unitTestCount := fmt.Sprint(strings.Count(string(json), "RUN"))
-	log.Output(4, "### Unit test count: "+unitTestCount)
+	unittestTimeout := make(chan string, 1)
+
+	go func() {
+		cmd := exec.Command("bash", "-c", "go test -v")
+		json, err := cmd.Output()
+		if err != nil {
+			log.Output(3, "Error: "+string(json))
+		}
+		unitTestCount := fmt.Sprint(strings.Count(string(json), "RUN"))
+		log.Output(4, "### Unit test count: "+unitTestCount)
+		unittestTimeout <- unitTestCount
+	}()
 
 	log.Output(4, "#### Replacing strings in readme")
 
-	newReadmeContent = writeBetween("unittestcount", string(readmeContent), `<img src="https://img.shields.io/badge/Unit_Tests-`+unitTestCount+`-magenta?style=flat-square" alt="Forks">`)
-	newReadmeContent = writeBetween("unittestcount2", newReadmeContent, "**`"+unitTestCount+"`**")
+	select {
+	case res := <-unittestTimeout:
+		newReadmeContent = writeBetween("unittestcount", string(readmeContent), `<img src="https://img.shields.io/badge/Unit_Tests-`+res+`-magenta?style=flat-square" alt="Forks">`)
+		newReadmeContent = writeBetween("unittestcount2", newReadmeContent, "**`"+res+"`**")
+	case <-time.After(time.Second * 10):
+		log.Output(4, "Timeout in counting unit tests!")
+	}
+
 	newReadmeContent = writeBetween("examples", newReadmeContent, "\n"+readmeExamples+"\n")
 
 	log.Output(4, "### Writing readme")
