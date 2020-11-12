@@ -5,6 +5,7 @@
 - **deps:** update dependencies
 
 ### Ci
+- disable parallel tests
 - add timeout to unittests
 - add json output on unittest count fail
 
