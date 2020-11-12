@@ -55,7 +55,7 @@ func main() {
 	unittestTimeout := make(chan string, 1)
 
 	go func() {
-		cmd := exec.Command("bash", "-c", "go test -v -p 1 .")
+		cmd := exec.Command("bash", "-c", "go test -v -p 1 ./...")
 		json, _ := cmd.CombinedOutput()
 		unitTestCount := fmt.Sprint(strings.Count(string(json), "RUN"))
 		log.Output(4, "### Unit test count: "+unitTestCount)
