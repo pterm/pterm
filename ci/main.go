@@ -56,10 +56,10 @@ func main() {
 
 	go func() {
 		cmd := exec.Command("bash", "-c", "go test -v -p 1 .")
-		json, err := cmd.Output()
-		if err != nil {
-			log.Output(3, "Error: "+string(json))
-		}
+		json, _ := cmd.CombinedOutput()
+		// if err != nil {
+		// 	log.Output(3, "Error: "+string(json))
+		// }
 		unitTestCount := fmt.Sprint(strings.Count(string(json), "RUN"))
 		log.Output(4, "### Unit test count: "+unitTestCount)
 		unittestTimeout <- unitTestCount
