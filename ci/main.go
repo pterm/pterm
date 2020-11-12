@@ -67,9 +67,11 @@ func main() {
 
 	log.Output(4, "#### Replacing strings in readme")
 
+	newReadmeContent = string(readmeContent)
+
 	select {
 	case res := <-unittestTimeout:
-		newReadmeContent = writeBetween("unittestcount", string(readmeContent), `<img src="https://img.shields.io/badge/Unit_Tests-`+res+`-magenta?style=flat-square" alt="Forks">`)
+		newReadmeContent = writeBetween("unittestcount", newReadmeContent, `<img src="https://img.shields.io/badge/Unit_Tests-`+res+`-magenta?style=flat-square" alt="Forks">`)
 		newReadmeContent = writeBetween("unittestcount2", newReadmeContent, "**`"+res+"`**")
 	case <-time.After(time.Second * 10):
 		log.Output(4, "Timeout in counting unit tests!")
