@@ -4,6 +4,15 @@
 ### Chore
 - **deps:** update dependencies
 
+### Ci
+- add timeout to unittests
+- add json output on unittest count fail
+
+### Documentation Changes
+
+### Test
+- add better test names for `RGB` tests
+
 
 <a name="v0.12.2"></a>
 ## [v0.12.2] - 2020-11-05
