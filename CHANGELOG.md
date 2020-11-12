@@ -5,6 +5,7 @@
 - **deps:** update dependencies
 
 ### Ci
+- disable parallel unit test counting
 - fix generation of readmes
 - disable bodyclose
 - add stats
