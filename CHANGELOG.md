@@ -1,6 +1,12 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Ci
+- try to repeat unittest count
+
+
+<a name="v0.12.3"></a>
+## [v0.12.3] - 2020-11-12
 ### Chore
 - **deps:** update dependencies
 
@@ -920,7 +926,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.2...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.3...HEAD
+[v0.12.3]: https://github.com/pterm/pterm/compare/v0.12.2...v0.12.3
 [v0.12.2]: https://github.com/pterm/pterm/compare/v0.12.1...v0.12.2
 [v0.12.1]: https://github.com/pterm/pterm/compare/v0.12.0...v0.12.1
 [v0.12.0]: https://github.com/pterm/pterm/compare/v0.11.0...v0.12.0
