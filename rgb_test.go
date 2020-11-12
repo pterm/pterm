@@ -1,11 +1,13 @@
 package pterm
 
 import (
-	"github.com/pterm/pterm/internal"
-	"github.com/stretchr/testify/assert"
 	"io"
 	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+
+	"github.com/pterm/pterm/internal"
 )
 
 func TestNewRGB(t *testing.T) {
@@ -177,16 +179,8 @@ func TestRGB_Printf(t *testing.T) {
 }
 
 func TestRGB_Println(t *testing.T) {
-	RGBs := []RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
-
-	for _, rgb := range RGBs {
-		t.Run(Sprintf("%v %v %v", rgb.R, rgb.G, rgb.B), func(t *testing.T) {
-			internal.TestPrintlnContains(t, func(w io.Writer, a interface{}) {
-				p := rgb.Println(a)
-				assert.NotNil(t, p)
-			})
-		})
-	}
+	p := RGB{127, 127, 127}.Println("Hello, World!")
+	assert.NotNil(t, p)
 }
 
 func TestRGB_Sprint(t *testing.T) {

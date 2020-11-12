@@ -55,7 +55,7 @@ func main() {
 	unittestTimeout := make(chan string, 1)
 
 	go func() {
-		cmd := exec.Command("bash", "-c", "go test -p 1 -v")
+		cmd := exec.Command("bash", "-c", "go test -v -p 1 .")
 		json, err := cmd.Output()
 		if err != nil {
 			log.Output(3, "Error: "+string(json))
