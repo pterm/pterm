@@ -13,6 +13,7 @@ func TestTablePrinter_NilPrint(t *testing.T) {
 }
 
 func TestTablePrinter_Render(t *testing.T) {
+	proxyToDevNull()
 	DefaultTable.WithHasHeader().WithData(TableData{
 		{"Firstname", "Lastname", "Email"},
 		{"Paul", "Dean", "nisi.dictum.augue@velitAliquam.co.uk"},
@@ -29,6 +30,7 @@ func TestTablePrinter_WithCSVReader(t *testing.T) {
 }
 
 func TestTablePrinter_WithData(t *testing.T) {
+	proxyToDevNull()
 	d := TableData{
 		{"Firstname", "Lastname", "Email"},
 		{"Paul", "Dean", "nisi.dictum.augue@velitAliquam.co.uk"},

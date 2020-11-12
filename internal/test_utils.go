@@ -2,15 +2,16 @@ package internal
 
 import (
 	"fmt"
-	"github.com/gookit/color"
-	"github.com/stretchr/testify/assert"
 	"io"
 	"io/ioutil"
 	"os"
 	"testing"
+
+	"github.com/gookit/color"
+	"github.com/stretchr/testify/assert"
 )
 
-var printables = []interface{}{"Hello, World!", 1337, true, false, 'c', 1.5, "\\", "%s"}
+var printables = []interface{}{"Hello, World!", 1337, true, false, -1337, 'c', 1.5, "\\", "%s"}
 
 // TestPrintContains can be used to test Print methods.
 func TestPrintContains(t *testing.T, logic func(w io.Writer, a interface{})) {
@@ -113,6 +114,7 @@ func CaptureStdout(f func(w io.Writer)) string {
 	out, _ := ioutil.ReadAll(r)
 	os.Stdout = originalStdout
 	color.SetOutput(w)
+	r.Close()
 
 	return string(out)
 }
