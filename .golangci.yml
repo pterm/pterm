@@ -24,7 +24,6 @@ linters-settings:
 linters:
   disable-all: true
   enable:
-    - bodyclose
     - gocritic
     - gosec
     - govet
@@ -35,6 +34,7 @@ linters:
     - godox
     - whitespace
     - staticcheck
+  #    - bodyclose
   #    - maligned
   #    - godot
   #    - deadcode

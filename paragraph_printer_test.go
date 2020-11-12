@@ -22,10 +22,12 @@ func TestParagraphPrinterPrintMethods(t *testing.T) {
 	})
 
 	t.Run("PrintWithLongText", func(t *testing.T) {
+		proxyToDevNull()
 		assert.NotEmpty(t, p.Print("This is a longer text to test the paragraph printer. I don't know when this text will be long enough so I will just write until I get the feeling that it's enough. Maybe about now."))
 	})
 
 	t.Run("PrintWithoutText", func(t *testing.T) {
+		proxyToDevNull()
 		assert.NotEmpty(t, p.Print(""))
 	})
 

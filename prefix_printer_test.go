@@ -10,6 +10,7 @@ import (
 var prefixPrinters = []PrefixPrinter{Info, Success, Warning, Error, *Fatal.WithFatal(false)}
 
 func TestPrefixPrinterNilPrint(t *testing.T) {
+	proxyToDevNull()
 	p := PrefixPrinter{}
 	p.Println("Hello, World!")
 }

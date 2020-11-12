@@ -38,7 +38,7 @@
 </a>
 
 <a href="https://codecov.io/gh/pterm/pterm">
-<!-- unittestcount:start --><img src="https://img.shields.io/badge/Unit_Tests-5132-magenta?style=flat-square" alt="Forks"><!-- unittestcount:end -->
+<!-- unittestcount:start --><img src="https://img.shields.io/badge/Unit_Tests-5146-magenta?style=flat-square" alt="Forks"><!-- unittestcount:end -->
 </a>
 
 <a href="https://github.com/pterm/pterm/tree/master/_examples/demo">
@@ -53,9 +53,13 @@
 ---
 
 <p align="center">
+<strong><a href="https://pterm.sh">PTerm.sh</a></strong>
+|
 <strong><a href="#-installation">Installation</a></strong>
 |
-<strong><a href="#-documentation">Documentation</a></strong>
+<strong><a href="https://pterm.sh/#/docs/intro">Documentation</a></strong>
+|
+<strong><a href="https://pterm.sh/#/quick-start">Quick Start</a></strong>
 |
 <strong><a href="#-examples">Examples</a></strong>
 |
@@ -101,7 +105,7 @@ We take special precautions to ensure that PTerm works on as many operating syst
 
 > PTerm has a 100% test coverage, which means that every line of code inside PTerm gets tested automatically
 
-We test PTerm continuously. However, since a human cannot test everything all the time, we have our own test system with which we currently run <!-- unittestcount2:start -->**`5132`**<!-- unittestcount2:end -->
+We test PTerm continuously. However, since a human cannot test everything all the time, we have our own test system with which we currently run <!-- unittestcount2:start -->**`5146`**<!-- unittestcount2:end -->
 automated tests to ensure that PTerm has no bugs. 
 
 ### • ✨ Consistent Colors
@@ -716,8 +720,8 @@ import "github.com/pterm/pterm"
 func main() {
 	// Declare panels in a two dimensional grid system.
 	panels := pterm.Panels{
-		{{Data: "This is the first panel"}, {Data: "This is the second panel"}, {Data: "This\npanel\ncontains\nmultiple\nlines"}},
-		{{Data: "This is another panel line"}, {Data: "This is the second panel\nwith a new line"}},
+		{{Data: "This is the first panel"}, {Data: pterm.DefaultHeader.Sprint("Hello, World!")}, {Data: "This\npanel\ncontains\nmultiple\nlines"}},
+		{{Data: pterm.Red("This is another\npanel line")}, {Data: "This is the second panel\nwith a new line"}},
 	}
 
 	// Print panels.
@@ -1224,7 +1228,7 @@ func main() {
 	// Generate tree from LeveledList.
 	root := pterm.NewTreeFromLeveledList(leveledList)
 
-	// Render Tree
+	// Render TreePrinter
 	pterm.DefaultTree.WithRoot(root).Render()
 }
 
@@ -1239,8 +1243,8 @@ func main() {
 ---
 
 > GitHub [@pterm](https://github.com/pterm) &nbsp;&middot;&nbsp;
-> Maintainer [@MarvinJWendt](https://github.com/MarvinJWendt)
-> | [MarvinJWendt.com](https://marvinjwendt.com)
+> Author [@MarvinJWendt](https://github.com/MarvinJWendt)
+> | [PTerm.sh](https://pterm.sh)
 
 
 
