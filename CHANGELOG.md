@@ -1,10 +1,233 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Ci
+- count tests from all packages
+- read stderr to count unit tests
+- try to repeat unittest count
+
+### Documentation Changes
+
+### Revert
+- "ci: try to repeat unittest count"
+
+### Style
+- remove commented code
+
+
+<a name="v0.12.3"></a>
+## [v0.12.3] - 2020-11-12
+### Chore
+- **deps:** update dependencies
+
+### Ci
+- disable ubuntu and macOS tests
+- disable parallel unit test counting
+- fix generation of readmes
+- disable bodyclose
+- add stats
+- disable parallel tests
+- add timeout to unittests
+- add json output on unittest count fail
+
+### Documentation Changes
+
+### Test
+- reduce tests
+- different test logic for rgb printing
+- add better test names for `RGB` tests
+
+
+<a name="v0.12.2"></a>
+## [v0.12.2] - 2020-11-05
+### Bug Fixes
+- fix internal `GetStringMaxWidth` max width
+
+### Chore
+- **intellij:** add conventional commit linting defaults
+
+### Ci
+- only count tests in pterm package
+- change svg font to JetBrains Mono
+
+### Code Refactoring
+- use `pterm.Sprint` to print
+
+### Documentation Changes
+- **code:** fix `Printo` comment
+- **panel:** update example
+- **pterm-sh:** remove variables for now
+- **pterm-sh:** add print methods documentation
+- **pterm-sh:** move bulletlistitem.md into types directory
+- **pterm-sh:** move printer files in own directory
+- **pterm-sh:** add better structure to the documentation
+- **pterm-sh:** add functions with descriptions
+- **pterm-sh:** update sidebar
+- **pterm-sh:** add panel-printer
+- **pterm-sh:** update sidebar
+- **pterm-sh:** sort sidebar
+- **pterm-sh:** rename basictext.md to basictext-printer.md
+- **pterm-sh:** update sidebar
+- **pterm-sh:** add basictext
+- **pterm-sh:** make writing-documentation-template.md to a codeblock again
+- **pterm-sh:** add custom functions to writing-documentation-template.md
+- **pterm-sh:** change basic usage of progressbar
+- **pterm-sh:** rename printer documentation files
+- **pterm-sh:** update sidebar
+- **pterm-sh:** add tree
+- **pterm-sh:** add table
+- **pterm-sh:** update sidebar
+- **pterm-sh:** change `bool` to `...bool`
+- **pterm-sh:** add spinner
+- **pterm-sh:** update sidebar
+- **pterm-sh:** update sidebar
+- **pterm-sh:** add section
+- **pterm-sh:** add progressbar
+- **pterm-sh:** update sidebar
+- **pterm-sh:** update sidebar
+- **pterm-sh:** add paragraph
+- **pterm-sh:** change to same naming convention
+- **pterm-sh:** add header
+- **pterm-sh:** update sidebar
+- **pterm-sh:** update sidebar
+- **pterm-sh:** add center
+- **pterm-sh:** add bulletlistitem
+- **pterm-sh:** add bulletlist
+- **pterm-sh:** update sidebar
+- **pterm-sh:** update sidebar
+- **pterm-sh:** add override-default-printer.md
+- **pterm-sh:** add `BigText` documentation
+- **pterm-sh:** add documentation on how to write documentation
+- **pterm-sh:** change style.css
+- **pterm-sh:** disbale service worker
+- **pterm-sh:** add favicon
+- **pterm-sh:** fix some styling issues
+- **pterm-sh:** disable share buttons
+- **pterm-sh:** add quick-start.md
+- **pterm-sh:** fix link in intro
+- **pterm-sh:** add readme
+- **pterm-sh:** add review check description
+- **pterm-sh:** update documentation intro
+- **pterm-sh:** write writing-documentation.md
+- **pterm-sh:** add flat style to alerts
+- **pterm-sh:** fix coverpage link to documentation
+- **pterm-sh:** add writing-documentation.md
+- **pterm-sh:** update sidebar
+- **pterm-sh:** add contributing.md, intro.md and review-checks.md
+- **pterm-sh:** update coverpage
+- **pterm-sh:** change `|` to `│`
+- **pterm.sh:** update pterm logo
+- **readme:** add link to pterm documentation
+- **readme:** add links to pterm website
+
+### Features
+- color each line separately when using multi line input
+
+### Test
+- **basictext:** proxy print functions to DevNull
+- **progressbar:** proxy print functions to DevNull
+
+
+<a name="v0.12.1"></a>
+## [v0.12.1] - 2020-11-04
+### Bug Fixes
+- **panel:** Fix output when input is colored
+
+### Ci
+- fix unit test count glitch
+
+### Documentation Changes
+
+### Performance Improvements
+- **header:** calculate margin faster
+
+
+<a name="v0.12.0"></a>
+## [v0.12.0] - 2020-11-04
+### Bug Fixes
+- **panel:** add invalid check for `padding` in `panel`
+
+### Code Refactoring
+- make all printer names end with `Printer` ([#134](https://github.com/pterm/pterm/issues/134))
+- **bulletlist:** remove `DefaultBulletListItem`
+- **bulletlist:** `BulletListItem` remove `Render` and `Srender`
+- **bulletlist:** `BulletListItem` is no renderable anymore
+- **bulletlist:** change `BulletList` to `BulletListPrinter`
+- **progressbar:** change `ActiveProgressbars` to `ActiveProgressbarPrinters`
+- **progressbar:** change directory name `progressbar` to `progressbar_printer`
+- **progressbar:** change `Progressbar` to `ProgressbarPrinter`
+- **spinner:** change `Spinner` to `SpinnerPrinter`
+- **spinner:** change directory name `spinner` to `spinner_printer`
+- **table:** change `Table` to `TablePrinter`
+- **tree:** change `Tree` to `TreePrinter`
+
+### Documentation Changes
+- **tree:** change `Tree` to `TreePrinter`
+
+### Features
+- **panel:** add an option to make a padding beneath `panel`
+- **panel:** add an option to make columns the same length
+
+### Test
+- **bulletlist:** `BulletListItem` remove `Render` and `Srender`
+- **bulletlist:** change `BulletList` to `BulletListPrinter`
+- **panel:** add invalid check for `padding` in `panel`
+- **panel:** add test for `WithBottomPadding`
+- **panel:** add test for `WithSameColumnWidth` & multiple `panel`
+- **panel:** add test for `WithSameColumnWidth`
+- **progressbar:** change `Progressbar` to `ProgressbarPrinter`
+- **progressbar:** change directory name `progressbar_test` to `progressbar_printer_test`
+- **spinner:** change directory name `spinner_test` to `spinner_printer_test`
+- **spinner:** change `Spinner` to `SpinnerPrinter`
+- **table:** change `Table` to `TablePrinter`
+- **tree:** change `Tree` to `TreePrinter`
+
+### BREAKING CHANGE
+
+Removed `DefaultBulletListItem`.
+
+Change names of printers which didn't end with `Printer`. Every printer name ends with `Printer` now to fit into the new naming convention.
+
+change `ActiveProgressbars` to `ActiveProgressbarPrinters`
+
+`BulletListItem` is no renderable anymore, removed `Render` and `Srender`
+
+`BulletListItem` is no renderable anymore, removed `Render` and `Srender`
+
+`BulletListItem` is no renderable anymore
+
+change `Tree` to `TreePrinter` to unify the naming scheme
+
+change `Tree` to `TreePrinter` to unify the naming scheme
+
+change `Table` to `TablePrinter` to unify the naming scheme
+
+change `Table` to `TablePrinter` to unify the naming scheme
+
+change `Spinner` to `SpinnerPrinter` to unify the naming scheme
+
+change `Spinner` to `SpinnerPrinter` to unify the naming scheme
+
+change `Progressbar` to `ProgressbarPrinter` to unify the naming scheme
+
+change `Progressbar` to `ProgressbarPrinter` to unify the naming scheme
+
+change `BulletList` to `BulletListPrinter` to unify the naming scheme
+
+change `BulletList` to `BulletListPrinter` to unify the naming scheme
+
+
+<a name="v0.11.0"></a>
+## [v0.11.0] - 2020-11-03
 ### Bug Fixes
 - **centerprinter:** make centerprinter func return pointer
 
+### Chore
+- **deps:** bump github.com/gookit/color from 1.3.1 to 1.3.2
+
 ### Documentation Changes
+- add docs website
+- **review:** add review docs check
 - **review:** update review checks
 - **review:** add review check file
 
@@ -713,7 +936,12 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.10.1...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.3...HEAD
+[v0.12.3]: https://github.com/pterm/pterm/compare/v0.12.2...v0.12.3
+[v0.12.2]: https://github.com/pterm/pterm/compare/v0.12.1...v0.12.2
+[v0.12.1]: https://github.com/pterm/pterm/compare/v0.12.0...v0.12.1
+[v0.12.0]: https://github.com/pterm/pterm/compare/v0.11.0...v0.12.0
+[v0.11.0]: https://github.com/pterm/pterm/compare/v0.10.1...v0.11.0
 [v0.10.1]: https://github.com/pterm/pterm/compare/v0.10.0...v0.10.1
 [v0.10.0]: https://github.com/pterm/pterm/compare/v0.9.3...v0.10.0
 [v0.9.3]: https://github.com/pterm/pterm/compare/v0.9.2...v0.9.3

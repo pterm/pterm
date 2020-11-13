@@ -3,6 +3,12 @@
 // View the animated examples here: https://github.com/pterm/pterm#-examples
 package pterm
 
+import "github.com/pterm/pterm/internal"
+
+func init() {
+	internal.Event("startup")
+}
+
 var (
 	// Output completely disables output from pterm. Can be used in CLI application quiet mode.
 	Output = false

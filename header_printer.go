@@ -1,6 +1,10 @@
 package pterm
 
-import "github.com/pterm/pterm/internal"
+import (
+	"strings"
+
+	"github.com/pterm/pterm/internal"
+)
 
 var (
 	// DefaultHeader returns the printer for a default header text.
@@ -64,14 +68,8 @@ func (p HeaderPrinter) Sprint(a ...interface{}) string {
 
 	renderedTextLength := len(text) + p.Margin*2
 
-	var marginString string
-	for i := 0; i < p.Margin; i++ {
-		marginString += " "
-	}
-	var blankLine string
-	for i := 0; i < renderedTextLength; i++ {
-		blankLine += " "
-	}
+	marginString := strings.Repeat(" ", p.Margin)
+	blankLine := strings.Repeat(" ", renderedTextLength)
 
 	var ret string
 

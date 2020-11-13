@@ -23,10 +23,10 @@ var DefaultPanel = PanelPrinter{
 
 // PanelPrinter prints content in boxes.
 type PanelPrinter struct {
-	Panels      Panels
-	Padding     int
-	Border      bool
-	BorderStyle *Style
+	Panels          Panels
+	Padding         int
+	BottomPadding   int
+	SameColumnWidth bool
 }
 
 // WithPanels returns a new PanelPrinter with specific options.
@@ -37,20 +37,26 @@ func (p PanelPrinter) WithPanels(panels Panels) *PanelPrinter {
 
 // WithPadding returns a new PanelPrinter with specific options.
 func (p PanelPrinter) WithPadding(padding int) *PanelPrinter {
+	if padding < 0 {
+		padding = 0
+	}
 	p.Padding = padding
 	return &p
 }
 
-// WithBorder returns a new PanelPrinter with specific options.
-func (p PanelPrinter) WithBorder(b ...bool) *PanelPrinter {
-	b2 := internal.WithBoolean(b)
-	p.Border = b2
+// WithBottomPadding returns a new PanelPrinter with specific options.
+func (p PanelPrinter) WithBottomPadding(bottomPadding int) *PanelPrinter {
+	if bottomPadding < 0 {
+		bottomPadding = 0
+	}
+	p.BottomPadding = bottomPadding
 	return &p
 }
 
-// WithBorderStyle returns a new PanelPrinter with specific options.
-func (p PanelPrinter) WithBorderStyle(style *Style) *PanelPrinter {
-	p.BorderStyle = style
+// WithSameColumnWidth returns a new PanelPrinter with specific options.
+func (p PanelPrinter) WithSameColumnWidth(b ...bool) *PanelPrinter {
+	b2 := internal.WithBoolean(b)
+	p.SameColumnWidth = b2
 	return &p
 }
 
@@ -58,8 +64,27 @@ func (p PanelPrinter) WithBorderStyle(style *Style) *PanelPrinter {
 func (p PanelPrinter) Srender() (string, error) {
 	var ret string
 
-	for _, boxLine := range p.Panels {
+	columnMaxHeightMap := make(map[int]int)
+
+	if p.SameColumnWidth {
+		for _, panel := range p.Panels {
+			for i, p2 := range panel {
+				if columnMaxHeightMap[i] < internal.GetStringMaxWidth(p2.Data) {
+					columnMaxHeightMap[i] = internal.GetStringMaxWidth(p2.Data)
+				}
+			}
+		}
+	}
+
+	for j, boxLine := range p.Panels {
 		var maxHeight int
+
+		for _, box := range boxLine {
+			height := len(strings.Split(box.Data, "\n"))
+			if height > maxHeight {
+				maxHeight = height
+			}
+		}
 
 		var renderedPanels []string
 
@@ -67,51 +92,42 @@ func (p PanelPrinter) Srender() (string, error) {
 			renderedPanels = append(renderedPanels, box.Data)
 		}
 
-		if p.Border {
-			var panels []string
-			var tmh int
-			for _, panel := range renderedPanels {
-				h := len(strings.Split(panel, "\n"))
-				if h > tmh {
-					tmh = h
-				}
-			}
-			for _, panel := range renderedPanels {
-				panel += strings.Repeat("\n", tmh-len(strings.Split(panel, "\n")))
-				s, _ := DefaultPanel.WithPanels(Panels{[]Panel{{Data: panel}}}).Srender()
-				panels = append(panels, s)
-			}
-			for i, panel := range panels {
-				renderedPanels[i] = boxed(panel)
-			}
-
+		for i, panel := range renderedPanels {
+			renderedPanels[i] = strings.ReplaceAll(panel, "\n", Reset.Sprint()+"\n")
 		}
 
-		for _, box := range renderedPanels {
-			height := len(strings.Split(box, "\n"))
-			if height > maxHeight {
-				maxHeight = height
-			}
-		}
-
-		for i := 0; i < maxHeight; i++ {
-			for _, letter := range renderedPanels {
-				var letterLine string
-				letterLines := strings.Split(letter, "\n")
-				maxLetterWidth := internal.GetStringMaxWidth(letter)
-				if len(letterLines) > i {
-					letterLine = letterLines[i]
+		for i := 0; i <= maxHeight; i++ {
+			if maxHeight != i {
+				for j, letter := range renderedPanels {
+					var letterLine string
+					letterLines := strings.Split(letter, "\n")
+					var maxLetterWidth int
+					if !p.SameColumnWidth {
+						maxLetterWidth = internal.GetStringMaxWidth(letter)
+					}
+					if len(letterLines) > i {
+						letterLine = letterLines[i]
+					}
+					letterLineLength := runewidth.StringWidth(RemoveColorFromString(letterLine))
+					if !p.SameColumnWidth {
+						if letterLineLength < maxLetterWidth {
+							letterLine += strings.Repeat(" ", maxLetterWidth-letterLineLength)
+						}
+					} else {
+						if letterLineLength < columnMaxHeightMap[j] {
+							letterLine += strings.Repeat(" ", columnMaxHeightMap[j]-letterLineLength)
+						}
+					}
+					letterLine += strings.Repeat(" ", p.Padding)
+					ret += letterLine
 				}
-				letterLineLength := runewidth.StringWidth(letterLine)
-				if letterLineLength < maxLetterWidth {
-					letterLine += strings.Repeat(" ", maxLetterWidth-letterLineLength)
-				}
-				letterLine += strings.Repeat(" ", p.Padding)
-				ret += letterLine
+				ret += "\n"
+			} else if j+1 != len(p.Panels) {
+				ret += strings.Repeat("\n", p.BottomPadding)
 			}
-			ret += "\n"
 		}
 	}
+
 	return ret, nil
 }
 
@@ -121,20 +137,4 @@ func (p PanelPrinter) Render() error {
 	Println(s)
 
 	return nil
-}
-
-func boxed(s string) string {
-	maxWidth := internal.GetStringMaxWidth(s)
-	topLine := "┌" + strings.Repeat("─", maxWidth) + "┐"
-
-	ss := strings.Split(s, "\n")
-	for i, s2 := range ss {
-		if i != len(ss)-1 {
-			ss[i] = "|" + s2 + "|"
-		}
-	}
-
-	bottomLine := "└" + strings.Repeat("─", maxWidth) + "┘"
-
-	return topLine + "\n" + strings.Join(ss, "\n") + bottomLine
 }

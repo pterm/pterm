@@ -10,9 +10,8 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 )
-
-// var wg sync.WaitGroup
 
 func main() {
 	log.Output(1, "## Generating Examples")
@@ -24,11 +23,8 @@ func main() {
 	var readmeExamples string
 
 	for _, f := range files {
-		// wg.Add(1)
 		processFile(f)
 	}
-
-	// wg.Wait()
 
 	for _, f := range files {
 		exampleCode, err := ioutil.ReadFile("./_examples/" + f.Name() + "/main.go")
@@ -53,22 +49,31 @@ func main() {
 	}
 
 	var newReadmeContent string
-	var unitTestCountBytes []byte
 
 	log.Output(3, "### Counting unit tests...")
 
-	cmd := exec.Command("bash", "-c", "go test -v ./... | grep -c RUN")
-	unitTestCountBytes, err = cmd.Output()
-	if err != nil {
-		log.Fatal(err)
-	}
+	unittestTimeout := make(chan string, 1)
+
+	go func() {
+		cmd := exec.Command("bash", "-c", "go test -v -p 1 ./...")
+		json, _ := cmd.CombinedOutput()
+		unitTestCount := fmt.Sprint(strings.Count(string(json), "RUN"))
+		log.Output(4, "### Unit test count: "+unitTestCount)
+		unittestTimeout <- unitTestCount
+	}()
 
 	log.Output(4, "#### Replacing strings in readme")
 
-	unitTestCount := strings.ReplaceAll(string(unitTestCountBytes), "\n", "")
+	newReadmeContent = string(readmeContent)
 
-	newReadmeContent = writeBetween("unittestcount", string(readmeContent), `<img src="https://img.shields.io/badge/Unit_Tests-`+unitTestCount+`-magenta?style=flat-square" alt="Forks">`)
-	newReadmeContent = writeBetween("unittestcount2", newReadmeContent, "**`"+unitTestCount+"`**")
+	select {
+	case res := <-unittestTimeout:
+		newReadmeContent = writeBetween("unittestcount", newReadmeContent, `<img src="https://img.shields.io/badge/Unit_Tests-`+res+`-magenta?style=flat-square" alt="Forks">`)
+		newReadmeContent = writeBetween("unittestcount2", newReadmeContent, "**`"+res+"`**")
+	case <-time.After(time.Second * 10):
+		log.Output(4, "Timeout in counting unit tests!")
+	}
+
 	newReadmeContent = writeBetween("examples", newReadmeContent, "\n"+readmeExamples+"\n")
 
 	log.Output(4, "### Writing readme")
@@ -131,8 +136,8 @@ func processFile(f os.FileInfo) {
 		log.Panicf("[%s] %s", f.Name(), err.Error())
 	}
 
-	svgContent = []byte(strings.ReplaceAll(string(svgContent), `font-family:`, `font-family:Consolas,`))
-	svgContent = []byte(strings.ReplaceAll(string(svgContent), `font-family="`, `font-family="Consolas,`))
+	svgContent = []byte(strings.ReplaceAll(string(svgContent), `font-family:`, `font-family:'JetBrainsMono',`))
+	svgContent = []byte(strings.ReplaceAll(string(svgContent), `font-family="`, `font-family="'JetBrainsMono',`))
 
 	svgContent = []byte(strings.Replace(string(svgContent), "<style>", `<style>@font-face{
   font-family: 'JetBrainsMono';

@@ -44,7 +44,7 @@ func Print(a ...interface{}) {
 	var ret string
 	var printed bool
 
-	for _, bar := range ActiveProgressBars {
+	for _, bar := range ActiveProgressBarPrinters {
 		if bar.IsActive {
 			ret += sClearLine()
 			ret += Sprinto(a...)
@@ -53,10 +53,10 @@ func Print(a ...interface{}) {
 	}
 
 	if !printed {
-		ret = color.Sprint(a...)
+		ret = color.Sprint(Sprint(a...))
 	}
 
-	color.Print(ret)
+	color.Print(Sprint(ret))
 }
 
 // Println formats using the default formats for its operands and writes to standard output.
@@ -92,11 +92,10 @@ func Fprintln(writer io.Writer, a ...interface{}) {
 
 // Printo overrides the current line in a terminal.
 // If the current line is empty, the text will be printed like with pterm.Print.
-// To create a new line, which
 // Example:
-// pterm.Printo("Hello, World")
-// time.Sleep(time.Second)
-// pterm.Oprint("Hello, Earth!")
+//   pterm.Printo("Hello, World")
+//   time.Sleep(time.Second)
+//   pterm.Printo("Hello, Earth!")
 func Printo(a ...interface{}) {
 	if Output {
 		return

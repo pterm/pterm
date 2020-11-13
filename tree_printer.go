@@ -4,7 +4,7 @@ import (
 	"strings"
 )
 
-// TreeNode is used as items in a Tree.
+// TreeNode is used as items in a TreePrinter.
 type TreeNode struct {
 	Children []TreeNode
 	Text     string
@@ -14,14 +14,14 @@ type TreeNode struct {
 type LeveledList []LeveledListItem
 
 // LeveledListItem combines a text with a specific level.
-// The level is the indent, which would normally be seen in a BulletList.
+// The level is the indent, which would normally be seen in a BulletListPrinter.
 type LeveledListItem struct {
 	Level int
 	Text  string
 }
 
-// DefaultTree contains standards, which can be used to render a Tree.
-var DefaultTree = Tree{
+// DefaultTree contains standards, which can be used to render a TreePrinter.
+var DefaultTree = TreePrinter{
 	TreeStyle:            &ThemeDefault.TreeStyle,
 	TextStyle:            &ThemeDefault.TreeTextStyle,
 	TopRightCornerString: "└",
@@ -32,8 +32,8 @@ var DefaultTree = Tree{
 	Indent:               2,
 }
 
-// Tree is able to render a list.
-type Tree struct {
+// TreePrinter is able to render a list.
+type TreePrinter struct {
 	Root                 TreeNode
 	TreeStyle            *Style
 	TextStyle            *Style
@@ -46,50 +46,50 @@ type Tree struct {
 }
 
 // WithTreeStyle returns a new list with a specific tree style.
-func (p Tree) WithTreeStyle(style *Style) *Tree {
+func (p TreePrinter) WithTreeStyle(style *Style) *TreePrinter {
 	p.TreeStyle = style
 	return &p
 }
 
 // WithTextStyle returns a new list with a specific text style.
-func (p Tree) WithTextStyle(style *Style) *Tree {
+func (p TreePrinter) WithTextStyle(style *Style) *TreePrinter {
 	p.TextStyle = style
 	return &p
 }
 
 // WithTopRightCornerString returns a new list with a specific TopRightCornerString.
-func (p Tree) WithTopRightCornerString(s string) *Tree {
+func (p TreePrinter) WithTopRightCornerString(s string) *TreePrinter {
 	p.TopRightCornerString = s
 	return &p
 }
 
 // WithTopRightDownStringOngoing returns a new list with a specific TopRightDownString.
-func (p Tree) WithTopRightDownStringOngoing(s string) *Tree {
+func (p TreePrinter) WithTopRightDownStringOngoing(s string) *TreePrinter {
 	p.TopRightDownString = s
 	return &p
 }
 
 // WithHorizontalString returns a new list with a specific HorizontalString.
-func (p Tree) WithHorizontalString(s string) *Tree {
+func (p TreePrinter) WithHorizontalString(s string) *TreePrinter {
 	p.HorizontalString = s
 	return &p
 }
 
 // WithVerticalString returns a new list with a specific VerticalString.
-func (p Tree) WithVerticalString(s string) *Tree {
+func (p TreePrinter) WithVerticalString(s string) *TreePrinter {
 	p.VerticalString = s
 	return &p
 }
 
 // WithRoot returns a new list with a specific Root.
-func (p Tree) WithRoot(root TreeNode) *Tree {
+func (p TreePrinter) WithRoot(root TreeNode) *TreePrinter {
 	p.Root = root
 	return &p
 }
 
 // WithIndent returns a new list with a specific amount of spacing between the levels.
 // Indent must be at least 1.
-func (p Tree) WithIndent(indent int) *Tree {
+func (p TreePrinter) WithIndent(indent int) *TreePrinter {
 	if indent < 1 {
 		indent = 1
 	}
@@ -98,7 +98,7 @@ func (p Tree) WithIndent(indent int) *Tree {
 }
 
 // Render prints the list to the terminal.
-func (p Tree) Render() error {
+func (p TreePrinter) Render() error {
 	s, _ := p.Srender()
 	Println(s)
 
@@ -106,7 +106,7 @@ func (p Tree) Render() error {
 }
 
 // Srender renders the list as a string.
-func (p Tree) Srender() (string, error) {
+func (p TreePrinter) Srender() (string, error) {
 	if p.TreeStyle == nil {
 		p.TreeStyle = NewStyle()
 	}
@@ -118,9 +118,9 @@ func (p Tree) Srender() (string, error) {
 }
 
 // walkOverTree is a recursive function,
-// which analyzes a Tree and connects the items with specific characters.
-// Returns Tree as string.
-func walkOverTree(list []TreeNode, p Tree, prefix string) string {
+// which analyzes a TreePrinter and connects the items with specific characters.
+// Returns TreePrinter as string.
+func walkOverTree(list []TreeNode, p TreePrinter, prefix string) string {
 	var ret string
 	for i, item := range list {
 		if len(list) > i+1 { // if not last in list
