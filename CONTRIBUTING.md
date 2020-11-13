@@ -35,7 +35,7 @@ func (p TemplatePrinter) Sprintf(format string, a ...interface{}) string {
 // Print formats using the default formats for its operands and writes to standard output.
 // Spaces are added between operands when neither is a string.
 // It returns the number of bytes written and any write error encountered.
-func (p TemplatePrinter) Print(a ...interface{}) *TemplatePrinter {
+func (p TemplatePrinter) Print(a ...interface{}) *TextPrinter {
     Print(p.Sprint(a...))
 	tp := TemplatePrinter(p)
 	return &tp
@@ -44,7 +44,7 @@ func (p TemplatePrinter) Print(a ...interface{}) *TemplatePrinter {
 // Println formats using the default formats for its operands and writes to standard output.
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
-func (p TemplatePrinter) Println(a ...interface{}) *TemplatePrinter {
+func (p TemplatePrinter) Println(a ...interface{}) *TextPrinter {
     Println(p.Sprint(a...))
     tp := TemplatePrinter(p)
     return &tp
@@ -52,7 +52,7 @@ func (p TemplatePrinter) Println(a ...interface{}) *TemplatePrinter {
 
 // Printf formats according to a format specifier and writes to standard output.
 // It returns the number of bytes written and any write error encountered.
-func (p TemplatePrinter) Printf(format string, a ...interface{}) *TemplatePrinter {
+func (p TemplatePrinter) Printf(format string, a ...interface{}) *TextPrinter {
     Print(p.Sprintf(format, a...))
 	tp := TemplatePrinter(p)
 	return &tp
@@ -74,7 +74,7 @@ func (p TemplatePrinter) Srender() (string, error) {
 }
 
 // Render prints the Template to the terminal.
-func (p TemplatePrinter) Render() {
+func (p TemplatePrinter) Render() error {
 	s, err := p.Srender()
     if err != nil {
         return err
@@ -113,18 +113,18 @@ func (s *TemplatePrinter) Stop() error {
 // This is used for the interface LivePrinter.
 // You most likely want to use Start instead of this in your program.
 func (s *TemplatePrinter) GenericStart() (*LivePrinter, error) {
-	s.Start()
+	_, err := s.Start()
 	lp := LivePrinter(s)
-	return &lp, nil
+	return &lp, err
 }
 
 // GenericStop runs Stop, but returns a LivePrinter.
 // This is used for the interface LivePrinter.
 // You most likely want to use Stop instead of this in your program.
 func (s *TemplatePrinter) GenericStop() (*LivePrinter, error) {
-	s.Stop()
+	err := s.Stop()
 	lp := LivePrinter(s)
-	return &lp, nil
+	return &lp, err
 }
 ```
 
