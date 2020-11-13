@@ -1,6 +1,7 @@
 package pterm
 
 import (
+	"strconv"
 	"strings"
 
 	"github.com/mattn/go-runewidth"
@@ -12,6 +13,7 @@ import (
 type BarChartPrinter struct {
 	Bars       Bars
 	Horizontal bool
+	ShowValue  bool
 	// Height sets the maximum height of a vertical bar chart.
 	// The default is calculated to fit into the terminal.
 	// Ignored if Horizontal is set to true.
@@ -72,6 +74,12 @@ func (p BarChartPrinter) WithWidth(value int) *BarChartPrinter {
 	return &p
 }
 
+// WithShowValue returns a new BarChartPrinter with a specific option.
+func (p BarChartPrinter) WithShowValue(b ...bool) *BarChartPrinter {
+	p.ShowValue = internal.WithBoolean(b)
+	return &p
+}
+
 // Srender renders the Template as a string.
 func (p BarChartPrinter) Srender() (string, error) {
 	var ret string
@@ -94,6 +102,9 @@ func (p BarChartPrinter) Srender() (string, error) {
 		for _, bar := range p.Bars {
 			panels[0][0].Data += "\n" + bar.Label
 			panels[0][1].Data += "\n" + bar.Style.Sprint(strings.Repeat(p.HorizontalBarCharacter, internal.MapRangeToRange(0, float32(maxBarValue), 0, float32(p.Width), float32(bar.Value))))
+			if p.ShowValue {
+				panels[0][1].Data += " " + strconv.Itoa(bar.Value)
+			}
 		}
 		ret, _ = DefaultPanel.WithPanels(panels).Srender()
 		return ret, nil
@@ -102,9 +113,14 @@ func (p BarChartPrinter) Srender() (string, error) {
 
 		for i, bar := range p.Bars {
 			var renderedBar string
+			indent := strings.Repeat(" ", internal.GetStringMaxWidth(RemoveColorFromString(bar.Label))/2)
+
+			if p.ShowValue {
+				renderedBar += Sprint(indent + strconv.Itoa(bar.Value) + indent + "\n")
+			}
+
 			bar.Value = internal.MapRangeToRange(0, float32(maxBarValue), 0, float32(p.Height), float32(bar.Value))
 			for i := 0; i < bar.Value; i++ {
-				indent := strings.Repeat(" ", internal.GetStringMaxWidth(RemoveColorFromString(bar.Label))/2)
 				renderedBar += indent + bar.Style.Sprint(p.VerticalBarCharacter) + indent + " \n"
 			}
 			labelHeight := len(strings.Split(bar.Label, "\n"))
