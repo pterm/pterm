@@ -38,6 +38,8 @@ var (
 		DebugMessageStyle:       Style{FgGray},
 		DebugPrefixStyle:        Style{FgBlack, BgGray},
 		PanelBorderStyle:        Style{FgDefault},
+		BoxStyle:                Style{FgDefault},
+		BoxTextStyle:            Style{FgDefault},
 	}
 )
 
@@ -79,6 +81,8 @@ type Theme struct {
 	DebugMessageStyle       Style
 	DebugPrefixStyle        Style
 	PanelBorderStyle        Style
+	BoxStyle                Style
+	BoxTextStyle            Style
 }
 
 // WithPrimaryStyle returns a new theme with overridden value.
@@ -216,5 +220,17 @@ func (t Theme) WithTreeTextStyle(style Style) Theme {
 // WithPanelBorderStyle returns a new theme with overridden value.
 func (t Theme) WithPanelBorderStyle(style Style) Theme {
 	t.PanelBorderStyle = style
+	return t
+}
+
+// WithBoxStyle returns a new theme with overridden value.
+func (t Theme) WithBoxStyle(style Style) Theme {
+	t.BoxStyle = style
+	return t
+}
+
+// WithBoxTextStyle returns a new theme with overridden value.
+func (t Theme) WithBoxTextStyle(style Style) Theme {
+	t.BoxTextStyle = style
 	return t
 }
