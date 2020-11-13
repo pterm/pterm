@@ -37,7 +37,7 @@ func (p TemplatePrinter) Sprintf(format string, a ...interface{}) string {
 // It returns the number of bytes written and any write error encountered.
 func (p TemplatePrinter) Print(a ...interface{}) *TextPrinter {
     Print(p.Sprint(a...))
-	tp := TemplatePrinter(p)
+	tp := TextPrinter(p)
 	return &tp
 }
 
@@ -46,7 +46,7 @@ func (p TemplatePrinter) Print(a ...interface{}) *TextPrinter {
 // It returns the number of bytes written and any write error encountered.
 func (p TemplatePrinter) Println(a ...interface{}) *TextPrinter {
     Println(p.Sprint(a...))
-    tp := TemplatePrinter(p)
+    tp := TextPrinter(p)
     return &tp
 }
 
@@ -54,7 +54,7 @@ func (p TemplatePrinter) Println(a ...interface{}) *TextPrinter {
 // It returns the number of bytes written and any write error encountered.
 func (p TemplatePrinter) Printf(format string, a ...interface{}) *TextPrinter {
     Print(p.Sprintf(format, a...))
-	tp := TemplatePrinter(p)
+	tp := TextPrinter(p)
 	return &tp
 }
 ```
