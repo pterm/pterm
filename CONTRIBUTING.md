@@ -68,7 +68,7 @@ func (p Template) Srender() string {
 }
 
 // Render prints the Template to the terminal.
-func (p BigTextPrinter) Render() {
+func (p Template) Render() {
 	s, err := p.Srender()
     if err != nil {
         return err
