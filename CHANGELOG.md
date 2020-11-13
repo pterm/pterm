@@ -7,6 +7,7 @@
 - try to repeat unittest count
 
 ### Documentation Changes
+- **contributing:** change examples to return error ([#145](https://github.com/pterm/pterm/issues/145))
 
 ### Revert
 - "ci: try to repeat unittest count"
