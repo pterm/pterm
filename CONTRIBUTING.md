@@ -36,7 +36,7 @@ func (p TemplatePrinter) Sprintf(format string, a ...interface{}) string {
 // Spaces are added between operands when neither is a string.
 // It returns the number of bytes written and any write error encountered.
 func (p TemplatePrinter) Print(a ...interface{}) *TextPrinter {
-	Print(p.Sprint(a...))
+    Print(p.Sprint(a...))
 	tp := TextPrinter(p)
 	return &tp
 }
@@ -45,7 +45,7 @@ func (p TemplatePrinter) Print(a ...interface{}) *TextPrinter {
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
 func (p TemplatePrinter) Println(a ...interface{}) *TextPrinter {
-	Println(p.Sprint(a...))
+    Println(p.Sprint(a...))
     tp := TextPrinter(p)
     return &tp
 }
@@ -53,7 +53,7 @@ func (p TemplatePrinter) Println(a ...interface{}) *TextPrinter {
 // Printf formats according to a format specifier and writes to standard output.
 // It returns the number of bytes written and any write error encountered.
 func (p TemplatePrinter) Printf(format string, a ...interface{}) *TextPrinter {
-	Print(p.Sprintf(format, a...))
+    Print(p.Sprintf(format, a...))
 	tp := TextPrinter(p)
 	return &tp
 }
@@ -62,13 +62,19 @@ func (p TemplatePrinter) Printf(format string, a ...interface{}) *TextPrinter {
 ### `RenderablePrinter` Template
 
 ```go
+package pterm
+
+type TemplatePrinter struct{
+	// TODO: Add printer settings here
+}
+
 // Srender renders the Template as a string.
-func (p Template) Srender() string {
-	
+func (p TemplatePrinter) Srender() (string, error) {
+	return "", nil
 }
 
 // Render prints the Template to the terminal.
-func (p BigTextPrinter) Render() {
+func (p TemplatePrinter) Render() error {
 	s, err := p.Srender()
     if err != nil {
         return err
@@ -82,34 +88,43 @@ func (p BigTextPrinter) Render() {
 ### `LivePrinter` Template
 
 ```go
-// Start the spinner.
-func (s Spinner) Start(text...interface{}) *Template { // TODO: Replace Template with actual printer.
-	// TODO: start logic
-	return &s
+// Start the TemplatePrinter.
+package pterm
+import "github.com/pterm/pterm"
+
+type TemplatePrinter struct{
+
 }
 
-// Stop terminates the Spinner immediately.
-// The Spinner will not resolve into anything.
-func (s *Spinner) Stop() {
+
+func (s TemplatePrinter) Start(text...interface{}) (*TemplatePrinter, error) { // TODO: Replace Template with actual printer.
+	// TODO: start logic
+	return &s, nil
+}
+
+// Stop terminates the TemplatePrinter immediately.
+// The TemplatePrinter will not resolve into anything.
+func (s *TemplatePrinter) Stop() error {
 	// TODO: stop logic
+    return nil
 }
 
 // GenericStart runs Start, but returns a LivePrinter.
 // This is used for the interface LivePrinter.
 // You most likely want to use Start instead of this in your program.
-func (s *Spinner) GenericStart() *LivePrinter {
-	s.Start()
+func (s *TemplatePrinter) GenericStart() (*LivePrinter, error) {
+	_, err := s.Start()
 	lp := LivePrinter(s)
-	return &lp
+	return &lp, err
 }
 
 // GenericStop runs Stop, but returns a LivePrinter.
 // This is used for the interface LivePrinter.
 // You most likely want to use Stop instead of this in your program.
-func (s *Spinner) GenericStop() *LivePrinter {
-	s.Stop()
+func (s *TemplatePrinter) GenericStop() (*LivePrinter, error) {
+	err := s.Stop()
 	lp := LivePrinter(s)
-	return &lp
+	return &lp, err
 }
 ```
 
