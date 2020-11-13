@@ -102,40 +102,41 @@ func (p TemplatePrinter) Render() {
 ### `LivePrinter` Template
 
 ```go
-// Start the spinner.
+// Start the TemplatePrinter.
 package pterm
+import "github.com/pterm/pterm"
 
-type Spinner struct{
+type TemplatePrinter struct{
 
 }
 
 
-func (s Spinner) Start(text...interface{}) *Spinner { // TODO: Replace Template with actual printer.
+func (s TemplatePrinter) Start(text...interface{}) *LivePrinter { // TODO: Replace Template with actual printer.
 	// TODO: start logic
 	return &s
 }
 
-// Stop terminates the Spinner immediately.
-// The Spinner will not resolve into anything.
-func (s *Spinner) Stop() {
+// Stop terminates the TemplatePrinter immediately.
+// The TemplatePrinter will not resolve into anything.
+func (s *TemplatePrinter) Stop() {
 	// TODO: stop logic
 }
 
 // GenericStart runs Start, but returns a LivePrinter.
 // This is used for the interface LivePrinter.
 // You most likely want to use Start instead of this in your program.
-func (s *Spinner) GenericStart() *Spinner {
+func (s *TemplatePrinter) GenericStart() *LivePrinter {
 	s.Start()
-	lp := Spinner(s)
+	lp := LivePrinter(s)
 	return &lp
 }
 
 // GenericStop runs Stop, but returns a LivePrinter.
 // This is used for the interface LivePrinter.
 // You most likely want to use Stop instead of this in your program.
-func (s *Spinner) GenericStop() *Spinner {
+func (s *TemplatePrinter) GenericStop() *LivePrinter {
 	s.Stop()
-	lp := Spinner(s)
+	lp := LivePrinter(s)
 	return &lp
 }
 ```
