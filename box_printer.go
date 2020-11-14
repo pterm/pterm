@@ -9,6 +9,7 @@ import (
 	"github.com/pterm/pterm/internal"
 )
 
+// BoxPrinter is able to render a box around printables.
 type BoxPrinter struct {
 	Text                    string
 	TextStyle               *Style
@@ -25,6 +26,7 @@ type BoxPrinter struct {
 	LeftPadding             int
 }
 
+// DefaultBox is the default BoxPrinter.
 var DefaultBox = BoxPrinter{
 	VerticalString:          "|",
 	TopRightCornerString:    "└",
@@ -124,7 +126,7 @@ func (p BoxPrinter) WithLeftPadding(padding int) *BoxPrinter {
 	return &p
 }
 
-// Srender renders the Template as a string.
+// Srender renders the BoxPrinter as a string.
 func (p BoxPrinter) Srender() (string, error) {
 	if p.BoxStyle == nil {
 		p.BoxStyle = NewStyle()
@@ -148,14 +150,16 @@ func (p BoxPrinter) Srender() (string, error) {
 			}
 		}
 		if i == len(ss)-1 {
-			ss[i] += "\n"
+			if !strings.Contains(ss[i], "\n") {
+				ss[i] += "\n"
+			}
 		}
 	}
 
 	return topLine + "\n" + strings.Join(ss, "\n") + bottomLine, nil
 }
 
-// Render prints the Template to the terminal.
+// Render prints the BoxPrinter to the terminal.
 func (p BoxPrinter) Render() error {
 	s, _ := p.Srender()
 	Println(s)
