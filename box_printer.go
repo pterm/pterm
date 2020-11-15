@@ -11,7 +11,6 @@ import (
 
 // BoxPrinter is able to render a box around printables.
 type BoxPrinter struct {
-	Text                    string
 	TextStyle               *Style
 	VerticalString          string
 	BoxStyle                *Style
@@ -51,12 +50,6 @@ func (p BoxPrinter) WithBoxStyle(style *Style) *BoxPrinter {
 // WithTextStyle returns a new box with a specific text Style.
 func (p BoxPrinter) WithTextStyle(style *Style) *BoxPrinter {
 	p.TextStyle = style
-	return &p
-}
-
-// WithText returns a new box with a specific Text.
-func (p BoxPrinter) WithText(str string) *BoxPrinter {
-	p.Text = str
 	return &p
 }
 
@@ -126,21 +119,22 @@ func (p BoxPrinter) WithLeftPadding(padding int) *BoxPrinter {
 	return &p
 }
 
-// Srender renders the BoxPrinter as a string.
-func (p BoxPrinter) Srender() (string, error) {
+// Sprint formats using the default formats for its operands and returns the resulting string.
+// Spaces are added between operands when neither is a string.
+func (p BoxPrinter) Sprint(a ...interface{}) string {
 	if p.BoxStyle == nil {
 		p.BoxStyle = NewStyle()
 	}
 	if p.TextStyle == nil {
 		p.TextStyle = NewStyle()
 	}
-	maxWidth := internal.GetStringMaxWidth(p.Text)
+	maxWidth := internal.GetStringMaxWidth(Sprint(a...))
 	topLine := p.BoxStyle.Sprint(p.BottomRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString), maxWidth+p.RightPadding+p.RightPadding) + p.BoxStyle.Sprint(p.BottomLeftCornerString)
 	bottomLine := p.BoxStyle.Sprint(p.TopRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString), maxWidth+p.RightPadding+p.RightPadding) + p.BoxStyle.Sprint(p.TopLeftCornerString)
 
-	p.Text = strings.Repeat("\n", p.TopPadding) + p.Text + strings.Repeat("\n", p.BottomPadding)
+	boxString := strings.Repeat("\n", p.TopPadding) + Sprint(a...) + strings.Repeat("\n", p.BottomPadding)
 
-	ss := strings.Split(p.Text, "\n")
+	ss := strings.Split(boxString, "\n")
 	for i, s2 := range ss {
 		if i != len(ss) {
 			if runewidth.StringWidth(color.ClearCode(s2)) < maxWidth {
@@ -156,12 +150,42 @@ func (p BoxPrinter) Srender() (string, error) {
 		}
 	}
 
-	return topLine + "\n" + strings.Join(ss, "\n") + bottomLine, nil
+	return topLine + "\n" + strings.Join(ss, "\n") + bottomLine
 }
 
-// Render prints the BoxPrinter to the terminal.
-func (p BoxPrinter) Render() error {
-	s, _ := p.Srender()
-	Println(s)
-	return nil
+// Sprintln formats using the default formats for its operands and returns the resulting string.
+// Spaces are always added between operands and a newline is appended.
+func (p BoxPrinter) Sprintln(a ...interface{}) string {
+	return Sprintln(p.Sprint(a...))
+}
+
+// Sprintf formats according to a format specifier and returns the resulting string.
+func (p BoxPrinter) Sprintf(format string, a ...interface{}) string {
+	return p.Sprint(Sprintf(format, a...))
+}
+
+// Print formats using the default formats for its operands and writes to standard output.
+// Spaces are added between operands when neither is a string.
+// It returns the number of bytes written and any write error encountered.
+func (p BoxPrinter) Print(a ...interface{}) *TextPrinter {
+	Print(p.Sprint(a...))
+	tp := TextPrinter(p)
+	return &tp
+}
+
+// Println formats using the default formats for its operands and writes to standard output.
+// Spaces are always added between operands and a newline is appended.
+// It returns the number of bytes written and any write error encountered.
+func (p BoxPrinter) Println(a ...interface{}) *TextPrinter {
+	Println(p.Sprint(a...))
+	tp := TextPrinter(p)
+	return &tp
+}
+
+// Printf formats according to a format specifier and writes to standard output.
+// It returns the number of bytes written and any write error encountered.
+func (p BoxPrinter) Printf(format string, a ...interface{}) *TextPrinter {
+	Print(p.Sprintf(format, a...))
+	tp := TextPrinter(p)
+	return &tp
 }

@@ -1,7 +1,6 @@
 package pterm
 
 import (
-	"fmt"
 	"io"
 	"testing"
 
@@ -11,14 +10,47 @@ import (
 )
 
 func TestBoxPrinterNilPrint(t *testing.T) {
-	proxyToDevNull()
-	BoxPrinter{}.Render()
-	BoxPrinter{}.WithText("abc").Render()
+	p := BoxPrinter{}
+	p.Println("Hello, World!")
 }
 
-func TestBoxPrinter_Render(t *testing.T) {
-	internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
-		DefaultBox.WithText(fmt.Sprint(a) + "\nabc\nHello, World!").Render()
+func TestBoxPrinterPrintMethods(t *testing.T) {
+	p := DefaultBox
+
+	t.Run("Print", func(t *testing.T) {
+		internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
+			p.Print(a)
+		})
+	})
+
+	t.Run("Printf", func(t *testing.T) {
+		internal.TestPrintfContains(t, func(w io.Writer, format string, a interface{}) {
+			p.Printf(format, a)
+		})
+	})
+
+	t.Run("Println", func(t *testing.T) {
+		internal.TestPrintlnContains(t, func(w io.Writer, a interface{}) {
+			p.Println(a)
+		})
+	})
+
+	t.Run("Sprint", func(t *testing.T) {
+		internal.TestSprintContains(t, func(a interface{}) string {
+			return p.Sprint(a)
+		})
+	})
+
+	t.Run("Sprintf", func(t *testing.T) {
+		internal.TestSprintfContains(t, func(format string, a interface{}) string {
+			return p.Sprintf(format, a)
+		})
+	})
+
+	t.Run("Sprintln", func(t *testing.T) {
+		internal.TestSprintlnContains(t, func(a interface{}) string {
+			return p.Sprintln(a)
+		})
 	})
 }
 
@@ -69,14 +101,6 @@ func TestBoxPrinter_WithRightPadding(t *testing.T) {
 
 	assert.Equal(t, 5, p2.RightPadding)
 	assert.Empty(t, p.RightPadding)
-}
-
-func TestBoxPrinter_WithText(t *testing.T) {
-	p := BoxPrinter{}
-	p2 := p.WithText("-")
-
-	assert.Equal(t, "-", p2.Text)
-	assert.Empty(t, p.Text)
 }
 
 func TestBoxPrinter_WithTextStyle(t *testing.T) {
