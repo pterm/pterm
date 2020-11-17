@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Bug Fixes
+- fix `Printf` of `PrefixPrinter`
+
 ### Ci
 - count tests from all packages
 - read stderr to count unit tests
