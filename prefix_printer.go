@@ -210,7 +210,7 @@ func (p *PrefixPrinter) Printf(format string, a ...interface{}) *TextPrinter {
 	if p.Debugger && !PrintDebugMessages {
 		return &tp
 	}
-	Print(Sprintf(format, a...))
+	Print(p.Sprintf(format, a...))
 	checkFatal(p)
 	return &tp
 }
