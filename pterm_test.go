@@ -16,13 +16,13 @@ func TestEnableDebugMessages(t *testing.T) {
 	assert.True(t, PrintDebugMessages)
 }
 
+func TestDisableOutput(t *testing.T) {
+	DisableOutput()
+	assert.False(t, Output)
+}
+
 func TestEnableOutput(t *testing.T) {
 	DisableOutput()
 	EnableOutput()
 	assert.True(t, Output)
-}
-
-func TestDisableOutput(t *testing.T) {
-	DisableOutput()
-	assert.False(t, Output)
 }
