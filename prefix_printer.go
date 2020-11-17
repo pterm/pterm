@@ -129,6 +129,7 @@ func (p PrefixPrinter) WithDebugger(b ...bool) *PrefixPrinter {
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
 func (p *PrefixPrinter) Sprint(a ...interface{}) string {
+	m := Sprint(a...)
 	if p.Debugger && !PrintDebugMessages {
 		return ""
 	}
@@ -144,7 +145,14 @@ func (p *PrefixPrinter) Sprint(a ...interface{}) string {
 	}
 
 	var ret string
-	messageLines := strings.Split(Sprint(a...), "\n")
+	var newLine bool
+
+	if strings.HasSuffix(m, "\n") {
+		m = strings.TrimRight(m, "\n")
+		newLine = true
+	}
+
+	messageLines := strings.Split(m, "\n")
 	for i, m := range messageLines {
 		if i == 0 {
 			ret += p.GetFormattedPrefix() + " "
@@ -155,6 +163,10 @@ func (p *PrefixPrinter) Sprint(a ...interface{}) string {
 		} else {
 			ret += "\n" + p.Prefix.Style.Sprint(strings.Repeat(" ", len(p.Prefix.Text)+2)) + " " + p.MessageStyle.Sprint(m)
 		}
+	}
+
+	if newLine {
+		ret += "\n"
 	}
 
 	return Sprint(ret)
