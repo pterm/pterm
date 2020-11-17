@@ -611,6 +611,38 @@ func randomInt(min, max int) int {
 
 </details>
 
+### disable-output
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/disable-output/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	for i := 0; i < 15; i++ {
+		switch i {
+		case 5:
+			pterm.Info.Println("Disabled Output!")
+			pterm.DisableOutput()
+		case 10:
+			pterm.EnableOutput()
+			pterm.Info.Println("Enabled Output!")
+		}
+
+		pterm.Printf("Printing something... [%d/%d]\n", i, 15)
+	}
+}
+
+```
+
+</details>
+
 ### header
 
 ![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/header/animation.svg)

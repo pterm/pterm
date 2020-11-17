@@ -2,7 +2,15 @@
 ## [Unreleased]
 
 ### Bug Fixes
+- disabling output works as expected now ([#149](https://github.com/pterm/pterm/issues/149))
+
+
+<a name="v0.12.5"></a>
+## [v0.12.5] - 2020-11-17
+### Bug Fixes
 - fix `PrefixPrinter` with multiple trailing newline endings.
+
+### Documentation Changes
 
 
 <a name="v0.12.4"></a>
@@ -946,7 +954,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.4...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.5...HEAD
+[v0.12.5]: https://github.com/pterm/pterm/compare/v0.12.4...v0.12.5
 [v0.12.4]: https://github.com/pterm/pterm/compare/v0.12.3...v0.12.4
 [v0.12.3]: https://github.com/pterm/pterm/compare/v0.12.2...v0.12.3
 [v0.12.2]: https://github.com/pterm/pterm/compare/v0.12.1...v0.12.2
