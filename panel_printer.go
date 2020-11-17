@@ -18,7 +18,8 @@ type Panels [][]Panel
 
 // DefaultPanel is the default PanelPrinter.
 var DefaultPanel = PanelPrinter{
-	Padding: 1,
+	Padding:     1,
+	BorderStyle: &ThemeDefault.BoxStyle,
 }
 
 // PanelPrinter prints content in boxes.
@@ -27,6 +28,8 @@ type PanelPrinter struct {
 	Padding         int
 	BottomPadding   int
 	SameColumnWidth bool
+	Border          bool
+	BorderStyle     *Style
 }
 
 // WithPanels returns a new PanelPrinter with specific options.
@@ -60,6 +63,19 @@ func (p PanelPrinter) WithSameColumnWidth(b ...bool) *PanelPrinter {
 	return &p
 }
 
+// WithBorder returns a new PanelPrinter with specific options.
+func (p PanelPrinter) WithBorder(b ...bool) *PanelPrinter {
+	b2 := internal.WithBoolean(b)
+	p.Border = b2
+	return &p
+}
+
+// WithBorderStyle returns a new PanelPrinter with specific options.
+func (p PanelPrinter) WithBorderStyle(style *Style) *PanelPrinter {
+	p.BorderStyle = style
+	return &p
+}
+
 // Srender renders the Template as a string.
 func (p PanelPrinter) Srender() (string, error) {
 	var ret string
@@ -77,14 +93,14 @@ func (p PanelPrinter) Srender() (string, error) {
 	}
 
 	for j, boxLine := range p.Panels {
-		var maxHeight int
 
-		for _, box := range boxLine {
-			height := len(strings.Split(box.Data, "\n"))
-			if height > maxHeight {
-				maxHeight = height
+		if p.Border {
+			if p.BorderStyle == nil {
+				p.BorderStyle = NewStyle()
 			}
 		}
+
+		var maxHeight int
 
 		var renderedPanels []string
 
@@ -96,7 +112,39 @@ func (p PanelPrinter) Srender() (string, error) {
 			renderedPanels[i] = strings.ReplaceAll(panel, "\n", Reset.Sprint()+"\n")
 		}
 
-		for i := 0; i <= maxHeight; i++ {
+		if p.Border {
+			var panels []string
+			var tmh int
+			for _, panel := range renderedPanels {
+				h := len(strings.Split(panel, "\n"))
+				if h > tmh {
+					tmh = h
+				}
+			}
+			for _, panel := range renderedPanels {
+				panel += strings.Repeat("\n", tmh-len(strings.Split(panel, "\n")))
+				var s string
+				if p.SameColumnWidth {
+					s, _ = DefaultPanel.WithPanels(Panels{[]Panel{{Data: panel}}}).WithSameColumnWidth().Srender()
+				} else {
+					s, _ = DefaultPanel.WithPanels(Panels{[]Panel{{Data: panel}}}).Srender()
+				}
+				panels = append(panels, s)
+			}
+			for i, panel := range panels {
+				renderedPanels[i] = DefaultBox.WithBoxStyle(p.BorderStyle).WithRightPadding(0).Sprint(panel)
+			}
+
+		}
+
+		for _, box := range renderedPanels {
+			height := len(strings.Split(box, "\n"))
+			if height > maxHeight {
+				maxHeight = height
+			}
+		}
+
+		for i := 0; i < maxHeight; i++ {
 			if maxHeight != i {
 				for j, letter := range renderedPanels {
 					var letterLine string

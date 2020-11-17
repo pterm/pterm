@@ -3,7 +3,6 @@ package pterm
 import (
 	"strings"
 
-	"github.com/gookit/color"
 	"github.com/mattn/go-runewidth"
 
 	"github.com/pterm/pterm/internal"
@@ -129,28 +128,25 @@ func (p BoxPrinter) Sprint(a ...interface{}) string {
 		p.TextStyle = NewStyle()
 	}
 	maxWidth := internal.GetStringMaxWidth(Sprint(a...))
-	topLine := p.BoxStyle.Sprint(p.BottomRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString), maxWidth+p.RightPadding+p.RightPadding) + p.BoxStyle.Sprint(p.BottomLeftCornerString)
-	bottomLine := p.BoxStyle.Sprint(p.TopRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString), maxWidth+p.RightPadding+p.RightPadding) + p.BoxStyle.Sprint(p.TopLeftCornerString)
+	topLine := p.BoxStyle.Sprint(p.BottomRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString),
+		maxWidth+p.LeftPadding+p.RightPadding-1) + p.BoxStyle.Sprint(p.BottomLeftCornerString)
+	bottomLine := p.BoxStyle.Sprint(p.TopRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString),
+		maxWidth+p.LeftPadding+p.RightPadding-1) + p.BoxStyle.Sprint(p.TopLeftCornerString)
 
 	boxString := strings.Repeat("\n", p.TopPadding) + Sprint(a...) + strings.Repeat("\n", p.BottomPadding)
 
 	ss := strings.Split(boxString, "\n")
 	for i, s2 := range ss {
-		if i != len(ss) {
-			if runewidth.StringWidth(color.ClearCode(s2)) < maxWidth {
-				ss[i] = p.BoxStyle.Sprint(p.VerticalString) + strings.Repeat(" ", p.LeftPadding) + p.TextStyle.Sprint(s2) + strings.Repeat(" ", maxWidth-runewidth.StringWidth(color.ClearCode(s2))+p.RightPadding) + p.BoxStyle.Sprint(p.VerticalString)
-			} else {
-				ss[i] = p.BoxStyle.Sprint(p.VerticalString) + strings.Repeat(" ", p.LeftPadding) + p.TextStyle.Sprint(s2) + strings.Repeat(" ", p.RightPadding) + p.BoxStyle.Sprint(p.VerticalString)
-			}
-		}
-		if i == len(ss)-1 {
-			if !strings.Contains(ss[i], "\n") {
-				ss[i] += "\n"
-			}
+		if runewidth.StringWidth(RemoveColorFromString(s2)) < maxWidth-1 {
+			ss[i] = p.BoxStyle.Sprint(p.VerticalString) + strings.Repeat(" ", p.LeftPadding) + p.TextStyle.Sprint(s2) +
+				strings.Repeat(" ", maxWidth-runewidth.StringWidth(RemoveColorFromString(s2))+p.RightPadding) +
+				p.BoxStyle.Sprint(p.VerticalString)
+		} else {
+			ss[i] = p.BoxStyle.Sprint(p.VerticalString) + strings.Repeat(" ", p.LeftPadding) + p.TextStyle.Sprint(s2) +
+				strings.Repeat(" ", p.RightPadding) + p.BoxStyle.Sprint(p.VerticalString)
 		}
 	}
-
-	return topLine + "\n" + strings.Join(ss, "\n") + bottomLine
+	return topLine + "\n" + strings.Join(ss, "\n") + "\n" + bottomLine
 }
 
 // Sprintln formats using the default formats for its operands and returns the resulting string.

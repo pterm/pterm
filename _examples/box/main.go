@@ -12,5 +12,5 @@ func main() {
 		{{panel3}},
 	}).Srender()
 
-	pterm.DefaultBox.WithBottomPadding(0).Println(panels)
+	pterm.DefaultBox.Println(panels)
 }
