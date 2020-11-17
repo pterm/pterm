@@ -10,8 +10,8 @@ func init() {
 }
 
 var (
-	// Output completely disables output from pterm. Can be used in CLI application quiet mode.
-	Output = false
+	// Output completely disables output from pterm if set to false. Can be used in CLI application quiet mode.
+	Output = true
 	// PrintDebugMessages sets if messages printed by the DebugPrinter should be printed.
 	PrintDebugMessages = false
 )
