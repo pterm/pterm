@@ -2,6 +2,12 @@
 ## [Unreleased]
 
 ### Bug Fixes
+- fix `PrefixPrinter` with multiple trailing newline endings.
+
+
+<a name="v0.12.4"></a>
+## [v0.12.4] - 2020-11-17
+### Bug Fixes
 - fix `Printf` of `PrefixPrinter`
 
 ### Ci
@@ -940,7 +946,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.3...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.4...HEAD
+[v0.12.4]: https://github.com/pterm/pterm/compare/v0.12.3...v0.12.4
 [v0.12.3]: https://github.com/pterm/pterm/compare/v0.12.2...v0.12.3
 [v0.12.2]: https://github.com/pterm/pterm/compare/v0.12.1...v0.12.2
 [v0.12.1]: https://github.com/pterm/pterm/compare/v0.12.0...v0.12.1
