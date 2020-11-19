@@ -152,7 +152,7 @@ If you have found a bug or want to suggest a feature, you can do so [here](https
 
 If you want to contribute to the development of PTerm, you are very welcome to do so. Our contribution guidelines can be found [here](CONTRIBUTING.md).
 
-## Support
+## 💕 Support
 
 <p align="center">
 If you want to support me in further developing my open source projects, you can give me a little tip 😄 
