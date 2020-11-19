@@ -155,7 +155,9 @@ If you want to contribute to the development of PTerm, you are very welcome to d
 ## Support
 
 <p align="center">
-If you want to support me in further developing my open source projects, you can give me a little tip 😄 Your financial support enables me to focus more on my projects. Thank you very much!
+If you want to support me in further developing my open source projects, you can give me a little tip 😄 
+<br/>
+Your financial support enables me to focus more on my projects. Thank you very much!
 <br/>
 <a href="https://www.buymeacoffee.com/marvinjwendt" target="_blank">
 <img height="60px" src="https://cdn.buymeacoffee.com/buttons/v2/arial-blue.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" >
