@@ -1,8 +1,20 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Documentation Changes
+- fix readme formatting
+- add buymeacoffee link to readme
+- **funding:** add buymeacoffee link to FUNDING.yml
+- **readme:** add emoji to support section
+- **readme:** add spacing between text
+
+
+<a name="v0.12.6"></a>
+## [v0.12.6] - 2020-11-17
 ### Bug Fixes
 - disabling output works as expected now ([#149](https://github.com/pterm/pterm/issues/149))
+
+### Documentation Changes
 
 
 <a name="v0.12.5"></a>
@@ -954,7 +966,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.5...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.6...HEAD
+[v0.12.6]: https://github.com/pterm/pterm/compare/v0.12.5...v0.12.6
 [v0.12.5]: https://github.com/pterm/pterm/compare/v0.12.4...v0.12.5
 [v0.12.4]: https://github.com/pterm/pterm/compare/v0.12.3...v0.12.4
 [v0.12.3]: https://github.com/pterm/pterm/compare/v0.12.2...v0.12.3
