@@ -129,15 +129,15 @@ func (p BoxPrinter) Sprint(a ...interface{}) string {
 	}
 	maxWidth := internal.GetStringMaxWidth(Sprint(a...))
 	topLine := p.BoxStyle.Sprint(p.BottomRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString),
-		maxWidth+p.LeftPadding+p.RightPadding-1) + p.BoxStyle.Sprint(p.BottomLeftCornerString)
+		maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.BottomLeftCornerString)
 	bottomLine := p.BoxStyle.Sprint(p.TopRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString),
-		maxWidth+p.LeftPadding+p.RightPadding-1) + p.BoxStyle.Sprint(p.TopLeftCornerString)
+		maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.TopLeftCornerString)
 
 	boxString := strings.Repeat("\n", p.TopPadding) + Sprint(a...) + strings.Repeat("\n", p.BottomPadding)
 
 	ss := strings.Split(boxString, "\n")
 	for i, s2 := range ss {
-		if runewidth.StringWidth(RemoveColorFromString(s2)) < maxWidth-1 {
+		if runewidth.StringWidth(RemoveColorFromString(s2)) < maxWidth {
 			ss[i] = p.BoxStyle.Sprint(p.VerticalString) + strings.Repeat(" ", p.LeftPadding) + p.TextStyle.Sprint(s2) +
 				strings.Repeat(" ", maxWidth-runewidth.StringWidth(RemoveColorFromString(s2))+p.RightPadding) +
 				p.BoxStyle.Sprint(p.VerticalString)
