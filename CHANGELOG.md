@@ -2,11 +2,26 @@
 ## [Unreleased]
 
 ### Documentation Changes
+- change Template to BarChart
 - fix readme formatting
 - add buymeacoffee link to readme
+- **contributing:** update contributing file
 - **funding:** add buymeacoffee link to FUNDING.yml
+- **pterm-sh:** add docs for `BarChartPrinter`
+- **pterm-sh:** remove empty codeblock
 - **readme:** add emoji to support section
 - **readme:** add spacing between text
+
+### Features
+- add values to chart
+- add horizontal `BarChartPrinter`
+- add `BarChartPrinter`
+- add `BarChartPrinter`
+- add `BarChartPrinter`
+- **theme:** add theme support to `BarChart`
+
+### Test
+- add tests to `BarChartPrinter`
 
 
 <a name="v0.12.6"></a>
