@@ -37,6 +37,8 @@ var (
 		LetterStyle:             Style{FgDefault},
 		DebugMessageStyle:       Style{FgGray},
 		DebugPrefixStyle:        Style{FgBlack, BgGray},
+		BarLabelStyle:           Style{FgLightCyan},
+		BarStyle:                Style{FgCyan},
 	}
 )
 
@@ -77,6 +79,8 @@ type Theme struct {
 	LetterStyle             Style
 	DebugMessageStyle       Style
 	DebugPrefixStyle        Style
+	BarLabelStyle           Style
+	BarStyle                Style
 }
 
 // WithPrimaryStyle returns a new theme with overridden value.
@@ -208,5 +212,17 @@ func (t Theme) WithTreeStyle(style Style) Theme {
 // WithTreeTextStyle returns a new theme with overridden value.
 func (t Theme) WithTreeTextStyle(style Style) Theme {
 	t.TreeTextStyle = style
+	return t
+}
+
+// WithBarLabelStyle returns a new theme with overridden value.
+func (t Theme) WithBarLabelStyle(style Style) Theme {
+	t.BarLabelStyle = style
+	return t
+}
+
+// WithBarStyle returns a new theme with overridden value.
+func (t Theme) WithBarStyle(style Style) Theme {
+	t.BarStyle = style
 	return t
 }

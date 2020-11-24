@@ -7,17 +7,14 @@ func main() {
 		pterm.Bar{
 			Label: "Bar 1",
 			Value: 5,
-			Style: pterm.NewStyle(pterm.FgCyan),
 		},
 		pterm.Bar{
 			Label: "Bar 2",
 			Value: 3,
-			Style: pterm.NewStyle(pterm.FgCyan),
 		},
 		pterm.Bar{
 			Label: "Longer Label",
 			Value: 7,
-			Style: pterm.NewStyle(pterm.FgCyan),
 		},
 	}
 

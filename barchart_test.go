@@ -15,6 +15,29 @@ func TestBarChartPrinterNilPrint(t *testing.T) {
 	}
 }
 
+func TestBarChartPrinterNilStylePrint(t *testing.T) {
+	proxyToDevNull()
+	bars := Bars{
+		Bar{
+			Label: "Bar 1",
+			Value: 5,
+		},
+		Bar{
+			Label: "Bar 2",
+			Value: 3,
+		},
+		Bar{
+			Label: "Longer Label",
+			Value: 7,
+		},
+	}
+
+	err := DefaultBarChart.WithBars(bars).Render()
+	if err != nil {
+		panic(err)
+	}
+}
+
 func TestBarChartPrinter_RenderExample(t *testing.T) {
 	proxyToDevNull()
 	bars := Bars{

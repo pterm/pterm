@@ -32,3 +32,12 @@ func TestBar_WithValue(t *testing.T) {
 	assert.Equal(t, s, p2.Value)
 	assert.Empty(t, p.Value)
 }
+
+func TestBar_WithLabelStyle(t *testing.T) {
+	p := Bar{}
+	s := NewStyle(FgRed, BgBlue, Bold)
+	p2 := p.WithLabelStyle(s)
+
+	assert.Equal(t, s, p2.LabelStyle)
+	assert.Empty(t, p.LabelStyle)
+}

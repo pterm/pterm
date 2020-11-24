@@ -82,6 +82,18 @@ func (p BarChartPrinter) WithShowValue(b ...bool) *BarChartPrinter {
 
 // Srender renders the Template as a string.
 func (p BarChartPrinter) Srender() (string, error) {
+	for i, bar := range p.Bars {
+		if bar.Style == nil {
+			p.Bars[i].Style = &ThemeDefault.BarStyle
+		}
+
+		if bar.LabelStyle == nil {
+			p.Bars[i].LabelStyle = &ThemeDefault.BarLabelStyle
+		}
+
+		p.Bars[i].Label = p.Bars[i].LabelStyle.Sprint(bar.Label)
+	}
+
 	var ret string
 
 	var maxLabelHeight int
