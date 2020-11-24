@@ -36,7 +36,7 @@ func (p TemplatePrinter) Sprintf(format string, a ...interface{}) string {
 // Spaces are added between operands when neither is a string.
 // It returns the number of bytes written and any write error encountered.
 func (p TemplatePrinter) Print(a ...interface{}) *TextPrinter {
-    Print(p.Sprint(a...))
+	Print(p.Sprint(a...))
 	tp := TextPrinter(p)
 	return &tp
 }
@@ -45,7 +45,7 @@ func (p TemplatePrinter) Print(a ...interface{}) *TextPrinter {
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
 func (p TemplatePrinter) Println(a ...interface{}) *TextPrinter {
-    Println(p.Sprint(a...))
+	Println(p.Sprint(a...))
     tp := TextPrinter(p)
     return &tp
 }
@@ -53,7 +53,7 @@ func (p TemplatePrinter) Println(a ...interface{}) *TextPrinter {
 // Printf formats according to a format specifier and writes to standard output.
 // It returns the number of bytes written and any write error encountered.
 func (p TemplatePrinter) Printf(format string, a ...interface{}) *TextPrinter {
-    Print(p.Sprintf(format, a...))
+	Print(p.Sprintf(format, a...))
 	tp := TextPrinter(p)
 	return &tp
 }
@@ -70,7 +70,9 @@ type TemplatePrinter struct{
 
 // Srender renders the Template as a string.
 func (p TemplatePrinter) Srender() (string, error) {
-	return "", nil
+	var ret string
+
+    return ret, nil
 }
 
 // Render prints the Template to the terminal.
