@@ -43,14 +43,14 @@ func (p BarChartPrinter) WithBars(bars Bars) *BarChartPrinter {
 	return &p
 }
 
-// WithBarVerticalCharacter returns a new BarChartPrinter with a specific option.
-func (p BarChartPrinter) WithBarVerticalCharacter(char string) *BarChartPrinter {
+// WithVerticalBarCharacter returns a new BarChartPrinter with a specific option.
+func (p BarChartPrinter) WithVerticalBarCharacter(char string) *BarChartPrinter {
 	p.VerticalBarCharacter = char
 	return &p
 }
 
-// WithBarHorizontalCharacter returns a new BarChartPrinter with a specific option.
-func (p BarChartPrinter) WithBarHorizontalCharacter(char string) *BarChartPrinter {
+// WithHorizontalBarCharacter returns a new BarChartPrinter with a specific option.
+func (p BarChartPrinter) WithHorizontalBarCharacter(char string) *BarChartPrinter {
 	p.HorizontalBarCharacter = char
 	return &p
 }
@@ -166,10 +166,7 @@ func (p BarChartPrinter) Srender() (string, error) {
 
 // Render prints the Template to the terminal.
 func (p BarChartPrinter) Render() error {
-	s, err := p.Srender()
-	if err != nil {
-		return err
-	}
+	s, _ := p.Srender()
 	Println(s)
 
 	return nil
