@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Bug Fixes
+- center bars over colored labels in `BarChart`
+
 ### Documentation Changes
 - change Template to BarChart
 - fix readme formatting
