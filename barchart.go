@@ -80,7 +80,7 @@ func (p BarChartPrinter) WithShowValue(b ...bool) *BarChartPrinter {
 	return &p
 }
 
-// Srender renders the Template as a string.
+// Srender renders the BarChart as a string.
 func (p BarChartPrinter) Srender() (string, error) {
 	for i, bar := range p.Bars {
 		if bar.Style == nil {
