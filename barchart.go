@@ -159,11 +159,11 @@ func (p BarChartPrinter) Srender() (string, error) {
 			for _, barString := range renderedBars {
 				var barLine string
 				letterLines := strings.Split(barString, "\n")
-				maxBarWidth := internal.GetStringMaxWidth(barString)
+				maxBarWidth := internal.GetStringMaxWidth(RemoveColorFromString(barString))
 				if len(letterLines) > i {
 					barLine = letterLines[i]
 				}
-				letterLineLength := runewidth.StringWidth(barLine)
+				letterLineLength := runewidth.StringWidth(RemoveColorFromString(barLine))
 				if letterLineLength < maxBarWidth {
 					barLine += strings.Repeat(" ", maxBarWidth-letterLineLength)
 				}
