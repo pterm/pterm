@@ -100,7 +100,7 @@ func (p PanelPrinter) Srender() (string, error) {
 	for i := range p.Panels {
 		if len(p.Panels)-1 != i {
 			for i2 := range p.Panels[i] {
-				p.Panels[i][i2].Data = p.Panels[i][i2].Data + strings.Repeat("\n", p.BottomPadding)
+				p.Panels[i][i2].Data += strings.Repeat("\n", p.BottomPadding)
 			}
 		}
 	}
