@@ -37,7 +37,7 @@ func TestBoxPrinterPrintMethods(t *testing.T) {
 
 	t.Run("Sprint", func(t *testing.T) {
 		internal.TestSprintContains(t, func(a interface{}) string {
-			return p.Sprint(a)
+			return p.Sprint("testing\ntesting2" + Sprint(a))
 		})
 	})
 
