@@ -18,8 +18,7 @@ type Panels [][]Panel
 
 // DefaultPanel is the default PanelPrinter.
 var DefaultPanel = PanelPrinter{
-	Padding:     1,
-	BorderStyle: &ThemeDefault.BoxStyle,
+	Padding: 1,
 }
 
 // PanelPrinter prints content in boxes.
@@ -28,8 +27,7 @@ type PanelPrinter struct {
 	Padding         int
 	BottomPadding   int
 	SameColumnWidth bool
-	Border          bool
-	BorderStyle     *Style
+	BoxPrinter      BoxPrinter
 }
 
 // WithPanels returns a new PanelPrinter with specific options.
@@ -63,16 +61,9 @@ func (p PanelPrinter) WithSameColumnWidth(b ...bool) *PanelPrinter {
 	return &p
 }
 
-// WithBorder returns a new PanelPrinter with specific options.
-func (p PanelPrinter) WithBorder(b ...bool) *PanelPrinter {
-	b2 := internal.WithBoolean(b)
-	p.Border = b2
-	return &p
-}
-
-// WithBorderStyle returns a new PanelPrinter with specific options.
-func (p PanelPrinter) WithBorderStyle(style *Style) *PanelPrinter {
-	p.BorderStyle = style
+// WithBoxPrinter returns a new PanelPrinter with specific options.
+func (p PanelPrinter) WithBoxPrinter(boxPrinter BoxPrinter) *PanelPrinter {
+	p.BoxPrinter = boxPrinter
 	return &p
 }
 
@@ -86,13 +77,10 @@ func (p PanelPrinter) Srender() (string, error) {
 		}
 	}
 
-	if p.Border {
-		if p.BorderStyle == nil {
-			p.BorderStyle = &ThemeDefault.BoxStyle
-		}
+	if p.BoxPrinter != (BoxPrinter{}) {
 		for i := range p.Panels {
 			for i2 := range p.Panels[i] {
-				p.Panels[i][i2].Data = DefaultBox.WithBoxStyle(p.BorderStyle).Sprint(p.Panels[i][i2].Data)
+				p.Panels[i][i2].Data = p.BoxPrinter.Sprint(p.Panels[i][i2].Data)
 			}
 		}
 	}
