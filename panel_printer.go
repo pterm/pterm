@@ -87,9 +87,12 @@ func (p PanelPrinter) Srender() (string, error) {
 	}
 
 	if p.Border {
+		if p.BorderStyle == nil {
+			p.BorderStyle = &ThemeDefault.BoxStyle
+		}
 		for i := range p.Panels {
 			for i2 := range p.Panels[i] {
-				p.Panels[i][i2].Data = DefaultBox.Sprint(p.Panels[i][i2].Data)
+				p.Panels[i][i2].Data = DefaultBox.WithBoxStyle(p.BorderStyle).Sprint(p.Panels[i][i2].Data)
 			}
 		}
 	}
@@ -115,12 +118,6 @@ func (p PanelPrinter) Srender() (string, error) {
 	}
 
 	for _, boxLine := range p.Panels {
-		if p.Border {
-			if p.BorderStyle == nil {
-				p.BorderStyle = NewStyle()
-			}
-		}
-
 		var maxHeight int
 
 		var renderedPanels []string
