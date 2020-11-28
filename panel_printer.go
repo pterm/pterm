@@ -80,6 +80,28 @@ func (p PanelPrinter) WithBorderStyle(style *Style) *PanelPrinter {
 func (p PanelPrinter) Srender() (string, error) {
 	var ret string
 
+	for i := range p.Panels {
+		for i2 := range p.Panels[i] {
+			p.Panels[i][i2].Data = strings.TrimSuffix(p.Panels[i][i2].Data, "\n")
+		}
+	}
+
+	if p.Border {
+		for i := range p.Panels {
+			for i2 := range p.Panels[i] {
+				p.Panels[i][i2].Data = DefaultBox.Sprint(p.Panels[i][i2].Data)
+			}
+		}
+	}
+
+	for i := range p.Panels {
+		if len(p.Panels)-1 != i {
+			for i2 := range p.Panels[i] {
+				p.Panels[i][i2].Data = p.Panels[i][i2].Data + strings.Repeat("\n", p.BottomPadding)
+			}
+		}
+	}
+
 	columnMaxHeightMap := make(map[int]int)
 
 	if p.SameColumnWidth {
@@ -92,8 +114,7 @@ func (p PanelPrinter) Srender() (string, error) {
 		}
 	}
 
-	for j, boxLine := range p.Panels {
-
+	for _, boxLine := range p.Panels {
 		if p.Border {
 			if p.BorderStyle == nil {
 				p.BorderStyle = NewStyle()
@@ -110,31 +131,6 @@ func (p PanelPrinter) Srender() (string, error) {
 
 		for i, panel := range renderedPanels {
 			renderedPanels[i] = strings.ReplaceAll(panel, "\n", Reset.Sprint()+"\n")
-		}
-
-		if p.Border {
-			var panels []string
-			var tmh int
-			for _, panel := range renderedPanels {
-				h := len(strings.Split(panel, "\n"))
-				if h > tmh {
-					tmh = h
-				}
-			}
-			for _, panel := range renderedPanels {
-				panel += strings.Repeat("\n", tmh-len(strings.Split(panel, "\n")))
-				var s string
-				if p.SameColumnWidth {
-					s, _ = DefaultPanel.WithPanels(Panels{[]Panel{{Data: panel}}}).WithSameColumnWidth().Srender()
-				} else {
-					s, _ = DefaultPanel.WithPanels(Panels{[]Panel{{Data: panel}}}).Srender()
-				}
-				panels = append(panels, s)
-			}
-			for i, panel := range panels {
-				renderedPanels[i] = DefaultBox.WithBoxStyle(p.BorderStyle).WithRightPadding(0).Sprint(panel)
-			}
-
 		}
 
 		for _, box := range renderedPanels {
@@ -170,8 +166,6 @@ func (p PanelPrinter) Srender() (string, error) {
 					ret += letterLine
 				}
 				ret += "\n"
-			} else if j+1 != len(p.Panels) {
-				ret += strings.Repeat("\n", p.BottomPadding)
 			}
 		}
 	}
