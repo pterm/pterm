@@ -37,7 +37,7 @@ func TestBoxPrinterPrintMethods(t *testing.T) {
 
 	t.Run("Sprint", func(t *testing.T) {
 		internal.TestSprintContains(t, func(a interface{}) string {
-			return p.Sprint("testing\ntesting2" + Sprint(a))
+			return p.Sprint(a)
 		})
 	})
 
@@ -50,6 +50,12 @@ func TestBoxPrinterPrintMethods(t *testing.T) {
 	t.Run("Sprintln", func(t *testing.T) {
 		internal.TestSprintlnContains(t, func(a interface{}) string {
 			return p.Sprintln(a)
+		})
+	})
+
+	t.Run("SprintMultipleLines", func(t *testing.T) {
+		internal.TestSprintContains(t, func(a interface{}) string {
+			return p.Sprint("testing\ntesting2" + Sprint(a))
 		})
 	})
 }
