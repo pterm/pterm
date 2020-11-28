@@ -122,10 +122,10 @@ func (p BoxPrinter) WithLeftPadding(padding int) *BoxPrinter {
 // Spaces are added between operands when neither is a string.
 func (p BoxPrinter) Sprint(a ...interface{}) string {
 	if p.BoxStyle == nil {
-		p.BoxStyle = NewStyle()
+		p.BoxStyle = &ThemeDefault.BoxStyle
 	}
 	if p.TextStyle == nil {
-		p.TextStyle = NewStyle()
+		p.TextStyle = &ThemeDefault.BoxTextStyle
 	}
 	maxWidth := internal.GetStringMaxWidth(Sprint(a...))
 	topLine := p.BoxStyle.Sprint(p.BottomRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString),
