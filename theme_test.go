@@ -182,14 +182,6 @@ func TestTheme_WithTreeTextStyle(t *testing.T) {
 	assert.Equal(t, s, p2.TreeTextStyle)
 }
 
-func TestTheme_WithPanelBorderStyle(t *testing.T) {
-	s := Style{FgRed, BgBlue, Bold}
-	p := Theme{}
-	p2 := p.WithPanelBorderStyle(s)
-
-	assert.Equal(t, s, p2.PanelBorderStyle)
-}
-
 func TestTheme_WithBoxStyle(t *testing.T) {
 	s := Style{FgRed, BgBlue, Bold}
 	p := Theme{}

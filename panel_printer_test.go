@@ -55,7 +55,7 @@ func TestPanelPrinter_RenderMultiplePanelsWithBorder(t *testing.T) {
 			{{Data: Sprint("a\nbc\ndef")}, {Data: Sprint("abcd")}},
 			{{Data: Sprint(a)}},
 		}
-		p := PanelPrinter{}.WithPanels(panels).WithBorder()
+		p := PanelPrinter{}.WithPanels(panels).WithBoxPrinter(DefaultBox)
 		err := p.Render()
 		assert.NoError(t, err)
 	})
@@ -144,19 +144,10 @@ func TestPanelPrinter_WithSameColumnWidth(t *testing.T) {
 	assert.False(t, p.SameColumnWidth)
 }
 
-func TestPanelPrinter_WithBorder(t *testing.T) {
+func TestPanelPrinter_WithBoxPrinter(t *testing.T) {
 	p := PanelPrinter{}
-	p2 := p.WithBorder()
+	p2 := p.WithBoxPrinter(DefaultBox)
 
-	assert.Equal(t, true, p2.Border)
-	assert.Empty(t, p.Border)
-}
-
-func TestPanelPrinter_WithBorderStyle(t *testing.T) {
-	p := PanelPrinter{}
-	s := NewStyle(FgRed, BgRed, Bold)
-	p2 := p.WithBorderStyle(s)
-
-	assert.Equal(t, s, p2.BorderStyle)
-	assert.Empty(t, p.BorderStyle)
+	assert.Equal(t, DefaultBox, p2.BoxPrinter)
+	assert.Empty(t, p.BoxPrinter)
 }

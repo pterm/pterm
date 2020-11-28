@@ -39,6 +39,7 @@ _ = pterm.DefaultPanel.WithPanels(panels).Render()
 |Option|Type|
 |------|----|
 |[BottomPadding](https://pkg.go.dev/github.com/pterm/pterm#PanelPrinter.WithBottomPadding)|int|
+|[BoxPrinter](https://pkg.go.dev/github.com/pterm/pterm#PanelPrinter.WithBoxPrinter)|[BoxPrinter](https://pkg.go.dev/github.com/pterm/pterm#BoxPrinter)|
 |[Padding](https://pkg.go.dev/github.com/pterm/pterm#PanelPrinter.WithPadding)|int|
 |[Panels](https://pkg.go.dev/github.com/pterm/pterm#PanelPrinter.WithPanels)|[Panels](https://pkg.go.dev/github.com/pterm/pterm#Panels)|
 |[SameColumnWidth](https://pkg.go.dev/github.com/pterm/pterm#PanelPrinter.WithSameColumnWidth)|...bool|
