@@ -15,7 +15,7 @@ Replace all of the following strings with the current printer.
 ### Basic usage
 
 ```go
-pterm.DefaultBox.WithText("Hello, World!").Render()
+pterm.DefaultBox.Println("test")
 ```
 
 ### Options
@@ -47,12 +47,16 @@ pterm.DefaultBox.WithText("Hello, World!").Render()
 
 ### Output functions
 
-> This printer implements the interface [`RenderablePrinter`](https://github.com/pterm/pterm/blob/master/interface_renderable_printer.go)
+> This printer implements the interface [`TextPrinter`](https://github.com/pterm/pterm/blob/master/interface_text_printer.go)
 
 |Function|Description|
 |------|---------|
-|Render()|Prints to Terminal|
-|Srender()|Returns a string|
+|Sprint(a ...interface{})|Returns a string|
+|Sprintln(a ...interface{})|Returns a string with a new line at the end|
+|Sprintf(format string, a ...interface{})|Returns a string, formatted according to a format specifier|
+|Print(a ...interface{})|Prints to the terminal|
+|Println(a ...interface{})|Prints to the terminal with a new line at the end|
+|Printf(format string, a ...interface{})|Prints to the terminal, formatted according to a format specifier|
 
 ## Related
 - [Override default printers](docs/override-default-printer.md)
