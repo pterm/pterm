@@ -38,7 +38,7 @@
 </a>
 
 <a href="https://codecov.io/gh/pterm/pterm">
-<!-- unittestcount:start --><img src="https://img.shields.io/badge/Unit_Tests-5146-magenta?style=flat-square" alt="Forks"><!-- unittestcount:end -->
+<!-- unittestcount:start --><img src="https://img.shields.io/badge/Unit_Tests-5174-magenta?style=flat-square" alt="Forks"><!-- unittestcount:end -->
 </a>
 
 <a href="https://github.com/pterm/pterm/tree/master/_examples/demo">
@@ -105,7 +105,7 @@ We take special precautions to ensure that PTerm works on as many operating syst
 
 > PTerm has a 100% test coverage, which means that every line of code inside PTerm gets tested automatically
 
-We test PTerm continuously. However, since a human cannot test everything all the time, we have our own test system with which we currently run <!-- unittestcount2:start -->**`5146`**<!-- unittestcount2:end -->
+We test PTerm continuously. However, since a human cannot test everything all the time, we have our own test system with which we currently run <!-- unittestcount2:start -->**`5174`**<!-- unittestcount2:end -->
 automated tests to ensure that PTerm has no bugs. 
 
 ### • ✨ Consistent Colors
@@ -152,11 +152,60 @@ If you have found a bug or want to suggest a feature, you can do so [here](https
 
 If you want to contribute to the development of PTerm, you are very welcome to do so. Our contribution guidelines can be found [here](CONTRIBUTING.md).
 
+## 💕 Support
+
+<p align="center">
+If you want to support me in further developing my open source projects, you can give me a little tip 😄 
+<br/>
+Your financial support enables me to focus more on my projects. Thank you very much!
+<br/>
+<a href="https://www.buymeacoffee.com/marvinjwendt" target="_blank">
+<img height="60px" src="https://cdn.buymeacoffee.com/buttons/v2/arial-blue.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" >
+</a>
+</p>
+
 ## 🧪 Examples
 
 You can find all the examples, with their source code, here: [`./_examples`](./_examples)
 
 <!-- examples:start -->
+### barchart
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	bars := pterm.Bars{
+		pterm.Bar{
+			Label: "Bar 1",
+			Value: 5,
+		},
+		pterm.Bar{
+			Label: "Bar 2",
+			Value: 3,
+		},
+		pterm.Bar{
+			Label: "Longer Label",
+			Value: 7,
+		},
+	}
+
+	_ = pterm.DefaultBarChart.WithBars(bars).Render()
+	_ = pterm.DefaultBarChart.WithHorizontal().WithBars(bars).Render()
+}
+
+```
+
+</details>
+
 ### bigtext
 
 ![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/bigtext/animation.svg)
@@ -605,6 +654,38 @@ func clear() {
 func randomInt(min, max int) int {
 	rand.Seed(time.Now().UnixNano())
 	return rand.Intn(max-min+1) + min
+}
+
+```
+
+</details>
+
+### disable-output
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/disable-output/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	for i := 0; i < 15; i++ {
+		switch i {
+		case 5:
+			pterm.Info.Println("Disabled Output!")
+			pterm.DisableOutput()
+		case 10:
+			pterm.EnableOutput()
+			pterm.Info.Println("Enabled Output!")
+		}
+
+		pterm.Printf("Printing something... [%d/%d]\n", i, 15)
+	}
 }
 
 ```

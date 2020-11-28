@@ -1,6 +1,53 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Bug Fixes
+- center bars over colored labels in `BarChart`
+
+### Documentation Changes
+- change Template to BarChart
+- fix readme formatting
+- add buymeacoffee link to readme
+- **contributing:** update contributing file
+- **funding:** add buymeacoffee link to FUNDING.yml
+- **pterm-sh:** add docs for `BarChartPrinter`
+- **pterm-sh:** remove empty codeblock
+- **readme:** add emoji to support section
+- **readme:** add spacing between text
+
+### Features
+- add values to chart
+- add horizontal `BarChartPrinter`
+- add `BarChartPrinter`
+- add `BarChartPrinter`
+- add `BarChartPrinter`
+- **theme:** add theme support to `BarChart`
+
+### Test
+- add tests to `BarChartPrinter`
+
+
+<a name="v0.12.6"></a>
+## [v0.12.6] - 2020-11-17
+### Bug Fixes
+- disabling output works as expected now ([#149](https://github.com/pterm/pterm/issues/149))
+
+### Documentation Changes
+
+
+<a name="v0.12.5"></a>
+## [v0.12.5] - 2020-11-17
+### Bug Fixes
+- fix `PrefixPrinter` with multiple trailing newline endings.
+
+### Documentation Changes
+
+
+<a name="v0.12.4"></a>
+## [v0.12.4] - 2020-11-17
+### Bug Fixes
+- fix `Printf` of `PrefixPrinter`
+
 ### Ci
 - count tests from all packages
 - read stderr to count unit tests
@@ -937,7 +984,10 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.3...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.6...HEAD
+[v0.12.6]: https://github.com/pterm/pterm/compare/v0.12.5...v0.12.6
+[v0.12.5]: https://github.com/pterm/pterm/compare/v0.12.4...v0.12.5
+[v0.12.4]: https://github.com/pterm/pterm/compare/v0.12.3...v0.12.4
 [v0.12.3]: https://github.com/pterm/pterm/compare/v0.12.2...v0.12.3
 [v0.12.2]: https://github.com/pterm/pterm/compare/v0.12.1...v0.12.2
 [v0.12.1]: https://github.com/pterm/pterm/compare/v0.12.0...v0.12.1

@@ -205,3 +205,19 @@ func TestTheme_WithBoxTextStyle(t *testing.T) {
 
 	assert.Equal(t, s, p2.BoxTextStyle)
 }
+
+func TestTheme_WithBarLabelStyle(t *testing.T) {
+	s := Style{FgRed, BgBlue, Bold}
+	p := Theme{}
+	p2 := p.WithBarLabelStyle(s)
+
+	assert.Equal(t, s, p2.BarLabelStyle)
+}
+
+func TestTheme_WithBarStyle(t *testing.T) {
+	s := Style{FgRed, BgBlue, Bold}
+	p := Theme{}
+	p2 := p.WithBarStyle(s)
+
+	assert.Equal(t, s, p2.BarStyle)
+}

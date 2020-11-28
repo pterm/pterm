@@ -73,6 +73,14 @@ func TestPrefixPrinterPrintMethods(t *testing.T) {
 	}
 }
 
+func TestSprintfWithNewLineEnding(t *testing.T) {
+	for _, p := range prefixPrinters {
+		t.Run("", func(t *testing.T) {
+			assert.NotContains(t, "\n\n", p.Sprintf("%s\n\n\n\n", "Hello, World!"))
+		})
+	}
+}
+
 func TestPrefixPrinter_GetFormattedPrefix(t *testing.T) {
 	for _, p := range prefixPrinters {
 		t.Run("", func(t *testing.T) {

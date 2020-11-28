@@ -40,6 +40,8 @@ var (
 		PanelBorderStyle:        Style{FgDefault},
 		BoxStyle:                Style{FgDefault},
 		BoxTextStyle:            Style{FgDefault},
+		BarLabelStyle:           Style{FgLightCyan},
+		BarStyle:                Style{FgCyan},
 	}
 )
 
@@ -83,6 +85,8 @@ type Theme struct {
 	PanelBorderStyle        Style
 	BoxStyle                Style
 	BoxTextStyle            Style
+	BarLabelStyle           Style
+	BarStyle                Style
 }
 
 // WithPrimaryStyle returns a new theme with overridden value.
@@ -232,5 +236,17 @@ func (t Theme) WithBoxStyle(style Style) Theme {
 // WithBoxTextStyle returns a new theme with overridden value.
 func (t Theme) WithBoxTextStyle(style Style) Theme {
 	t.BoxTextStyle = style
+	return t
+}
+
+// WithBarLabelStyle returns a new theme with overridden value.
+func (t Theme) WithBarLabelStyle(style Style) Theme {
+	t.BarLabelStyle = style
+	return t
+}
+
+// WithBarStyle returns a new theme with overridden value.
+func (t Theme) WithBarStyle(style Style) Theme {
+	t.BarStyle = style
 	return t
 }
