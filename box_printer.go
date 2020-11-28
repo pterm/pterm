@@ -36,8 +36,8 @@ var DefaultBox = BoxPrinter{
 	TextStyle:               &ThemeDefault.BoxTextStyle,
 	RightPadding:            1,
 	LeftPadding:             1,
-	TopPadding:              1,
-	BottomPadding:           1,
+	TopPadding:              0,
+	BottomPadding:           0,
 }
 
 // WithBoxStyle returns a new box with a specific box Style.
