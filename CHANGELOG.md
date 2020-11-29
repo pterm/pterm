@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Chore
+- **intellij:** update conventionalCommit.xml
+
 ### Code Refactoring
 - **boxprinter:** change from `RenderablePrinter` to `TextPrinter`
 - **boxprinter:** return theme when style is nil
