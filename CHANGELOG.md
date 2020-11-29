@@ -14,6 +14,7 @@
 - **panelprinter:** add `BoxPrinter` to surround panels with a fully custom box
 
 ### Documentation Changes
+- **boxprinter:** update `BoxPrinter` example
 - **boxprinter:** update documentation to printer
 - **boxprinter:** add documentation
 - **examples:** change example for `BoxPrinter`
@@ -22,6 +23,7 @@
 - **pterm-sh:** update sidebar
 
 ### Features
+- **boxprinter:** add `WithHorizontalString` to `BoxPrinter`
 - **boxprinter:** add `BoxPrinter`
 - **panel:** add optional border for `Panel`
 - **panelprinter:** add theme support to `PanelPrinter`
