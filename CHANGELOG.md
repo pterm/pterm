@@ -29,6 +29,7 @@
 - **theme:** add optional theme for border in `Panel`
 
 ### Style
+- fix go vet issue
 - **panelprinter:** bottom padding in `PanelPrinter`
 
 ### Test

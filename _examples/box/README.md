@@ -13,8 +13,8 @@ func main() {
 	panel3 := pterm.DefaultBox.Sprint("Duis aute irure\ndolor in reprehenderit\nin voluptate velit esse cillum\ndolore eu fugiat\nnulla pariatur.")
 
 	panels, _ := pterm.DefaultPanel.WithPanels(pterm.Panels{
-		{{panel1}, {panel2}},
-		{{panel3}},
+		{{Data: panel1}, {Data: panel2}},
+		{{Data: panel3}},
 	}).Srender()
 
 	pterm.DefaultBox.WithRightPadding(0).WithBottomPadding(0).Println(panels)
