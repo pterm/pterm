@@ -82,6 +82,12 @@ func (p BoxPrinter) WithVerticalString(str string) *BoxPrinter {
 	return &p
 }
 
+// WithHorizontalString returns a new box with a specific HorizontalString.
+func (p BoxPrinter) WithHorizontalString(str string) *BoxPrinter {
+	p.HorizontalString = str
+	return &p
+}
+
 // WithTopPadding returns a new box with a specific TopPadding.
 func (p BoxPrinter) WithTopPadding(padding int) *BoxPrinter {
 	if padding < 0 {
