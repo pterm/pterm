@@ -27,6 +27,7 @@ type PanelPrinter struct {
 	Padding         int
 	BottomPadding   int
 	SameColumnWidth bool
+	BoxPrinter      BoxPrinter
 }
 
 // WithPanels returns a new PanelPrinter with specific options.
@@ -60,9 +61,37 @@ func (p PanelPrinter) WithSameColumnWidth(b ...bool) *PanelPrinter {
 	return &p
 }
 
+// WithBoxPrinter returns a new PanelPrinter with specific options.
+func (p PanelPrinter) WithBoxPrinter(boxPrinter BoxPrinter) *PanelPrinter {
+	p.BoxPrinter = boxPrinter
+	return &p
+}
+
 // Srender renders the Template as a string.
 func (p PanelPrinter) Srender() (string, error) {
 	var ret string
+
+	for i := range p.Panels {
+		for i2 := range p.Panels[i] {
+			p.Panels[i][i2].Data = strings.TrimSuffix(p.Panels[i][i2].Data, "\n")
+		}
+	}
+
+	if p.BoxPrinter != (BoxPrinter{}) {
+		for i := range p.Panels {
+			for i2 := range p.Panels[i] {
+				p.Panels[i][i2].Data = p.BoxPrinter.Sprint(p.Panels[i][i2].Data)
+			}
+		}
+	}
+
+	for i := range p.Panels {
+		if len(p.Panels)-1 != i {
+			for i2 := range p.Panels[i] {
+				p.Panels[i][i2].Data += strings.Repeat("\n", p.BottomPadding)
+			}
+		}
+	}
 
 	columnMaxHeightMap := make(map[int]int)
 
@@ -76,15 +105,8 @@ func (p PanelPrinter) Srender() (string, error) {
 		}
 	}
 
-	for j, boxLine := range p.Panels {
+	for _, boxLine := range p.Panels {
 		var maxHeight int
-
-		for _, box := range boxLine {
-			height := len(strings.Split(box.Data, "\n"))
-			if height > maxHeight {
-				maxHeight = height
-			}
-		}
 
 		var renderedPanels []string
 
@@ -96,7 +118,14 @@ func (p PanelPrinter) Srender() (string, error) {
 			renderedPanels[i] = strings.ReplaceAll(panel, "\n", Reset.Sprint()+"\n")
 		}
 
-		for i := 0; i <= maxHeight; i++ {
+		for _, box := range renderedPanels {
+			height := len(strings.Split(box, "\n"))
+			if height > maxHeight {
+				maxHeight = height
+			}
+		}
+
+		for i := 0; i < maxHeight; i++ {
 			if maxHeight != i {
 				for j, letter := range renderedPanels {
 					var letterLine string
@@ -122,8 +151,6 @@ func (p PanelPrinter) Srender() (string, error) {
 					ret += letterLine
 				}
 				ret += "\n"
-			} else if j+1 != len(p.Panels) {
-				ret += strings.Repeat("\n", p.BottomPadding)
 			}
 		}
 	}

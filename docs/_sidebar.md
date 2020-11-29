@@ -4,6 +4,7 @@
   - Printers
     - [BasicText](docs/printer/basictext.md)
     - [BigText](docs/printer/bigtext.md)
+    - [Box](docs/printer/box.md)
     - [BulletList](docs/printer/bulletlist.md)
     - [Center](docs/printer/center.md)
     - [Header](docs/printer/header.md)

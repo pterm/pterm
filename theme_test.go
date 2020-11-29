@@ -1,8 +1,9 @@
 package pterm
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestTheme_WithDescriptionMessageStyle(t *testing.T) {
@@ -179,6 +180,22 @@ func TestTheme_WithTreeTextStyle(t *testing.T) {
 	p2 := p.WithTreeTextStyle(s)
 
 	assert.Equal(t, s, p2.TreeTextStyle)
+}
+
+func TestTheme_WithBoxStyle(t *testing.T) {
+	s := Style{FgRed, BgBlue, Bold}
+	p := Theme{}
+	p2 := p.WithBoxStyle(s)
+
+	assert.Equal(t, s, p2.BoxStyle)
+}
+
+func TestTheme_WithBoxTextStyle(t *testing.T) {
+	s := Style{FgRed, BgBlue, Bold}
+	p := Theme{}
+	p2 := p.WithBoxTextStyle(s)
+
+	assert.Equal(t, s, p2.BoxTextStyle)
 }
 
 func TestTheme_WithBarLabelStyle(t *testing.T) {
