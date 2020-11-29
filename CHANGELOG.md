@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Bug Fixes
+- revert change horizontal string change
+
 ### Chore
 - **intellij:** update conventionalCommit.xml
 
