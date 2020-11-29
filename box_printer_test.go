@@ -181,3 +181,11 @@ func TestBoxPrinter_WithVerticalString(t *testing.T) {
 	assert.Equal(t, "-", p2.VerticalString)
 	assert.Empty(t, p.VerticalString)
 }
+
+func TestBoxPrinter_WithHorizontalString(t *testing.T) {
+	p := BoxPrinter{}
+	p2 := p.WithHorizontalString("-")
+
+	assert.Equal(t, "-", p2.HorizontalString)
+	assert.Empty(t, p.HorizontalString)
+}
