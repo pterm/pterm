@@ -1,6 +1,44 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Code Refactoring
+- **boxprinter:** change from `RenderablePrinter` to `TextPrinter`
+- **boxprinter:** return theme when style is nil
+- **boxprinter:** change `DefaultBox` top and bottom padding to 0
+- **boxprinter:** fix spacing between boxes and in boxes
+- **boxprinter:** refactor code
+- **panelprinter:** optional border for `Panel`
+- **panelprinter:** add `BoxPrinter` to surround panels with a fully custom box
+
+### Documentation Changes
+- **boxprinter:** update documentation to printer
+- **boxprinter:** add documentation
+- **examples:** change example for `BoxPrinter`
+- **examples:** add example for `BoxPrinter`
+- **pterm-sh:** add `BoxPrinter`
+- **pterm-sh:** update sidebar
+
+### Features
+- **boxprinter:** add `BoxPrinter`
+- **panel:** add optional border for `Panel`
+- **panelprinter:** add theme support to `PanelPrinter`
+- **theme:** add `BoxStyle` and `BoxTextStyle`
+- **theme:** add optional theme for border in `Panel`
+
+### Style
+- **panelprinter:** bottom padding in `PanelPrinter`
+
+### Test
+- **boxprinter:** add test
+- **boxprinter:** test multiple lines in one box
+- **boxprinter:** add tests for `BoxPrinter`
+- **panelprinter:** add tests for adding box printer
+- **panelprinter:** add tests for optional border for `Panel`
+- **theme:** add tests for `BoxStyle` and `BoxTextStyle`
+
+
+<a name="v0.12.7"></a>
+## [v0.12.7] - 2020-11-24
 ### Bug Fixes
 - center bars over colored labels in `BarChart`
 
@@ -984,7 +1022,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.6...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.7...HEAD
+[v0.12.7]: https://github.com/pterm/pterm/compare/v0.12.6...v0.12.7
 [v0.12.6]: https://github.com/pterm/pterm/compare/v0.12.5...v0.12.6
 [v0.12.5]: https://github.com/pterm/pterm/compare/v0.12.4...v0.12.5
 [v0.12.4]: https://github.com/pterm/pterm/compare/v0.12.3...v0.12.4
