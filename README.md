@@ -74,8 +74,11 @@
 
 - [Theme Support](#theme)
 - [Prefix](#prefix)
+- [Bar Chart](#barchart)
 - [Big Text](#bigtext)
+- [Box](#box)
 - [Bullet List](#bulletlist)
+- [Panel](#panel)
 - [Progressbar](#progressbar)
 - [Section](#section)
 - [Spinner](#spinner)
