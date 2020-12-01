@@ -18,12 +18,13 @@
 
 ### Documentation Changes
 - **boxprinter:** update `BoxPrinter` example
-- **boxprinter:** update documentation to printer
 - **boxprinter:** add documentation
-- **examples:** change example for `BoxPrinter`
+- **boxprinter:** update documentation to printer
 - **examples:** add example for `BoxPrinter`
-- **pterm-sh:** add `BoxPrinter`
+- **examples:** change example for `BoxPrinter`
 - **pterm-sh:** update sidebar
+- **pterm-sh:** add `BoxPrinter`
+- **readme:** update readme with new main features
 
 ### Features
 - **boxprinter:** add `WithHorizontalString` to `BoxPrinter`
