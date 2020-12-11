@@ -8,6 +8,7 @@
 - **intellij:** update conventionalCommit.xml
 
 ### Code Refactoring
+- remove analytics
 - **boxprinter:** change from `RenderablePrinter` to `TextPrinter`
 - **boxprinter:** return theme when style is nil
 - **boxprinter:** change `DefaultBox` top and bottom padding to 0
@@ -18,12 +19,12 @@
 
 ### Documentation Changes
 - **boxprinter:** update `BoxPrinter` example
-- **boxprinter:** add documentation
 - **boxprinter:** update documentation to printer
+- **boxprinter:** add documentation
 - **examples:** add example for `BoxPrinter`
 - **examples:** change example for `BoxPrinter`
-- **pterm-sh:** update sidebar
 - **pterm-sh:** add `BoxPrinter`
+- **pterm-sh:** update sidebar
 - **readme:** update readme with new main features
 
 ### Features
