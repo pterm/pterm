@@ -1,8 +1,13 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Bug Fixes
+- change terminal package import path to updated version
+
 ### Chore
 - **deps:** update dependencies
+
+### Documentation Changes
 
 
 <a name="v0.12.8"></a>
