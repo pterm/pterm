@@ -1,6 +1,12 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Chore
+- **deps:** update dependencies
+
+
+<a name="v0.12.8"></a>
+## [v0.12.8] - 2020-12-11
 ### Bug Fixes
 - revert change horizontal string change
 
@@ -1033,7 +1039,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.7...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.8...HEAD
+[v0.12.8]: https://github.com/pterm/pterm/compare/v0.12.7...v0.12.8
 [v0.12.7]: https://github.com/pterm/pterm/compare/v0.12.6...v0.12.7
 [v0.12.6]: https://github.com/pterm/pterm/compare/v0.12.5...v0.12.6
 [v0.12.5]: https://github.com/pterm/pterm/compare/v0.12.4...v0.12.5
