@@ -3,7 +3,7 @@ package pterm
 import (
 	"os"
 
-	"golang.org/x/crypto/ssh/terminal"
+	"golang.org/x/term"
 )
 
 // FallbackTerminalWidth is the value used for GetTerminalWidth, if the actual width can not be detected
@@ -28,7 +28,7 @@ func GetTerminalHeight() int {
 
 // GetTerminalSize returns the width and the height of the active terminal.
 func GetTerminalSize() (width, height int, err error) {
-	w, h, err := terminal.GetSize(int(os.Stdout.Fd()))
+	w, h, err := term.GetSize(int(os.Stdout.Fd()))
 	if w <= 0 {
 		w = FallbackTerminalWidth
 	}
