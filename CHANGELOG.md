@@ -2,6 +2,7 @@
 ## [Unreleased]
 
 ### Bug Fixes
+- correct `pterm.Println()` behaviour to fit to `fmt.Println()`
 - change terminal package import path to updated version
 
 ### Chore
