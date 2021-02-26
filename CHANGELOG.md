@@ -1,11 +1,20 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Code Refactoring
+- refactor print logic of `BoxPrinter`
+- refactor print logic of `CenterPrinter`
+
+
+<a name="v0.12.10"></a>
+## [v0.12.10] - 2021-02-26
 ### Bug Fixes
 - correct `pterm.Println()` behaviour to fit to `fmt.Println()`
 
 ### Chore
 - **intellij:** update VersionControlSystem config
+
+### Documentation Changes
 
 
 <a name="v0.12.9"></a>
@@ -1054,7 +1063,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.9...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.10...HEAD
+[v0.12.10]: https://github.com/pterm/pterm/compare/v0.12.9...v0.12.10
 [v0.12.9]: https://github.com/pterm/pterm/compare/v0.12.8...v0.12.9
 [v0.12.8]: https://github.com/pterm/pterm/compare/v0.12.7...v0.12.8
 [v0.12.7]: https://github.com/pterm/pterm/compare/v0.12.6...v0.12.7
