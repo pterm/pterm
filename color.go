@@ -140,7 +140,8 @@ type Color uint8
 // Spaces are always added between operands and a newline is appended.
 // Input will be colored with the parent Color.
 func (c Color) Sprintln(a ...interface{}) string {
-	return c.Sprint(a...) + "\n"
+	str := fmt.Sprintln(a...)
+	return c.Sprint(str)
 }
 
 // Sprint formats using the default formats for its operands and returns the resulting string.

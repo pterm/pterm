@@ -1,6 +1,9 @@
 package pterm
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
 
 // DefaultSection is the default section printer.
 var DefaultSection = SectionPrinter{
@@ -80,7 +83,8 @@ func (p SectionPrinter) Sprint(a ...interface{}) string {
 // Sprintln formats using the default formats for its operands and returns the resulting string.
 // Spaces are always added between operands and a newline is appended.
 func (p SectionPrinter) Sprintln(a ...interface{}) string {
-	return Sprintln(p.Sprint(a...))
+	str := fmt.Sprintln(a...)
+	return Sprint(p.Sprint(str))
 }
 
 // Sprintf formats according to a format specifier and returns the resulting string.
@@ -101,7 +105,7 @@ func (p *SectionPrinter) Print(a ...interface{}) *TextPrinter {
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
 func (p *SectionPrinter) Println(a ...interface{}) *TextPrinter {
-	Println(p.Sprint(a...))
+	Print(p.Sprintln(a...))
 	tp := TextPrinter(p)
 	return &tp
 }
