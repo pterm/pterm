@@ -58,7 +58,7 @@ func (p CenterPrinter) Sprint(a ...interface{}) string {
 // Sprintln formats using the default formats for its operands and returns the resulting string.
 // Spaces are always added between operands and a newline is appended.
 func (p CenterPrinter) Sprintln(a ...interface{}) string {
-	return Sprintln(p.Sprint(a...))
+	return p.Sprint(Sprintln(a...))
 }
 
 // Sprintf formats according to a format specifier and returns the resulting string.
@@ -79,7 +79,7 @@ func (p CenterPrinter) Print(a ...interface{}) *TextPrinter {
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
 func (p CenterPrinter) Println(a ...interface{}) *TextPrinter {
-	Println(p.Sprint(a...))
+	Print(p.Sprintln(a...))
 	tp := TextPrinter(p)
 	return &tp
 }
