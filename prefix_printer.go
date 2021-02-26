@@ -1,6 +1,7 @@
 package pterm
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/pterm/pterm/internal"
@@ -178,7 +179,8 @@ func (p PrefixPrinter) Sprintln(a ...interface{}) string {
 	if p.Debugger && !PrintDebugMessages {
 		return ""
 	}
-	return p.Sprint(a...) + "\n"
+	str := fmt.Sprintln(a...)
+	return p.Sprint(str)
 }
 
 // Sprintf formats according to a format specifier and returns the resulting string.
