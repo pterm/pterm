@@ -3,6 +3,15 @@
 
 ### Bug Fixes
 - correct `pterm.Println()` behaviour to fit to `fmt.Println()`
+
+### Chore
+- **intellij:** update VersionControlSystem config
+
+
+<a name="v0.12.9"></a>
+## [v0.12.9] - 2021-02-23
+### Bug Fixes
+- correct `pterm.Println()` behaviour to fit to `fmt.Println()`
 - change terminal package import path to updated version
 
 ### Chore
@@ -1045,7 +1054,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.8...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.9...HEAD
+[v0.12.9]: https://github.com/pterm/pterm/compare/v0.12.8...v0.12.9
 [v0.12.8]: https://github.com/pterm/pterm/compare/v0.12.7...v0.12.8
 [v0.12.7]: https://github.com/pterm/pterm/compare/v0.12.6...v0.12.7
 [v0.12.6]: https://github.com/pterm/pterm/compare/v0.12.5...v0.12.6
