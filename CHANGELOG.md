@@ -1,9 +1,17 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Chore
+- **deps:** bump github.com/gookit/color from 1.3.7 to 1.3.8
+
+
+<a name="v0.12.11"></a>
+## [v0.12.11] - 2021-02-26
 ### Code Refactoring
 - refactor print logic of `BoxPrinter`
 - refactor print logic of `CenterPrinter`
+
+### Documentation Changes
 
 
 <a name="v0.12.10"></a>
@@ -1063,7 +1071,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.10...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.11...HEAD
+[v0.12.11]: https://github.com/pterm/pterm/compare/v0.12.10...v0.12.11
 [v0.12.10]: https://github.com/pterm/pterm/compare/v0.12.9...v0.12.10
 [v0.12.9]: https://github.com/pterm/pterm/compare/v0.12.8...v0.12.9
 [v0.12.8]: https://github.com/pterm/pterm/compare/v0.12.7...v0.12.8
