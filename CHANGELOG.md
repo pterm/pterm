@@ -4,6 +4,9 @@
 ### Chore
 - **deps:** bump github.com/gookit/color from 1.3.7 to 1.3.8
 
+### Code Refactoring
+- **examples:** Update `PrefixPrinter` example
+
 ### Documentation Changes
 
 ### Features
