@@ -38,7 +38,7 @@
 </a>
 
 <a href="https://codecov.io/gh/pterm/pterm">
-<!-- unittestcount:start --><img src="https://img.shields.io/badge/Unit_Tests-5447-magenta?style=flat-square" alt="Forks"><!-- unittestcount:end -->
+<!-- unittestcount:start --><img src="https://img.shields.io/badge/Unit_Tests-5453-magenta?style=flat-square" alt="Forks"><!-- unittestcount:end -->
 </a>
 
 <a href="https://github.com/pterm/pterm/tree/master/_examples/demo">
@@ -108,7 +108,7 @@ We take special precautions to ensure that PTerm works on as many operating syst
 
 > PTerm has a 100% test coverage, which means that every line of code inside PTerm gets tested automatically
 
-We test PTerm continuously. However, since a human cannot test everything all the time, we have our own test system with which we currently run <!-- unittestcount2:start -->**`5447`**<!-- unittestcount2:end -->
+We test PTerm continuously. However, since a human cannot test everything all the time, we have our own test system with which we currently run <!-- unittestcount2:start -->**`5453`**<!-- unittestcount2:end -->
 automated tests to ensure that PTerm has no bugs. 
 
 ### • ✨ Consistent Colors
@@ -925,11 +925,12 @@ func main() {
 	// Enable debug messages.
 	pterm.EnableDebugMessages()
 
-	pterm.Debug.Println("Hello, World!")   // Print Debug.
-	pterm.Info.Println("Hello, World!")    // Print Info.
-	pterm.Success.Println("Hello, World!") // Print Success.
-	pterm.Warning.Println("Hello, World!") // Print Warning.
-	pterm.Error.Println("Hello, World!")   // Print Error.
+	pterm.Debug.Println("Hello, World!")                                             // Print Debug.
+	pterm.Info.Println("Hello, World!")                                              // Print Info.
+	pterm.Success.Println("Hello, World!")                                           // Print Success.
+	pterm.Warning.Println("Hello, World!")                                           // Print Warning.
+	pterm.Error.Println("Errors show the file and linenumber inside the terminal!")  // Print Error.
+	pterm.Info.WithShowLineNumber().Println("Other PrefixPrinters can do that too!") // Print Error.
 	// Temporarily set Fatal to false, so that the CI won't crash.
 	pterm.Fatal.WithFatal(false).Println("Hello, World!") // Print Fatal.
 }

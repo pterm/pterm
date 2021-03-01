@@ -4,6 +4,11 @@
 ### Chore
 - **deps:** bump github.com/gookit/color from 1.3.7 to 1.3.8
 
+### Documentation Changes
+
+### Features
+- **prefixprinter:** Add option to show line number of caller
+
 
 <a name="v0.12.11"></a>
 ## [v0.12.11] - 2021-02-26
