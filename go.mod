@@ -4,7 +4,7 @@ go 1.15
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/gookit/color v1.3.7
+	github.com/gookit/color v1.3.8
 	github.com/mattn/go-runewidth v0.0.10
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/stretchr/testify v1.7.0
