@@ -99,6 +99,16 @@ func TestPrefixPrinter_WithFatal(t *testing.T) {
 	}
 }
 
+func TestPrefixPrinter_WithShowLineNumber(t *testing.T) {
+	for _, p := range prefixPrinters {
+		t.Run("", func(t *testing.T) {
+			p2 := p.WithShowLineNumber()
+
+			assert.Equal(t, true, p2.ShowLineNumber)
+		})
+	}
+}
+
 func TestPrefixPrinter_WithMessageStyle(t *testing.T) {
 	for _, p := range prefixPrinters {
 		t.Run("", func(t *testing.T) {
