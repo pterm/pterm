@@ -2,6 +2,7 @@ package pterm
 
 import (
 	"fmt"
+	"runtime"
 	"strings"
 
 	"github.com/pterm/pterm/internal"
@@ -47,6 +48,7 @@ var (
 			Style: &ThemeDefault.ErrorPrefixStyle,
 			Text:  " ERROR ",
 		},
+		ShowLineNumber: true,
 	}
 
 	// Fatal returns a PrefixPrinter, which can be used to print text with an "fatal" Prefix.
@@ -83,10 +85,11 @@ var (
 
 // PrefixPrinter is the printer used to print a Prefix.
 type PrefixPrinter struct {
-	Prefix       Prefix
-	Scope        Scope
-	MessageStyle *Style
-	Fatal        bool
+	Prefix         Prefix
+	Scope          Scope
+	MessageStyle   *Style
+	Fatal          bool
+	ShowLineNumber bool
 	// If Debugger is true, the printer will only print if PrintDebugMessages is set to true.
 	// You can change PrintDebugMessages with EnableDebugMessages and DisableDebugMessages, or by setting the variable itself.
 	Debugger bool
@@ -116,6 +119,12 @@ func (p PrefixPrinter) WithMessageStyle(style *Style) *PrefixPrinter {
 // or PrefixPrinter.Printf is called.
 func (p PrefixPrinter) WithFatal(b ...bool) *PrefixPrinter {
 	p.Fatal = internal.WithBoolean(b)
+	return &p
+}
+
+// WithShowLineNumber sets if the printer should print the line number from where it's called in a go file.
+func (p PrefixPrinter) WithShowLineNumber(b ...bool) *PrefixPrinter {
+	p.ShowLineNumber = internal.WithBoolean(b)
 	return &p
 }
 
@@ -164,6 +173,13 @@ func (p *PrefixPrinter) Sprint(a ...interface{}) string {
 		} else {
 			ret += "\n" + p.Prefix.Style.Sprint(strings.Repeat(" ", len(p.Prefix.Text)+2)) + " " + p.MessageStyle.Sprint(m)
 		}
+	}
+
+	_, fileName, line, _ := runtime.Caller(3)
+
+	if p.ShowLineNumber {
+		ret += FgGray.Sprint("\n└ " + fmt.Sprintf("(%s:%d)\n", fileName, line))
+		newLine = false
 	}
 
 	if newLine {
