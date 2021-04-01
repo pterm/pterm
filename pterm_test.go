@@ -26,3 +26,15 @@ func TestEnableOutput(t *testing.T) {
 	EnableOutput()
 	assert.True(t, Output)
 }
+
+func TestDisableStyling(t *testing.T) {
+	RawOutput = true
+	DisableStyling()
+	assert.False(t, RawOutput)
+}
+
+func TestEnableStyling(t *testing.T) {
+	RawOutput = false
+	EnableStyling()
+	assert.True(t, RawOutput)
+}
