@@ -4,6 +4,11 @@
 ### Chore
 - **gitpod:** add gitpod support ([#172](https://github.com/pterm/pterm/issues/172))
 
+### Documentation Changes
+
+### Test
+- add interface tests
+
 
 <a name="v0.12.12"></a>
 ## [v0.12.12] - 2021-03-01
