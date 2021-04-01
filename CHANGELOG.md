@@ -2,6 +2,12 @@
 ## [Unreleased]
 
 ### Chore
+- **gitpod:** add gitpod support ([#172](https://github.com/pterm/pterm/issues/172))
+
+
+<a name="v0.12.12"></a>
+## [v0.12.12] - 2021-03-01
+### Chore
 - **deps:** bump github.com/gookit/color from 1.3.7 to 1.3.8
 
 ### Code Refactoring
@@ -1079,7 +1085,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.11...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.12...HEAD
+[v0.12.12]: https://github.com/pterm/pterm/compare/v0.12.11...v0.12.12
 [v0.12.11]: https://github.com/pterm/pterm/compare/v0.12.10...v0.12.11
 [v0.12.10]: https://github.com/pterm/pterm/compare/v0.12.9...v0.12.10
 [v0.12.9]: https://github.com/pterm/pterm/compare/v0.12.8...v0.12.9
