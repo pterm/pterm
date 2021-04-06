@@ -2,7 +2,13 @@
 ## [Unreleased]
 
 ### Chore
+- **deps:** bump github.com/mattn/go-runewidth from 0.0.10 to 0.0.12
 - **gitpod:** add gitpod support ([#172](https://github.com/pterm/pterm/issues/172))
+
+### Documentation Changes
+
+### Test
+- add interface tests
 
 
 <a name="v0.12.12"></a>

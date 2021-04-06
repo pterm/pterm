@@ -38,3 +38,10 @@ func TestEnableStyling(t *testing.T) {
 	EnableStyling()
 	assert.True(t, RawOutput)
 }
+
+func TestInterfaceImplementation(t *testing.T) {
+	// If a printer doesn't fit into the slice, the printer doesn't has the right interface anymore.
+	_ = []TextPrinter{&DefaultBasicText, DefaultBox, DefaultCenter, &DefaultHeader, &DefaultParagraph, &Info, &DefaultSection}
+	_ = []LivePrinter{DefaultProgressbar, &DefaultSpinner}
+	_ = []RenderPrinter{DefaultBarChart, DefaultBigText, DefaultBulletList, DefaultPanel, DefaultTable, DefaultTree}
+}
