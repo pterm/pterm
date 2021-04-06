@@ -8,6 +8,10 @@
 - **deps:** bump github.com/mattn/go-runewidth from 0.0.10 to 0.0.12
 - **gitpod:** add gitpod support ([#172](https://github.com/pterm/pterm/issues/172))
 
+### Code Refactoring
+- **examples:** center the intro of `demo`
+- **examples:** add note to box printer
+
 ### Documentation Changes
 
 ### Test
