@@ -167,23 +167,29 @@ func (c Color) Sprintf(format string, a ...interface{}) string {
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
 // Input will be colored with the parent Color.
-func (c Color) Println(a ...interface{}) {
+func (c Color) Println(a ...interface{}) *TextPrinter {
 	Print(c.Sprintln(a...))
+	tc := TextPrinter(c)
+	return &tc
 }
 
 // Print formats using the default formats for its operands and writes to standard output.
 // Spaces are added between operands when neither is a string.
 // It returns the number of bytes written and any write error encountered.
 // Input will be colored with the parent Color.
-func (c Color) Print(a ...interface{}) {
+func (c Color) Print(a ...interface{}) *TextPrinter {
 	Print(c.Sprint(a...))
+	tc := TextPrinter(c)
+	return &tc
 }
 
 // Printf formats according to a format specifier and writes to standard output.
 // It returns the number of bytes written and any write error encountered.
 // Input will be colored with the parent Color.
-func (c Color) Printf(format string, a ...interface{}) {
+func (c Color) Printf(format string, a ...interface{}) *TextPrinter {
 	Print(c.Sprintf(format, a...))
+	tc := TextPrinter(c)
+	return &tc
 }
 
 // String converts the color to a string. eg "35".
