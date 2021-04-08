@@ -5,6 +5,7 @@
 - **color:** make color implement `TextPrinter`
 
 ### Chore
+- **deps:** bump github.com/gookit/color from 1.4.0 to 1.4.1
 - **deps:** bump github.com/gookit/color from 1.3.8 to 1.4.0
 - **deps:** bump github.com/mattn/go-runewidth from 0.0.10 to 0.0.12
 - **gitpod:** add gitpod support ([#172](https://github.com/pterm/pterm/issues/172))
