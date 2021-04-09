@@ -416,8 +416,7 @@ var DefaultBigText = BigTextPrinter{
 ██      
 ███████ 
      ██ 
-███████ 
-       `,
+███████`,
 		"6": ` ██████  
 ██       
 ███████  
@@ -437,8 +436,7 @@ var DefaultBigText = BigTextPrinter{
 ██   ██ 
  ██████ 
      ██ 
- █████  
-        `,
+ █████ `,
 		" ": "    ",
 		"!": `██ 
 ██ 
@@ -460,8 +458,7 @@ var DefaultBigText = BigTextPrinter{
    ██  
   ██   
  ██    
-██     
-       `,
+██   `,
 		"(": ` ██ 
 ██  
 ██  
@@ -502,7 +499,6 @@ var DefaultBigText = BigTextPrinter{
 █████ 
       
       
-      
      `,
 		"<": `  ██ 
  ██  
@@ -529,5 +525,15 @@ var DefaultBigText = BigTextPrinter{
         
         
 ███████ `,
+		":": `   
+██ 
+   
+   
+██ `,
+		"°": ` ████  
+██  ██ 
+ ████  
+       
+      `,
 	},
 }
