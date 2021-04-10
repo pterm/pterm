@@ -70,6 +70,15 @@
 
 ---
 
+## 📦 Installation
+
+To make PTerm available in your project, you can run the following command.\
+Make sure to run this command inside your project, when you're using go modules 😉
+
+```sh
+go get github.com/pterm/pterm
+```
+
 ## ⭐ Main Features
 
 |Feature|Example|Docs|
@@ -132,15 +141,6 @@ PTerm can be used by without any configuration. However, you can easily configur
 PTerm is currently under development. It is very likely that not all things will remain as they are at the moment. However, PTerm is still functional. The versioning of PTerm follows the SemVer guidelines. Breaking Changes are explicitly mentioned in the changelogs and the version will be increased accordingly. Everybody is welcome to improve PTerm, whether by making suggestions or pull requests. Thanks ❤
 
 If you want to wait for a stable release, make sure to star the project and follow it, to get notified when we release v1.0.0 (stable) 🚀
-
-## 📦 Installation
-
-To make PTerm available in your project, you can run the following command.\
-Make sure to run this command inside your project, when you're using go modules 😉
-
-```sh
-go get github.com/pterm/pterm
-```
 
 ## ✏ Documentation
 
