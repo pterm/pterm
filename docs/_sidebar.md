@@ -20,7 +20,10 @@
     - [Print Methods](docs/functions/print.md)
   - Types
     - [BulletListItem](docs/types/bulletlistitem.md)
-  - [Override Default Printer](docs/override-default-printer.md)
+  - Customizing
+    - [Intro](docs/customizing/customizing.md)
+    - [Override Default Printer](docs/customizing/override-default-printer.md)
+    - [Theming](docs/customizing/theming.md)
 - Contributing
   - [Writing Documentation](contributing/writing-documentation.md)
   - [Documentation Template](contributing/writing-documentation-template.md)
