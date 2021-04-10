@@ -1,6 +1,29 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Documentation Changes
+- **pterm-sh:** add docs for `Prefix` printer in `README.md`
+- **pterm-sh:** update `edit on github` link
+- **pterm-sh:** remove customizing intro from sidebar
+- **pterm-sh:** add `Style` printer documentation
+- **pterm-sh:** add a `Style` printer example
+- **pterm-sh:** add docs for `BarChart` printer in `README.md`
+- **pterm-sh:** add `RGB` printer documentation and in `README.md`
+- **pterm-sh:** add `RGB` and `Style` to features in `README.md`
+- **pterm-sh:** restructure sidebar
+- **pterm-sh:** add docs for theming
+- **pterm-sh:** add docs for `Color` printer in `README.md`
+- **pterm-sh:** add docs for `Table` printer in `README.md`
+- **pterm-sh:** document global function
+- **readme:** add docs for theming
+- **readme:** make feature tables shorter
+- **readme:** move features section to goal of pterm
+- **readme:** move installation section to top
+- **readme:** make feature list to table
+
+
+<a name="v0.12.13"></a>
+## [v0.12.13] - 2021-04-10
 ### Bug Fixes
 - **bigtext:** fix height of some characters [#180](https://github.com/pterm/pterm/issues/180)
 - **color:** make color implement `TextPrinter`
@@ -1101,7 +1124,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.12...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.13...HEAD
+[v0.12.13]: https://github.com/pterm/pterm/compare/v0.12.12...v0.12.13
 [v0.12.12]: https://github.com/pterm/pterm/compare/v0.12.11...v0.12.12
 [v0.12.11]: https://github.com/pterm/pterm/compare/v0.12.10...v0.12.11
 [v0.12.10]: https://github.com/pterm/pterm/compare/v0.12.9...v0.12.10
