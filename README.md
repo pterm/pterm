@@ -79,7 +79,21 @@ Make sure to run this command inside your project, when you're using go modules 
 go get github.com/pterm/pterm
 ```
 
-## ⭐ Main Features
+## 🥅 Goal of PTerm
+
+PTerm is designed to create a **platform independent way to create beautiful terminal output**. Most modules that want to improve the terminal output do not guarantee platform independence - PTerm does. PTerm follows the **most common methods for displaying color in a terminal**. With PTerm, it is possible to create beautiful output **even in low-level environments**. 
+
+### • 🪀 Easy to use
+
+Our first priority is to keep PTerm as easy to use as possible. With many [examples](#-examples) for each individual component, getting started with PTerm is extremely easy. All components are similar in design and implement interfaces to simplify mixing individual components together.
+
+### • 🤹‍♀️ Cross-Platform
+
+We take special precautions to ensure that PTerm works on as many operating systems and terminals as possible. Whether it's `Windows CMD`, `macOS iTerm2` or in the backend (for example inside a `GitHub Action` or other CI systems), PTerm **guarantees** beautiful output!\
+\
+*PTerm is actively tested on `Windows`, `Linux (Debian & Ubuntu)` and `macOS`.*
+
+### • ⭐ Main Features
 
 |Feature|Example|Docs|
 |---|---|---|
@@ -99,20 +113,6 @@ go get github.com/pterm/pterm
 |Tables|[Example](#table)|-|
 |Theming|[Example](#theme)|-|
 |Trees|[Example](#tree)|[Docs](https://pterm.sh/#/docs/printer/tree)|
-
-## 🥅 Goal of PTerm
-
-PTerm is designed to create a **platform independent way to create beautiful terminal output**. Most modules that want to improve the terminal output do not guarantee platform independence - PTerm does. PTerm follows the **most common methods for displaying color in a terminal**. With PTerm, it is possible to create beautiful output **even in low-level environments**. 
-
-### • 🪀 Easy to use
-
-Our first priority is to keep PTerm as easy to use as possible. With many [examples](#-examples) for each individual component, getting started with PTerm is extremely easy. All components are similar in design and implement interfaces to simplify mixing individual components together.
-
-### • 🤹‍♀️ Cross-Platform
-
-We take special precautions to ensure that PTerm works on as many operating systems and terminals as possible. Whether it's `Windows CMD`, `macOS iTerm2` or in the backend (for example inside a `GitHub Action` or other CI systems), PTerm **guarantees** beautiful output!\
-\
-*PTerm is actively tested on `Windows`, `Linux (Debian & Ubuntu)` and `macOS`.*
 
 ### • 🧪 Well tested
 
