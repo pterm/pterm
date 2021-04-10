@@ -17,6 +17,7 @@
     - [RGB](docs/printer/rgb.md)
     - [Section](docs/printer/section.md)
     - [Spinner](docs/printer/spinner.md)
+    - [Style](docs/printer/style.md)
     - [Table](docs/printer/table.md)
     - [Tree](docs/printer/tree.md)
   - Global Functions
