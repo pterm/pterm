@@ -11,6 +11,7 @@
     - [Header](docs/printer/header.md)
     - [Panel](docs/printer/panel.md)
     - [Paragraph](docs/printer/paragraph.md)
+    - [Prefix](docs/printer/prefix.md)
     - [Progressbar](docs/printer/progressbar.md)
     - [Section](docs/printer/section.md)
     - [Spinner](docs/printer/spinner.md)
