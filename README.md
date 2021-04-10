@@ -97,7 +97,7 @@ We take special precautions to ensure that PTerm works on as many operating syst
 
 |Feature|Example|Docs|
 |---|---|---|
-|Bar Charts|[Example](#barchart)|-|
+|Bar Charts|[Example](#barchart)|[Docs](https://pterm.sh/#/docs/printer/barchart)|
 |BigText|[Example](#bigtext)|[Docs](https://pterm.sh/#/docs/printer/bigtext)|
 |Boxed|[Example](#box)|[Docs](https://pterm.sh/#/docs/printer/box)|
 |Bullet Lists|[Example](#bulletlist)|[Docs](https://pterm.sh/#/docs/printer/bulletlist)|

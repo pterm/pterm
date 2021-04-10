@@ -2,6 +2,7 @@
 - Documentation
   - [Intro](docs/intro.md)
   - Printers
+    - [BarChart](docs/printer/barchart.md)
     - [BasicText](docs/printer/basictext.md)
     - [BigText](docs/printer/bigtext.md)
     - [Box](docs/printer/box.md)
