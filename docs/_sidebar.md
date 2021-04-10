@@ -25,7 +25,6 @@
   - Types
     - [BulletListItem](docs/types/bulletlistitem.md)
   - Customizing
-    - [Intro](docs/customizing/customizing.md)
     - [Override Default Printer](docs/customizing/override-default-printer.md)
     - [Theming](docs/customizing/theming.md)
 - Contributing
