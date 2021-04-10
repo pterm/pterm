@@ -102,7 +102,7 @@ We take special precautions to ensure that PTerm works on as many operating syst
 |Boxed|[Example](#box)|[Docs](https://pterm.sh/#/docs/printer/box)|
 |Bullet Lists|[Example](#bulletlist)|[Docs](https://pterm.sh/#/docs/printer/bulletlist)|
 |Centered|[Example](#center)|[Docs](https://pterm.sh/#/docs/printer/center)|
-|Colors|[Example](#print-with-color)|-|
+|Colors|[Example](#print-with-color)|[Docs](https://pterm.sh/#/docs/printer/color)|
 |Headers|[Example](#header)|[Docs](https://pterm.sh/#/docs/printer/header)|
 |Panels|[Example](#panel)|[Docs](https://pterm.sh/#/docs/printer/panel)|
 |Paragraphs|[Example](#paragraph)|[Docs](https://pterm.sh/#/docs/printer/paragraph)|

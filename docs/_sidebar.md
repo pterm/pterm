@@ -8,6 +8,7 @@
     - [Box](docs/printer/box.md)
     - [BulletList](docs/printer/bulletlist.md)
     - [Center](docs/printer/center.md)
+    - [Color](docs/printer/color.md)
     - [Header](docs/printer/header.md)
     - [Panel](docs/printer/panel.md)
     - [Paragraph](docs/printer/paragraph.md)
