@@ -108,8 +108,10 @@ We take special precautions to ensure that PTerm works on as many operating syst
 |Paragraphs|[Example](#paragraph)|[Docs](https://pterm.sh/#/docs/printer/paragraph)|
 |Prefixes|[Example](#prefix)|[Docs](https://pterm.sh/#/docs/printer/prefix)|
 |Progress Bars|[Example](#progressbar)|[Docs](https://pterm.sh/#/docs/printer/progressbar)|
+|RGB|[Example](#print-color-rgb)|[Docs](https://pterm.sh/#/docs/printer/rgb)|
 |Sections|[Example](#section)|[Docs](https://pterm.sh/#/docs/printer/section)|
 |Spinners|[Example](#spinner)|[Docs](https://pterm.sh/#/docs/printer/spinner)|
+|Style|[Example](#style)|[Docs](https://pterm.sh/#/docs/printer/style)|
 |Tables|[Example](#table)|[Docs](https://pterm.sh/#/docs/printer/table)|
 |Theming|[Example](#theme)|[Docs](https://pterm.sh/#/docs/customizing/theming)|
 |Trees|[Example](#tree)|[Docs](https://pterm.sh/#/docs/printer/tree)|
