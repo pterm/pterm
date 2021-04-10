@@ -1,6 +1,7 @@
 - [Quick Start](quick-start.md)
 - Documentation
   - [Intro](docs/intro.md)
+  - [Global Functions](docs/functions.md)
   - Printers
     - [BarChart](docs/printer/barchart.md)
     - [BasicText](docs/printer/basictext.md)
@@ -20,8 +21,6 @@
     - [Style](docs/printer/style.md)
     - [Table](docs/printer/table.md)
     - [Tree](docs/printer/tree.md)
-  - Global Functions
-    - [Print Methods](docs/functions/print.md)
   - Types
     - [BulletListItem](docs/types/bulletlistitem.md)
   - Customizing
