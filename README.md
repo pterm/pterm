@@ -72,23 +72,24 @@
 
 ## ⭐ Main Features
 
-- [Theme Support](#theme)
-- [Prefix](#prefix)
-- [Bar Chart](#barchart)
-- [Big Text](#bigtext)
-- [Box](#box)
-- [Bullet List](#bulletlist)
-- [Panel](#panel)
-- [Progressbar](#progressbar)
-- [Section](#section)
-- [Spinner](#spinner)
-- [Header](#header)
-- [Header](#center)
-- [Tree](#tree)
-- [Paragraph](#paragraph)
-- [Print With Color](#print-with-color)
-  - [Print With RGB Color](#print-color-rgb)
-- [Table](#table)
+|Feature|Example|Docs|
+|---|---|---|
+|Bar Charts|[Example](#barchart)|-|
+|BigText|[Example](#bigtext)|[Docs](https://pterm.sh/#/docs/printer/bigtext)|
+|Boxed|[Example](#box)|[Docs](https://pterm.sh/#/docs/printer/box)|
+|Bullet Lists|[Example](#bulletlist)|[Docs](https://pterm.sh/#/docs/printer/bulletlist)|
+|Centered|[Example](#center)|[Docs](https://pterm.sh/#/docs/printer/center)|
+|Colors|[Example](#print-with-color)|-|
+|Headers|[Example](#header)|[Docs](https://pterm.sh/#/docs/printer/header)|
+|Panels|[Example](#panel)|[Docs](https://pterm.sh/#/docs/printer/panel)|
+|Paragraphs|[Example](#paragraph)|[Docs](https://pterm.sh/#/docs/printer/paragraph)|
+|Prefixes|[Example](#prefix)|-|
+|Progress Bars|[Example](#progressbar)|[Docs](https://pterm.sh/#/docs/printer/progressbar)|
+|Sections|[Example](#section)|[Docs](https://pterm.sh/#/docs/printer/section)|
+|Spinners|[Example](#spinner)|[Docs](https://pterm.sh/#/docs/printer/spinner)|
+|Tables|[Example](#table)|-|
+|Theming|[Example](#theme)|-|
+|Trees|[Example](#tree)|[Docs](https://pterm.sh/#/docs/printer/tree)|
 
 ## 🥅 Goal of PTerm
 
