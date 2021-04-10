@@ -95,26 +95,19 @@ We take special precautions to ensure that PTerm works on as many operating syst
 
 ### • ⭐ Main Features
 
-|Feature|Example|Docs|
-|---|---|---|
-|Bar Charts|[Example](#barchart)|[Docs](https://pterm.sh/#/docs/printer/barchart)|
-|BigText|[Example](#bigtext)|[Docs](https://pterm.sh/#/docs/printer/bigtext)|
-|Boxed|[Example](#box)|[Docs](https://pterm.sh/#/docs/printer/box)|
-|Bullet Lists|[Example](#bulletlist)|[Docs](https://pterm.sh/#/docs/printer/bulletlist)|
-|Centered|[Example](#center)|[Docs](https://pterm.sh/#/docs/printer/center)|
-|Colors|[Example](#print-with-color)|[Docs](https://pterm.sh/#/docs/printer/color)|
-|Headers|[Example](#header)|[Docs](https://pterm.sh/#/docs/printer/header)|
-|Panels|[Example](#panel)|[Docs](https://pterm.sh/#/docs/printer/panel)|
-|Paragraphs|[Example](#paragraph)|[Docs](https://pterm.sh/#/docs/printer/paragraph)|
-|Prefixes|[Example](#prefix)|[Docs](https://pterm.sh/#/docs/printer/prefix)|
-|Progress Bars|[Example](#progressbar)|[Docs](https://pterm.sh/#/docs/printer/progressbar)|
-|RGB|[Example](#print-color-rgb)|[Docs](https://pterm.sh/#/docs/printer/rgb)|
-|Sections|[Example](#section)|[Docs](https://pterm.sh/#/docs/printer/section)|
-|Spinners|[Example](#spinner)|[Docs](https://pterm.sh/#/docs/printer/spinner)|
-|Style|[Example](#style)|[Docs](https://pterm.sh/#/docs/printer/style)|
-|Tables|[Example](#table)|[Docs](https://pterm.sh/#/docs/printer/table)|
-|Theming|[Example](#theme)|[Docs](https://pterm.sh/#/docs/customizing/theming)|
-|Trees|[Example](#tree)|[Docs](https://pterm.sh/#/docs/printer/tree)|
+|Feature|Example|Docs|-|Feature|Example|Docs
+|---|---|---|---|---|---|---|
+|Bar Charts|[Example](#barchart)|[Docs](https://pterm.sh/#/docs/printer/barchart)|-|RGB|[Example](#print-color-rgb)|[Docs](https://pterm.sh/#/docs/printer/rgb)|
+|BigText|[Example](#bigtext)|[Docs](https://pterm.sh/#/docs/printer/bigtext)|-|Sections|[Example](#section)|[Docs](https://pterm.sh/#/docs/printer/section)|
+|Boxed|[Example](#box)|[Docs](https://pterm.sh/#/docs/printer/box)|-|Spinners|[Example](#spinner)|[Docs](https://pterm.sh/#/docs/printer/spinner)|
+|Bullet Lists|[Example](#bulletlist)|[Docs](https://pterm.sh/#/docs/printer/bulletlist)|-|Trees|[Example](#tree)|[Docs](https://pterm.sh/#/docs/printer/tree)|
+|Centered|[Example](#center)|[Docs](https://pterm.sh/#/docs/printer/center)|-|Theming|[Example](#theme)|[Docs](https://pterm.sh/#/docs/customizing/theming)|
+|Colors|[Example](#print-with-color)|[Docs](https://pterm.sh/#/docs/printer/color)|-|Tables|[Example](#table)|[Docs](https://pterm.sh/#/docs/printer/table)|
+|Headers|[Example](#header)|[Docs](https://pterm.sh/#/docs/printer/header)|-|Styles|[Example](#style)|[Docs](https://pterm.sh/#/docs/printer/style)|
+|Panels|[Example](#panel)|[Docs](https://pterm.sh/#/docs/printer/panel)|-|||
+|Paragraphs|[Example](#paragraph)|[Docs](https://pterm.sh/#/docs/printer/paragraph)|-|||
+|Prefixes|[Example](#prefix)|[Docs](https://pterm.sh/#/docs/printer/prefix)|-|||
+|Progress Bars|[Example](#progressbar)|[Docs](https://pterm.sh/#/docs/printer/progressbar)|-|||
 
 ### • 🧪 Well tested
 
