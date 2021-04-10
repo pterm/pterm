@@ -4,8 +4,8 @@ import (
 	"github.com/pterm/pterm/internal"
 	"github.com/stretchr/testify/assert"
 	"io"
-	"testing"
 	"strings"
+	"testing"
 )
 
 func TestBigTextPrinterNilPrint(t *testing.T) {
@@ -99,7 +99,7 @@ func TestNewLettersFromTextWithStyle(t *testing.T) {
 func TestDefaultLettersMaxHeight(t *testing.T) {
 	maxHeight := 5
 	chars := DefaultBigText.BigCharacters
-	for s, l := range(chars) {
+	for s, l := range chars {
 		h := strings.Count(l, "\n")
 		assert.LessOrEqualf(t, h, maxHeight, "'%s' is too high", s)
 	}

@@ -2,6 +2,7 @@
 ## [Unreleased]
 
 ### Bug Fixes
+- **bigtext:** fix height of some characters [#180](https://github.com/pterm/pterm/issues/180)
 - **color:** make color implement `TextPrinter`
 
 ### Chore
