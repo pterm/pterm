@@ -111,7 +111,7 @@ We take special precautions to ensure that PTerm works on as many operating syst
 |Sections|[Example](#section)|[Docs](https://pterm.sh/#/docs/printer/section)|
 |Spinners|[Example](#spinner)|[Docs](https://pterm.sh/#/docs/printer/spinner)|
 |Tables|[Example](#table)|[Docs](https://pterm.sh/#/docs/printer/table)|
-|Theming|[Example](#theme)|-|
+|Theming|[Example](#theme)|[Docs](https://pterm.sh/#/docs/customizing/theming)|
 |Trees|[Example](#tree)|[Docs](https://pterm.sh/#/docs/printer/tree)|
 
 ### • 🧪 Well tested
