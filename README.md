@@ -106,7 +106,7 @@ We take special precautions to ensure that PTerm works on as many operating syst
 |Headers|[Example](#header)|[Docs](https://pterm.sh/#/docs/printer/header)|
 |Panels|[Example](#panel)|[Docs](https://pterm.sh/#/docs/printer/panel)|
 |Paragraphs|[Example](#paragraph)|[Docs](https://pterm.sh/#/docs/printer/paragraph)|
-|Prefixes|[Example](#prefix)|-|
+|Prefixes|[Example](#prefix)|[Docs](https://pterm.sh/#/docs/printer/prefix)|
 |Progress Bars|[Example](#progressbar)|[Docs](https://pterm.sh/#/docs/printer/progressbar)|
 |Sections|[Example](#section)|[Docs](https://pterm.sh/#/docs/printer/section)|
 |Spinners|[Example](#spinner)|[Docs](https://pterm.sh/#/docs/printer/spinner)|
