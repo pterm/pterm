@@ -81,4 +81,4 @@ pterm.DefaultBulletList.WithItems([]pterm.BulletListItem{{Level: 0, Text: "Level
 -->
 
 ## Related
-- [Override default printers](docs/override-default-printer.md)
+- [Override default printers](docs/customizing/override-default-printer.md)

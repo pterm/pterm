@@ -64,4 +64,4 @@ pterm.DefaultSpinner.Start()
 > Use the normal `Start()` and `Stop()` methods if possible.
 
 ## Related
-- [Override default printers](docs/override-default-printer.md)
+- [Override default printers](docs/customizing/override-default-printer.md)

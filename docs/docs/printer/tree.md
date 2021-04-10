@@ -50,4 +50,4 @@ pterm.DefaultTree.WithRoot(pterm.NewTreeFromLeveledList(pterm.LeveledList{pterm.
 |Srender()|Returns a string|
 
 ## Related
-- [Override default printers](docs/override-default-printer.md)
+- [Override default printers](docs/customizing/override-default-printer.md)
