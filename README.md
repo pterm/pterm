@@ -110,7 +110,7 @@ We take special precautions to ensure that PTerm works on as many operating syst
 |Progress Bars|[Example](#progressbar)|[Docs](https://pterm.sh/#/docs/printer/progressbar)|
 |Sections|[Example](#section)|[Docs](https://pterm.sh/#/docs/printer/section)|
 |Spinners|[Example](#spinner)|[Docs](https://pterm.sh/#/docs/printer/spinner)|
-|Tables|[Example](#table)|-|
+|Tables|[Example](#table)|[Docs](https://pterm.sh/#/docs/printer/table)|
 |Theming|[Example](#theme)|-|
 |Trees|[Example](#tree)|[Docs](https://pterm.sh/#/docs/printer/tree)|
 
