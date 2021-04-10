@@ -14,6 +14,7 @@
     - [Paragraph](docs/printer/paragraph.md)
     - [Prefix](docs/printer/prefix.md)
     - [Progressbar](docs/printer/progressbar.md)
+    - [RGB](docs/printer/rgb.md)
     - [Section](docs/printer/section.md)
     - [Spinner](docs/printer/spinner.md)
     - [Table](docs/printer/table.md)

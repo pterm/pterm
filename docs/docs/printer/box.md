@@ -59,4 +59,4 @@ pterm.DefaultBox.Println("test")
 |Printf(format string, a ...interface{})|Prints to the terminal, formatted according to a format specifier|
 
 ## Related
-- [Override default printers](docs/override-default-printer.md)
+- [Override default printers](docs/customizing/override-default-printer.md)

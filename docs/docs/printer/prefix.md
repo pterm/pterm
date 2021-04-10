@@ -22,26 +22,32 @@ pterm.Error.Println("Hello, World!") // Print Error.
 pterm.Fatal.Println("Hello, World!") // Print Fatal.
 ```
 
+### Functions
+
+|Function|Description|
+|--------|-----------|
+|[FormattedPrefix](https://pkg.go.dev/github.com/pterm/pterm#PrefixPrinter.GetFormattedPrefix)|Returns the Prefix as a styled text string.|
+
 ### Options
 
 > To make a copy with modified options you can use:
 > ```go
-pterm.Debug.Println("Hello, World!").WithOptionName(option)
-pterm.Info.Println("Hello, World!").WithOptionName(option)
-pterm.Success.Println("Hello, World!").WithOptionName(option)
-pterm.Warning.Println("Hello, World!").WithOptionName(option)
-pterm.Error.Println("Hello, World!").WithOptionName(option)
-pterm.Fatal.Println("Hello, World!").WithOptionName(option)
+pterm.Debug.WithOptionName(option).Println("Hello, World!")
+pterm.Info.WithOptionName(option).Println("Hello, World!")
+pterm.Success.WithOptionName(option).Println("Hello, World!")
+pterm.Warning.WithOptionName(option).Println("Hello, World!")
+pterm.Error.WithOptionName(option).Println("Hello, World!")
+pterm.Fatal.WithOptionName(option).Println("Hello, World!")
 > ```
 >
 > To change multiple options at once, you can chain the functions:
 > ```go
-pterm.Debug.Println("Hello, World!").WithOptionName(option).WithOptionName2(option2)...
-pterm.Info.Println("Hello, World!").WithOptionName(option).WithOptionName2(option2)...
-pterm.Success.Println("Hello, World!").WithOptionName(option).WithOptionName2(option2)...
-pterm.Warning.Println("Hello, World!").WithOptionName(option).WithOptionName2(option2)...
-pterm.Error.Println("Hello, World!").WithOptionName(option).WithOptionName2(option2)...
-pterm.Fatal.Println("Hello, World!").WithOptionName(option).WithOptionName2(option2)...
+pterm.Debug.WithOptionName(option).WithOptionName2(option2).Println("Hello, World!")
+pterm.Info.WithOptionName(option).WithOptionName2(option2).Println("Hello, World!")
+pterm.Success.WithOptionName(option).WithOptionName2(option2).Println("Hello, World!")
+pterm.Warning.WithOptionName(option).WithOptionName2(option2).Println("Hello, World!")
+pterm.Error.WithOptionName(option).WithOptionName2(option2).Println("Hello, World!")
+pterm.Fatal.WithOptionName(option).WithOptionName2(option2).Println("Hello, World!")
 > ```
 
 > [!TIP]
@@ -49,7 +55,6 @@ pterm.Fatal.Println("Hello, World!").WithOptionName(option).WithOptionName2(opti
 
 |Option|Type|
 |------|----|
-|[FormattedPrefix](https://pkg.go.dev/github.com/pterm/pterm#PrefixPrinter.GetFormattedPrefix)|string|
 |[Debugger](https://pkg.go.dev/github.com/pterm/pterm#PrefixPrinter.WithDebugger)|bool|
 |[Fatal](https://pkg.go.dev/github.com/pterm/pterm#PrefixPrinter.WithFatal)|bool|
 |[Debugger](https://pkg.go.dev/github.com/pterm/pterm#PrefixPrinter.WithDebugger)|[*Style](https://pkg.go.dev/github.com/pterm/pterm#Style)|
