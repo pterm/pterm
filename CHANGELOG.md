@@ -2,7 +2,7 @@
 ## [Unreleased]
 
 ### Documentation Changes
-- **pterm-sh:** add docs for `Prefix` printer in `README.md`
+- **pterm-sh:** restructure sidebar
 - **pterm-sh:** update `edit on github` link
 - **pterm-sh:** remove customizing intro from sidebar
 - **pterm-sh:** add `Style` printer documentation
@@ -10,11 +10,11 @@
 - **pterm-sh:** add docs for `BarChart` printer in `README.md`
 - **pterm-sh:** add `RGB` printer documentation and in `README.md`
 - **pterm-sh:** add `RGB` and `Style` to features in `README.md`
-- **pterm-sh:** restructure sidebar
+- **pterm-sh:** document global function
 - **pterm-sh:** add docs for theming
 - **pterm-sh:** add docs for `Color` printer in `README.md`
 - **pterm-sh:** add docs for `Table` printer in `README.md`
-- **pterm-sh:** document global function
+- **pterm-sh:** add docs for `Prefix` printer in `README.md`
 - **readme:** add docs for theming
 - **readme:** make feature tables shorter
 - **readme:** move features section to goal of pterm
