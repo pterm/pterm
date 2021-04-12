@@ -3,6 +3,7 @@ package pterm
 import (
 	"encoding/csv"
 	"strings"
+	"unicode/utf8"
 
 	"github.com/pterm/pterm/internal"
 )
@@ -89,7 +90,7 @@ func (p TablePrinter) Srender() (string, error) {
 
 	for _, row := range p.Data {
 		for ci, column := range row {
-			columnLength := len(RemoveColorFromString(column))
+			columnLength := utf8.RuneCountInString(RemoveColorFromString(column))
 			if columnLength > maxColumnWidth[ci] {
 				maxColumnWidth[ci] = columnLength
 			}
@@ -98,7 +99,7 @@ func (p TablePrinter) Srender() (string, error) {
 
 	for ri, row := range p.Data {
 		for ci, column := range row {
-			columnLength := len(RemoveColorFromString(column))
+			columnLength := utf8.RuneCountInString(RemoveColorFromString(column))
 			columnString := column + strings.Repeat(" ", maxColumnWidth[ci]-columnLength)
 
 			if ci != len(row) && ci != 0 {
