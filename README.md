@@ -171,6 +171,7 @@ You can find all the examples, with their source code, here: [`./_examples`](./_
 ### barchart
 
 ![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/animation.svg)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fpterm%2Fpterm.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fpterm%2Fpterm?ref=badge_shield)
 
 <details>
 
@@ -1518,3 +1519,7 @@ func main() {
 
 
 
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fpterm%2Fpterm.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fpterm%2Fpterm?ref=badge_large)
