@@ -4,6 +4,9 @@
 ### Bug Fixes
 - **header:** fix inline color in `Header`
 
+### Ci
+- change color scheme for rendered examples
+
 ### Documentation Changes
 - **examples:** fix line length of `BoxPrinter` example
 - **pterm-sh:** add docs for `Prefix` printer in `README.md`
@@ -12,13 +15,13 @@
 - **pterm-sh:** add `Style` printer documentation
 - **pterm-sh:** add a `Style` printer example
 - **pterm-sh:** add docs for `BarChart` printer in `README.md`
-- **pterm-sh:** add `RGB` printer documentation and in `README.md`
 - **pterm-sh:** document global function
+- **pterm-sh:** add `RGB` and `Style` to features in `README.md`
 - **pterm-sh:** restructure sidebar
 - **pterm-sh:** add docs for theming
 - **pterm-sh:** add docs for `Color` printer in `README.md`
 - **pterm-sh:** add docs for `Table` printer in `README.md`
-- **pterm-sh:** add `RGB` and `Style` to features in `README.md`
+- **pterm-sh:** add `RGB` printer documentation and in `README.md`
 - **readme:** add docs for theming
 - **readme:** make feature tables shorter
 - **readme:** move features section to goal of pterm
