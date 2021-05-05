@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Bug Fixes
+- **header:** fix inline color in `Header`
+
 ### Documentation Changes
 - **examples:** fix line length of `BoxPrinter` example
 - **pterm-sh:** add docs for `Prefix` printer in `README.md`
