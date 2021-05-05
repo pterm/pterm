@@ -9,7 +9,7 @@
 
 ### Documentation Changes
 - **examples:** fix line length of `BoxPrinter` example
-- **pterm-sh:** add docs for `Prefix` printer in `README.md`
+- **pterm-sh:** add docs for `Table` printer in `README.md`
 - **pterm-sh:** update `edit on github` link
 - **pterm-sh:** remove customizing intro from sidebar
 - **pterm-sh:** add `Style` printer documentation
@@ -20,13 +20,16 @@
 - **pterm-sh:** restructure sidebar
 - **pterm-sh:** add docs for theming
 - **pterm-sh:** add docs for `Color` printer in `README.md`
-- **pterm-sh:** add docs for `Table` printer in `README.md`
 - **pterm-sh:** add `RGB` printer documentation and in `README.md`
+- **pterm-sh:** add docs for `Prefix` printer in `README.md`
 - **readme:** add docs for theming
 - **readme:** make feature tables shorter
 - **readme:** move features section to goal of pterm
 - **readme:** move installation section to top
 - **readme:** make feature list to table
+
+### Reverts
+- ci: change color scheme for rendered examples
 
 
 <a name="v0.12.13"></a>
