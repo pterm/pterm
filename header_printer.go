@@ -66,7 +66,7 @@ func (p HeaderPrinter) Sprint(a ...interface{}) string {
 		p.Margin = (GetTerminalWidth() - len(text)) / 2
 	}
 
-	renderedTextLength := len(text) + p.Margin*2
+	renderedTextLength := len(RemoveColorFromString(text)) + p.Margin*2
 
 	marginString := strings.Repeat(" ", p.Margin)
 	blankLine := strings.Repeat(" ", renderedTextLength)
