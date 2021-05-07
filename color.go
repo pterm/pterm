@@ -163,6 +163,13 @@ func (c Color) Sprintf(format string, a ...interface{}) string {
 	return c.Sprint(Sprintf(format, a...))
 }
 
+// Sprintfln formats according to a format specifier and returns the resulting string.
+// Spaces are always added between operands and a newline is appended.
+// Input will be colored with the parent Color.
+func (c Color) Sprintfln(format string, a ...interface{}) string {
+	return c.Sprint(Sprintf(format, a...) + "\n")
+}
+
 // Println formats using the default formats for its operands and writes to standard output.
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
@@ -190,6 +197,16 @@ func (c Color) Printf(format string, a ...interface{}) *TextPrinter {
 	Print(c.Sprintf(format, a...))
 	tc := TextPrinter(c)
 	return &tc
+}
+
+// Printfln formats according to a format specifier and writes to standard output.
+// Spaces are always added between operands and a newline is appended.
+// It returns the number of bytes written and any write error encountered.
+// Input will be colored with the parent Color.
+func (c Color) Printfln(format string, a ...interface{}) *TextPrinter {
+	Print(c.Sprintfln(format, a...))
+	tp := TextPrinter(c)
+	return &tp
 }
 
 // String converts the color to a string. eg "35".
@@ -244,6 +261,13 @@ func (s Style) Sprintf(format string, a ...interface{}) string {
 	return s.Sprint(Sprintf(format, a...))
 }
 
+// Sprintfln formats according to a format specifier and returns the resulting string.
+// Spaces are always added between operands and a newline is appended.
+// Input will be colored with the parent Style.
+func (s Style) Sprintfln(format string, a ...interface{}) string {
+	return s.Sprint(Sprintf(format, a...) + "\n")
+}
+
 // Print formats using the default formats for its operands and writes to standard output.
 // Spaces are added between operands when neither is a string.
 // It returns the number of bytes written and any write error encountered.
@@ -265,6 +289,14 @@ func (s Style) Println(a ...interface{}) {
 // Input will be colored with the parent Style.
 func (s Style) Printf(format string, a ...interface{}) {
 	Print(s.Sprintf(format, a...))
+}
+
+// Printfln formats according to a format specifier and writes to standard output.
+// Spaces are always added between operands and a newline is appended.
+// It returns the number of bytes written and any write error encountered.
+// Input will be colored with the parent Style.
+func (s Style) Printfln(format string, a ...interface{}) {
+	Print(s.Sprintfln(format, a...))
 }
 
 // Code convert to code string. returns like "32;45;3".
