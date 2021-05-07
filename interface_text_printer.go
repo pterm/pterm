@@ -13,6 +13,10 @@ type TextPrinter interface {
 	// Sprintf formats according to a format specifier and returns the resulting string.
 	Sprintf(format string, a ...interface{}) string
 
+	// Sprintfln formats according to a format specifier and returns the resulting string.
+	// Spaces are always added between operands and a newline is appended.
+	Sprintfln(format string, a ...interface{}) string
+
 	// Print formats using the default formats for its operands and writes to standard output.
 	// Spaces are added between operands when neither is a string.
 	// It returns the number of bytes written and any write error encountered.
@@ -26,4 +30,9 @@ type TextPrinter interface {
 	// Printf formats according to a format specifier and writes to standard output.
 	// It returns the number of bytes written and any write error encountered.
 	Printf(format string, a ...interface{}) *TextPrinter
+
+	// Printfln formats according to a format specifier and writes to standard output.
+	// Spaces are always added between operands and a newline is appended.
+	// It returns the number of bytes written and any write error encountered.
+	Printfln(format string, a ...interface{}) *TextPrinter
 }
