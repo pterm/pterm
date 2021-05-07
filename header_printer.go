@@ -91,6 +91,12 @@ func (p HeaderPrinter) Sprintf(format string, a ...interface{}) string {
 	return p.Sprint(Sprintf(format, a...))
 }
 
+// Sprintfln formats according to a format specifier and returns the resulting string.
+// Spaces are always added between operands and a newline is appended.
+func (p HeaderPrinter) Sprintfln(format string, a ...interface{}) string {
+	return p.Sprint(Sprintf(format, a...) + "\n")
+}
+
 // Print formats using the default formats for its operands and writes to standard output.
 // Spaces are added between operands when neither is a string.
 // It returns the number of bytes written and any write error encountered.
@@ -113,6 +119,15 @@ func (p *HeaderPrinter) Println(a ...interface{}) *TextPrinter {
 // It returns the number of bytes written and any write error encountered.
 func (p *HeaderPrinter) Printf(format string, a ...interface{}) *TextPrinter {
 	Print(p.Sprintf(format, a...))
+	tp := TextPrinter(p)
+	return &tp
+}
+
+// Printfln formats according to a format specifier and writes to standard output.
+// Spaces are always added between operands and a newline is appended.
+// It returns the number of bytes written and any write error encountered.
+func (p *HeaderPrinter) Printfln(format string, a ...interface{}) *TextPrinter {
+	Print(p.Sprintfln(format, a...))
 	tp := TextPrinter(p)
 	return &tp
 }
