@@ -176,6 +176,19 @@ func TestRGB_Printf(t *testing.T) {
 	}
 }
 
+func TestRGB_Printfln(t *testing.T) {
+	RGBs := []RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
+
+	for _, rgb := range RGBs {
+		t.Run(Sprintfln("%v %v %v", rgb.R, rgb.G, rgb.B), func(t *testing.T) {
+			internal.TestPrintflnContains(t, func(w io.Writer, format string, a interface{}) {
+				p := rgb.Printfln(format, a)
+				assert.NotNil(t, p)
+			})
+		})
+	}
+}
+
 func TestRGB_Println(t *testing.T) {
 	RGBs := []RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
 
@@ -208,6 +221,18 @@ func TestRGB_Sprintf(t *testing.T) {
 		t.Run("", func(t *testing.T) {
 			internal.TestSprintfContains(t, func(format string, a interface{}) string {
 				return rgb.Sprintf(format, a)
+			})
+		})
+	}
+}
+
+func TestRGB_Sprintfln(t *testing.T) {
+	RGBs := []RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
+
+	for _, rgb := range RGBs {
+		t.Run("", func(t *testing.T) {
+			internal.TestSprintflnContains(t, func(format string, a interface{}) string {
+				return rgb.Sprintfln(format, a)
 			})
 		})
 	}
