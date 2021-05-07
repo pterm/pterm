@@ -163,6 +163,12 @@ Your financial support enables me to focus more on my projects. Thank you very m
 </a>
 </p>
 
+### 🦸‍♂️ Supporters
+
+|-|User|💸|
+|---|---|---|
+|![Jens Lauterbach](https://avatars.githubusercontent.com/u/1292368?s=25)|[@jenslauterbach](https://github.com/jenslauterbach)|25$|
+
 ## 🧪 Examples
 
 You can find all the examples, with their source code, here: [`./_examples`](./_examples)
