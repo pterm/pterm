@@ -104,7 +104,7 @@ func (p RGB) Sprintf(format string, a ...interface{}) string {
 // Sprintfln formats according to a format specifier and returns the resulting string.
 // Spaces are always added between operands and a newline is appended.
 func (p RGB) Sprintfln(format string, a ...interface{}) string {
-	return p.Sprint(Sprintf(format, a...) + "\n")
+	return p.Sprintf(format, a...) + "\n"
 }
 
 // Print formats using the default formats for its operands and writes to standard output.
