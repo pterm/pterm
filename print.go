@@ -27,7 +27,7 @@ func Sprintf(format string, a ...interface{}) string {
 // Sprintfln formats according to a format specifier and returns the resulting string.
 // Spaces are always added between operands and a newline is appended.
 func Sprintfln(format string, a ...interface{}) string {
-	return color.Sprint(Sprintf(format, a...) + "\n")
+	return color.Sprintf(format, a...) + "\n"
 }
 
 // Sprintln returns what Println would print to the terminal.
