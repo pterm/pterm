@@ -7,27 +7,47 @@
 ### Ci
 - change color scheme for rendered examples
 
+### Code Refactoring
+- refactor `Sprintfln` and `Printfln` func. for better performance
+
 ### Documentation Changes
+- add docs for `Sprintfln` and `Printfln` function for all printers
 - **examples:** fix line length of `BoxPrinter` example
-- **pterm-sh:** add docs for `Prefix` printer in `README.md`
+- **pterm-sh:** add docs for `Color` printer in `README.md`
 - **pterm-sh:** document global function
 - **pterm-sh:** update `edit on github` link
 - **pterm-sh:** remove customizing intro from sidebar
 - **pterm-sh:** add `Style` printer documentation
-- **pterm-sh:** add a `Style` printer example
 - **pterm-sh:** add docs for `BarChart` printer in `README.md`
+- **pterm-sh:** restructure sidebar
 - **pterm-sh:** add `RGB` printer documentation and in `README.md`
 - **pterm-sh:** add `RGB` and `Style` to features in `README.md`
-- **pterm-sh:** restructure sidebar
+- **pterm-sh:** add docs for `Prefix` printer in `README.md`
 - **pterm-sh:** add docs for theming
-- **pterm-sh:** add docs for `Color` printer in `README.md`
+- **pterm-sh:** add a `Style` printer example
 - **pterm-sh:** add docs for `Table` printer in `README.md`
-- **readme:** add supporters section
 - **readme:** add docs for theming
 - **readme:** make feature tables shorter
+- **readme:** add supporters section
 - **readme:** move features section to goal of pterm
 - **readme:** move installation section to top
 - **readme:** make feature list to table
+
+### Features
+- **basic-text:** add `Sprintfln` and `Printfln` function
+- **boxprinter:** add `Sprintfln` and `Printfln` function
+- **centerprinter:** add `Sprintfln` and `Printfln` function
+- **color:** add `Sprintfln` and `Printfln` function
+- **header:** add `Sprintfln` and `Printfln` function
+- **paragraph:** add `Sprintfln` and `Printfln` function
+- **prefix:** add `Sprintfln` and `Printfln` function
+- **print:** add `Sprintfln` and `Printfln` function
+- **printer-interface:** add `Sprintfln` and `Printfln` to the interface
+- **rgb:** add `Sprintfln` and `Printfln` function
+- **section:** add `Sprintfln` and `Printfln` function
+
+### Test
+- add tests for `Sprintfln` and `Printfln` function
 
 ### Reverts
 - ci: change color scheme for rendered examples
