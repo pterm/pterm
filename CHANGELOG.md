@@ -6,6 +6,7 @@
 
 ### Ci
 - try to render SVGs with monospace font
+- try to render SVGs with monospace font
 - change color scheme for rendered examples
 
 ### Code Refactoring
