@@ -141,9 +141,7 @@ func processFile(f os.FileInfo) {
 
 	svgContent = []byte(strings.Replace(string(svgContent), "<style>", `<style>.e, .g, .f {
 	font-family:
-			system-ui,
-			-apple-system,
-			'Segoe UI',
+			'Courier New'
 			Roboto,
 			Helvetica,
 			Arial,
