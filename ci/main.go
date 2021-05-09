@@ -139,13 +139,17 @@ func processFile(f os.FileInfo) {
 	svgContent = []byte(strings.ReplaceAll(string(svgContent), `font-family:`, `font-family:'JetBrainsMono',`))
 	svgContent = []byte(strings.ReplaceAll(string(svgContent), `font-family="`, `font-family="'JetBrainsMono',`))
 
-	svgContent = []byte(strings.Replace(string(svgContent), "<style>", `<style>@font-face{
-  font-family: 'JetBrainsMono';
-  src: url('https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2') format('woff2'),
-    url('https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono/web/woff/JetBrainsMono-Regular.woff') format('woff'),
-    url('https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono/ttf/JetBrainsMono-Regular.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
+	svgContent = []byte(strings.Replace(string(svgContent), "<style>", `<style>.e, .g, .f {
+	font-family:
+			system-ui,
+			-apple-system,
+			'Segoe UI',
+			Roboto,
+			Helvetica,
+			Arial,
+			sans-serif,
+			'Apple Color Emoji',
+			'Segoe UI Emoji' !important;
 }`, 1))
 
 	os.Remove(animationSvgPath)
