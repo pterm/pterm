@@ -25,6 +25,10 @@ func (p ParagraphPrinter) WithMaxWidth(width int) *ParagraphPrinter {
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
 func (p ParagraphPrinter) Sprint(a ...interface{}) string {
+	if RawOutput {
+		return Sprint(a...)
+	}
+
 	words := strings.Fields(strings.TrimSpace(Sprint(a...)))
 	if len(words) == 0 {
 		return ""
