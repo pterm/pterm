@@ -53,6 +53,10 @@ func (p HeaderPrinter) WithFullWidth(b ...bool) *HeaderPrinter {
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
 func (p HeaderPrinter) Sprint(a ...interface{}) string {
+	if RawOutput {
+		return Sprint(a...)
+	}
+
 	if p.TextStyle == nil {
 		p.TextStyle = NewStyle()
 	}
