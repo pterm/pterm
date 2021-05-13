@@ -210,7 +210,6 @@ func (p PrefixPrinter) PrintOnError(a ...interface{}) {
 			}
 		}
 	}
-
 }
 
 // Sprintln formats using the default formats for its operands and returns the resulting string.
