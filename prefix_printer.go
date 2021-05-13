@@ -139,6 +139,14 @@ func (p PrefixPrinter) WithDebugger(b ...bool) *PrefixPrinter {
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
 func (p *PrefixPrinter) Sprint(a ...interface{}) string {
+	if RawOutput {
+		if p.Prefix.Text != "" {
+			return Sprintf("%s: %s", strings.TrimSpace(p.Prefix.Text), Sprint(a...))
+		} else {
+			return Sprint(a...)
+		}
+	}
+
 	m := Sprint(a...)
 	if p.Debugger && !PrintDebugMessages {
 		return ""
