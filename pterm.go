@@ -37,11 +37,11 @@ func DisableDebugMessages() {
 
 // EnableStyling enables the default PTerm styling.
 func EnableStyling() {
-	RawOutput = true
+	RawOutput = false
 }
 
 // DisableStyling sets PTerm to RawOutput mode and disables all of PTerms styling.
 // You can use this to print to text files etc.
 func DisableStyling() {
-	RawOutput = false
+	RawOutput = true
 }
