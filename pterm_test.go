@@ -1,8 +1,9 @@
 package pterm
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestDisableDebugMessages(t *testing.T) {
@@ -28,15 +29,15 @@ func TestEnableOutput(t *testing.T) {
 }
 
 func TestDisableStyling(t *testing.T) {
-	RawOutput = true
+	RawOutput = false
 	DisableStyling()
-	assert.False(t, RawOutput)
+	assert.True(t, RawOutput)
 }
 
 func TestEnableStyling(t *testing.T) {
-	RawOutput = false
+	RawOutput = true
 	EnableStyling()
-	assert.True(t, RawOutput)
+	assert.False(t, RawOutput)
 }
 
 func TestInterfaceImplementation(t *testing.T) {
