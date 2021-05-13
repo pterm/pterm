@@ -188,7 +188,9 @@ func (p *ProgressbarPrinter) Add(count int) *ProgressbarPrinter {
 	barFiller := strings.Repeat(p.BarFiller, barMaxLength-barCurrentLength)
 
 	bar := p.BarStyle.Sprint(strings.Repeat(p.BarCharacter, barCurrentLength)+p.LastCharacter) + barFiller
-	Printo(before + bar + after)
+	if !RawOutput {
+		Printo(before + bar + after)
+	}
 
 	if p.Current == p.Total {
 		p.Stop()
@@ -198,6 +200,9 @@ func (p *ProgressbarPrinter) Add(count int) *ProgressbarPrinter {
 
 // Start the ProgressbarPrinter.
 func (p ProgressbarPrinter) Start() (*ProgressbarPrinter, error) {
+	if RawOutput && p.ShowTitle {
+		Println(p.Title)
+	}
 	p.IsActive = true
 	ActiveProgressBarPrinters = append(ActiveProgressBarPrinters, &p)
 	p.startedAt = time.Now()
