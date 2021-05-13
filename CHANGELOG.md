@@ -1,6 +1,15 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Code Refactoring
+- **prefix:** make `PrintOnError` accept multiple inputs
+
+### Style
+- remove unnecessary trailing newline
+
+
+<a name="v0.12.15"></a>
+## [v0.12.15] - 2021-05-13
 ### Bug Fixes
 - **prefix:** fix `PrintOnError`
 
@@ -1190,7 +1199,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.14...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.15...HEAD
+[v0.12.15]: https://github.com/pterm/pterm/compare/v0.12.14...v0.12.15
 [v0.12.14]: https://github.com/pterm/pterm/compare/v0.12.13...v0.12.14
 [v0.12.13]: https://github.com/pterm/pterm/compare/v0.12.12...v0.12.13
 [v0.12.12]: https://github.com/pterm/pterm/compare/v0.12.11...v0.12.12
