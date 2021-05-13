@@ -197,13 +197,13 @@ func (p *PrefixPrinter) Sprint(a ...interface{}) string {
 	return Sprint(ret)
 }
 
-// PrintIfError prints if the given error is not nil.
+// PrintOnError prints if the given error is not nil.
 // This can be used for simple error checking.
 //
 // Note: Use WithFatal(true) or Fatal to panic after printing.
-func (p PrefixPrinter) PrintIfError(err error) {
+func (p PrefixPrinter) PrintOnError(err error) {
 	if err != nil {
-		p.Println(p.Sprint(Sprint(err)))
+		p.Println(err)
 	}
 }
 
