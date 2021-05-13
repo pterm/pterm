@@ -1,11 +1,11 @@
 package pterm
 
 import (
-	"github.com/pterm/pterm/internal"
-	"github.com/stretchr/testify/assert"
 	"io"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestSpinnerPrinter_NilPrint(t *testing.T) {
@@ -17,7 +17,7 @@ func TestSpinnerPrinter_NilPrint(t *testing.T) {
 
 func TestSpinnerPrinter_Fail(t *testing.T) {
 	p := DefaultSpinner
-	internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
+	testPrintContains(t, func(w io.Writer, a interface{}) {
 		p.Fail(a)
 	})
 }
@@ -27,6 +27,13 @@ func TestSpinnerPrinter_GenericStart(t *testing.T) {
 	p.GenericStart()
 }
 
+func TestSpinnerPrinter_GenericStartRawOutput(t *testing.T) {
+	DisableStyling()
+	p := DefaultSpinner
+	p.GenericStart()
+	EnableStyling()
+}
+
 func TestSpinnerPrinter_GenericStop(t *testing.T) {
 	p := DefaultSpinner
 	p.GenericStop()
@@ -34,7 +41,7 @@ func TestSpinnerPrinter_GenericStop(t *testing.T) {
 
 func TestSpinnerPrinter_Success(t *testing.T) {
 	p := DefaultSpinner
-	internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
+	testPrintContains(t, func(w io.Writer, a interface{}) {
 		p.Success(a)
 	})
 }
@@ -48,9 +55,20 @@ func TestSpinnerPrinter_UpdateText(t *testing.T) {
 	p.Stop()
 }
 
+func TestSpinnerPrinter_UpdateTextRawOutput(t *testing.T) {
+	DisableStyling()
+	p := DefaultSpinner
+	p.Start()
+	p.UpdateText("test")
+
+	assert.Equal(t, "test", p.Text)
+	p.Stop()
+	EnableStyling()
+}
+
 func TestSpinnerPrinter_Warning(t *testing.T) {
 	p := DefaultSpinner
-	internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
+	testPrintContains(t, func(w io.Writer, a interface{}) {
 		p.Warning(a)
 	})
 }

@@ -1,10 +1,11 @@
 package pterm
 
 import (
-	"github.com/pterm/pterm/internal"
-	"github.com/stretchr/testify/assert"
+	"fmt"
 	"io"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 var prefixPrinters = []PrefixPrinter{Info, Success, Warning, Error, *Fatal.WithFatal(false)}
@@ -18,13 +19,13 @@ func TestPrefixPrinterNilPrint(t *testing.T) {
 func TestPrefixPrinterPrintMethods(t *testing.T) {
 	for _, p := range prefixPrinters {
 		t.Run("Print", func(t *testing.T) {
-			internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
+			testPrintContains(t, func(w io.Writer, a interface{}) {
 				p.Print(a)
 			})
 		})
 
 		t.Run("PrintWithScope", func(t *testing.T) {
-			internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
+			testPrintContains(t, func(w io.Writer, a interface{}) {
 				p2 := p.WithScope(Scope{
 					Text:  "test",
 					Style: NewStyle(FgRed, BgBlue, Bold),
@@ -42,47 +43,63 @@ func TestPrefixPrinterPrintMethods(t *testing.T) {
 		})
 
 		t.Run("Printf", func(t *testing.T) {
-			internal.TestPrintfContains(t, func(w io.Writer, format string, a interface{}) {
+			testPrintfContains(t, func(w io.Writer, format string, a interface{}) {
 				p.Printf(format, a)
 			})
 		})
 
 		t.Run("Printfln", func(t *testing.T) {
-			internal.TestPrintflnContains(t, func(w io.Writer, format string, a interface{}) {
+			testPrintflnContains(t, func(w io.Writer, format string, a interface{}) {
 				p.Printfln(format, a)
 			})
 		})
 
 		t.Run("Println", func(t *testing.T) {
-			internal.TestPrintlnContains(t, func(w io.Writer, a interface{}) {
+			testPrintlnContains(t, func(w io.Writer, a interface{}) {
 				p.Println(a)
 			})
 		})
 
 		t.Run("Sprint", func(t *testing.T) {
-			internal.TestSprintContains(t, func(a interface{}) string {
+			testSprintContains(t, func(a interface{}) string {
 				return p.Sprint(a)
 			})
 		})
 
 		t.Run("Sprintf", func(t *testing.T) {
-			internal.TestSprintfContains(t, func(format string, a interface{}) string {
+			testSprintfContains(t, func(format string, a interface{}) string {
 				return p.Sprintf(format, a)
 			})
 		})
 
 		t.Run("Sprintfln", func(t *testing.T) {
-			internal.TestSprintflnContains(t, func(format string, a interface{}) string {
+			testSprintflnContains(t, func(format string, a interface{}) string {
 				return p.Sprintfln(format, a)
 			})
 		})
 
 		t.Run("Sprintln", func(t *testing.T) {
-			internal.TestSprintlnContains(t, func(a interface{}) string {
+			testSprintlnContains(t, func(a interface{}) string {
 				return p.Sprintln(a)
 			})
 		})
 	}
+}
+
+func TestPrefixPrinterWithoutPrefix(t *testing.T) {
+	DisableStyling()
+	for _, p := range prefixPrinters {
+		p2 := p.WithPrefix(Prefix{})
+		t.Run("", func(t *testing.T) {
+			for _, printable := range printables {
+				ret := captureStdout(func(w io.Writer) {
+					p2.Print(printable)
+				})
+				assert.Equal(t, ret, fmt.Sprint(printable))
+			}
+		})
+	}
+	EnableStyling()
 }
 
 func TestSprintfWithNewLineEnding(t *testing.T) {
@@ -186,7 +203,7 @@ func TestPrefixPrinter_PrintWithDebugger(t *testing.T) {
 		t.Run("", func(t *testing.T) {
 			p2 := p.WithDebugger()
 			EnableDebugMessages()
-			internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
+			testPrintContains(t, func(w io.Writer, a interface{}) {
 				p2.Print(a)
 			})
 		})
@@ -198,7 +215,7 @@ func TestPrefixPrinter_PrintlnWithDebugger(t *testing.T) {
 		t.Run("", func(t *testing.T) {
 			p2 := p.WithDebugger()
 			EnableDebugMessages()
-			internal.TestPrintlnContains(t, func(w io.Writer, a interface{}) {
+			testPrintlnContains(t, func(w io.Writer, a interface{}) {
 				p2.Println(a)
 			})
 		})
@@ -210,7 +227,7 @@ func TestPrefixPrinter_PrintfWithDebugger(t *testing.T) {
 		t.Run("", func(t *testing.T) {
 			p2 := p.WithDebugger()
 			EnableDebugMessages()
-			internal.TestPrintfContains(t, func(w io.Writer, format string, a interface{}) {
+			testPrintfContains(t, func(w io.Writer, format string, a interface{}) {
 				p2.Printf(format, a)
 			})
 		})
@@ -222,7 +239,7 @@ func TestPrefixPrinter_SprintWithDebugger(t *testing.T) {
 		t.Run("", func(t *testing.T) {
 			p2 := p.WithDebugger()
 			EnableDebugMessages()
-			internal.TestSprintContains(t, func(a interface{}) string {
+			testSprintContains(t, func(a interface{}) string {
 				return p2.Sprint(a)
 			})
 		})
@@ -234,7 +251,7 @@ func TestPrefixPrinter_SprintlnWithDebugger(t *testing.T) {
 		t.Run("", func(t *testing.T) {
 			p2 := p.WithDebugger()
 			EnableDebugMessages()
-			internal.TestSprintlnContains(t, func(a interface{}) string {
+			testSprintlnContains(t, func(a interface{}) string {
 				return p2.Sprintln(a)
 			})
 		})
@@ -246,7 +263,7 @@ func TestPrefixPrinter_SprintfWithDebugger(t *testing.T) {
 		t.Run("", func(t *testing.T) {
 			p2 := p.WithDebugger()
 			EnableDebugMessages()
-			internal.TestSprintfContains(t, func(format string, a interface{}) string {
+			testSprintfContains(t, func(format string, a interface{}) string {
 				return p2.Sprintf(format, a)
 			})
 		})
@@ -258,7 +275,7 @@ func TestPrefixPrinter_PrintWithoutDebugger(t *testing.T) {
 		t.Run("", func(t *testing.T) {
 			p2 := p.WithDebugger()
 			DisableDebugMessages()
-			internal.TestDoesNotOutput(t, func(w io.Writer) {
+			testDoesNotOutput(t, func(w io.Writer) {
 				p2.Print("Hello, World!")
 			})
 		})
@@ -270,7 +287,7 @@ func TestPrefixPrinter_PrintlnWithoutDebugger(t *testing.T) {
 		t.Run("", func(t *testing.T) {
 			p2 := p.WithDebugger()
 			DisableDebugMessages()
-			internal.TestDoesNotOutput(t, func(w io.Writer) {
+			testDoesNotOutput(t, func(w io.Writer) {
 				p2.Println("Hello, World!")
 			})
 		})
@@ -282,7 +299,7 @@ func TestPrefixPrinter_PrintfWithoutDebugger(t *testing.T) {
 		t.Run("", func(t *testing.T) {
 			p2 := p.WithDebugger()
 			DisableDebugMessages()
-			internal.TestDoesNotOutput(t, func(w io.Writer) {
+			testDoesNotOutput(t, func(w io.Writer) {
 				p2.Printf("Hello, World!")
 			})
 		})
@@ -293,7 +310,7 @@ func TestPrefixPrinter_SprintWithoutDebugger(t *testing.T) {
 	for _, p := range prefixPrinters {
 		t.Run("", func(t *testing.T) {
 			p2 := p.WithDebugger()
-			internal.TestEmpty(t, func(a interface{}) string {
+			testEmpty(t, func(a interface{}) string {
 				return p2.Sprint(a)
 			})
 		})
@@ -305,7 +322,7 @@ func TestPrefixPrinter_SprintlnWithoutDebugger(t *testing.T) {
 		t.Run("", func(t *testing.T) {
 			p2 := p.WithDebugger()
 			DisableDebugMessages()
-			internal.TestEmpty(t, func(a interface{}) string {
+			testEmpty(t, func(a interface{}) string {
 				return p2.Sprintln(a)
 			})
 		})
@@ -317,7 +334,7 @@ func TestPrefixPrinter_SprintfWithoutDebugger(t *testing.T) {
 		t.Run("", func(t *testing.T) {
 			p2 := p.WithDebugger()
 			DisableDebugMessages()
-			internal.TestEmpty(t, func(a interface{}) string {
+			testEmpty(t, func(a interface{}) string {
 				return p2.Sprintf("Hello, %s!", a)
 			})
 		})

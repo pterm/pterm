@@ -1,10 +1,10 @@
 package pterm
 
 import (
-	"github.com/pterm/pterm/internal"
-	"github.com/stretchr/testify/assert"
 	"io"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestHeaderPrinterNilPrint(t *testing.T) {
@@ -16,56 +16,56 @@ func TestHeaderPrinterPrintMethods(t *testing.T) {
 	p := DefaultHeader
 
 	t.Run("Print", func(t *testing.T) {
-		internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
+		testPrintContains(t, func(w io.Writer, a interface{}) {
 			p.Print(a)
 		})
 	})
 
 	t.Run("PrintWithFullWidth", func(t *testing.T) {
-		internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
+		testPrintContains(t, func(w io.Writer, a interface{}) {
 			p2 := p.WithFullWidth()
 			p2.Print(a)
 		})
 	})
 
 	t.Run("Printf", func(t *testing.T) {
-		internal.TestPrintfContains(t, func(w io.Writer, format string, a interface{}) {
+		testPrintfContains(t, func(w io.Writer, format string, a interface{}) {
 			p.Printf(format, a)
 		})
 	})
 
 	t.Run("Printfln", func(t *testing.T) {
-		internal.TestPrintflnContains(t, func(w io.Writer, format string, a interface{}) {
+		testPrintflnContains(t, func(w io.Writer, format string, a interface{}) {
 			p.Printfln(format, a)
 		})
 	})
 
 	t.Run("Println", func(t *testing.T) {
-		internal.TestPrintlnContains(t, func(w io.Writer, a interface{}) {
+		testPrintlnContains(t, func(w io.Writer, a interface{}) {
 			p.Println(a)
 		})
 	})
 
 	t.Run("Sprint", func(t *testing.T) {
-		internal.TestSprintContains(t, func(a interface{}) string {
+		testSprintContains(t, func(a interface{}) string {
 			return p.Sprint(a)
 		})
 	})
 
 	t.Run("Sprintf", func(t *testing.T) {
-		internal.TestSprintfContains(t, func(format string, a interface{}) string {
+		testSprintfContains(t, func(format string, a interface{}) string {
 			return p.Sprintf(format, a)
 		})
 	})
 
 	t.Run("Sprintfln", func(t *testing.T) {
-		internal.TestSprintflnContains(t, func(format string, a interface{}) string {
+		testSprintflnContains(t, func(format string, a interface{}) string {
 			return p.Sprintfln(format, a)
 		})
 	})
 
 	t.Run("Sprintln", func(t *testing.T) {
-		internal.TestSprintlnContains(t, func(a interface{}) string {
+		testSprintlnContains(t, func(a interface{}) string {
 			return p.Sprintln(a)
 		})
 	})

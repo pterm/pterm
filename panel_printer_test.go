@@ -5,8 +5,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-
-	"github.com/pterm/pterm/internal"
 )
 
 func TestPanelPrinterNilPrint(t *testing.T) {
@@ -27,7 +25,7 @@ func TestPanelPrinterNilPrintWithPanels(t *testing.T) {
 }
 
 func TestPanelPrinter_Render(t *testing.T) {
-	internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
+	testPrintContains(t, func(w io.Writer, a interface{}) {
 		panels := Panels{
 			{{Data: Sprint(a)}},
 		}
@@ -38,7 +36,7 @@ func TestPanelPrinter_Render(t *testing.T) {
 }
 
 func TestPanelPrinter_RenderMultiplePanels(t *testing.T) {
-	internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
+	testPrintContains(t, func(w io.Writer, a interface{}) {
 		panels := Panels{
 			{{Data: Sprint("a\nbc\ndef")}, {Data: Sprint("abcd")}},
 			{{Data: Sprint(a)}},
@@ -50,7 +48,7 @@ func TestPanelPrinter_RenderMultiplePanels(t *testing.T) {
 }
 
 func TestPanelPrinter_RenderMultiplePanelsWithBorder(t *testing.T) {
-	internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
+	testPrintContains(t, func(w io.Writer, a interface{}) {
 		panels := Panels{
 			{{Data: Sprint("a\nbc\ndef")}, {Data: Sprint("abcd")}},
 			{{Data: Sprint(a)}},
@@ -62,7 +60,7 @@ func TestPanelPrinter_RenderMultiplePanelsWithBorder(t *testing.T) {
 }
 
 func TestPanelPrinter_RenderWithSameColumnWidth(t *testing.T) {
-	internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
+	testPrintContains(t, func(w io.Writer, a interface{}) {
 		panels := Panels{
 			{{Data: Sprint(a)}},
 			{{Data: Sprint("test")}},
@@ -75,7 +73,7 @@ func TestPanelPrinter_RenderWithSameColumnWidth(t *testing.T) {
 }
 
 func TestPanelPrinter_RenderWithBottomPadding(t *testing.T) {
-	internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
+	testPrintContains(t, func(w io.Writer, a interface{}) {
 		panels := Panels{
 			{{Data: Sprint(a)}},
 			{{Data: Sprint("test")}},

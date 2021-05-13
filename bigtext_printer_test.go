@@ -1,11 +1,11 @@
 package pterm
 
 import (
-	"github.com/pterm/pterm/internal"
-	"github.com/stretchr/testify/assert"
 	"io"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestBigTextPrinterNilPrint(t *testing.T) {
@@ -14,9 +14,17 @@ func TestBigTextPrinterNilPrint(t *testing.T) {
 }
 
 func TestBigTextPrinter_Render(t *testing.T) {
-	internal.TestDoesOutput(t, func(w io.Writer) {
+	testDoesOutput(t, func(w io.Writer) {
 		DefaultBigText.WithLetters(NewLettersFromString("Hello")).Render()
 	})
+}
+
+func TestBigTextPrinter_RenderRawOutput(t *testing.T) {
+	DisableStyling()
+	testDoesOutput(t, func(w io.Writer) {
+		DefaultBigText.WithLetters(NewLettersFromString("Hello")).Render()
+	})
+	EnableStyling()
 }
 
 func TestBigTextPrinter_WithBigCharacters(t *testing.T) {

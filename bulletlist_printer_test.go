@@ -6,8 +6,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-
-	"github.com/pterm/pterm/internal"
 )
 
 func TestBulletListPrinterNilPrint(t *testing.T) {
@@ -16,7 +14,7 @@ func TestBulletListPrinterNilPrint(t *testing.T) {
 }
 
 func TestBulletListPrinter_Render(t *testing.T) {
-	internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
+	testPrintContains(t, func(w io.Writer, a interface{}) {
 		DefaultBulletList.WithItems([]BulletListItem{
 			{Level: 0, Text: fmt.Sprint(a)},
 		}).Render()
@@ -24,7 +22,7 @@ func TestBulletListPrinter_Render(t *testing.T) {
 }
 
 func TestBulletListPrinter_RenderWithoutStyle(t *testing.T) {
-	internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
+	testPrintContains(t, func(w io.Writer, a interface{}) {
 		BulletListPrinter{}.WithItems([]BulletListItem{
 			{Level: 0, Text: fmt.Sprint(a)},
 		}).Render()
@@ -32,7 +30,7 @@ func TestBulletListPrinter_RenderWithoutStyle(t *testing.T) {
 }
 
 func TestBulletListPrinter_RenderWithBullet(t *testing.T) {
-	internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
+	testPrintContains(t, func(w io.Writer, a interface{}) {
 		DefaultBulletList.WithItems([]BulletListItem{
 			{
 				Level:  0,
@@ -44,7 +42,7 @@ func TestBulletListPrinter_RenderWithBullet(t *testing.T) {
 }
 
 func TestBulletListPrinter_Srender(t *testing.T) {
-	internal.TestSprintContainsWithoutError(t, func(a interface{}) (string, error) {
+	testSprintContainsWithoutError(t, func(a interface{}) (string, error) {
 		return DefaultBulletList.WithItems([]BulletListItem{
 			{Level: 0, Text: fmt.Sprint(a)},
 		}).Srender()

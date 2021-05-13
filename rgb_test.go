@@ -1,11 +1,11 @@
 package pterm
 
 import (
-	"github.com/pterm/pterm/internal"
-	"github.com/stretchr/testify/assert"
 	"io"
 	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNewRGB(t *testing.T) {
@@ -155,7 +155,7 @@ func TestRGB_Print(t *testing.T) {
 
 	for _, rgb := range RGBs {
 		t.Run(Sprintf("%v %v %v", rgb.R, rgb.G, rgb.B), func(t *testing.T) {
-			internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
+			testPrintContains(t, func(w io.Writer, a interface{}) {
 				p := rgb.Print(a)
 				assert.NotNil(t, p)
 			})
@@ -168,7 +168,7 @@ func TestRGB_Printf(t *testing.T) {
 
 	for _, rgb := range RGBs {
 		t.Run(Sprintf("%v %v %v", rgb.R, rgb.G, rgb.B), func(t *testing.T) {
-			internal.TestPrintfContains(t, func(w io.Writer, format string, a interface{}) {
+			testPrintfContains(t, func(w io.Writer, format string, a interface{}) {
 				p := rgb.Printf(format, a)
 				assert.NotNil(t, p)
 			})
@@ -181,7 +181,7 @@ func TestRGB_Printfln(t *testing.T) {
 
 	for _, rgb := range RGBs {
 		t.Run(Sprintfln("%v %v %v", rgb.R, rgb.G, rgb.B), func(t *testing.T) {
-			internal.TestPrintflnContains(t, func(w io.Writer, format string, a interface{}) {
+			testPrintflnContains(t, func(w io.Writer, format string, a interface{}) {
 				p := rgb.Printfln(format, a)
 				assert.NotNil(t, p)
 			})
@@ -194,7 +194,7 @@ func TestRGB_Println(t *testing.T) {
 
 	for _, rgb := range RGBs {
 		t.Run(Sprintf("%v %v %v", rgb.R, rgb.G, rgb.B), func(t *testing.T) {
-			internal.TestPrintlnContains(t, func(w io.Writer, a interface{}) {
+			testPrintlnContains(t, func(w io.Writer, a interface{}) {
 				p := rgb.Println(a)
 				assert.NotNil(t, p)
 			})
@@ -207,7 +207,7 @@ func TestRGB_Sprint(t *testing.T) {
 
 	for _, rgb := range RGBs {
 		t.Run(Sprintf("%v %v %v", rgb.R, rgb.G, rgb.B), func(t *testing.T) {
-			internal.TestSprintContains(t, func(a interface{}) string {
+			testSprintContains(t, func(a interface{}) string {
 				return rgb.Sprint(a)
 			})
 		})
@@ -219,7 +219,7 @@ func TestRGB_Sprintf(t *testing.T) {
 
 	for _, rgb := range RGBs {
 		t.Run("", func(t *testing.T) {
-			internal.TestSprintfContains(t, func(format string, a interface{}) string {
+			testSprintfContains(t, func(format string, a interface{}) string {
 				return rgb.Sprintf(format, a)
 			})
 		})
@@ -231,7 +231,7 @@ func TestRGB_Sprintfln(t *testing.T) {
 
 	for _, rgb := range RGBs {
 		t.Run("", func(t *testing.T) {
-			internal.TestSprintflnContains(t, func(format string, a interface{}) string {
+			testSprintflnContains(t, func(format string, a interface{}) string {
 				return rgb.Sprintfln(format, a)
 			})
 		})
@@ -243,7 +243,7 @@ func TestRGB_Sprintln(t *testing.T) {
 
 	for _, rgb := range RGBs {
 		t.Run(Sprintf("%v %v %v", rgb.R, rgb.G, rgb.B), func(t *testing.T) {
-			internal.TestSprintlnContains(t, func(a interface{}) string {
+			testSprintlnContains(t, func(a interface{}) string {
 				return rgb.Sprintln(a)
 			})
 		})
