@@ -1,6 +1,35 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Code Refactoring
+- correct behaviour of Enable-/DisableStyling
+- fix variable names
+
+### Documentation Changes
+- **contributing:** update test template
+- **examples:** add `disable-styling` example
+- **examples:** revert `BarChart` example
+
+### Features
+- add raw output mode for `BarChart`
+- add disable styling boolean option
+- **bigtext:** add raw output mode
+- **centerprinter:** add raw output mode
+- **headerprinter:** add raw output mode
+- **panelprinter:** add raw output mode
+- **paragraph:** add raw output mode
+- **prefix:** add raw output mode
+- **progressbar:** add raw output mode
+- **spinner:** add raw output mode
+
+### Test
+- add tests with `RawOutput` enabled
+- add interface tests for `Color` and `RGB`
+- added tests for `DisableStyling` and `EnableStyling`
+
+
+<a name="v0.12.14"></a>
+## [v0.12.14] - 2021-05-09
 ### Bug Fixes
 - **header:** fix inline color in `Header`
 
@@ -18,15 +47,15 @@
 - **pterm-sh:** add docs for `Color` printer in `README.md`
 - **pterm-sh:** document global function
 - **pterm-sh:** update `edit on github` link
-- **pterm-sh:** remove customizing intro from sidebar
 - **pterm-sh:** add docs for `BarChart` printer in `README.md`
+- **pterm-sh:** add `Style` printer documentation
 - **pterm-sh:** add a `Style` printer example
 - **pterm-sh:** restructure sidebar
 - **pterm-sh:** add `RGB` printer documentation and in `README.md`
 - **pterm-sh:** add `RGB` and `Style` to features in `README.md`
 - **pterm-sh:** add docs for `Prefix` printer in `README.md`
 - **pterm-sh:** add docs for theming
-- **pterm-sh:** add `Style` printer documentation
+- **pterm-sh:** remove customizing intro from sidebar
 - **pterm-sh:** add docs for `Table` printer in `README.md`
 - **readme:** add docs for theming
 - **readme:** make feature tables shorter
@@ -1157,7 +1186,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.13...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.14...HEAD
+[v0.12.14]: https://github.com/pterm/pterm/compare/v0.12.13...v0.12.14
 [v0.12.13]: https://github.com/pterm/pterm/compare/v0.12.12...v0.12.13
 [v0.12.12]: https://github.com/pterm/pterm/compare/v0.12.11...v0.12.12
 [v0.12.11]: https://github.com/pterm/pterm/compare/v0.12.10...v0.12.11
