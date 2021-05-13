@@ -61,6 +61,31 @@ func TestBarChartPrinter_RenderExample(t *testing.T) {
 	_ = DefaultBarChart.WithBars(bars).Render()
 }
 
+func TestBarChartPrinter_RenderExampleRawOutput(t *testing.T) {
+	proxyToDevNull()
+	DisableStyling()
+	bars := Bars{
+		Bar{
+			Label: "Bar 1",
+			Value: 5,
+			Style: NewStyle(FgCyan),
+		},
+		Bar{
+			Label: "Bar 2",
+			Value: 3,
+			Style: NewStyle(FgCyan),
+		},
+		Bar{
+			Label: "Longer Label",
+			Value: 7,
+			Style: NewStyle(FgCyan),
+		},
+	}
+
+	_ = DefaultBarChart.WithBars(bars).Render()
+	EnableStyling()
+}
+
 func TestBarChartPrinter_RenderMultipleLineLabel(t *testing.T) {
 	DefaultBarChart.WithShowValue().WithBars(Bars{
 		Bar{

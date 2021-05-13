@@ -80,8 +80,21 @@ func (p BarChartPrinter) WithShowValue(b ...bool) *BarChartPrinter {
 	return &p
 }
 
+func (p BarChartPrinter) getRawOutput() string {
+	var ret string
+
+	for _, bar := range p.Bars {
+		ret += Sprintfln("%s: %d", bar.Label, bar.Value)
+	}
+
+	return ret
+}
+
 // Srender renders the BarChart as a string.
 func (p BarChartPrinter) Srender() (string, error) {
+	if RawOutput {
+		return p.getRawOutput(), nil
+	}
 	for i, bar := range p.Bars {
 		if bar.Style == nil {
 			p.Bars[i].Style = &ThemeDefault.BarStyle

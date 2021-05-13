@@ -67,9 +67,24 @@ func (p PanelPrinter) WithBoxPrinter(boxPrinter BoxPrinter) *PanelPrinter {
 	return &p
 }
 
+func (p PanelPrinter) getRawOutput() string {
+	var ret string
+	for _, panel := range p.Panels {
+		for _, panel2 := range panel {
+			ret += panel2.Data + "\n\n"
+		}
+		ret += "\n"
+	}
+	return ret
+}
+
 // Srender renders the Template as a string.
 func (p PanelPrinter) Srender() (string, error) {
 	var ret string
+
+	if RawOutput {
+		return p.getRawOutput(), nil
+	}
 
 	for i := range p.Panels {
 		for i2 := range p.Panels[i] {

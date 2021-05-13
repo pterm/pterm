@@ -6,8 +6,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-
-	"github.com/pterm/pterm/internal"
 )
 
 func TestTreePrinterNilPrint(t *testing.T) {
@@ -17,7 +15,7 @@ func TestTreePrinterNilPrint(t *testing.T) {
 }
 
 func TestTreePrinter_Render(t *testing.T) {
-	internal.TestPrintContains(t, func(w io.Writer, a interface{}) {
+	testPrintContains(t, func(w io.Writer, a interface{}) {
 		DefaultTree.WithRoot(NewTreeFromLeveledList([]LeveledListItem{
 			{Level: 0, Text: fmt.Sprint(a)},
 			{Level: 0, Text: "0.0"},

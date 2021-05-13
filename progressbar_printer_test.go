@@ -1,9 +1,10 @@
 package pterm
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestProgressbarPrinter_Add(t *testing.T) {
@@ -37,6 +38,13 @@ func TestProgressbarPrinter_RemoveWhenDone(t *testing.T) {
 func TestProgressbarPrinter_GenericStart(t *testing.T) {
 	p := DefaultProgressbar
 	p.GenericStart()
+}
+
+func TestProgressbarPrinter_GenericStartRawOutput(t *testing.T) {
+	DisableStyling()
+	p := DefaultProgressbar
+	p.GenericStart()
+	EnableStyling()
 }
 
 func TestProgressbarPrinter_GenericStop(t *testing.T) {

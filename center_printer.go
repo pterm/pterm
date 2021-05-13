@@ -1,9 +1,11 @@
 package pterm
 
 import (
-	"github.com/mattn/go-runewidth"
-	"github.com/pterm/pterm/internal"
 	"strings"
+
+	"github.com/mattn/go-runewidth"
+
+	"github.com/pterm/pterm/internal"
 )
 
 // DefaultCenter is the default CenterPrinter.
@@ -26,6 +28,10 @@ func (p CenterPrinter) WithCenterEachLineSeparately(b ...bool) *CenterPrinter {
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
 func (p CenterPrinter) Sprint(a ...interface{}) string {
+	if RawOutput {
+		return Sprint(a...)
+	}
+
 	lines := strings.Split(Sprint(a...), "\n")
 
 	var ret string

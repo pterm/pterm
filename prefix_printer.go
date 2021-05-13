@@ -144,6 +144,14 @@ func (p *PrefixPrinter) Sprint(a ...interface{}) string {
 		return ""
 	}
 
+	if RawOutput {
+		if p.Prefix.Text != "" {
+			return Sprintf("%s: %s", strings.TrimSpace(p.Prefix.Text), Sprint(a...))
+		} else {
+			return Sprint(a...)
+		}
+	}
+
 	if p.Prefix.Style == nil {
 		p.Prefix.Style = NewStyle()
 	}
