@@ -18,6 +18,7 @@
 - **headerprinter:** add raw output mode
 - **panelprinter:** add raw output mode
 - **paragraph:** add raw output mode
+- **prefix:** add `PrintIfError`
 - **prefix:** add raw output mode
 - **progressbar:** add raw output mode
 - **spinner:** add raw output mode
