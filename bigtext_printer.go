@@ -1,9 +1,11 @@
 package pterm
 
 import (
-	"github.com/mattn/go-runewidth"
-	"github.com/pterm/pterm/internal"
 	"strings"
+
+	"github.com/mattn/go-runewidth"
+
+	"github.com/pterm/pterm/internal"
 )
 
 // Letters is a slice of Letter.
@@ -75,6 +77,14 @@ func (p BigTextPrinter) WithLetters(letters ...Letters) *BigTextPrinter {
 // Srender renders the BigText as a string.
 func (p BigTextPrinter) Srender() (string, error) {
 	var ret string
+
+	if RawOutput {
+		for _, letter := range p.Letters {
+			ret += letter.String
+		}
+		return ret, nil
+	}
+
 	var bigLetters Letters
 	for _, l := range p.Letters {
 		if val, ok := p.BigCharacters[l.String]; ok {
