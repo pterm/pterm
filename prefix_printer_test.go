@@ -1,6 +1,7 @@
 package pterm
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"testing"
@@ -82,6 +83,20 @@ func TestPrefixPrinterPrintMethods(t *testing.T) {
 			testSprintlnContains(t, func(a interface{}) string {
 				return p.Sprintln(a)
 			})
+		})
+
+		t.Run("PrintIfError", func(t *testing.T) {
+			result := captureStdout(func(w io.Writer) {
+				p.PrintIfError(errors.New("hello world"))
+			})
+			assert.Contains(t, result, "hello world")
+		})
+
+		t.Run("PrintIfError_WithoutError", func(t *testing.T) {
+			result := captureStdout(func(w io.Writer) {
+				p.PrintIfError(nil)
+			})
+			assert.Empty(t, result)
 		})
 	}
 }

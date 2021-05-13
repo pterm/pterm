@@ -27,6 +27,7 @@ pterm.Fatal.Println("Hello, World!") // Print Fatal.
 |Function|Description|
 |--------|-----------|
 |[FormattedPrefix](https://pkg.go.dev/github.com/pterm/pterm#PrefixPrinter.GetFormattedPrefix)|Returns the Prefix as a styled text string.|
+|[PrintIfError](https://pkg.go.dev/github.com/pterm/pterm#PrefixPrinter.PrintIfError)|Only prints if the given error is not nil.|
 
 ### Options
 
