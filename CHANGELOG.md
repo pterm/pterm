@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Bug Fixes
+- **prefix:** fix `PrintOnError`
+
 ### Code Refactoring
 - correct behaviour of Enable-/DisableStyling
 - fix variable names
