@@ -38,7 +38,7 @@
 </a>
 
 <a href="https://codecov.io/gh/pterm/pterm">
-<!-- unittestcount:start --><img src="https://img.shields.io/badge/Unit_Tests-5454-magenta?style=flat-square" alt="Forks"><!-- unittestcount:end -->
+<!-- unittestcount:start --><img src="https://img.shields.io/badge/Unit_Tests-8373-magenta?style=flat-square" alt="Forks"><!-- unittestcount:end -->
 </a>
 
 <a href="https://github.com/pterm/pterm/tree/master/_examples/demo">
@@ -70,25 +70,14 @@
 
 ---
 
-## ⭐ Main Features
+## 📦 Installation
 
-- [Theme Support](#theme)
-- [Prefix](#prefix)
-- [Bar Chart](#barchart)
-- [Big Text](#bigtext)
-- [Box](#box)
-- [Bullet List](#bulletlist)
-- [Panel](#panel)
-- [Progressbar](#progressbar)
-- [Section](#section)
-- [Spinner](#spinner)
-- [Header](#header)
-- [Header](#center)
-- [Tree](#tree)
-- [Paragraph](#paragraph)
-- [Print With Color](#print-with-color)
-  - [Print With RGB Color](#print-color-rgb)
-- [Table](#table)
+To make PTerm available in your project, you can run the following command.\
+Make sure to run this command inside your project, when you're using go modules 😉
+
+```sh
+go get github.com/pterm/pterm
+```
 
 ## 🥅 Goal of PTerm
 
@@ -104,11 +93,27 @@ We take special precautions to ensure that PTerm works on as many operating syst
 \
 *PTerm is actively tested on `Windows`, `Linux (Debian & Ubuntu)` and `macOS`.*
 
+### • ⭐ Main Features
+
+|Feature|Example|Docs|-|Feature|Example|Docs
+|---|---|---|---|---|---|---|
+|Bar Charts|[Example](#barchart)|[Docs](https://pterm.sh/#/docs/printer/barchart)|-|RGB|[Example](#print-color-rgb)|[Docs](https://pterm.sh/#/docs/printer/rgb)|
+|BigText|[Example](#bigtext)|[Docs](https://pterm.sh/#/docs/printer/bigtext)|-|Sections|[Example](#section)|[Docs](https://pterm.sh/#/docs/printer/section)|
+|Boxed|[Example](#box)|[Docs](https://pterm.sh/#/docs/printer/box)|-|Spinners|[Example](#spinner)|[Docs](https://pterm.sh/#/docs/printer/spinner)|
+|Bullet Lists|[Example](#bulletlist)|[Docs](https://pterm.sh/#/docs/printer/bulletlist)|-|Trees|[Example](#tree)|[Docs](https://pterm.sh/#/docs/printer/tree)|
+|Centered|[Example](#center)|[Docs](https://pterm.sh/#/docs/printer/center)|-|Theming|[Example](#theme)|[Docs](https://pterm.sh/#/docs/customizing/theming)|
+|Colors|[Example](#print-with-color)|[Docs](https://pterm.sh/#/docs/printer/color)|-|Tables|[Example](#table)|[Docs](https://pterm.sh/#/docs/printer/table)|
+|Headers|[Example](#header)|[Docs](https://pterm.sh/#/docs/printer/header)|-|Styles|[Example](#style)|[Docs](https://pterm.sh/#/docs/printer/style)|
+|Panels|[Example](#panel)|[Docs](https://pterm.sh/#/docs/printer/panel)|-|||
+|Paragraphs|[Example](#paragraph)|[Docs](https://pterm.sh/#/docs/printer/paragraph)|-|||
+|Prefixes|[Example](#prefix)|[Docs](https://pterm.sh/#/docs/printer/prefix)|-|||
+|Progress Bars|[Example](#progressbar)|[Docs](https://pterm.sh/#/docs/printer/progressbar)|-|||
+
 ### • 🧪 Well tested
 
 > PTerm has a 100% test coverage, which means that every line of code inside PTerm gets tested automatically
 
-We test PTerm continuously. However, since a human cannot test everything all the time, we have our own test system with which we currently run <!-- unittestcount2:start -->**`5454`**<!-- unittestcount2:end -->
+We test PTerm continuously. However, since a human cannot test everything all the time, we have our own test system with which we currently run <!-- unittestcount2:start -->**`8373`**<!-- unittestcount2:end -->
 automated tests to ensure that PTerm has no bugs. 
 
 ### • ✨ Consistent Colors
@@ -131,15 +136,6 @@ PTerm can be used by without any configuration. However, you can easily configur
 PTerm is currently under development. It is very likely that not all things will remain as they are at the moment. However, PTerm is still functional. The versioning of PTerm follows the SemVer guidelines. Breaking Changes are explicitly mentioned in the changelogs and the version will be increased accordingly. Everybody is welcome to improve PTerm, whether by making suggestions or pull requests. Thanks ❤
 
 If you want to wait for a stable release, make sure to star the project and follow it, to get notified when we release v1.0.0 (stable) 🚀
-
-## 📦 Installation
-
-To make PTerm available in your project, you can run the following command.\
-Make sure to run this command inside your project, when you're using go modules 😉
-
-```sh
-go get github.com/pterm/pterm
-```
 
 ## ✏ Documentation
 
@@ -166,6 +162,12 @@ Your financial support enables me to focus more on my projects. Thank you very m
 <img height="60px" src="https://cdn.buymeacoffee.com/buttons/v2/arial-blue.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" >
 </a>
 </p>
+
+### 🦸‍♂️ Supporters
+
+|-|User|💸|
+|---|---|---|
+|![Jens Lauterbach](https://avatars.githubusercontent.com/u/1292368?s=25)|[@jenslauterbach](https://github.com/jenslauterbach)|25$|
 
 ## 🧪 Examples
 
@@ -252,6 +254,8 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
+	pterm.Info.Println("This might not be rendered correctly on GitHub,\nbut it will work in a real terminal.\nThis is because GitHub does not use a monospaced font by default for SVGs.")
+
 	panel1 := pterm.DefaultBox.Sprint("Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit,\nsed do eiusmod tempor incididunt\nut labore et dolore\nmagna aliqua.")
 	panel2 := pterm.DefaultBox.Sprint("Ut enim ad minim veniam,\nquis nostrud exercitation\nullamco laboris\nnisi ut aliquip\nex ea commodo\nconsequat.")
 	panel3 := pterm.DefaultBox.Sprint("Duis aute irure\ndolor in reprehenderit\nin voluptate velit esse cillum\ndolore eu fugiat\nnulla pariatur.")
@@ -482,13 +486,14 @@ func pseudoApplicationHeader() *pterm.TextPrinter {
 }
 
 func introScreen() {
-	pterm.DefaultBigText.WithLetters(
+	ptermLogo, _ := pterm.DefaultBigText.WithLetters(
 		pterm.NewLettersFromStringWithStyle("P", pterm.NewStyle(pterm.FgLightCyan)),
 		pterm.NewLettersFromStringWithStyle("Term", pterm.NewStyle(pterm.FgLightMagenta))).
-		Render()
+		Srender()
 
-	pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
-		"PTDP - PTerm Demo Program")
+	pterm.DefaultCenter.Print(ptermLogo)
+
+	pterm.DefaultCenter.Print(pterm.DefaultHeader.WithFullWidth().WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Sprint("PTDP - PTerm Demo Program"))
 
 	pterm.Info.Println("This animation was generated with the latest version of PTerm!" +
 		"\nPTerm works on nearly every terminal and operating system." +
@@ -1220,6 +1225,33 @@ func main() {
 	spinnerLiveText.UpdateText("We're nearly done!") // Update spinner text.
 	time.Sleep(time.Second * 2)                      // Simulate 2 seconds of processing something.
 	spinnerLiveText.Success("Finally!")              // Resolve spinner with success message.
+}
+
+```
+
+</details>
+
+### style
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/style/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	// Create styles as new variables
+	primary := pterm.NewStyle(pterm.FgLightCyan, pterm.BgGray, pterm.Bold)
+	secondary := pterm.NewStyle(pterm.FgLightGreen, pterm.BgWhite, pterm.Italic)
+
+	// Use created styles
+	primary.Println("Hello, World!")
+	secondary.Println("Hello, World!")
 }
 
 ```

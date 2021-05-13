@@ -37,6 +37,15 @@ func TestPrintfContains(t *testing.T, logic func(w io.Writer, format string, a i
 	}
 }
 
+// TestPrintflnContains can be used to test Printfln methods.
+func TestPrintflnContains(t *testing.T, logic func(w io.Writer, format string, a interface{})) {
+	for _, printable := range printables {
+		t.Run(fmt.Sprint(printable), func(t *testing.T) {
+			TestPrintfContains(t, logic)
+		})
+	}
+}
+
 // TestPrintlnContains can be used to test Println methods.
 func TestPrintlnContains(t *testing.T, logic func(w io.Writer, a interface{})) {
 	for _, printable := range printables {
@@ -71,6 +80,15 @@ func TestSprintfContains(t *testing.T, logic func(format string, a interface{}) 
 	for _, printable := range printables {
 		t.Run(fmt.Sprint(printable), func(t *testing.T) {
 			assert.Contains(t, logic("Hello, %v!", printable), fmt.Sprintf("Hello, %v!", printable))
+		})
+	}
+}
+
+// TestSprintflnContains can be used to test Sprintfln methods.
+func TestSprintflnContains(t *testing.T, logic func(format string, a interface{}) string) {
+	for _, printable := range printables {
+		t.Run(fmt.Sprint(printable), func(t *testing.T) {
+			TestSprintfContains(t, logic)
 		})
 	}
 }

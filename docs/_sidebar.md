@@ -1,25 +1,31 @@
 - [Quick Start](quick-start.md)
 - Documentation
   - [Intro](docs/intro.md)
+  - [Global Functions](docs/functions.md)
   - Printers
+    - [BarChart](docs/printer/barchart.md)
     - [BasicText](docs/printer/basictext.md)
     - [BigText](docs/printer/bigtext.md)
     - [Box](docs/printer/box.md)
     - [BulletList](docs/printer/bulletlist.md)
     - [Center](docs/printer/center.md)
+    - [Color](docs/printer/color.md)
     - [Header](docs/printer/header.md)
     - [Panel](docs/printer/panel.md)
     - [Paragraph](docs/printer/paragraph.md)
+    - [Prefix](docs/printer/prefix.md)
     - [Progressbar](docs/printer/progressbar.md)
+    - [RGB](docs/printer/rgb.md)
     - [Section](docs/printer/section.md)
     - [Spinner](docs/printer/spinner.md)
+    - [Style](docs/printer/style.md)
     - [Table](docs/printer/table.md)
     - [Tree](docs/printer/tree.md)
-  - Global Functions
-    - [Print Methods](docs/functions/print.md)
   - Types
     - [BulletListItem](docs/types/bulletlistitem.md)
-  - [Override Default Printer](docs/override-default-printer.md)
+  - Customizing
+    - [Override Default Printer](docs/customizing/override-default-printer.md)
+    - [Theming](docs/customizing/theming.md)
 - Contributing
   - [Writing Documentation](contributing/writing-documentation.md)
   - [Documentation Template](contributing/writing-documentation-template.md)

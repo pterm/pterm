@@ -29,6 +29,12 @@ func TestBoxPrinterPrintMethods(t *testing.T) {
 		})
 	})
 
+	t.Run("Printfln", func(t *testing.T) {
+		internal.TestPrintflnContains(t, func(w io.Writer, format string, a interface{}) {
+			p.Printfln(format, a)
+		})
+	})
+
 	t.Run("Println", func(t *testing.T) {
 		internal.TestPrintlnContains(t, func(w io.Writer, a interface{}) {
 			p.Println(a)
@@ -44,6 +50,12 @@ func TestBoxPrinterPrintMethods(t *testing.T) {
 	t.Run("Sprintf", func(t *testing.T) {
 		internal.TestSprintfContains(t, func(format string, a interface{}) string {
 			return p.Sprintf(format, a)
+		})
+	})
+
+	t.Run("Sprintfln", func(t *testing.T) {
+		internal.TestSprintflnContains(t, func(format string, a interface{}) string {
+			return p.Sprintfln(format, a)
 		})
 	})
 

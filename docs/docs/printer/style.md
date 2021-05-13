@@ -1,13 +1,13 @@
-# BasicTextPrinter
+# StylePrinter
 
 <!-- 
 Replace all of the following strings with the current printer.
-     basictext BasicText BasicTextPrinter DefaultBasicText
+     style Style StylePrinter DefaultStyle
 -->
 
-![BasicTextPrinter Example](https://raw.githubusercontent.com/pterm/pterm/master/_examples/basictext/animation.svg)
+![StylePrinter Example](https://raw.githubusercontent.com/pterm/pterm/master/_examples/style/animation.svg)
 
-<p align="center"><a href="https://github.com/pterm/pterm/blob/master/_examples/basictext/main.go" target="_blank">(Show source of demo)</a></p>
+<p align="center"><a href="https://github.com/pterm/pterm/blob/master/_examples/style/main.go" target="_blank">(Show source of demo)</a></p>
 
 
 ## Usage
@@ -15,23 +15,17 @@ Replace all of the following strings with the current printer.
 ### Basic usage
 
 ```go
-pterm.DefaultBasicText.Println("Hello, World!")
+pterm.NewStyle(pterm.FgLightCyan, pterm.BgGray, pterm.Bold).Println("Hello, World!")
 ```
 
-### Options
+### Functions
 
-> To make a copy with modified options you can use:
-> `pterm.DefaultBasicText.WithOptionName(option)`
->
-> To change multiple options at once, you can chain the functions:
-> `pterm.DefaultBasicText.WithOptionName(option).WithOptionName2(option2)...`
-
-> [!TIP]
-> Click the options and types to show the documentation on _pkg.go.dev_
-
-|Option|Type|
-|------|----|
-|[Style](https://pkg.go.dev/github.com/pterm/pterm#BasicTextPrinter.WithStyle)|[*Style](https://pkg.go.dev/github.com/pterm/pterm#Style)|
+|Function|Description|
+|--------|-----------|
+|[NewStyle](https://pkg.go.dev/github.com/pterm/pterm#Style.NewStyle)|NewStyle returns a new Style. Accepts multiple colors.|
+|[Add](https://pkg.go.dev/github.com/pterm/pterm#Style.Add)|Add styles to the current Style.|
+|[Code](https://pkg.go.dev/github.com/pterm/pterm#Style.Code)|Code convert to code string. returns like "32;45;3".|
+|[String](https://pkg.go.dev/github.com/pterm/pterm#Style.String)|String convert to code string. returns like "32;45;3".|
 
 ### Output functions
 

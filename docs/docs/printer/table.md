@@ -49,4 +49,4 @@ pterm.DefaultTable.WithHasHeader().WithData(pterm.TableData{{"Hello", "World"}})
 |Srender()|Returns a string|
 
 ## Related
-- [Override default printers](docs/override-default-printer.md)
+- [Override default printers](docs/customizing/override-default-printer.md)

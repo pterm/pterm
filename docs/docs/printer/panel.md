@@ -54,4 +54,4 @@ _ = pterm.DefaultPanel.WithPanels(panels).Render()
 |Srender()|Returns a string|
 
 ## Related
-- [Override default printers](docs/override-default-printer.md)
+- [Override default printers](docs/customizing/override-default-printer.md)

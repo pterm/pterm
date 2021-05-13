@@ -1,13 +1,13 @@
-# BasicTextPrinter
+# RGBPrinter
 
 <!-- 
 Replace all of the following strings with the current printer.
-     basictext BasicText BasicTextPrinter DefaultBasicText
+     print-color-rgb RGB RGBPrinter DefaultRGB
 -->
 
-![BasicTextPrinter Example](https://raw.githubusercontent.com/pterm/pterm/master/_examples/basictext/animation.svg)
+![RGBPrinter Example](https://raw.githubusercontent.com/pterm/pterm/master/_examples/print-color-rgb/animation.svg)
 
-<p align="center"><a href="https://github.com/pterm/pterm/blob/master/_examples/basictext/main.go" target="_blank">(Show source of demo)</a></p>
+<p align="center"><a href="https://github.com/pterm/pterm/blob/master/_examples/print-color-rgb/main.go" target="_blank">(Show source of demo)</a></p>
 
 
 ## Usage
@@ -15,23 +15,17 @@ Replace all of the following strings with the current printer.
 ### Basic usage
 
 ```go
-pterm.DefaultBasicText.Println("Hello, World!")
+pterm.NewRGB(178, 44, 199).Println("This text is printed with a custom RGB!")
 ```
 
-### Options
+### Functions
 
-> To make a copy with modified options you can use:
-> `pterm.DefaultBasicText.WithOptionName(option)`
->
-> To change multiple options at once, you can chain the functions:
-> `pterm.DefaultBasicText.WithOptionName(option).WithOptionName2(option2)...`
-
-> [!TIP]
-> Click the options and types to show the documentation on _pkg.go.dev_
-
-|Option|Type|
-|------|----|
-|[Style](https://pkg.go.dev/github.com/pterm/pterm#BasicTextPrinter.WithStyle)|[*Style](https://pkg.go.dev/github.com/pterm/pterm#Style)|
+|Function|Description|
+|--------|-----------|
+|[NewRGB](https://pkg.go.dev/github.com/pterm/pterm#RGB.NewRGB)|NewRGB returns a new RGB.|
+|[NewRGBFromHEX](https://pkg.go.dev/github.com/pterm/pterm#RGB.NewRGBFromHEX)|NewRGBFromHEX converts a HEX and returns a new RGB.|
+|[Fade](https://pkg.go.dev/github.com/pterm/pterm#RGB.Fade)|Fade fades one RGB value (over other RGB values) to another RGB value, by giving the function a minimum, maximum and current value.|
+|[GetValues](https://pkg.go.dev/github.com/pterm/pterm#RGB.GetValues)|GetValues returns the RGB values separately.|
 
 ### Output functions
 
