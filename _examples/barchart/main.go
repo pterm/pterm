@@ -3,7 +3,6 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	pterm.DisableStyling()
 	bars := pterm.Bars{
 		pterm.Bar{
 			Label: "Bar 1",
