@@ -1,8 +1,16 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Chore
+- **deps:** bump github.com/gookit/color from 1.4.1 to 1.4.2
+
+
+<a name="v0.12.16"></a>
+## [v0.12.16] - 2021-05-13
 ### Code Refactoring
 - **prefix:** make `PrintOnError` accept multiple inputs
+
+### Documentation Changes
 
 ### Style
 - remove unnecessary trailing newline
@@ -1199,7 +1207,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.15...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.16...HEAD
+[v0.12.16]: https://github.com/pterm/pterm/compare/v0.12.15...v0.12.16
 [v0.12.15]: https://github.com/pterm/pterm/compare/v0.12.14...v0.12.15
 [v0.12.14]: https://github.com/pterm/pterm/compare/v0.12.13...v0.12.14
 [v0.12.13]: https://github.com/pterm/pterm/compare/v0.12.12...v0.12.13
