@@ -209,6 +209,19 @@ func (c Color) Printfln(format string, a ...interface{}) *TextPrinter {
 	return &tp
 }
 
+// PrintOnError prints every error which is not nil.
+// If every error is nil, nothing will be printed.
+// This can be used for simple error checking.
+func (p Color) PrintOnError(a ...interface{}) {
+	for _, arg := range a {
+		if err, ok := arg.(error); ok {
+			if err != nil {
+				p.Println(err)
+			}
+		}
+	}
+}
+
 // String converts the color to a string. eg "35".
 func (c Color) String() string {
 	return fmt.Sprintf("%d", c)

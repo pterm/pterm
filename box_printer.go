@@ -206,3 +206,16 @@ func (p BoxPrinter) Printfln(format string, a ...interface{}) *TextPrinter {
 	tp := TextPrinter(p)
 	return &tp
 }
+
+// PrintOnError prints every error which is not nil.
+// If every error is nil, nothing will be printed.
+// This can be used for simple error checking.
+func (p BoxPrinter) PrintOnError(a ...interface{}) {
+	for _, arg := range a {
+		if err, ok := arg.(error); ok {
+			if err != nil {
+				p.Println(err)
+			}
+		}
+	}
+}
