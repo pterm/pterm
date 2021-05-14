@@ -1,6 +1,7 @@
 package pterm
 
 import (
+	"errors"
 	"io"
 	"reflect"
 	"testing"
@@ -246,6 +247,32 @@ func TestRGB_Sprintln(t *testing.T) {
 			testSprintlnContains(t, func(a interface{}) string {
 				return rgb.Sprintln(a)
 			})
+		})
+	}
+}
+
+func TestRGB_PrintOnError(t *testing.T) {
+	RGBs := []RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
+
+	for _, rgb := range RGBs {
+		t.Run("PrintOnError", func(t *testing.T) {
+			result := captureStdout(func(w io.Writer) {
+				rgb.PrintOnError(errors.New("hello world"))
+			})
+			assert.Contains(t, result, "hello world")
+		})
+	}
+}
+
+func TestRGB_PrintIfError_WithoutError(t *testing.T) {
+	RGBs := []RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
+
+	for _, rgb := range RGBs {
+		t.Run("PrintIfError_WithoutError", func(t *testing.T) {
+			result := captureStdout(func(w io.Writer) {
+				rgb.PrintOnError(nil)
+			})
+			assert.Empty(t, result)
 		})
 	}
 }
