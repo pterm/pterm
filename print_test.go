@@ -1,6 +1,7 @@
 package pterm
 
 import (
+	"errors"
 	"io"
 	"os"
 	"testing"
@@ -248,4 +249,22 @@ func TestFprinto(t *testing.T) {
 
 func TestSetDefaultOutput(t *testing.T) {
 	SetDefaultOutput(os.Stdout)
+}
+
+func TestPrintOnError(t *testing.T) {
+	t.Run("PrintOnError", func(t *testing.T) {
+		result := captureStdout(func(w io.Writer) {
+			PrintOnError(errors.New("hello world"))
+		})
+		assert.Contains(t, result, "hello world")
+	})
+}
+
+func TestPrintIfError_WithoutError(t *testing.T) {
+	t.Run("PrintIfError_WithoutError", func(t *testing.T) {
+		result := captureStdout(func(w io.Writer) {
+			PrintOnError(nil)
+		})
+		assert.Empty(t, result)
+	})
 }

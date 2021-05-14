@@ -1,6 +1,7 @@
 package pterm
 
 import (
+	"errors"
 	"io"
 	"testing"
 
@@ -67,6 +68,20 @@ func TestBoxPrinterPrintMethods(t *testing.T) {
 		testSprintContains(t, func(a interface{}) string {
 			return p.Sprint("testing\ntesting2" + Sprint(a))
 		})
+	})
+
+	t.Run("PrintOnError", func(t *testing.T) {
+		result := captureStdout(func(w io.Writer) {
+			p.PrintOnError(errors.New("hello world"))
+		})
+		assert.Contains(t, result, "hello world")
+	})
+
+	t.Run("PrintIfError_WithoutError", func(t *testing.T) {
+		result := captureStdout(func(w io.Writer) {
+			p.PrintOnError(nil)
+		})
+		assert.Empty(t, result)
 	})
 }
 
