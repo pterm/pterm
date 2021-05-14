@@ -1,8 +1,17 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Bug Fixes
+- fix `pterm.Fatal.Printfln` not panicking
+- **prefix:** fix `pterm.Fatal.Printfln` not panicking and had output in debug mode
+
 ### Chore
 - **deps:** bump github.com/gookit/color from 1.4.1 to 1.4.2
+
+### Documentation Changes
+
+### Test
+- **prefix:** add tests for `Sprintfln` and `Printfln` function when in debug mode
 
 
 <a name="v0.12.16"></a>
