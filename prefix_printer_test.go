@@ -321,6 +321,18 @@ func TestPrefixPrinter_PrintfWithoutDebugger(t *testing.T) {
 	}
 }
 
+func TestPrefixPrinter_PrintflnWithoutDebugger(t *testing.T) {
+	for _, p := range prefixPrinters {
+		t.Run("", func(t *testing.T) {
+			p2 := p.WithDebugger()
+			DisableDebugMessages()
+			testDoesNotOutput(t, func(w io.Writer) {
+				p2.Printfln("Hello, World!")
+			})
+		})
+	}
+}
+
 func TestPrefixPrinter_SprintWithoutDebugger(t *testing.T) {
 	for _, p := range prefixPrinters {
 		t.Run("", func(t *testing.T) {
@@ -351,6 +363,18 @@ func TestPrefixPrinter_SprintfWithoutDebugger(t *testing.T) {
 			DisableDebugMessages()
 			testEmpty(t, func(a interface{}) string {
 				return p2.Sprintf("Hello, %s!", a)
+			})
+		})
+	}
+}
+
+func TestPrefixPrinter_SprintflnWithoutDebugger(t *testing.T) {
+	for _, p := range prefixPrinters {
+		t.Run("", func(t *testing.T) {
+			p2 := p.WithDebugger()
+			DisableDebugMessages()
+			testEmpty(t, func(a interface{}) string {
+				return p2.Sprintfln("Hello, %s!", a)
 			})
 		})
 	}
