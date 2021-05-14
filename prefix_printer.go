@@ -233,6 +233,9 @@ func (p PrefixPrinter) Sprintf(format string, a ...interface{}) string {
 // Sprintfln formats according to a format specifier and returns the resulting string.
 // Spaces are always added between operands and a newline is appended.
 func (p PrefixPrinter) Sprintfln(format string, a ...interface{}) string {
+	if p.Debugger && !PrintDebugMessages {
+		return ""
+	}
 	return p.Sprintf(format, a...) + "\n"
 }
 
@@ -278,8 +281,11 @@ func (p *PrefixPrinter) Printf(format string, a ...interface{}) *TextPrinter {
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
 func (p *PrefixPrinter) Printfln(format string, a ...interface{}) *TextPrinter {
-	Print(p.Sprintfln(format, a...))
 	tp := TextPrinter(p)
+	if p.Debugger && !PrintDebugMessages {
+		return &tp
+	}
+	Print(p.Sprintfln(format, a...))
 	checkFatal(p)
 	return &tp
 }
