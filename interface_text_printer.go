@@ -35,4 +35,9 @@ type TextPrinter interface {
 	// Spaces are always added between operands and a newline is appended.
 	// It returns the number of bytes written and any write error encountered.
 	Printfln(format string, a ...interface{}) *TextPrinter
+
+	// PrintOnError prints every error which is not nil.
+	// If every error is nil, nothing will be printed.
+	// This can be used for simple error checking.
+	PrintOnError(a ...interface{})
 }
