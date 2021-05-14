@@ -280,6 +280,7 @@ func (p *PrefixPrinter) Printf(format string, a ...interface{}) *TextPrinter {
 func (p *PrefixPrinter) Printfln(format string, a ...interface{}) *TextPrinter {
 	Print(p.Sprintfln(format, a...))
 	tp := TextPrinter(p)
+	checkFatal(p)
 	return &tp
 }
 
