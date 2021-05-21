@@ -85,5 +85,5 @@
     -->
     
     ## Related
-    - [Override default printers](docs/override-default-printer.md)
+    - [Override default printers](../customizing/override-default-printer.md)
 ```
