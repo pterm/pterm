@@ -3,6 +3,7 @@
   - [Intro](docs/intro.md)
   - [Global Functions](docs/functions.md)
   - Printers
+    - [Area](docs/printer/area.md)
     - [BarChart](docs/printer/barchart.md)
     - [BasicText](docs/printer/basictext.md)
     - [BigText](docs/printer/bigtext.md)

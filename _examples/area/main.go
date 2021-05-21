@@ -8,7 +8,7 @@ import (
 
 func main() {
 	pterm.Info.Println("The previous text will stay in place, while the area updates.")
-	pterm.Println("\n") // Add two new lines as spacer.
+	pterm.Print("\n\n") // Add two new lines as spacer.
 
 	area, _ := pterm.DefaultArea.Start() // Start the Area printer.
 	for i := 0; i < 10; i++ {
