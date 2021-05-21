@@ -8,8 +8,10 @@ import (
 
 var DefaultArea = AreaPrinter{}
 
+// AreaPrinter prints an area which can be updated easily.
+// use this printer for live output like charts, algorithm visualizations, simulations and even games.
 type AreaPrinter struct {
-	Content        string
+	content        string
 	RemoveWhenDone bool
 
 	isActive bool
@@ -23,11 +25,15 @@ func (s AreaPrinter) WithRemoveWhenDone(b ...bool) *AreaPrinter {
 	return &s
 }
 
-// Update updates the message of the active AreaPrinter.
+// Update overwrites the content of the AreaPrinter.
 // Can be used live.
 func (s *AreaPrinter) Update(text ...interface{}) {
+	if s.area == nil {
+		newArea := cursor.NewArea()
+		s.area = &newArea
+	}
 	str := Sprint(text...)
-	s.Content = str
+	s.content = str
 	s.area.Update(str)
 }
 
