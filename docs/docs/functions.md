@@ -29,6 +29,11 @@
 |[EnableDebugMessages](https://pkg.go.dev/github.com/pterm/pterm#EnableDebugMessages)|EnableDebugMessages enables the output of debug printers.|
 |[DisableOutput](https://pkg.go.dev/github.com/pterm/pterm#DisableOutput)|DisableOutput disables the output of PTerm.|
 |[EnableOutput](https://pkg.go.dev/github.com/pterm/pterm#EnableOutput)|EnableOutput enables the output of PTerm.|
+
+## Helper functions
+
+|Function Name|Description|
+|-------------|-----------|
 |[GetTerminalHeight](https://pkg.go.dev/github.com/pterm/pterm#GetTerminalHeight)|GetTerminalHeight returns the terminal height of the active terminal.|
 |[GetTerminalSize](https://pkg.go.dev/github.com/pterm/pterm#GetTerminalSize)|GetTerminalSize returns the width and the height of the active terminal.|
 |[GetTerminalWidth](https://pkg.go.dev/github.com/pterm/pterm#GetTerminalWidth)|GetTerminalWidth returns the terminal width of the active terminal.|
