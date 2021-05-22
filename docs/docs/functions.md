@@ -21,6 +21,8 @@
 
 |Function Name|Description|
 |-------------|-----------|
+|[DisableStyling](https://pkg.go.dev/github.com/pterm/pterm#DisableStyling)|DisableStyling enables all PTerm styling.|
+|[EnableStyling](https://pkg.go.dev/github.com/pterm/pterm#EnableStyling)|EnableStyling disables all PTerm styling.|
 |[DisableColor](https://pkg.go.dev/github.com/pterm/pterm#DisableColor)|DisableColor disables colors.|
 |[EnableColor](https://pkg.go.dev/github.com/pterm/pterm#EnableColor)|EnableColor enables colors.|
 |[DisableDebugMessages](https://pkg.go.dev/github.com/pterm/pterm#DisableDebugMessages)|DisableDebugMessages disables the output of debug printers.|
