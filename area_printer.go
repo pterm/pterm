@@ -6,6 +6,7 @@ import (
 	"github.com/pterm/pterm/internal"
 )
 
+// DefaultArea is the default area printer.
 var DefaultArea = AreaPrinter{}
 
 // AreaPrinter prints an area which can be updated easily.
