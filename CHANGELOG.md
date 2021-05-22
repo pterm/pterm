@@ -4,6 +4,11 @@
 ### Code Refactoring
 - **area:** better height calculation
 
+### Documentation Changes
+
+### Features
+- **putils:** add `putils` package ([#206](https://github.com/pterm/pterm/issues/206))
+
 
 <a name="v0.12.18"></a>
 ## [v0.12.18] - 2021-05-22
