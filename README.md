@@ -38,7 +38,7 @@
 </a>
 
 <a href="https://codecov.io/gh/pterm/pterm">
-<!-- unittestcount:start --><img src="https://img.shields.io/badge/Unit_Tests-28532-magenta?style=flat-square" alt="Forks"><!-- unittestcount:end -->
+<!-- unittestcount:start --><img src="https://img.shields.io/badge/Unit_Tests-28541-magenta?style=flat-square" alt="Forks"><!-- unittestcount:end -->
 </a>
 
 <a href="https://github.com/pterm/pterm/tree/master/_examples/demo">
@@ -113,7 +113,7 @@ We take special precautions to ensure that PTerm works on as many operating syst
 
 > PTerm has a 100% test coverage, which means that every line of code inside PTerm gets tested automatically
 
-We test PTerm continuously. However, since a human cannot test everything all the time, we have our own test system with which we currently run <!-- unittestcount2:start -->**`28532`**<!-- unittestcount2:end -->
+We test PTerm continuously. However, since a human cannot test everything all the time, we have our own test system with which we currently run <!-- unittestcount2:start -->**`28541`**<!-- unittestcount2:end -->
 automated tests to ensure that PTerm has no bugs. 
 
 ### • ✨ Consistent Colors
@@ -174,6 +174,40 @@ Your financial support enables me to focus more on my projects. Thank you very m
 You can find all the examples, with their source code, here: [`./_examples`](./_examples)
 
 <!-- examples:start -->
+### area
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/area/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"time"
+
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	pterm.Info.Println("The previous text will stay in place, while the area updates.")
+	pterm.Print("\n\n") // Add two new lines as spacer.
+
+	area, _ := pterm.DefaultArea.WithCenter().Start() // Start the Area printer, with the Center option.
+	for i := 0; i < 10; i++ {
+		str, _ := pterm.DefaultBigText.WithLetters(pterm.NewLettersFromString(time.Now().Format("15:04:05"))).Srender() // Save current time in str.
+		area.Update(str)                                                                                                // Update Area contents.
+		time.Sleep(time.Second)
+	}
+	area.Stop()
+}
+
+```
+
+</details>
+
 ### barchart
 
 ![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/animation.svg)

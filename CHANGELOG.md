@@ -1,6 +1,36 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Chore
+- go mod tidy
+- **deps:** add atomicgo/cursor as dependency
+
+### Code Refactoring
+- fix linting errors
+
+### Documentation Changes
+- **area:** add comment for `DefaultArea`
+- **area:** add docs for `AreaPrinter`
+- **examples:** update area printer example to use `Center` option
+- **examples:** add `AreaPrinter` example
+- **pterm-sh:** create helper functions section
+- **pterm-sh:** add `EnableStyling` and `DisableStyling` to docs
+- **pterm-sh:** fix writing-documentation-template.md link
+
+### Features
+- add `AreaPrinter`
+- **area:** add `Center` option
+- **area:** add `Fullscreen` option
+- **area:** add `GetContent` function
+- **area:** add `AreaPrinter`
+
+### Test
+- **area:** fix tests for `AreaPrinter`
+- **area:** add `AreaPrinter` tests
+
+
+<a name="v0.12.17"></a>
+## [v0.12.17] - 2021-05-14
 ### Bug Fixes
 - fix `pterm.Fatal.Printfln` not panicking
 - **prefix:** fix `pterm.Fatal.Printfln` not panicking and had output in debug mode
@@ -1216,7 +1246,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.16...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.17...HEAD
+[v0.12.17]: https://github.com/pterm/pterm/compare/v0.12.16...v0.12.17
 [v0.12.16]: https://github.com/pterm/pterm/compare/v0.12.15...v0.12.16
 [v0.12.15]: https://github.com/pterm/pterm/compare/v0.12.14...v0.12.15
 [v0.12.14]: https://github.com/pterm/pterm/compare/v0.12.13...v0.12.14
