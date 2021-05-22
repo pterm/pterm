@@ -15,7 +15,8 @@ var DefaultArea = AreaPrinter{}
 // use this printer for live output like charts, algorithm visualizations, simulations and even games.
 type AreaPrinter struct {
 	RemoveWhenDone bool
-	FullScreen     bool
+	Fullscreen     bool
+	Center         bool
 
 	content  string
 	isActive bool
@@ -24,61 +25,81 @@ type AreaPrinter struct {
 }
 
 // GetContent returns the current area content.
-func (s *AreaPrinter) GetContent() string {
-	return s.content
+func (p *AreaPrinter) GetContent() string {
+	return p.content
 }
 
 // WithRemoveWhenDone removes the AreaPrinter content after it is stopped.
-func (s AreaPrinter) WithRemoveWhenDone(b ...bool) *AreaPrinter {
-	s.RemoveWhenDone = internal.WithBoolean(b)
-	return &s
+func (p AreaPrinter) WithRemoveWhenDone(b ...bool) *AreaPrinter {
+	p.RemoveWhenDone = internal.WithBoolean(b)
+	return &p
 }
 
-// WithFullscreen starts the AreaPrinter width the same height as the terminal, making it fullscreen.
-func (s AreaPrinter) WithFullscreen(b ...bool) *AreaPrinter {
-	s.FullScreen = internal.WithBoolean(b)
-	return &s
+// WithFullscreen sets the AreaPrinter height the same height as the terminal, making it fullscreen.
+func (p AreaPrinter) WithFullscreen(b ...bool) *AreaPrinter {
+	p.Fullscreen = internal.WithBoolean(b)
+	return &p
+}
+
+// WithCenter centers the AreaPrinter content to the terminal.
+func (p AreaPrinter) WithCenter(b ...bool) *AreaPrinter {
+	p.Center = internal.WithBoolean(b)
+	return &p
 }
 
 // Update overwrites the content of the AreaPrinter.
 // Can be used live.
-func (s *AreaPrinter) Update(text ...interface{}) {
-	if s.area == nil {
+func (p *AreaPrinter) Update(text ...interface{}) {
+	if p.area == nil {
 		newArea := cursor.NewArea()
-		s.area = &newArea
+		p.area = &newArea
 	}
 	str := Sprint(text...)
-	s.content = str
-	if s.FullScreen {
+	p.content = str
+
+	if p.Center {
+		str = DefaultCenter.Sprint(str)
+	}
+
+	if p.Fullscreen {
 		str = strings.TrimRight(str, "\n")
 		height := GetTerminalHeight()
 		contentHeight := strings.Count(str, "\n")
 
+		topPadding := 0
+		bottomPadding := height - contentHeight - 2
+
+		if p.Center {
+			topPadding = bottomPadding / 2
+			bottomPadding = bottomPadding / 2
+		}
+
 		if height > contentHeight {
-			str += strings.Repeat("\n", height-contentHeight-2)
+			str = strings.Repeat("\n", topPadding) + str
+			str += strings.Repeat("\n", bottomPadding)
 		}
 	}
-	s.area.Update(str)
+	p.area.Update(str)
 }
 
 // Start the AreaPrinter.
-func (s *AreaPrinter) Start(text ...interface{}) (*AreaPrinter, error) {
-	s.isActive = true
+func (p *AreaPrinter) Start(text ...interface{}) (*AreaPrinter, error) {
+	p.isActive = true
 	str := Sprint(text...)
 	newArea := cursor.NewArea()
-	s.area = &newArea
+	p.area = &newArea
 
-	s.Update(str)
+	p.Update(str)
 
-	return s, nil
+	return p, nil
 }
 
 // Stop terminates the AreaPrinter immediately.
 // The AreaPrinter will not resolve into anything.
-func (s *AreaPrinter) Stop() error {
-	s.isActive = false
-	if s.RemoveWhenDone {
-		s.area.Clear()
+func (p *AreaPrinter) Stop() error {
+	p.isActive = false
+	if p.RemoveWhenDone {
+		p.area.Clear()
 	}
 	return nil
 }
@@ -86,17 +107,17 @@ func (s *AreaPrinter) Stop() error {
 // GenericStart runs Start, but returns a LivePrinter.
 // This is used for the interface LivePrinter.
 // You most likely want to use Start instead of this in your program.
-func (s *AreaPrinter) GenericStart() (*LivePrinter, error) {
-	_, _ = s.Start()
-	lp := LivePrinter(s)
+func (p *AreaPrinter) GenericStart() (*LivePrinter, error) {
+	_, _ = p.Start()
+	lp := LivePrinter(p)
 	return &lp, nil
 }
 
 // GenericStop runs Stop, but returns a LivePrinter.
 // This is used for the interface LivePrinter.
 // You most likely want to use Stop instead of this in your program.
-func (s *AreaPrinter) GenericStop() (*LivePrinter, error) {
-	_ = s.Stop()
-	lp := LivePrinter(s)
+func (p *AreaPrinter) GenericStop() (*LivePrinter, error) {
+	_ = p.Stop()
+	lp := LivePrinter(p)
 	return &lp, nil
 }

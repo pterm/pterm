@@ -35,6 +35,13 @@ func TestAreaPrinter_RemoveWhenDone(t *testing.T) {
 	a.Stop()
 }
 
+func TestAreaPrinter_CenterFullscreen(t *testing.T) {
+	a, _ := DefaultArea.WithRemoveWhenDone().WithFullscreen().WithCenter().Start()
+
+	a.Update("asd")
+	a.Stop()
+}
+
 func TestAreaPrinter_GetContent(t *testing.T) {
 	a, _ := DefaultArea.Start()
 
@@ -58,5 +65,5 @@ func TestAreaPrinter_WithFullscreen(t *testing.T) {
 	p := AreaPrinter{}
 	p2 := p.WithFullscreen()
 
-	assert.True(t, p2.FullScreen)
+	assert.True(t, p2.Fullscreen)
 }

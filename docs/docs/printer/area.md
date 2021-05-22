@@ -41,6 +41,7 @@ area.Stop()
 |------|----|
 |[RemoveWhenDone](https://pkg.go.dev/github.com/pterm/pterm#AreaPrinter.RemoveWhenDone)|bool|
 |[Fullscreen](https://pkg.go.dev/github.com/pterm/pterm#AreaPrinter.Fullscreen)|bool|
+|[Center](https://pkg.go.dev/github.com/pterm/pterm#AreaPrinter.Center)|bool|
 
 ### Output functions
 > This printer implements the interface [`LivePrinter`](https://github.com/pterm/pterm/blob/master/interface_live_printer.go)
