@@ -103,7 +103,7 @@ func (p *ParagraphPrinter) Printfln(format string, a ...interface{}) *TextPrinte
 // PrintOnError prints every error which is not nil.
 // If every error is nil, nothing will be printed.
 // This can be used for simple error checking.
-func (p *ParagraphPrinter) PrintOnError(a ...interface{}) {
+func (p *ParagraphPrinter) PrintOnError(a ...interface{}) *TextPrinter {
 	for _, arg := range a {
 		if err, ok := arg.(error); ok {
 			if err != nil {
@@ -111,4 +111,7 @@ func (p *ParagraphPrinter) PrintOnError(a ...interface{}) {
 			}
 		}
 	}
+
+	tp := TextPrinter(p)
+	return &tp
 }
