@@ -71,7 +71,7 @@ func (p *AreaPrinter) Update(text ...interface{}) {
 
 		if p.Center {
 			topPadding = bottomPadding / 2
-			bottomPadding = bottomPadding / 2
+			bottomPadding /= 2
 		}
 
 		if height > contentHeight {
