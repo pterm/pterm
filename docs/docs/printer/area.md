@@ -24,6 +24,7 @@ area.Stop()
 |Function|Description|
 |--------|-----------|
 |[Update](https://pkg.go.dev/github.com/pterm/pterm#AreaPrinter.Update)|Update overwrites the content of the AreaPrinter.|
+|[GetContent](https://pkg.go.dev/github.com/pterm/pterm#AreaPrinter.GetContent)|GetContent returns the current area content.|
 
 ### Options
 
