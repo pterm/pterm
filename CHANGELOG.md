@@ -2,12 +2,17 @@
 ## [Unreleased]
 
 ### Code Refactoring
+- make `PrintOnError` return `*TextPrinter`
 - **area:** better height calculation
 
 ### Documentation Changes
 
 ### Features
+- add `PrintOnError` for all printers and interface
 - **putils:** add `putils` package ([#206](https://github.com/pterm/pterm/issues/206))
+
+### Test
+- add tests for all printers for `PrintOnError`
 
 
 <a name="v0.12.18"></a>
