@@ -41,3 +41,15 @@ func TestAreaPrinter_RemoveWhenDone(t *testing.T) {
 	a.Update("asd")
 	a.Stop()
 }
+
+func TestAreaPrinter_GetContent(t *testing.T) {
+	a, _ := DefaultArea.Start()
+
+	for _, printable := range printables {
+		a.Update(printable)
+		assert.Equal(t, a.GetContent(), printable)
+		assert.Equal(t, a.GetContent(), a.content)
+	}
+
+	a.Stop()
+}

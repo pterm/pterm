@@ -20,6 +20,11 @@ type AreaPrinter struct {
 	area *cursor.Area
 }
 
+// GetContent returns the current area content.
+func (s AreaPrinter) GetContent() string {
+	return s.content
+}
+
 // WithRemoveWhenDone removes the AreaPrinter content after it is stopped.
 func (s AreaPrinter) WithRemoveWhenDone(b ...bool) *AreaPrinter {
 	s.RemoveWhenDone = internal.WithBoolean(b)
