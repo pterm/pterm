@@ -14,6 +14,36 @@ import (
 )
 
 func main() {
+	log.Output(1, "## Generating PUtils docs")
+
+	goDocOutputBytes, err := exec.Command("go", "doc", "-all", "./putils").Output()
+	if err != nil {
+		log.Panic(err)
+	}
+
+	goDocOutput := string(goDocOutputBytes)
+	goDocOutput = strings.Join(strings.Split(goDocOutput, "FUNCTIONS")[1:], "")
+
+	goDocOutputLines := strings.Split(goDocOutput, "\n")
+	var goDocOutputFiltered []string
+	for _, line := range goDocOutputLines {
+		if strings.HasPrefix(line, "func") {
+			goDocOutputFiltered = append(goDocOutputFiltered, line)
+		}
+	}
+	goDocOutput = strings.Join(goDocOutputFiltered, "\n")
+
+	goDocOutput = fmt.Sprintf("```go\n%s\n```\n", goDocOutput)
+	goDocOutput = `# PUtils - PTerm Utils
+
+This package contains some utility functions, to get you started with PTerm even faster!  
+
+## Util Functions
+
+` + goDocOutput
+
+	ioutil.WriteFile("./putils/README.md", []byte(goDocOutput), 0600)
+
 	log.Output(1, "## Generating Examples")
 	files, err := ioutil.ReadDir("./_examples/")
 	if err != nil {
