@@ -21,7 +21,7 @@ type AreaPrinter struct {
 }
 
 // GetContent returns the current area content.
-func (s AreaPrinter) GetContent() string {
+func (s *AreaPrinter) GetContent() string {
 	return s.content
 }
 

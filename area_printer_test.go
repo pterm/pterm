@@ -47,7 +47,7 @@ func TestAreaPrinter_GetContent(t *testing.T) {
 
 	for _, printable := range printables {
 		a.Update(printable)
-		assert.Equal(t, a.GetContent(), printable)
+		assert.Equal(t, a.GetContent(), Sprint(printable))
 		assert.Equal(t, a.GetContent(), a.content)
 	}
 
