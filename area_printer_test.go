@@ -28,13 +28,6 @@ func TestAreaPrinter_GenericStop(t *testing.T) {
 	p.GenericStop()
 }
 
-func TestAreaPrinter_WithRemoveWhenDone(t *testing.T) {
-	p := AreaPrinter{}
-	p2 := p.WithRemoveWhenDone()
-
-	assert.True(t, p2.RemoveWhenDone)
-}
-
 func TestAreaPrinter_RemoveWhenDone(t *testing.T) {
 	a, _ := DefaultArea.WithRemoveWhenDone().Start()
 
@@ -52,4 +45,18 @@ func TestAreaPrinter_GetContent(t *testing.T) {
 	}
 
 	a.Stop()
+}
+
+func TestAreaPrinter_WithRemoveWhenDone(t *testing.T) {
+	p := AreaPrinter{}
+	p2 := p.WithRemoveWhenDone()
+
+	assert.True(t, p2.RemoveWhenDone)
+}
+
+func TestAreaPrinter_WithFullscreen(t *testing.T) {
+	p := AreaPrinter{}
+	p2 := p.WithFullscreen()
+
+	assert.True(t, p2.FullScreen)
 }

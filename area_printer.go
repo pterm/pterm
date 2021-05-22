@@ -1,6 +1,8 @@
 package pterm
 
 import (
+	"strings"
+
 	"github.com/atomicgo/cursor"
 
 	"github.com/pterm/pterm/internal"
@@ -12,9 +14,10 @@ var DefaultArea = AreaPrinter{}
 // AreaPrinter prints an area which can be updated easily.
 // use this printer for live output like charts, algorithm visualizations, simulations and even games.
 type AreaPrinter struct {
-	content        string
 	RemoveWhenDone bool
+	FullScreen     bool
 
+	content  string
 	isActive bool
 
 	area *cursor.Area
@@ -31,6 +34,12 @@ func (s AreaPrinter) WithRemoveWhenDone(b ...bool) *AreaPrinter {
 	return &s
 }
 
+// WithFullscreen starts the AreaPrinter width the same height as the terminal, making it fullscreen.
+func (s AreaPrinter) WithFullscreen(b ...bool) *AreaPrinter {
+	s.FullScreen = internal.WithBoolean(b)
+	return &s
+}
+
 // Update overwrites the content of the AreaPrinter.
 // Can be used live.
 func (s *AreaPrinter) Update(text ...interface{}) {
@@ -40,6 +49,15 @@ func (s *AreaPrinter) Update(text ...interface{}) {
 	}
 	str := Sprint(text...)
 	s.content = str
+	if s.FullScreen {
+		str = strings.TrimRight(str, "\n")
+		height := GetTerminalHeight()
+		contentHeight := strings.Count(str, "\n")
+
+		if height > contentHeight {
+			str += strings.Repeat("\n", height-contentHeight-2)
+		}
+	}
 	s.area.Update(str)
 }
 
@@ -50,7 +68,7 @@ func (s *AreaPrinter) Start(text ...interface{}) (*AreaPrinter, error) {
 	newArea := cursor.NewArea()
 	s.area = &newArea
 
-	s.area.Update(str)
+	s.Update(str)
 
 	return s, nil
 }
