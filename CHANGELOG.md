@@ -1,6 +1,12 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Code Refactoring
+- **area:** better height calculation
+
+
+<a name="v0.12.18"></a>
+## [v0.12.18] - 2021-05-22
 ### Chore
 - go mod tidy
 - **deps:** add atomicgo/cursor as dependency
@@ -1246,7 +1252,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.17...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.18...HEAD
+[v0.12.18]: https://github.com/pterm/pterm/compare/v0.12.17...v0.12.18
 [v0.12.17]: https://github.com/pterm/pterm/compare/v0.12.16...v0.12.17
 [v0.12.16]: https://github.com/pterm/pterm/compare/v0.12.15...v0.12.16
 [v0.12.15]: https://github.com/pterm/pterm/compare/v0.12.14...v0.12.15
