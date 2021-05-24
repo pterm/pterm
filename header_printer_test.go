@@ -101,6 +101,13 @@ func TestHeaderPrinter_WithFullWidth(t *testing.T) {
 	assert.Equal(t, true, p2.FullWidth)
 }
 
+func TestHeaderPrinter_WithFullWidthToLongForTerminal(t *testing.T) {
+	p := HeaderPrinter{}
+	p2 := p.WithFullWidth().Sprint("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+
+	assert.Equal(t, "                                                                                \naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                        \n                                                                                \n", p2)
+}
+
 func TestHeaderPrinter_WithMargin(t *testing.T) {
 	p := HeaderPrinter{}
 	p2 := p.WithMargin(1337)

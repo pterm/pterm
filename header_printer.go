@@ -66,19 +66,31 @@ func (p HeaderPrinter) Sprint(a ...interface{}) string {
 
 	text := Sprint(a...)
 
+	var overlappingCharactersBackgroundFiller string
 	if p.FullWidth {
-		p.Margin = (GetTerminalWidth() - len(text)) / 2
+		if (GetTerminalWidth()-len(text))/2 < 1 {
+			p.Margin = 0
+			overlappingCharactersBackgroundFiller = strings.Repeat(" ", GetTerminalWidth()-(len(text)-GetTerminalWidth()))
+		} else {
+			p.Margin = (GetTerminalWidth() - len(text)) / 2
+		}
 	}
 
 	renderedTextLength := len(RemoveColorFromString(text)) + p.Margin*2
 
 	marginString := strings.Repeat(" ", p.Margin)
-	blankLine := strings.Repeat(" ", renderedTextLength)
+
+	var blankLine string
+	if p.FullWidth {
+		blankLine = strings.Repeat(" ", GetTerminalWidth())
+	} else {
+		blankLine = strings.Repeat(" ", renderedTextLength)
+	}
 
 	var ret string
 
 	ret += p.BackgroundStyle.Sprint(blankLine) + "\n"
-	ret += p.BackgroundStyle.Sprint(p.TextStyle.Sprint(marginString+text+marginString)) + "\n"
+	ret += p.BackgroundStyle.Sprint(p.TextStyle.Sprint(marginString+text+marginString+overlappingCharactersBackgroundFiller)) + "\n"
 	ret += p.BackgroundStyle.Sprint(blankLine) + "\n"
 
 	return ret
