@@ -38,10 +38,11 @@ func (p CenterPrinter) Sprint(a ...interface{}) string {
 
 	if p.CenterEachLineSeparately {
 		for _, line := range lines {
-			if (GetTerminalWidth()-runewidth.StringWidth(RemoveColorFromString(line)))/2 < 1 {
+			margin := (GetTerminalWidth() - runewidth.StringWidth(RemoveColorFromString(line))) / 2
+			if margin < 1 {
 				ret += line + "\n"
 			} else {
-				ret += strings.Repeat(" ", (GetTerminalWidth()-runewidth.StringWidth(RemoveColorFromString(line)))/2) + line + "\n"
+				ret += strings.Repeat(" ", margin) + line + "\n"
 			}
 		}
 		return ret
