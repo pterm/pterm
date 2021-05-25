@@ -68,11 +68,12 @@ func (p HeaderPrinter) Sprint(a ...interface{}) string {
 
 	var overlappingCharactersBackgroundFiller string
 	if p.FullWidth {
-		if (GetTerminalWidth()-len(text))/2 < 1 {
+		margin := (GetTerminalWidth() - len(text)) / 2
+		if margin < 1 {
 			p.Margin = 0
 			overlappingCharactersBackgroundFiller = strings.Repeat(" ", GetTerminalWidth()-(len(text)-GetTerminalWidth()))
 		} else {
-			p.Margin = (GetTerminalWidth() - len(text)) / 2
+			p.Margin = margin
 		}
 	}
 
