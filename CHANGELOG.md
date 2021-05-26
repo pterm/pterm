@@ -3,6 +3,7 @@
 
 ### Chore
 - **deps:** bump github.com/mattn/go-runewidth from 0.0.12 to 0.0.13
+- **github:** add slack channel link to issues
 
 ### Code Refactoring
 - make `PrintOnError` return `*TextPrinter`
