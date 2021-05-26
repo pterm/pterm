@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Chore
+- **deps:** bump github.com/mattn/go-runewidth from 0.0.12 to 0.0.13
+
 ### Code Refactoring
 - make `PrintOnError` return `*TextPrinter`
 - **area:** better height calculation
