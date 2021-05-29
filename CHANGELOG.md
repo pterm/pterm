@@ -8,11 +8,16 @@
 - **deps:** bump github.com/mattn/go-runewidth from 0.0.12 to 0.0.13
 - **github:** add slack channel link to issues
 
+### Ci
+- automatically copy readme to pterm.sh
+
 ### Code Refactoring
 - make `PrintOnError` return `*TextPrinter`
 - **area:** better height calculation
 
 ### Documentation Changes
+- **pterm-sh:** update readme
+- **readme:** add `AreaPrinter` to feature list
 - **readme:** remove unstable notice
 
 ### Features

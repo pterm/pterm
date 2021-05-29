@@ -79,7 +79,7 @@ go get github.com/pterm/pterm
 
 ## 🥅 Goal of PTerm
 
-PTerm is designed to create a **platform independent way to create beautiful terminal output**. Most modules that want to improve the terminal output do not guarantee platform independence - PTerm does. PTerm follows the **most common methods for displaying color in a terminal**. With PTerm, it is possible to create beautiful output **even in low-level environments**.
+PTerm is designed to create a **platform independent way to create beautiful terminal output**. Most modules that want to improve the terminal output do not guarantee platform independence - PTerm does. PTerm follows the **most common methods for displaying color in a terminal**. With PTerm, it is possible to create beautiful output **even in low-level environments**. 
 
 ### • 🪀 Easy to use
 
@@ -112,7 +112,7 @@ We take special precautions to ensure that PTerm works on as many operating syst
 > PTerm has a 100% test coverage, which means that every line of code inside PTerm gets tested automatically
 
 We test PTerm continuously. However, since a human cannot test everything all the time, we have our own test system with which we currently run <!-- unittestcount2:start -->**`28567`**<!-- unittestcount2:end -->
-automated tests to ensure that PTerm has no bugs.
+automated tests to ensure that PTerm has no bugs. 
 
 ### • ✨ Consistent Colors
 
