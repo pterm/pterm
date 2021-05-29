@@ -2,6 +2,7 @@
 - Documentation
   - [Intro](docs/intro.md)
   - [Global Functions](docs/functions.md)
+  - [Util Functions](docs/putils.md)
   - Printers
     - [Area](docs/printer/area.md)
     - [BarChart](docs/printer/barchart.md)
@@ -27,7 +28,6 @@
   - Customizing
     - [Override Default Printer](docs/customizing/override-default-printer.md)
     - [Theming](docs/customizing/theming.md)
-  - [Util Functions](docs/putils.md)
 - Contributing
   - [Writing Documentation](contributing/writing-documentation.md)
   - [Documentation Template](contributing/writing-documentation-template.md)
