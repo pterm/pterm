@@ -13,6 +13,7 @@
 - **area:** better height calculation
 
 ### Documentation Changes
+- **readme:** remove unstable notice
 
 ### Features
 - add `PrintOnError` for all printers and interface
