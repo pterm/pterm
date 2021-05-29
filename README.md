@@ -102,7 +102,7 @@ We take special precautions to ensure that PTerm works on as many operating syst
 |Centered|[Example](#center)|[Docs](https://pterm.sh/#/docs/printer/center)|-|Theming|[Example](#theme)|[Docs](https://pterm.sh/#/docs/customizing/theming)|
 |Colors|[Example](#print-with-color)|[Docs](https://pterm.sh/#/docs/printer/color)|-|Tables|[Example](#table)|[Docs](https://pterm.sh/#/docs/printer/table)|
 |Headers|[Example](#header)|[Docs](https://pterm.sh/#/docs/printer/header)|-|Styles|[Example](#style)|[Docs](https://pterm.sh/#/docs/printer/style)|
-|Panels|[Example](#panel)|[Docs](https://pterm.sh/#/docs/printer/panel)|-|||
+|Panels|[Example](#panel)|[Docs](https://pterm.sh/#/docs/printer/panel)|-|Area|[Example](#area)|[Docs](https://pterm.sh/#/docs/printer/area)|
 |Paragraphs|[Example](#paragraph)|[Docs](https://pterm.sh/#/docs/printer/paragraph)|-|||
 |Prefixes|[Example](#prefix)|[Docs](https://pterm.sh/#/docs/printer/prefix)|-|||
 |Progress Bars|[Example](#progressbar)|[Docs](https://pterm.sh/#/docs/printer/progressbar)|-|||
