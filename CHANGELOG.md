@@ -9,6 +9,9 @@
 ### Features
 - **putils:** add `DownloadFileWithProgressbar`
 
+### Style
+- **lint:** fix linting error
+
 
 <a name="v0.12.20"></a>
 ## [v0.12.20] - 2021-05-29
