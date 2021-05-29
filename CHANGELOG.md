@@ -4,6 +4,11 @@
 ### Chore
 - **github:** remove issue template config.yml
 
+### Documentation Changes
+
+### Features
+- **putils:** add `DownloadFileWithProgressbar`
+
 
 <a name="v0.12.20"></a>
 ## [v0.12.20] - 2021-05-29

@@ -8,6 +8,8 @@ You can read the documentation of this package [here](https://pkg.go.dev/github.
 ## Util Functions
 
 ```go
+func DownloadFileWithDefaultProgressbar(title, outputPath, url string, mode os.FileMode) error
+func DownloadFileWithProgressbar(progressbar *pterm.ProgressbarPrinter, outputPath, url string, mode os.FileMode) error
 func RunWithDefaultSpinner(initzialSpinnerText string, f func(spinner *pterm.SpinnerPrinter) error) error
 func RunWithSpinner(spinner *pterm.SpinnerPrinter, f func(spinner *pterm.SpinnerPrinter) error) error
 ```
