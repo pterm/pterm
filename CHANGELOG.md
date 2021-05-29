@@ -1,6 +1,17 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Ci
+- automatically write putils docs to pterm.sh
+
+### Documentation Changes
+- **pterm-sh:** add putils docs to sidebar
+- **readme:** update pkg.go.dev link to point to the docs section directly
+- **readme:** disable link styling in badges
+
+
+<a name="v0.12.19"></a>
+## [v0.12.19] - 2021-05-29
 ### Bug Fixes
 - **header:** fix multiline header
 
@@ -1275,7 +1286,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.18...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.19...HEAD
+[v0.12.19]: https://github.com/pterm/pterm/compare/v0.12.18...v0.12.19
 [v0.12.18]: https://github.com/pterm/pterm/compare/v0.12.17...v0.12.18
 [v0.12.17]: https://github.com/pterm/pterm/compare/v0.12.16...v0.12.17
 [v0.12.16]: https://github.com/pterm/pterm/compare/v0.12.15...v0.12.16
