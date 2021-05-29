@@ -1,6 +1,12 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Chore
+- **github:** remove issue template config.yml
+
+
+<a name="v0.12.20"></a>
+## [v0.12.20] - 2021-05-29
 ### Ci
 - create putils README from template
 - automatically write putils docs to pterm.sh
@@ -1293,7 +1299,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.19...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.20...HEAD
+[v0.12.20]: https://github.com/pterm/pterm/compare/v0.12.19...v0.12.20
 [v0.12.19]: https://github.com/pterm/pterm/compare/v0.12.18...v0.12.19
 [v0.12.18]: https://github.com/pterm/pterm/compare/v0.12.17...v0.12.18
 [v0.12.17]: https://github.com/pterm/pterm/compare/v0.12.16...v0.12.17
