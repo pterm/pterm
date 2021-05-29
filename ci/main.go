@@ -111,6 +111,12 @@ This package contains some utility functions, to get you started with PTerm even
 	if err != nil {
 		log.Panic(err)
 	}
+
+	log.Output(4, "### Writing readme to pterm.sh")
+	err = ioutil.WriteFile("./docs/README.md", []byte(newReadmeContent), 0600)
+	if err != nil {
+		log.Panic(err)
+	}
 }
 
 func processFile(f os.FileInfo) {
