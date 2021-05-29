@@ -3,6 +3,8 @@ package pterm
 import (
 	"strings"
 
+	"github.com/mattn/go-runewidth"
+
 	"github.com/pterm/pterm/internal"
 )
 
@@ -65,20 +67,31 @@ func (p HeaderPrinter) Sprint(a ...interface{}) string {
 	}
 
 	text := Sprint(a...)
+	lines := strings.Split(text, "\n")
 
 	if p.FullWidth {
 		p.Margin = (GetTerminalWidth() - len(text)) / 2
 	}
 
-	renderedTextLength := len(RemoveColorFromString(text)) + p.Margin*2
+	var maxLineLength int
+	for _, line := range lines {
+		width := runewidth.StringWidth(RemoveColorFromString(line)) + p.Margin*2
+		if width > maxLineLength {
+			maxLineLength = width
+		}
+	}
 
-	marginString := strings.Repeat(" ", p.Margin)
-	blankLine := strings.Repeat(" ", renderedTextLength)
+	blankLine := strings.Repeat(" ", maxLineLength)
 
 	var ret string
+	marginString := strings.Repeat(" ", p.Margin)
 
 	ret += p.BackgroundStyle.Sprint(blankLine) + "\n"
-	ret += p.BackgroundStyle.Sprint(p.TextStyle.Sprint(marginString+text+marginString)) + "\n"
+	for _, line := range lines {
+		width := runewidth.StringWidth(RemoveColorFromString(line))
+		padding := strings.Repeat(" ", maxLineLength-(width+p.Margin*2))
+		ret += p.BackgroundStyle.Sprint(p.TextStyle.Sprint(marginString+line+padding+marginString)) + "\n"
+	}
 	ret += p.BackgroundStyle.Sprint(blankLine) + "\n"
 
 	return ret
