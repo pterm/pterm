@@ -5,43 +5,43 @@
 
 <p align="center">
 
-<a href="https://github.com/pterm/pterm/releases">
+<a href="https://github.com/pterm/pterm/releases" style="text-decoration: none">
 <img src="https://img.shields.io/github/v/release/pterm/pterm?style=flat-square" alt="Latest Release">
 </a>
 
-<a href="https://github.com/pterm/pterm/stargazers">
+<a href="https://github.com/pterm/pterm/stargazers" style="text-decoration: none">
 <img src="https://img.shields.io/github/stars/pterm/pterm.svg?style=flat-square" alt="Stars">
 </a>
 
-<a href="https://github.com/pterm/pterm/fork">
+<a href="https://github.com/pterm/pterm/fork" style="text-decoration: none">
 <img src="https://img.shields.io/github/forks/pterm/pterm.svg?style=flat-square" alt="Forks">
 </a>
 
-<a href="https://github.com/pterm/pterm/issues">
+<a href="https://github.com/pterm/pterm/issues" style="text-decoration: none">
 <img src="https://img.shields.io/github/issues/pterm/pterm.svg?style=flat-square" alt="Issues">
 </a>
 
-<a href="https://opensource.org/licenses/MIT">
+<a href="https://opensource.org/licenses/MIT" style="text-decoration: none">
 <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square" alt="License: MIT">
 </a>
 
 <br/>
 
-<a href="https://github.com/dops-cli/dops/releases">
+<a href="https://github.com/dops-cli/dops/releases" style="text-decoration: none">
 <img src="https://img.shields.io/badge/platform-windows%20%7C%20macos%20%7C%20linux-informational?style=for-the-badge" alt="Downloads">
 </a>
 
 <br/>
 
-<a href="https://codecov.io/gh/pterm/pterm">
+<a href="https://codecov.io/gh/pterm/pterm" style="text-decoration: none">
 <img src="https://img.shields.io/codecov/c/gh/pterm/pterm?color=magenta&logo=codecov&style=flat-square" alt="Downloads">
 </a>
 
-<a href="https://codecov.io/gh/pterm/pterm">
+<a href="https://codecov.io/gh/pterm/pterm" style="text-decoration: none">
 <!-- unittestcount:start --><img src="https://img.shields.io/badge/Unit_Tests-28567-magenta?style=flat-square" alt="Forks"><!-- unittestcount:end -->
 </a>
 
-<a href="https://github.com/pterm/pterm/tree/master/_examples/demo">
+<a href="https://github.com/pterm/pterm/tree/master/_examples/demo" style="text-decoration: none">
 <img src="https://raw.githubusercontent.com/pterm/pterm/master/_examples/demo/animation.svg" alt="PTerm">
 <p align="center">Show Demo Code</p>
 </a>
