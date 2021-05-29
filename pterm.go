@@ -3,6 +3,8 @@
 // View the animated examples here: https://github.com/pterm/pterm#-examples
 package pterm
 
+import "github.com/gookit/color"
+
 var (
 	// Output completely disables output from pterm if set to false. Can be used in CLI application quiet mode.
 	Output = true
@@ -14,6 +16,10 @@ var (
 	// You can use this to get raw output for text files etc.
 	RawOutput = false
 )
+
+func init() {
+	color.ForceColor()
+}
 
 // EnableOutput enables the output of PTerm.
 func EnableOutput() {
