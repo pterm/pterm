@@ -8,9 +8,13 @@
 ### Documentation Changes
 - **pterm-sh:** move putils section up in sidebar
 - **pterm-sh:** add putils docs to sidebar
+- **putils:** add pkg.go.dev docs link
 - **putils:** add better docs to putils
 - **readme:** update pkg.go.dev link to point to the docs section directly
 - **readme:** disable link styling in badges
+
+### Features
+- force color output by default
 
 
 <a name="v0.12.19"></a>
