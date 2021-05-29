@@ -17,10 +17,10 @@ type progressbarWriter struct {
 	pb    *pterm.ProgressbarPrinter
 }
 
-func (wc *progressbarWriter) Write(p []byte) (int, error) {
+func (w *progressbarWriter) Write(p []byte) (int, error) {
 	n := len(p)
-	wc.Total += uint64(n)
-	wc.pb.Add(len(p))
+	w.Total += uint64(n)
+	w.pb.Add(len(p))
 	return n, nil
 }
 
