@@ -4,7 +4,11 @@
 ### Chore
 - **github:** remove issue template config.yml
 
+### Code Refactoring
+- **putils:** change internal variable name
+
 ### Documentation Changes
+- **putils:** add contributing notice to readme
 
 ### Features
 - **putils:** add `DownloadFileWithProgressbar`
