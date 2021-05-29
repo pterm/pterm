@@ -43,6 +43,7 @@ This package contains some utility functions, to get you started with PTerm even
 ` + goDocOutput
 
 	ioutil.WriteFile("./putils/README.md", []byte(goDocOutput), 0600)
+	ioutil.WriteFile("./docs/docs/putils.md", []byte(goDocOutput), 0600)
 
 	log.Output(1, "## Generating Examples")
 	files, err := ioutil.ReadDir("./_examples/")
