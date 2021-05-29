@@ -2,10 +2,13 @@
 ## [Unreleased]
 
 ### Ci
+- create putils README from template
 - automatically write putils docs to pterm.sh
 
 ### Documentation Changes
+- **pterm-sh:** move putils section up in sidebar
 - **pterm-sh:** add putils docs to sidebar
+- **putils:** add better docs to putils
 - **readme:** update pkg.go.dev link to point to the docs section directly
 - **readme:** disable link styling in badges
 
