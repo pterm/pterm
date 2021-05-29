@@ -57,15 +57,13 @@
 |
 <strong><a href="#-installation">Installation</a></strong>
 |
-<strong><a href="https://pterm.sh/#/docs/intro">Documentation</a></strong>
-|
 <strong><a href="https://pterm.sh/#/quick-start">Quick Start</a></strong>
+|
+<strong><a href="https://pterm.sh/#/docs/intro">Documentation</a></strong>
 |
 <strong><a href="#-examples">Examples</a></strong>
 |
 <strong><a href="https://github.com/pterm/pterm/discussions?discussions_q=category%3AQ%26A">Q&A</a></strong>
-|
-<strong><a href="./CONTRIBUTING.md">Contributing</a></strong>
 </p>
 
 ---
@@ -130,12 +128,6 @@ PTerm consists of many components, called `Printers`, which can be used individu
 ### • 🛠 Configurable
 
 PTerm can be used by without any configuration. However, you can easily configure each component with little code, so everyone has the freedom to design their own terminal output.
-
-## ⚠ NOTICE
-
-PTerm is currently under development. It is very likely that not all things will remain as they are at the moment. However, PTerm is still functional. The versioning of PTerm follows the SemVer guidelines. Breaking Changes are explicitly mentioned in the changelogs and the version will be increased accordingly. Everybody is welcome to improve PTerm, whether by making suggestions or pull requests. Thanks ❤
-
-If you want to wait for a stable release, make sure to star the project and follow it, to get notified when we release v1.0.0 (stable) 🚀
 
 ## ✏ Documentation
 
