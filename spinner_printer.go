@@ -75,9 +75,6 @@ func (s SpinnerPrinter) WithRemoveWhenDone(b ...bool) *SpinnerPrinter {
 // UpdateText updates the message of the active SpinnerPrinter.
 // Can be used live.
 func (s *SpinnerPrinter) UpdateText(text string) {
-	if !RawOutput {
-		clearLine()
-	}
 	if RawOutput {
 		Println(text)
 	}
@@ -101,6 +98,7 @@ func (s SpinnerPrinter) Start(text ...interface{}) (*SpinnerPrinter, error) {
 		for s.IsActive {
 			for _, seq := range s.Sequence {
 				if s.IsActive && !RawOutput {
+					clearLine()
 					Printo(s.Style.Sprint(seq) + " " + s.MessageStyle.Sprint(s.Text))
 					time.Sleep(s.Delay)
 				}
