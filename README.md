@@ -5,43 +5,43 @@
 
 <p align="center">
 
-<a href="https://github.com/pterm/pterm/releases">
+<a href="https://github.com/pterm/pterm/releases" style="text-decoration: none">
 <img src="https://img.shields.io/github/v/release/pterm/pterm?style=flat-square" alt="Latest Release">
 </a>
 
-<a href="https://github.com/pterm/pterm/stargazers">
+<a href="https://github.com/pterm/pterm/stargazers" style="text-decoration: none">
 <img src="https://img.shields.io/github/stars/pterm/pterm.svg?style=flat-square" alt="Stars">
 </a>
 
-<a href="https://github.com/pterm/pterm/fork">
+<a href="https://github.com/pterm/pterm/fork" style="text-decoration: none">
 <img src="https://img.shields.io/github/forks/pterm/pterm.svg?style=flat-square" alt="Forks">
 </a>
 
-<a href="https://github.com/pterm/pterm/issues">
+<a href="https://github.com/pterm/pterm/issues" style="text-decoration: none">
 <img src="https://img.shields.io/github/issues/pterm/pterm.svg?style=flat-square" alt="Issues">
 </a>
 
-<a href="https://opensource.org/licenses/MIT">
+<a href="https://opensource.org/licenses/MIT" style="text-decoration: none">
 <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square" alt="License: MIT">
 </a>
 
 <br/>
 
-<a href="https://github.com/dops-cli/dops/releases">
+<a href="https://github.com/dops-cli/dops/releases" style="text-decoration: none">
 <img src="https://img.shields.io/badge/platform-windows%20%7C%20macos%20%7C%20linux-informational?style=for-the-badge" alt="Downloads">
 </a>
 
 <br/>
 
-<a href="https://codecov.io/gh/pterm/pterm">
+<a href="https://codecov.io/gh/pterm/pterm" style="text-decoration: none">
 <img src="https://img.shields.io/codecov/c/gh/pterm/pterm?color=magenta&logo=codecov&style=flat-square" alt="Downloads">
 </a>
 
-<a href="https://codecov.io/gh/pterm/pterm">
-<!-- unittestcount:start --><img src="https://img.shields.io/badge/Unit_Tests-28541-magenta?style=flat-square" alt="Forks"><!-- unittestcount:end -->
+<a href="https://codecov.io/gh/pterm/pterm" style="text-decoration: none">
+<!-- unittestcount:start --><img src="https://img.shields.io/badge/Unit_Tests-28567-magenta?style=flat-square" alt="Forks"><!-- unittestcount:end -->
 </a>
 
-<a href="https://github.com/pterm/pterm/tree/master/_examples/demo">
+<a href="https://github.com/pterm/pterm/tree/master/_examples/demo" style="text-decoration: none">
 <img src="https://raw.githubusercontent.com/pterm/pterm/master/_examples/demo/animation.svg" alt="PTerm">
 <p align="center">Show Demo Code</p>
 </a>
@@ -57,15 +57,13 @@
 |
 <strong><a href="#-installation">Installation</a></strong>
 |
-<strong><a href="https://pterm.sh/#/docs/intro">Documentation</a></strong>
-|
 <strong><a href="https://pterm.sh/#/quick-start">Quick Start</a></strong>
+|
+<strong><a href="https://pterm.sh/#/docs/intro">Documentation</a></strong>
 |
 <strong><a href="#-examples">Examples</a></strong>
 |
 <strong><a href="https://github.com/pterm/pterm/discussions?discussions_q=category%3AQ%26A">Q&A</a></strong>
-|
-<strong><a href="./CONTRIBUTING.md">Contributing</a></strong>
 </p>
 
 ---
@@ -104,7 +102,7 @@ We take special precautions to ensure that PTerm works on as many operating syst
 |Centered|[Example](#center)|[Docs](https://pterm.sh/#/docs/printer/center)|-|Theming|[Example](#theme)|[Docs](https://pterm.sh/#/docs/customizing/theming)|
 |Colors|[Example](#print-with-color)|[Docs](https://pterm.sh/#/docs/printer/color)|-|Tables|[Example](#table)|[Docs](https://pterm.sh/#/docs/printer/table)|
 |Headers|[Example](#header)|[Docs](https://pterm.sh/#/docs/printer/header)|-|Styles|[Example](#style)|[Docs](https://pterm.sh/#/docs/printer/style)|
-|Panels|[Example](#panel)|[Docs](https://pterm.sh/#/docs/printer/panel)|-|||
+|Panels|[Example](#panel)|[Docs](https://pterm.sh/#/docs/printer/panel)|-|Area|[Example](#area)|[Docs](https://pterm.sh/#/docs/printer/area)|
 |Paragraphs|[Example](#paragraph)|[Docs](https://pterm.sh/#/docs/printer/paragraph)|-|||
 |Prefixes|[Example](#prefix)|[Docs](https://pterm.sh/#/docs/printer/prefix)|-|||
 |Progress Bars|[Example](#progressbar)|[Docs](https://pterm.sh/#/docs/printer/progressbar)|-|||
@@ -113,7 +111,7 @@ We take special precautions to ensure that PTerm works on as many operating syst
 
 > PTerm has a 100% test coverage, which means that every line of code inside PTerm gets tested automatically
 
-We test PTerm continuously. However, since a human cannot test everything all the time, we have our own test system with which we currently run <!-- unittestcount2:start -->**`28541`**<!-- unittestcount2:end -->
+We test PTerm continuously. However, since a human cannot test everything all the time, we have our own test system with which we currently run <!-- unittestcount2:start -->**`28567`**<!-- unittestcount2:end -->
 automated tests to ensure that PTerm has no bugs. 
 
 ### • ✨ Consistent Colors
@@ -131,15 +129,9 @@ PTerm consists of many components, called `Printers`, which can be used individu
 
 PTerm can be used by without any configuration. However, you can easily configure each component with little code, so everyone has the freedom to design their own terminal output.
 
-## ⚠ NOTICE
-
-PTerm is currently under development. It is very likely that not all things will remain as they are at the moment. However, PTerm is still functional. The versioning of PTerm follows the SemVer guidelines. Breaking Changes are explicitly mentioned in the changelogs and the version will be increased accordingly. Everybody is welcome to improve PTerm, whether by making suggestions or pull requests. Thanks ❤
-
-If you want to wait for a stable release, make sure to star the project and follow it, to get notified when we release v1.0.0 (stable) 🚀
-
 ## ✏ Documentation
 
-To view the official documentation of the latest release, you can go to the automatically generated page of [pkg.go.dev](https://pkg.go.dev/github.com/pterm/pterm) This documentation is very technical and includes every method that can be used in PTerm.
+To view the official documentation of the latest release, you can go to the automatically generated page of [pkg.go.dev](https://pkg.go.dev/github.com/pterm/pterm#section-documentation) This documentation is very technical and includes every method that can be used in PTerm.
 
 **For an easy start we recommend that you take a look at the [examples section](#-examples).** Here you can see pretty much every feature of PTerm with its source code. The animations of the examples are automatically updated as soon as something changes in PTerm.
 

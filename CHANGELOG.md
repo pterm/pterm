@@ -1,11 +1,60 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Chore
+- **github:** remove issue template config.yml
+
+### Code Refactoring
+- **putils:** change internal variable name
+
+### Documentation Changes
+- **putils:** add contributing notice to readme
+
+### Features
+- **putils:** add `DownloadFileWithProgressbar`
+
+### Style
+- **lint:** fix linting error
+
+
+<a name="v0.12.20"></a>
+## [v0.12.20] - 2021-05-29
+### Ci
+- create putils README from template
+- automatically write putils docs to pterm.sh
+
+### Documentation Changes
+- **pterm-sh:** move putils section up in sidebar
+- **pterm-sh:** add putils docs to sidebar
+- **putils:** add pkg.go.dev docs link
+- **putils:** add better docs to putils
+- **readme:** update pkg.go.dev link to point to the docs section directly
+- **readme:** disable link styling in badges
+
+### Features
+- force color output by default
+
+
+<a name="v0.12.19"></a>
+## [v0.12.19] - 2021-05-29
+### Bug Fixes
+- **header:** fix multiline header
+
+### Chore
+- **deps:** bump github.com/mattn/go-runewidth from 0.0.12 to 0.0.13
+- **github:** add slack channel link to issues
+
+### Ci
+- automatically copy readme to pterm.sh
+
 ### Code Refactoring
 - make `PrintOnError` return `*TextPrinter`
 - **area:** better height calculation
 
 ### Documentation Changes
+- **pterm-sh:** update readme
+- **readme:** add `AreaPrinter` to feature list
+- **readme:** remove unstable notice
 
 ### Features
 - add `PrintOnError` for all printers and interface
@@ -1262,7 +1311,9 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.18...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.20...HEAD
+[v0.12.20]: https://github.com/pterm/pterm/compare/v0.12.19...v0.12.20
+[v0.12.19]: https://github.com/pterm/pterm/compare/v0.12.18...v0.12.19
 [v0.12.18]: https://github.com/pterm/pterm/compare/v0.12.17...v0.12.18
 [v0.12.17]: https://github.com/pterm/pterm/compare/v0.12.16...v0.12.17
 [v0.12.16]: https://github.com/pterm/pterm/compare/v0.12.15...v0.12.16

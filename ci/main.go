@@ -20,10 +20,8 @@ func main() {
 	if err != nil {
 		log.Panic(err)
 	}
-
 	goDocOutput := string(goDocOutputBytes)
 	goDocOutput = strings.Join(strings.Split(goDocOutput, "FUNCTIONS")[1:], "")
-
 	goDocOutputLines := strings.Split(goDocOutput, "\n")
 	var goDocOutputFiltered []string
 	for _, line := range goDocOutputLines {
@@ -31,18 +29,19 @@ func main() {
 			goDocOutputFiltered = append(goDocOutputFiltered, line)
 		}
 	}
-	goDocOutput = strings.Join(goDocOutputFiltered, "\n")
 
-	goDocOutput = fmt.Sprintf("```go\n%s\n```\n", goDocOutput)
-	goDocOutput = `# PUtils - PTerm Utils
+	putilsTemplateBytes, err := ioutil.ReadFile("./putils/README.template.md")
+	if err != nil {
+		log.Panic(err)
+	}
 
-This package contains some utility functions, to get you started with PTerm even faster!  
+	putilsReadme := string(putilsTemplateBytes)
+	putilsReadme += "\n## Util Functions\n\n"
 
-## Util Functions
+	putilsReadme += fmt.Sprintf("```go\n%s\n```\n", strings.Join(goDocOutputFiltered, "\n"))
 
-` + goDocOutput
-
-	ioutil.WriteFile("./putils/README.md", []byte(goDocOutput), 0600)
+	ioutil.WriteFile("./putils/README.md", []byte(putilsReadme), 0600)
+	ioutil.WriteFile("./docs/docs/putils.md", []byte(putilsReadme), 0600)
 
 	log.Output(1, "## Generating Examples")
 	files, err := ioutil.ReadDir("./_examples/")
@@ -108,6 +107,12 @@ This package contains some utility functions, to get you started with PTerm even
 
 	log.Output(4, "### Writing readme")
 	err = ioutil.WriteFile("./README.md", []byte(newReadmeContent), 0600)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	log.Output(4, "### Writing readme to pterm.sh")
+	err = ioutil.WriteFile("./docs/README.md", []byte(newReadmeContent), 0600)
 	if err != nil {
 		log.Panic(err)
 	}

@@ -2,6 +2,7 @@
 - Documentation
   - [Intro](docs/intro.md)
   - [Global Functions](docs/functions.md)
+  - [Util Functions](docs/putils.md)
   - Printers
     - [Area](docs/printer/area.md)
     - [BarChart](docs/printer/barchart.md)
