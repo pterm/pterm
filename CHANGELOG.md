@@ -11,10 +11,14 @@
 - **putils:** add contributing notice to readme
 
 ### Features
+- print lines above active spinners
 - **putils:** add `DownloadFileWithProgressbar`
 
 ### Style
 - **lint:** fix linting error
+
+### Test
+- clear active spinners after tests complete
 
 
 <a name="v0.12.20"></a>
