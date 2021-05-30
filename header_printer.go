@@ -123,11 +123,11 @@ func splitText(text string, width int) string {
 				extraLines[extraLinesCounter] += string(letter)
 			}
 			for _, extraLine := range extraLines {
-				extraLine = extraLine + "\n"
+				extraLine += "\n"
 				lines = append(lines, extraLine)
 			}
 		} else {
-			line = line + "\n"
+			line += "\n"
 			lines = append(lines, line)
 		}
 	}
