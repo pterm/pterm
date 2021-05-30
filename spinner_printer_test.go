@@ -25,12 +25,14 @@ func TestSpinnerPrinter_Fail(t *testing.T) {
 func TestSpinnerPrinter_GenericStart(t *testing.T) {
 	p := DefaultSpinner
 	p.GenericStart()
+	p.GenericStop()
 }
 
 func TestSpinnerPrinter_GenericStartRawOutput(t *testing.T) {
 	DisableStyling()
 	p := DefaultSpinner
 	p.GenericStart()
+	p.GenericStop()
 	EnableStyling()
 }
 
@@ -52,7 +54,6 @@ func TestSpinnerPrinter_UpdateText(t *testing.T) {
 	p.UpdateText("test")
 
 	assert.Equal(t, "test", p.Text)
-	p.Stop()
 }
 
 func TestSpinnerPrinter_UpdateTextRawOutput(t *testing.T) {
@@ -160,4 +161,8 @@ func TestSpinnerPrinter_DifferentVariations(t *testing.T) {
 			s.Stop()
 		})
 	}
+}
+
+func TestClearActiveSpinners(t *testing.T) {
+	activeSpinnerPrinters = []*SpinnerPrinter{}
 }
