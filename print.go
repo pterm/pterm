@@ -60,6 +60,14 @@ func Print(a ...interface{}) {
 		}
 	}
 
+	for _, spinner := range activeSpinnerPrinters {
+		if spinner.IsActive {
+			ret += sClearLine()
+			ret += Sprinto(a...)
+			printed = true
+		}
+	}
+
 	if !printed {
 		ret = color.Sprint(Sprint(a...))
 	}
