@@ -1,6 +1,15 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Features
+- make spinner update faster
+
+### Performance Improvements
+- improve performance of `SpinnerPrinter`
+
+
+<a name="v0.12.21"></a>
+## [v0.12.21] - 2021-05-30
 ### Chore
 - **github:** remove issue template config.yml
 
@@ -1315,7 +1324,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.20...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.21...HEAD
+[v0.12.21]: https://github.com/pterm/pterm/compare/v0.12.20...v0.12.21
 [v0.12.20]: https://github.com/pterm/pterm/compare/v0.12.19...v0.12.20
 [v0.12.19]: https://github.com/pterm/pterm/compare/v0.12.18...v0.12.19
 [v0.12.18]: https://github.com/pterm/pterm/compare/v0.12.17...v0.12.18
