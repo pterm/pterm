@@ -6,6 +6,8 @@ import (
 	"github.com/pterm/pterm/internal"
 )
 
+var activeSpinnerPrinters []*SpinnerPrinter
+
 // DefaultSpinner is the default SpinnerPrinter.
 var DefaultSpinner = SpinnerPrinter{
 	Sequence:       []string{"▀ ", " ▀", " ▄", "▄ "},
@@ -85,6 +87,7 @@ func (s *SpinnerPrinter) UpdateText(text string) {
 // Start the SpinnerPrinter.
 func (s SpinnerPrinter) Start(text ...interface{}) (*SpinnerPrinter, error) {
 	s.IsActive = true
+	activeSpinnerPrinters = append(activeSpinnerPrinters, &s)
 
 	if len(text) != 0 {
 		s.Text = Sprint(text...)
