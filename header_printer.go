@@ -95,7 +95,14 @@ func (p HeaderPrinter) Sprint(a ...interface{}) string {
 	}
 
 	ret += p.BackgroundStyle.Sprint(blankLine) + "\n"
-	ret += p.BackgroundStyle.Sprint(p.TextStyle.Sprint(marginString+text+marginString+overlappingCharactersBackgroundFiller)) + "\n"
+	for _, line := range strings.Split(text, "\n") {
+		line = strings.ReplaceAll(line, "\n", "")
+		line = marginString + line + marginString
+		if len(line) < len(blankLine) {
+			line += strings.Repeat(" ", len(blankLine)-len(line))
+		}
+		ret += p.BackgroundStyle.Sprint(p.TextStyle.Sprint(line)) + "\n"
+	}
 	ret += p.BackgroundStyle.Sprint(blankLine) + "\n"
 
 	return ret
