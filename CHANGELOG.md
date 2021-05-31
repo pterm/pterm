@@ -1,6 +1,14 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Bug Fixes
+- **headerprinter:** don't panic if content width > terminal width
+
+
+<a name="v0.12.22"></a>
+## [v0.12.22] - 2021-05-30
+### Documentation Changes
+
 ### Features
 - make spinner update faster
 
@@ -1324,7 +1332,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.21...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.22...HEAD
+[v0.12.22]: https://github.com/pterm/pterm/compare/v0.12.21...v0.12.22
 [v0.12.21]: https://github.com/pterm/pterm/compare/v0.12.20...v0.12.21
 [v0.12.20]: https://github.com/pterm/pterm/compare/v0.12.19...v0.12.20
 [v0.12.19]: https://github.com/pterm/pterm/compare/v0.12.18...v0.12.19
