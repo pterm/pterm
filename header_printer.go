@@ -3,8 +3,6 @@ package pterm
 import (
 	"strings"
 
-	"github.com/mattn/go-runewidth"
-
 	"github.com/pterm/pterm/internal"
 )
 
@@ -67,34 +65,79 @@ func (p HeaderPrinter) Sprint(a ...interface{}) string {
 	}
 
 	text := Sprint(a...)
-	lines := strings.Split(text, "\n")
+
+	var blankLine string
+
+	longestLine := internal.ReturnLongestLine(text, "\n")
+	longestLineLen := len(RemoveColorFromString(longestLine)) + p.Margin*2
 
 	if p.FullWidth {
-		p.Margin = (GetTerminalWidth() - len(text)) / 2
-	}
-
-	var maxLineLength int
-	for _, line := range lines {
-		width := runewidth.StringWidth(RemoveColorFromString(line)) + p.Margin*2
-		if width > maxLineLength {
-			maxLineLength = width
+		text = splitText(text, GetTerminalWidth()-p.Margin*2)
+		blankLine = strings.Repeat(" ", GetTerminalWidth())
+	} else {
+		if longestLineLen > GetTerminalWidth() {
+			text = splitText(text, GetTerminalWidth()-p.Margin*2)
+			blankLine = strings.Repeat(" ", GetTerminalWidth())
+		} else {
+			text = splitText(text, longestLineLen-p.Margin*2)
+			blankLine = strings.Repeat(" ", longestLineLen)
 		}
 	}
 
-	blankLine := strings.Repeat(" ", maxLineLength)
-
+	var marginString string
 	var ret string
-	marginString := strings.Repeat(" ", p.Margin)
+
+	if p.FullWidth {
+		longestLineLen = len(RemoveColorFromString(internal.ReturnLongestLine(text, "\n")))
+		marginString = strings.Repeat(" ", (GetTerminalWidth()-longestLineLen)/2)
+	} else {
+		marginString = strings.Repeat(" ", p.Margin)
+	}
 
 	ret += p.BackgroundStyle.Sprint(blankLine) + "\n"
-	for _, line := range lines {
-		width := runewidth.StringWidth(RemoveColorFromString(line))
-		padding := strings.Repeat(" ", maxLineLength-(width+p.Margin*2))
-		ret += p.BackgroundStyle.Sprint(p.TextStyle.Sprint(marginString+line+padding+marginString)) + "\n"
+	for _, line := range strings.Split(text, "\n") {
+		line = strings.ReplaceAll(line, "\n", "")
+		line = marginString + line + marginString
+		if len(line) < len(blankLine) {
+			line += strings.Repeat(" ", len(blankLine)-len(line))
+		}
+		ret += p.BackgroundStyle.Sprint(p.TextStyle.Sprint(line)) + "\n"
 	}
 	ret += p.BackgroundStyle.Sprint(blankLine) + "\n"
 
 	return ret
+}
+
+func splitText(text string, width int) string {
+	var lines []string
+	linesTmp := strings.Split(text, "\n")
+	for _, line := range linesTmp {
+		if len(RemoveColorFromString(line)) > width {
+			extraLines := []string{""}
+			extraLinesCounter := 0
+			for i, letter := range line {
+				if i%width == 0 && i != 0 {
+					extraLinesCounter++
+					extraLines = append(extraLines, "")
+				}
+				extraLines[extraLinesCounter] += string(letter)
+			}
+			for _, extraLine := range extraLines {
+				extraLine += "\n"
+				lines = append(lines, extraLine)
+			}
+		} else {
+			line += "\n"
+			lines = append(lines, line)
+		}
+	}
+
+	var line string
+	for _, s := range lines {
+		line += s
+	}
+
+	return strings.TrimSuffix(line, "\n")
 }
 
 // Sprintln formats using the default formats for its operands and returns the resulting string.
