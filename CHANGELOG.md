@@ -4,6 +4,9 @@
 ### Bug Fixes
 - **headerprinter:** don't panic if content width > terminal width
 
+### Documentation Changes
+- **readme:** add cli-template link
+
 
 <a name="v0.12.22"></a>
 ## [v0.12.22] - 2021-05-30
