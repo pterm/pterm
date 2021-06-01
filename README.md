@@ -77,6 +77,9 @@ Make sure to run this command inside your project, when you're using go modules 
 go get github.com/pterm/pterm
 ```
 
+If you want to create a CLI tool, make sure to check out our [cli-template](https://github.com/pterm/cli-template),
+which features automatic website generation, automatic deployments, a custom CI-System and much more!
+
 ## 🥅 Goal of PTerm
 
 PTerm is designed to create a **platform independent way to create beautiful terminal output**. Most modules that want to improve the terminal output do not guarantee platform independence - PTerm does. PTerm follows the **most common methods for displaying color in a terminal**. With PTerm, it is possible to create beautiful output **even in low-level environments**. 
