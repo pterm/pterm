@@ -2,9 +2,11 @@ package pterm
 
 import (
 	"encoding/csv"
-	"github.com/stretchr/testify/assert"
+	"fmt"
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestTablePrinter_NilPrint(t *testing.T) {
@@ -79,4 +81,29 @@ func TestTablePrinter_WithStyle(t *testing.T) {
 	p2 := p.WithStyle(s)
 
 	assert.Equal(t, s, p2.Style)
+}
+
+func TestTablePrinter_WithSliceOfStruct(t *testing.T) {
+
+	testData := []struct {
+		StringField string
+		IntField    int64
+	}{
+		{"Lorem", 1},
+		{"Ipsum", 2},
+	}
+
+	p := &TablePrinter{}
+	p = p.WithSliceOfStruct(testData)
+
+	for i, data := range p.Data {
+		if i == 0 {
+			assert.Equal(t, "StringField", data[0])
+			assert.Equal(t, "IntField", data[1])
+		} else {
+			assert.Equal(t, testData[i-1].StringField, data[0])
+			assert.Equal(t, fmt.Sprintf("%v", testData[i-1].IntField), data[1])
+		}
+	}
+
 }
