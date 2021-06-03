@@ -84,7 +84,6 @@ func TestTablePrinter_WithStyle(t *testing.T) {
 }
 
 func TestTablePrinter_WithSliceOfStruct(t *testing.T) {
-
 	testData := []struct {
 		StringField string
 		IntField    int64
@@ -105,5 +104,4 @@ func TestTablePrinter_WithSliceOfStruct(t *testing.T) {
 			assert.Equal(t, fmt.Sprintf("%v", testData[i-1].IntField), data[1])
 		}
 	}
-
 }

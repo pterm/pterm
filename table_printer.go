@@ -78,7 +78,6 @@ func (p TablePrinter) WithCSVReader(reader *csv.Reader) *TablePrinter {
 // WithSliceOfStruct returns a table printer with data extracted from the slice.
 // if the input isn't a slice of structs no data will be extracted.
 func (p TablePrinter) WithSliceOfStruct(slice interface{}) *TablePrinter {
-
 	to := reflect.TypeOf(slice)
 	if to.Kind() != reflect.Slice {
 		return &p
