@@ -64,19 +64,3 @@ func TestTablePrinter_WithSeparator(t *testing.T) {
 
 	assert.Equal(t, "-", p2.Separator)
 }
-
-func TestTablePrinter_WithSeparatorStyle(t *testing.T) {
-	s := NewStyle(FgRed, BgBlue, Bold)
-	p := TablePrinter{}
-	p2 := p.WithSeparatorStyle(s)
-
-	assert.Equal(t, s, p2.SeparatorStyle)
-}
-
-func TestTablePrinter_WithStyle(t *testing.T) {
-	s := NewStyle(FgRed, BgBlue, Bold)
-	p := TablePrinter{}
-	p2 := p.WithStyle(s)
-
-	assert.Equal(t, s, p2.Style)
-}
