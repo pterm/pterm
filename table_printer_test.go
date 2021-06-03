@@ -132,5 +132,4 @@ func TestTablePrinter_WithSliceOfStruct(t *testing.T) {
 	p = &TablePrinter{}
 	p = p.WithSliceOfStruct([]string{})
 	assert.Equal(t, 0, len(p.Data))
-
 }
