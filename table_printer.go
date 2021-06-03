@@ -2,8 +2,6 @@ package pterm
 
 import (
 	"encoding/csv"
-	"fmt"
-	"reflect"
 	"strings"
 	"unicode/utf8"
 
@@ -72,60 +70,6 @@ func (p TablePrinter) WithCSVReader(reader *csv.Reader) *TablePrinter {
 	if records, err := reader.ReadAll(); err == nil {
 		p.Data = records
 	}
-	return &p
-}
-
-// WithSliceOfStruct returns a table printer with data extracted from the slice.
-// if the input isn't a slice of structs no data will be extracted.
-func (p TablePrinter) WithSliceOfStruct(slice interface{}) *TablePrinter {
-	to := reflect.TypeOf(slice)
-	if to.Kind() != reflect.Slice {
-		return &p
-	}
-	el := to.Elem()
-
-	isPointer := false
-	if el.Kind() == reflect.Ptr {
-		el = el.Elem()
-		isPointer = true
-	}
-
-	if el.Kind() != reflect.Struct {
-		return &p
-	}
-
-	numFields := el.NumField()
-	fieldNames := make([]string, numFields)
-
-	for i := 0; i < numFields; i++ {
-		fieldNames[i] = el.Field(i).Name
-	}
-
-	records := TableData{
-		fieldNames,
-	}
-
-	obj := reflect.ValueOf(slice)
-
-	items := make([]interface{}, obj.Len())
-	for i := 0; i < obj.Len(); i++ {
-		if isPointer {
-			items[i] = obj.Index(i).Elem().Interface()
-		} else {
-			items[i] = obj.Index(i).Interface()
-		}
-	}
-
-	for _, v := range items {
-		item := reflect.ValueOf(v)
-		record := make([]string, numFields)
-		for i := 0; i < numFields; i++ {
-			fieldVal := item.Field(i).Interface()
-			record[i] = fmt.Sprintf("%v", fieldVal)
-		}
-		records = append(records, record)
-	}
-	p.Data = records
 	return &p
 }
 

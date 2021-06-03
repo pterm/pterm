@@ -2,7 +2,6 @@ package pterm
 
 import (
 	"encoding/csv"
-	"fmt"
 	"os"
 	"testing"
 
@@ -81,55 +80,4 @@ func TestTablePrinter_WithStyle(t *testing.T) {
 	p2 := p.WithStyle(s)
 
 	assert.Equal(t, s, p2.Style)
-}
-
-func TestTablePrinter_WithSliceOfStruct(t *testing.T) {
-	type structData struct {
-		StringField string
-		IntField    int64
-	}
-
-	testData := []structData{
-		{"Lorem", 1},
-		{"Ipsum", 2},
-	}
-
-	p := &TablePrinter{}
-	p = p.WithSliceOfStruct(testData)
-
-	for i, data := range p.Data {
-		if i == 0 {
-			assert.Equal(t, "StringField", data[0])
-			assert.Equal(t, "IntField", data[1])
-		} else {
-			assert.Equal(t, testData[i-1].StringField, data[0])
-			assert.Equal(t, fmt.Sprintf("%v", testData[i-1].IntField), data[1])
-		}
-	}
-
-	testPtrData := []*structData{
-		{"Lorem", 1},
-		{"Ipsum", 2},
-	}
-
-	p = &TablePrinter{}
-	p = p.WithSliceOfStruct(testPtrData)
-	for i, data := range p.Data {
-		if i == 0 {
-			assert.Equal(t, "StringField", data[0])
-			assert.Equal(t, "IntField", data[1])
-		} else {
-			assert.Equal(t, testData[i-1].StringField, data[0])
-			assert.Equal(t, fmt.Sprintf("%v", testData[i-1].IntField), data[1])
-		}
-	}
-
-	notAstruct := "this should not produce any data"
-	p = &TablePrinter{}
-	p = p.WithSliceOfStruct(notAstruct)
-	assert.Equal(t, 0, len(p.Data))
-
-	p = &TablePrinter{}
-	p = p.WithSliceOfStruct([]string{})
-	assert.Equal(t, 0, len(p.Data))
 }
