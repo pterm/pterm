@@ -1,9 +1,6 @@
 package pterm
 
 import (
-	"encoding/csv"
-	"github.com/stretchr/testify/assert"
-	"os"
 	"testing"
 )
 
