@@ -1,13 +1,15 @@
 package putils
 
 import (
-	"fmt"
 	"reflect"
 
 	"github.com/pterm/pterm"
 )
 
-// TableFromStructSlice Accepts a customized table printer and adds data to it, then returns it.
+// TableFromStructSlice accepts a customized table printer and and a slice of a struct.
+// The table will be populated with the values of the structs. The header will be set to the structs field name.
+// Use .WithHasHeader() to color the header.
+// The function will return the populated pterm.TablePrinter.
 func TableFromStructSlice(tablePrinter pterm.TablePrinter, structSlice interface{}) *pterm.TablePrinter {
 	to := reflect.TypeOf(structSlice)
 	if to.Kind() != reflect.Slice {
@@ -52,7 +54,7 @@ func TableFromStructSlice(tablePrinter pterm.TablePrinter, structSlice interface
 		record := make([]string, numFields)
 		for i := 0; i < numFields; i++ {
 			fieldVal := item.Field(i).Interface()
-			record[i] = fmt.Sprintf("%v", fieldVal)
+			record[i] = pterm.Sprintf("%v", fieldVal)
 		}
 		records = append(records, record)
 	}
@@ -61,7 +63,9 @@ func TableFromStructSlice(tablePrinter pterm.TablePrinter, structSlice interface
 	return &tablePrinter
 }
 
-// DefaultTableFromStructSlice feeds the default table printer into the first param and returns the table filled with your computed data.
+// DefaultTableFromStructSlice will be populate the pterm.DefaultTable with the values of the structs. The header will be set to the structs field name.
+// Use .WithHasHeader() to color the header.
+// The function will return the populated pterm.TablePrinter.
 func DefaultTableFromStructSlice(structSlice interface{}) *pterm.TablePrinter {
 	return TableFromStructSlice(pterm.DefaultTable, structSlice)
 }
