@@ -4,6 +4,9 @@
 ### Bug Fixes
 - **headerprinter:** don't panic if content width > terminal width
 
+### Chore
+- **github:** update issue template
+
 ### Documentation Changes
 - **readme:** add cli-template link
 
