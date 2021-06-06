@@ -2,9 +2,10 @@ package pterm
 
 import (
 	"encoding/csv"
-	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestTablePrinter_NilPrint(t *testing.T) {
