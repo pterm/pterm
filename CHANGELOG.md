@@ -10,6 +10,9 @@
 ### Documentation Changes
 - **readme:** add cli-template link
 
+### Features
+- Add util functions to create tables from slices of structs ([#217](https://github.com/pterm/pterm/issues/217))
+
 
 <a name="v0.12.22"></a>
 ## [v0.12.22] - 2021-05-30

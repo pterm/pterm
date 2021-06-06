@@ -10,8 +10,10 @@ Feel free to contribute your utility functions via pull request!
 ## Util Functions
 
 ```go
+func DefaultTableFromStructSlice(structSlice interface{}) *pterm.TablePrinter
 func DownloadFileWithDefaultProgressbar(title, outputPath, url string, mode os.FileMode) error
 func DownloadFileWithProgressbar(progressbar *pterm.ProgressbarPrinter, outputPath, url string, mode os.FileMode) error
 func RunWithDefaultSpinner(initzialSpinnerText string, f func(spinner *pterm.SpinnerPrinter) error) error
 func RunWithSpinner(spinner *pterm.SpinnerPrinter, f func(spinner *pterm.SpinnerPrinter) error) error
+func TableFromStructSlice(tablePrinter pterm.TablePrinter, structSlice interface{}) *pterm.TablePrinter
 ```
