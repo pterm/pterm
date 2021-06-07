@@ -48,7 +48,6 @@ var (
 			Style: &ThemeDefault.ErrorPrefixStyle,
 			Text:  " ERROR ",
 		},
-		ShowLineNumber: true,
 	}
 
 	// Fatal returns a PrefixPrinter, which can be used to print text with an "fatal" Prefix.
