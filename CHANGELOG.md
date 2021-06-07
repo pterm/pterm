@@ -7,11 +7,17 @@
 ### Chore
 - **github:** update issue template
 
+### Code Refactoring
+- **prefix:** `pterm.Error` default no line number shown
+
 ### Documentation Changes
 - **readme:** add cli-template link
 
 ### Features
 - Add util functions to create tables from slices of structs ([#217](https://github.com/pterm/pterm/issues/217))
+
+### Test
+- **prefix:** `pterm.Error` default no line number shown
 
 
 <a name="v0.12.22"></a>
