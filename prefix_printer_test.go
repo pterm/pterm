@@ -35,6 +35,13 @@ func TestPrefixPrinterPrintMethods(t *testing.T) {
 			})
 		})
 
+		t.Run("PrintWithShowLineNumber", func(t *testing.T) {
+			testPrintContains(t, func(w io.Writer, a interface{}) {
+				p2 := p.WithShowLineNumber()
+				p2.Print(a)
+			})
+		})
+
 		t.Run("PrintWithMultipleLines", func(t *testing.T) {
 			p2 := p.WithScope(Scope{
 				Text:  "test",
