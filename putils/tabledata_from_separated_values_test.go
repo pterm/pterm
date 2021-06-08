@@ -16,5 +16,5 @@ func TestTableDataFromSeparatedValues(t *testing.T) {
 
 	input := "firstname;lastname;username\nMarvin;Wendt;MarvinJWendt"
 
-	assert.EqualValues(t, expected, TableDataFromSeparatedValues(input, ";"))
+	assert.EqualValues(t, expected, TableDataFromSeparatedValues(input, ";", "\n"))
 }

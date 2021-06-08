@@ -9,5 +9,5 @@ import (
 // Usage:
 //	pterm.DefaultTable.WithData(putils.TableDataFromCSV(csv)).Render()
 func TableDataFromCSV(csv string) (td pterm.TableData) {
-	return TableDataFromSeparatedValues(csv, ",")
+	return TableDataFromSeparatedValues(csv, ",", "\n")
 }
