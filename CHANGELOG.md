@@ -4,6 +4,9 @@
 ### Chore
 - rename putils `TableData` generation files
 
+### Code Refactoring
+- **putils:** add `rowSeparator` to `TableFromSeparatedValues`
+
 ### Documentation Changes
 - **putils:** update putils docs
 
