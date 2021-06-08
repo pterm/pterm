@@ -1,8 +1,6 @@
 package putils
 
 import (
-	"strings"
-
 	"github.com/pterm/pterm"
 )
 
@@ -11,9 +9,5 @@ import (
 // Usage:
 //	pterm.DefaultTable.WithData(putils.TableDataFromCSV(csv)).Render()
 func TableDataFromCSV(csv string) (td pterm.TableData) {
-	for _, line := range strings.Split(csv, "\n") {
-		td = append(td, strings.Split(line, ","))
-	}
-
-	return
+	return TableDataFromSeparatedValues(csv, ",")
 }
