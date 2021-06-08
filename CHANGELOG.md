@@ -4,6 +4,10 @@
 ### Documentation Changes
 - **putils:** update putils docs
 
+### Features
+- **putils:** add function to convert TSV to `TableData`
+- **putils:** add function to convert CSV to `TableData`
+
 
 <a name="v0.12.23"></a>
 ## [v0.12.23] - 2021-06-07
