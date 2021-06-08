@@ -17,6 +17,7 @@ func DownloadFileWithProgressbar(progressbar *pterm.ProgressbarPrinter, outputPa
 func RunWithDefaultSpinner(initzialSpinnerText string, f func(spinner *pterm.SpinnerPrinter) error) error
 func RunWithSpinner(spinner *pterm.SpinnerPrinter, f func(spinner *pterm.SpinnerPrinter) error) error
 func TableDataFromCSV(csv string) (td pterm.TableData)
+func TableDataFromSeparatedValues(text, separator string) (td pterm.TableData)
 func TableDataFromTSV(csv string) (td pterm.TableData)
 func TableFromStructSlice(tablePrinter pterm.TablePrinter, structSlice interface{}) *pterm.TablePrinter
 ```

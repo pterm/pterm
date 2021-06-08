@@ -1,12 +1,21 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Chore
+- rename putils `TableData` generation files
+
 ### Documentation Changes
 - **putils:** update putils docs
 
 ### Features
+- **putils:** add `TableDataFromSeparatedValues`
+- **putils:** add `TableDataFromTSV`
+- **putils:** add `TableDataFromCSV`
 - **putils:** add function to convert TSV to `TableData`
 - **putils:** add function to convert CSV to `TableData`
+
+### Test
+- add test for putils `TableData` generation
 
 
 <a name="v0.12.23"></a>
