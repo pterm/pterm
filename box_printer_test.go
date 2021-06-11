@@ -46,6 +46,12 @@ func TestBoxPrinterPrintMethods(t *testing.T) {
 		})
 	})
 
+	t.Run("SprintWithTitle", func(t *testing.T) {
+		testSprintContains(t, func(a interface{}) string {
+			return p.WithTitle("a").Sprint(a)
+		})
+	})
+
 	t.Run("Sprintf", func(t *testing.T) {
 		testSprintfContains(t, func(format string, a interface{}) string {
 			return p.Sprintf(format, a)
@@ -107,6 +113,74 @@ func TestBoxPrinter_WithBottomRightCornerString(t *testing.T) {
 
 	assert.Equal(t, "-", p2.BottomRightCornerString)
 	assert.Empty(t, p.BottomRightCornerString)
+}
+
+func TestBoxPrinter_WithTitle(t *testing.T) {
+	p := BoxPrinter{}
+	p2 := p.WithTitle("-")
+
+	assert.Equal(t, "-", p2.Title)
+	assert.Empty(t, p.Title)
+}
+
+func TestBoxPrinter_WithTitleTopLeft(t *testing.T) {
+	p := BoxPrinter{}
+	p2 := p.WithTitleTopLeft()
+
+	assert.Equal(t, true, p2.TopLeft)
+	assert.Equal(t, false, p.TopLeft)
+}
+
+func TestBoxPrinter_WithTitleTopRight(t *testing.T) {
+	p := BoxPrinter{}
+	p2 := p.WithTitleTopRight()
+
+	assert.Equal(t, true, p2.TopRight)
+	assert.Equal(t, false, p.TopRight)
+}
+
+func TestBoxPrinter_WithTitleBottomRight(t *testing.T) {
+	p := BoxPrinter{}
+	p2 := p.WithTitleBottomRight()
+
+	assert.Equal(t, true, p2.BottomRight)
+	assert.Equal(t, false, p.BottomRight)
+}
+
+func TestBoxPrinter_WithTitleBottomLeft(t *testing.T) {
+	p := BoxPrinter{}
+	p2 := p.WithTitleBottomLeft()
+
+	assert.Equal(t, true, p2.BottomLeft)
+	assert.Equal(t, false, p.BottomLeft)
+}
+
+func TestBoxPrinter_WithTitleWithTitleBottomLeft(t *testing.T) {
+	p := BoxPrinter{}
+	p2 := p.WithTitleBottomLeft().WithTitle("a").Sprint("Lorem Ipsum")
+
+	assert.Equal(t, "\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\n\x1b[39m\x1b[0m\x1b[39mLorem Ipsum\x1b[0m\x1b[39m\x1b[0m\n\x1b[39m\x1b[0m\x1b[39m\x1b[0m a \x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m", p2)
+}
+
+func TestBoxPrinter_WithTitleWithTitleTopLeft(t *testing.T) {
+	p := BoxPrinter{}
+	p2 := p.WithTitleTopLeft().WithTitle("a").Sprint("Lorem Ipsum")
+
+	assert.Equal(t, "\x1b[39m\x1b[0m\x1b[39m\x1b[0m a \x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\n\x1b[39m\x1b[0m\x1b[39mLorem Ipsum\x1b[0m\x1b[39m\x1b[0m\n\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m", p2)
+}
+
+func TestBoxPrinter_WithTitleWithTitleBottomRight(t *testing.T) {
+	p := BoxPrinter{}
+	p2 := p.WithTitleBottomRight().WithTitle("a").Sprint("Lorem Ipsum")
+
+	assert.Equal(t, "\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\n\x1b[39m\x1b[0m\x1b[39mLorem Ipsum\x1b[0m\x1b[39m\x1b[0m\n\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m a \x1b[39m\x1b[0m\x1b[39m\x1b[0m", p2)
+}
+
+func TestBoxPrinter_WithTitleWithTitleTopRight(t *testing.T) {
+	p := BoxPrinter{}
+	p2 := p.WithTitleTopRight().WithTitle("a").Sprint("Lorem Ipsum")
+
+	assert.Equal(t, "\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m a \x1b[39m\x1b[0m\x1b[39m\x1b[0m\n\x1b[39m\x1b[0m\x1b[39mLorem Ipsum\x1b[0m\x1b[39m\x1b[0m\n\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m", p2)
 }
 
 func TestBoxPrinter_WithBoxStyle(t *testing.T) {
