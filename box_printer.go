@@ -13,8 +13,10 @@ type BoxPrinter struct {
 	Title                   string
 	TopLeft                 bool
 	TopRight                bool
+	TopCenter               bool
 	BottomLeft              bool
 	BottomRight             bool
+	BottomCenter            bool
 	TextStyle               *Style
 	VerticalString          string
 	BoxStyle                *Style
@@ -57,38 +59,70 @@ func (p BoxPrinter) WithTitleTopLeft(b ...bool) *BoxPrinter {
 	b2 := internal.WithBoolean(b)
 	p.TopLeft = b2
 	p.TopRight = false
+	p.TopCenter = false
 	p.BottomLeft = false
 	p.BottomRight = false
+	p.BottomCenter = false
 	return &p
 }
 
 // WithTitleTopRight returns a new box with a specific Title alignment.
 func (p BoxPrinter) WithTitleTopRight(b ...bool) *BoxPrinter {
 	b2 := internal.WithBoolean(b)
-	p.TopRight = b2
 	p.TopLeft = false
+	p.TopRight = b2
+	p.TopCenter = false
 	p.BottomLeft = false
 	p.BottomRight = false
+	p.BottomCenter = false
+	return &p
+}
+
+// WithTitleTopCenter returns a new box with a specific Title alignment.
+func (p BoxPrinter) WithTitleTopCenter(b ...bool) *BoxPrinter {
+	b2 := internal.WithBoolean(b)
+	p.TopLeft = false
+	p.TopRight = false
+	p.TopCenter = b2
+	p.BottomLeft = false
+	p.BottomRight = false
+	p.BottomCenter = false
 	return &p
 }
 
 // WithTitleBottomLeft returns a new box with a specific Title alignment.
 func (p BoxPrinter) WithTitleBottomLeft(b ...bool) *BoxPrinter {
 	b2 := internal.WithBoolean(b)
-	p.BottomLeft = b2
 	p.TopLeft = false
 	p.TopRight = false
+	p.TopCenter = false
+	p.BottomLeft = b2
 	p.BottomRight = false
+	p.BottomCenter = false
 	return &p
 }
 
 // WithTitleBottomRight returns a new box with a specific Title alignment.
 func (p BoxPrinter) WithTitleBottomRight(b ...bool) *BoxPrinter {
 	b2 := internal.WithBoolean(b)
-	p.BottomRight = b2
 	p.TopLeft = false
 	p.TopRight = false
+	p.TopCenter = false
 	p.BottomLeft = false
+	p.BottomRight = b2
+	p.BottomCenter = false
+	return &p
+}
+
+// WithTitleBottomCenter returns a new box with a specific Title alignment.
+func (p BoxPrinter) WithTitleBottomCenter(b ...bool) *BoxPrinter {
+	b2 := internal.WithBoolean(b)
+	p.TopLeft = false
+	p.TopRight = false
+	p.TopCenter = false
+	p.BottomLeft = false
+	p.BottomRight = false
+	p.BottomCenter = b2
 	return &p
 }
 
@@ -197,17 +231,18 @@ func (p BoxPrinter) Sprint(a ...interface{}) string {
 			maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.TopLeftCornerString)
 	} else {
 		if (maxWidth + p.RightPadding + p.LeftPadding - 4) < len(RemoveColorFromString(p.Title)) {
-			Error.Println("title is to long")
-			topLine = p.BoxStyle.Sprint(p.BottomRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString),
-				maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.BottomLeftCornerString)
-			bottomLine = p.BoxStyle.Sprint(p.TopRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString),
-				maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.TopLeftCornerString)
-		} else if p.TopLeft {
+			p.RightPadding = len(RemoveColorFromString(p.Title)) - (maxWidth + p.RightPadding + p.LeftPadding - 5)
+		}
+		if p.TopLeft {
 			topLine = p.BoxStyle.Sprint(p.BottomRightCornerString) + internal.AddTitleToLine(p.Title, p.BoxStyle.Sprint(p.HorizontalString), maxWidth+p.LeftPadding+p.RightPadding, true) + p.BoxStyle.Sprint(p.BottomLeftCornerString)
 			bottomLine = p.BoxStyle.Sprint(p.TopRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString),
 				maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.TopLeftCornerString)
 		} else if p.TopRight {
 			topLine = p.BoxStyle.Sprint(p.BottomRightCornerString) + internal.AddTitleToLine(p.Title, p.BoxStyle.Sprint(p.HorizontalString), maxWidth+p.LeftPadding+p.RightPadding, false) + p.BoxStyle.Sprint(p.BottomLeftCornerString)
+			bottomLine = p.BoxStyle.Sprint(p.TopRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString),
+				maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.TopLeftCornerString)
+		} else if p.TopCenter {
+			topLine = p.BoxStyle.Sprint(p.BottomRightCornerString) + internal.AddTitleToLineCenter(p.Title, p.BoxStyle.Sprint(p.HorizontalString), maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.BottomLeftCornerString)
 			bottomLine = p.BoxStyle.Sprint(p.TopRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString),
 				maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.TopLeftCornerString)
 		} else if p.BottomLeft {
@@ -218,6 +253,10 @@ func (p BoxPrinter) Sprint(a ...interface{}) string {
 			topLine = p.BoxStyle.Sprint(p.BottomRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString),
 				maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.BottomLeftCornerString)
 			bottomLine = p.BoxStyle.Sprint(p.TopRightCornerString) + internal.AddTitleToLine(p.Title, p.BoxStyle.Sprint(p.HorizontalString), maxWidth+p.LeftPadding+p.RightPadding, false) + p.BoxStyle.Sprint(p.TopLeftCornerString)
+		} else if p.BottomCenter {
+			topLine = p.BoxStyle.Sprint(p.BottomRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString),
+				maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.BottomLeftCornerString)
+			bottomLine = p.BoxStyle.Sprint(p.TopRightCornerString) + internal.AddTitleToLineCenter(p.Title, p.BoxStyle.Sprint(p.HorizontalString), maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.TopLeftCornerString)
 		}
 	}
 
