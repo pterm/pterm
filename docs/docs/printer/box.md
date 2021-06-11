@@ -40,6 +40,13 @@ pterm.DefaultBox.Println("test")
 |[RightPadding](https://pkg.go.dev/github.com/pterm/pterm#BoxPrinter.WithRightPadding)|int|
 |[Text](https://pkg.go.dev/github.com/pterm/pterm#BoxPrinter.WithText)|string|
 |[TextStyle](https://pkg.go.dev/github.com/pterm/pterm#BoxPrinter.WithTextStyle)|[*Style](https://pkg.go.dev/github.com/pterm/pterm#Style)|
+|[Title](https://pkg.go.dev/github.com/pterm/pterm#BoxPrinter.WithTitle)|string|
+|[TitleBottomLeft](https://pkg.go.dev/github.com/pterm/pterm#BoxPrinter.WithTitleBottomLeft)|boolean|
+|[TitleBottomRight](https://pkg.go.dev/github.com/pterm/pterm#BoxPrinter.WithTitleBottomRight)|boolean|
+|[TitleBottomCenter](https://pkg.go.dev/github.com/pterm/pterm#BoxPrinter.WithTitleBottomCenter)|boolean|
+|[TitleTopLeft](https://pkg.go.dev/github.com/pterm/pterm#BoxPrinter.WithTitleTopLeft)|boolean|
+|[TitleTopRight](https://pkg.go.dev/github.com/pterm/pterm#BoxPrinter.WithTitleTopRight)|boolean|
+|[TitleTopCenter](https://pkg.go.dev/github.com/pterm/pterm#BoxPrinter.WithTitleTopCenter)|boolean|
 |[TopLeftCornerString](https://pkg.go.dev/github.com/pterm/pterm#BoxPrinter.WithTopLeftCornerString)|string|
 |[TopPadding](https://pkg.go.dev/github.com/pterm/pterm#BoxPrinter.WithTopPadding)|int|
 |[TopRightCornerString](https://pkg.go.dev/github.com/pterm/pterm#BoxPrinter.WithTopRightCornerString)|string|
