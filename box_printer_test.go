@@ -139,6 +139,14 @@ func TestBoxPrinter_WithTitleTopRight(t *testing.T) {
 	assert.Equal(t, false, p.TopRight)
 }
 
+func TestBoxPrinter_WithTitleTopCenter(t *testing.T) {
+	p := BoxPrinter{}
+	p2 := p.WithTitleTopCenter()
+
+	assert.Equal(t, true, p2.TopCenter)
+	assert.Equal(t, false, p.TopCenter)
+}
+
 func TestBoxPrinter_WithTitleBottomRight(t *testing.T) {
 	p := BoxPrinter{}
 	p2 := p.WithTitleBottomRight()
@@ -153,6 +161,14 @@ func TestBoxPrinter_WithTitleBottomLeft(t *testing.T) {
 
 	assert.Equal(t, true, p2.BottomLeft)
 	assert.Equal(t, false, p.BottomLeft)
+}
+
+func TestBoxPrinter_WithTitleBottomCenter(t *testing.T) {
+	p := BoxPrinter{}
+	p2 := p.WithTitleBottomCenter()
+
+	assert.Equal(t, true, p2.BottomCenter)
+	assert.Equal(t, false, p.BottomCenter)
 }
 
 func TestBoxPrinter_WithTitleWithTitleBottomLeft(t *testing.T) {
@@ -181,6 +197,20 @@ func TestBoxPrinter_WithTitleWithTitleTopRight(t *testing.T) {
 	p2 := p.WithTitleTopRight().WithTitle("a").Sprint("Lorem Ipsum")
 
 	assert.Equal(t, "\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m a \x1b[39m\x1b[0m\x1b[39m\x1b[0m\n\x1b[39m\x1b[0m\x1b[39mLorem Ipsum\x1b[0m\x1b[39m\x1b[0m\n\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m", p2)
+}
+
+func TestBoxPrinter_WithTitleWithTitleTopCenter(t *testing.T) {
+	p := BoxPrinter{}
+	p2 := p.WithTitleTopCenter().WithTitle("a").Sprint("Lorem Ipsum")
+
+	assert.Equal(t, "\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m a \x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\n\x1b[39m\x1b[0m\x1b[39mLorem Ipsum\x1b[0m\x1b[39m\x1b[0m\n\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m", p2)
+}
+
+func TestBoxPrinter_WithTitleWithTitleBottomCenter(t *testing.T) {
+	p := BoxPrinter{}
+	p2 := p.WithTitleBottomCenter().WithTitle("a").Sprint("Lorem Ipsum")
+
+	assert.Equal(t, "\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\n\x1b[39m\x1b[0m\x1b[39mLorem Ipsum\x1b[0m\x1b[39m\x1b[0m\n\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m a \x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m\x1b[39m\x1b[0m", p2)
 }
 
 func TestBoxPrinter_WithBoxStyle(t *testing.T) {
