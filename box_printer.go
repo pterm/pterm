@@ -10,6 +10,11 @@ import (
 
 // BoxPrinter is able to render a box around printables.
 type BoxPrinter struct {
+	Title                   string
+	TopLeft                 bool
+	TopRight                bool
+	BottomLeft              bool
+	BottomRight             bool
 	TextStyle               *Style
 	VerticalString          string
 	BoxStyle                *Style
@@ -38,6 +43,53 @@ var DefaultBox = BoxPrinter{
 	LeftPadding:             1,
 	TopPadding:              0,
 	BottomPadding:           0,
+	TopLeft:                 true,
+}
+
+// WithTitle returns a new box with a specific Title.
+func (p BoxPrinter) WithTitle(str string) *BoxPrinter {
+	p.Title = str
+	return &p
+}
+
+// WithTitleTopLeft returns a new box with a specific Title alignment.
+func (p BoxPrinter) WithTitleTopLeft(b ...bool) *BoxPrinter {
+	b2 := internal.WithBoolean(b)
+	p.TopLeft = b2
+	p.TopRight = false
+	p.BottomLeft = false
+	p.BottomRight = false
+	return &p
+}
+
+// WithTitleTopRight returns a new box with a specific Title alignment.
+func (p BoxPrinter) WithTitleTopRight(b ...bool) *BoxPrinter {
+	b2 := internal.WithBoolean(b)
+	p.TopRight = b2
+	p.TopLeft = false
+	p.BottomLeft = false
+	p.BottomRight = false
+	return &p
+}
+
+// WithTitleBottomLeft returns a new box with a specific Title alignment.
+func (p BoxPrinter) WithTitleBottomLeft(b ...bool) *BoxPrinter {
+	b2 := internal.WithBoolean(b)
+	p.BottomLeft = b2
+	p.TopLeft = false
+	p.TopRight = false
+	p.BottomRight = false
+	return &p
+}
+
+// WithTitleBottomRight returns a new box with a specific Title alignment.
+func (p BoxPrinter) WithTitleBottomRight(b ...bool) *BoxPrinter {
+	b2 := internal.WithBoolean(b)
+	p.BottomRight = b2
+	p.TopLeft = false
+	p.TopRight = false
+	p.BottomLeft = false
+	return &p
 }
 
 // WithBoxStyle returns a new box with a specific box Style.
@@ -134,10 +186,40 @@ func (p BoxPrinter) Sprint(a ...interface{}) string {
 		p.TextStyle = &ThemeDefault.BoxTextStyle
 	}
 	maxWidth := internal.GetStringMaxWidth(Sprint(a...))
-	topLine := p.BoxStyle.Sprint(p.BottomRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString),
-		maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.BottomLeftCornerString)
-	bottomLine := p.BoxStyle.Sprint(p.TopRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString),
-		maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.TopLeftCornerString)
+
+	var topLine string
+	var bottomLine string
+
+	if p.Title == "" {
+		topLine = p.BoxStyle.Sprint(p.BottomRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString),
+			maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.BottomLeftCornerString)
+		bottomLine = p.BoxStyle.Sprint(p.TopRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString),
+			maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.TopLeftCornerString)
+	} else {
+		if (maxWidth + p.RightPadding + p.LeftPadding - 4) < len(RemoveColorFromString(p.Title)) {
+			Error.Println("title is to long")
+			topLine = p.BoxStyle.Sprint(p.BottomRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString),
+				maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.BottomLeftCornerString)
+			bottomLine = p.BoxStyle.Sprint(p.TopRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString),
+				maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.TopLeftCornerString)
+		} else if p.TopLeft {
+			topLine = p.BoxStyle.Sprint(p.BottomRightCornerString) + internal.AddTitleToLine(p.Title, p.BoxStyle.Sprint(p.HorizontalString), maxWidth+p.LeftPadding+p.RightPadding, true) + p.BoxStyle.Sprint(p.BottomLeftCornerString)
+			bottomLine = p.BoxStyle.Sprint(p.TopRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString),
+				maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.TopLeftCornerString)
+		} else if p.TopRight {
+			topLine = p.BoxStyle.Sprint(p.BottomRightCornerString) + internal.AddTitleToLine(p.Title, p.BoxStyle.Sprint(p.HorizontalString), maxWidth+p.LeftPadding+p.RightPadding, false) + p.BoxStyle.Sprint(p.BottomLeftCornerString)
+			bottomLine = p.BoxStyle.Sprint(p.TopRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString),
+				maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.TopLeftCornerString)
+		} else if p.BottomLeft {
+			topLine = p.BoxStyle.Sprint(p.BottomRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString),
+				maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.BottomLeftCornerString)
+			bottomLine = p.BoxStyle.Sprint(p.TopRightCornerString) + internal.AddTitleToLine(p.Title, p.BoxStyle.Sprint(p.HorizontalString), maxWidth+p.LeftPadding+p.RightPadding, true) + p.BoxStyle.Sprint(p.TopLeftCornerString)
+		} else if p.BottomRight {
+			topLine = p.BoxStyle.Sprint(p.BottomRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString),
+				maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.BottomLeftCornerString)
+			bottomLine = p.BoxStyle.Sprint(p.TopRightCornerString) + internal.AddTitleToLine(p.Title, p.BoxStyle.Sprint(p.HorizontalString), maxWidth+p.LeftPadding+p.RightPadding, false) + p.BoxStyle.Sprint(p.TopLeftCornerString)
+		}
+	}
 
 	boxString := strings.Repeat("\n", p.TopPadding) + Sprint(a...) + strings.Repeat("\n", p.BottomPadding)
 
