@@ -6,6 +6,7 @@ import (
 	"github.com/gookit/color"
 )
 
+// AddTitleToLine adds a title to a site of a line ex: "─ This is the title ──────"
 func AddTitleToLine(title, line string, length int, left bool) string {
 	var ret string
 	if left {
