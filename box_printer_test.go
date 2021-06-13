@@ -127,48 +127,48 @@ func TestBoxPrinter_WithTitleTopLeft(t *testing.T) {
 	p := BoxPrinter{}
 	p2 := p.WithTitleTopLeft()
 
-	assert.Equal(t, true, p2.TopLeft)
-	assert.Equal(t, false, p.TopLeft)
+	assert.Equal(t, true, p2.TitleTopLeft)
+	assert.Equal(t, false, p.TitleTopLeft)
 }
 
 func TestBoxPrinter_WithTitleTopRight(t *testing.T) {
 	p := BoxPrinter{}
 	p2 := p.WithTitleTopRight()
 
-	assert.Equal(t, true, p2.TopRight)
-	assert.Equal(t, false, p.TopRight)
+	assert.Equal(t, true, p2.TitleTopRight)
+	assert.Equal(t, false, p.TitleTopRight)
 }
 
 func TestBoxPrinter_WithTitleTopCenter(t *testing.T) {
 	p := BoxPrinter{}
 	p2 := p.WithTitleTopCenter()
 
-	assert.Equal(t, true, p2.TopCenter)
-	assert.Equal(t, false, p.TopCenter)
+	assert.Equal(t, true, p2.TitleTopCenter)
+	assert.Equal(t, false, p.TitleTopCenter)
 }
 
 func TestBoxPrinter_WithTitleBottomRight(t *testing.T) {
 	p := BoxPrinter{}
 	p2 := p.WithTitleBottomRight()
 
-	assert.Equal(t, true, p2.BottomRight)
-	assert.Equal(t, false, p.BottomRight)
+	assert.Equal(t, true, p2.TitleBottomRight)
+	assert.Equal(t, false, p.TitleBottomRight)
 }
 
 func TestBoxPrinter_WithTitleBottomLeft(t *testing.T) {
 	p := BoxPrinter{}
 	p2 := p.WithTitleBottomLeft()
 
-	assert.Equal(t, true, p2.BottomLeft)
-	assert.Equal(t, false, p.BottomLeft)
+	assert.Equal(t, true, p2.TitleBottomLeft)
+	assert.Equal(t, false, p.TitleBottomLeft)
 }
 
 func TestBoxPrinter_WithTitleBottomCenter(t *testing.T) {
 	p := BoxPrinter{}
 	p2 := p.WithTitleBottomCenter()
 
-	assert.Equal(t, true, p2.BottomCenter)
-	assert.Equal(t, false, p.BottomCenter)
+	assert.Equal(t, true, p2.TitleBottomCenter)
+	assert.Equal(t, false, p.TitleBottomCenter)
 }
 
 func TestBoxPrinter_WithTitleWithTitleBottomLeft(t *testing.T) {
