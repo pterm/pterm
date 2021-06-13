@@ -11,12 +11,12 @@ import (
 // BoxPrinter is able to render a box around printables.
 type BoxPrinter struct {
 	Title                   string
-	TopLeft                 bool
-	TopRight                bool
-	TopCenter               bool
-	BottomLeft              bool
-	BottomRight             bool
-	BottomCenter            bool
+	TitleTopLeft            bool
+	TitleTopRight           bool
+	TitleTopCenter          bool
+	TitleBottomLeft         bool
+	TitleBottomRight        bool
+	TitleBottomCenter       bool
 	TextStyle               *Style
 	VerticalString          string
 	BoxStyle                *Style
@@ -45,7 +45,7 @@ var DefaultBox = BoxPrinter{
 	LeftPadding:             1,
 	TopPadding:              0,
 	BottomPadding:           0,
-	TopLeft:                 true,
+	TitleTopLeft:            true,
 }
 
 // WithTitle returns a new box with a specific Title.
@@ -57,72 +57,72 @@ func (p BoxPrinter) WithTitle(str string) *BoxPrinter {
 // WithTitleTopLeft returns a new box with a specific Title alignment.
 func (p BoxPrinter) WithTitleTopLeft(b ...bool) *BoxPrinter {
 	b2 := internal.WithBoolean(b)
-	p.TopLeft = b2
-	p.TopRight = false
-	p.TopCenter = false
-	p.BottomLeft = false
-	p.BottomRight = false
-	p.BottomCenter = false
+	p.TitleTopLeft = b2
+	p.TitleTopRight = false
+	p.TitleTopCenter = false
+	p.TitleBottomLeft = false
+	p.TitleBottomRight = false
+	p.TitleBottomCenter = false
 	return &p
 }
 
 // WithTitleTopRight returns a new box with a specific Title alignment.
 func (p BoxPrinter) WithTitleTopRight(b ...bool) *BoxPrinter {
 	b2 := internal.WithBoolean(b)
-	p.TopLeft = false
-	p.TopRight = b2
-	p.TopCenter = false
-	p.BottomLeft = false
-	p.BottomRight = false
-	p.BottomCenter = false
+	p.TitleTopLeft = false
+	p.TitleTopRight = b2
+	p.TitleTopCenter = false
+	p.TitleBottomLeft = false
+	p.TitleBottomRight = false
+	p.TitleBottomCenter = false
 	return &p
 }
 
 // WithTitleTopCenter returns a new box with a specific Title alignment.
 func (p BoxPrinter) WithTitleTopCenter(b ...bool) *BoxPrinter {
 	b2 := internal.WithBoolean(b)
-	p.TopLeft = false
-	p.TopRight = false
-	p.TopCenter = b2
-	p.BottomLeft = false
-	p.BottomRight = false
-	p.BottomCenter = false
+	p.TitleTopLeft = false
+	p.TitleTopRight = false
+	p.TitleTopCenter = b2
+	p.TitleBottomLeft = false
+	p.TitleBottomRight = false
+	p.TitleBottomCenter = false
 	return &p
 }
 
 // WithTitleBottomLeft returns a new box with a specific Title alignment.
 func (p BoxPrinter) WithTitleBottomLeft(b ...bool) *BoxPrinter {
 	b2 := internal.WithBoolean(b)
-	p.TopLeft = false
-	p.TopRight = false
-	p.TopCenter = false
-	p.BottomLeft = b2
-	p.BottomRight = false
-	p.BottomCenter = false
+	p.TitleTopLeft = false
+	p.TitleTopRight = false
+	p.TitleTopCenter = false
+	p.TitleBottomLeft = b2
+	p.TitleBottomRight = false
+	p.TitleBottomCenter = false
 	return &p
 }
 
 // WithTitleBottomRight returns a new box with a specific Title alignment.
 func (p BoxPrinter) WithTitleBottomRight(b ...bool) *BoxPrinter {
 	b2 := internal.WithBoolean(b)
-	p.TopLeft = false
-	p.TopRight = false
-	p.TopCenter = false
-	p.BottomLeft = false
-	p.BottomRight = b2
-	p.BottomCenter = false
+	p.TitleTopLeft = false
+	p.TitleTopRight = false
+	p.TitleTopCenter = false
+	p.TitleBottomLeft = false
+	p.TitleBottomRight = b2
+	p.TitleBottomCenter = false
 	return &p
 }
 
 // WithTitleBottomCenter returns a new box with a specific Title alignment.
 func (p BoxPrinter) WithTitleBottomCenter(b ...bool) *BoxPrinter {
 	b2 := internal.WithBoolean(b)
-	p.TopLeft = false
-	p.TopRight = false
-	p.TopCenter = false
-	p.BottomLeft = false
-	p.BottomRight = false
-	p.BottomCenter = b2
+	p.TitleTopLeft = false
+	p.TitleTopRight = false
+	p.TitleTopCenter = false
+	p.TitleBottomLeft = false
+	p.TitleBottomRight = false
+	p.TitleBottomCenter = b2
 	return &p
 }
 
@@ -234,27 +234,27 @@ func (p BoxPrinter) Sprint(a ...interface{}) string {
 		if (maxWidth + p.RightPadding + p.LeftPadding - 4) < len(RemoveColorFromString(p.Title)) {
 			p.RightPadding = len(RemoveColorFromString(p.Title)) - (maxWidth + p.RightPadding + p.LeftPadding - 5)
 		}
-		if p.TopLeft {
+		if p.TitleTopLeft {
 			topLine = p.BoxStyle.Sprint(p.BottomRightCornerString) + internal.AddTitleToLine(p.Title, p.BoxStyle.Sprint(p.HorizontalString), maxWidth+p.LeftPadding+p.RightPadding, true) + p.BoxStyle.Sprint(p.BottomLeftCornerString)
 			bottomLine = p.BoxStyle.Sprint(p.TopRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString),
 				maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.TopLeftCornerString)
-		} else if p.TopRight {
+		} else if p.TitleTopRight {
 			topLine = p.BoxStyle.Sprint(p.BottomRightCornerString) + internal.AddTitleToLine(p.Title, p.BoxStyle.Sprint(p.HorizontalString), maxWidth+p.LeftPadding+p.RightPadding, false) + p.BoxStyle.Sprint(p.BottomLeftCornerString)
 			bottomLine = p.BoxStyle.Sprint(p.TopRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString),
 				maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.TopLeftCornerString)
-		} else if p.TopCenter {
+		} else if p.TitleTopCenter {
 			topLine = p.BoxStyle.Sprint(p.BottomRightCornerString) + internal.AddTitleToLineCenter(p.Title, p.BoxStyle.Sprint(p.HorizontalString), maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.BottomLeftCornerString)
 			bottomLine = p.BoxStyle.Sprint(p.TopRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString),
 				maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.TopLeftCornerString)
-		} else if p.BottomLeft {
+		} else if p.TitleBottomLeft {
 			topLine = p.BoxStyle.Sprint(p.BottomRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString),
 				maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.BottomLeftCornerString)
 			bottomLine = p.BoxStyle.Sprint(p.TopRightCornerString) + internal.AddTitleToLine(p.Title, p.BoxStyle.Sprint(p.HorizontalString), maxWidth+p.LeftPadding+p.RightPadding, true) + p.BoxStyle.Sprint(p.TopLeftCornerString)
-		} else if p.BottomRight {
+		} else if p.TitleBottomRight {
 			topLine = p.BoxStyle.Sprint(p.BottomRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString),
 				maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.BottomLeftCornerString)
 			bottomLine = p.BoxStyle.Sprint(p.TopRightCornerString) + internal.AddTitleToLine(p.Title, p.BoxStyle.Sprint(p.HorizontalString), maxWidth+p.LeftPadding+p.RightPadding, false) + p.BoxStyle.Sprint(p.TopLeftCornerString)
-		} else if p.BottomCenter {
+		} else if p.TitleBottomCenter {
 			topLine = p.BoxStyle.Sprint(p.BottomRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString),
 				maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.BottomLeftCornerString)
 			bottomLine = p.BoxStyle.Sprint(p.TopRightCornerString) + internal.AddTitleToLineCenter(p.Title, p.BoxStyle.Sprint(p.HorizontalString), maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.TopLeftCornerString)
