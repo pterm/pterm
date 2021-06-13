@@ -230,6 +230,7 @@ func (p BoxPrinter) Sprint(a ...interface{}) string {
 		bottomLine = p.BoxStyle.Sprint(p.TopRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString),
 			maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.TopLeftCornerString)
 	} else {
+		p.Title = strings.ReplaceAll(p.Title, "\n", " ")
 		if (maxWidth + p.RightPadding + p.LeftPadding - 4) < len(RemoveColorFromString(p.Title)) {
 			p.RightPadding = len(RemoveColorFromString(p.Title)) - (maxWidth + p.RightPadding + p.LeftPadding - 5)
 		}
