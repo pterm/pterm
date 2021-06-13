@@ -5,12 +5,21 @@
 - rename putils `TableData` generation files
 
 ### Code Refactoring
+- **boxprinter:** prefix title positions with `Title`
 - **putils:** add `rowSeparator` to `TableFromSeparatedValues`
 
 ### Documentation Changes
+- **boxprinter:** add title & title center position to `BoxPrinter`
+- **boxprinter:** add title & title position to `BoxPrinter`
+- **boxprinter:** add title & title positions to `BoxPrinter`
+- **boxprinter:** add title & title positions to `BoxPrinter`
 - **putils:** update putils docs
 
 ### Features
+- **boxprinter:** replace line breaks in title with space
+- **boxprinter:** add title center position to `BoxPrinter`
+- **boxprinter:** add title & title position to `BoxPrinter`
+- **boxprinter:** add title & title position to `BoxPrinter`
 - **putils:** add `TableDataFromSeparatedValues`
 - **putils:** add `TableDataFromTSV`
 - **putils:** add `TableDataFromCSV`
@@ -19,6 +28,8 @@
 
 ### Test
 - add test for putils `TableData` generation
+- **boxprinter:** add tests for title center position to `BoxPrinter`
+- **boxprinter:** add tests for title & title position
 
 
 <a name="v0.12.23"></a>
