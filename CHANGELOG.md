@@ -1,4 +1,4 @@
-<a name="unreleased"></a> 
+<a name="unreleased"></a>
 ## [Unreleased]
 
 ### Chore
