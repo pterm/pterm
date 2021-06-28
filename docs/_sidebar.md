@@ -29,6 +29,7 @@
     - [Override Default Printer](docs/customizing/override-default-printer.md)
     - [Theming](docs/customizing/theming.md)
 - Contributing
+  - [Printer Templates](contributing/printer-templates.md)
   - [Writing Documentation](contributing/writing-documentation.md)
   - [Documentation Template](contributing/writing-documentation-template.md)
   - [Review Checks](contributing/review-checks.md)
