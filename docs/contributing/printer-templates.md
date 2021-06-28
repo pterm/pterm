@@ -9,7 +9,7 @@ import (
 
 )
 
-// DefaultSpinner is the default SpinnerPrinter.
+// DefaultTemplate is the default TemplatePrinter.
 var DefaultTemplate = TemplatePrinter {
 	
 }
