@@ -1,5 +1,6 @@
 {
   "recommendations": [
-    "golang.go"
+    "golang.go",
+    "vscode-icons-team.vscode-icons"
   ]
 }
