@@ -60,7 +60,7 @@ func TestSpinnerPrinter_UpdateText(t *testing.T) {
 	t.Run("Override", func(t *testing.T) {
 		out := captureStdout(func(io.Writer) {
 			// Set a really long delay to make sure text doesn't get updated before function returns.
-			p := DefaultSpinner.WithDelay(1*time.Hour)
+			p := DefaultSpinner.WithDelay(1 * time.Hour)
 			p.Start("An initial long message")
 			p.UpdateText("A short message")
 		})
