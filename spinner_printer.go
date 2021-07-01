@@ -77,14 +77,14 @@ func (s SpinnerPrinter) WithRemoveWhenDone(b ...bool) *SpinnerPrinter {
 // UpdateText updates the message of the active SpinnerPrinter.
 // Can be used live.
 func (s *SpinnerPrinter) UpdateText(text string) {
+	s.Text = text
 	if !RawOutput {
 		clearLine()
 		Printo(s.Style.Sprint(s.currentSequence) + " " + s.MessageStyle.Sprint(s.Text))
 	}
 	if RawOutput {
-		Println(text)
+		Println(s.Text)
 	}
-	s.Text = text
 }
 
 // Start the SpinnerPrinter.
