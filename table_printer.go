@@ -27,6 +27,7 @@ type TablePrinter struct {
 	Separator      string
 	SeparatorStyle *Style
 	Data           TableData
+	Boxed          bool
 }
 
 // WithStyle returns a new TablePrinter with a specific Style.
@@ -70,6 +71,12 @@ func (p TablePrinter) WithCSVReader(reader *csv.Reader) *TablePrinter {
 	if records, err := reader.ReadAll(); err == nil {
 		p.Data = records
 	}
+	return &p
+}
+
+// WithBoxed returns a new TablePrinter with a box around the table.
+func (p TablePrinter) WithBoxed(b ...bool) *TablePrinter {
+	p.Boxed = internal.WithBoolean(b)
 	return &p
 }
 
@@ -117,6 +124,10 @@ func (p TablePrinter) Srender() (string, error) {
 	}
 
 	ret = strings.TrimSuffix(ret, "\n")
+
+	if p.Boxed {
+		ret = DefaultBox.Sprint(ret)
+	}
 
 	return ret, nil
 }
