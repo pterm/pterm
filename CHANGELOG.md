@@ -2,6 +2,26 @@
 ## [Unreleased]
 
 ### Chore
+- trigger build
+- trigger build
+- **github:** add codespaces support
+- **gitpod:** remove gitpod config file
+- **vsc:** add recommended extensions for VS Code
+
+### Documentation Changes
+- fix live printer template comment
+- add live printer template
+
+### Features
+- **table:** add `Boxed` option
+
+### Test
+- add tests for boxed `TablePrinter`
+
+
+<a name="v0.12.24"></a>
+## [v0.12.24] - 2021-06-13
+### Chore
 - rename putils `TableData` generation files
 
 ### Code Refactoring
@@ -1380,7 +1400,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.23...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.24...HEAD
+[v0.12.24]: https://github.com/pterm/pterm/compare/v0.12.23...v0.12.24
 [v0.12.23]: https://github.com/pterm/pterm/compare/v0.12.22...v0.12.23
 [v0.12.22]: https://github.com/pterm/pterm/compare/v0.12.21...v0.12.22
 [v0.12.21]: https://github.com/pterm/pterm/compare/v0.12.20...v0.12.21
