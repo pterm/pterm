@@ -30,6 +30,13 @@ func TestTablePrinter_WithCSVReader(t *testing.T) {
 	p2.Srender()
 }
 
+func TestTablePrinter_WithBoxed(t *testing.T) {
+	_, err := DefaultTable.WithBoxed().Srender()
+	if err != nil {
+		t.Error(err)
+	}
+}
+
 func TestTablePrinter_WithData(t *testing.T) {
 	proxyToDevNull()
 	d := TableData{
