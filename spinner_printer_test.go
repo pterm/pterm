@@ -49,11 +49,23 @@ func TestSpinnerPrinter_Success(t *testing.T) {
 }
 
 func TestSpinnerPrinter_UpdateText(t *testing.T) {
-	p := DefaultSpinner
-	p.Start()
-	p.UpdateText("test")
+	t.Run("Simple", func(t *testing.T) {
+		p := DefaultSpinner
+		p.Start()
+		p.UpdateText("test")
 
-	assert.Equal(t, "test", p.Text)
+		assert.Equal(t, "test", p.Text)
+	})
+
+	t.Run("Override", func(t *testing.T) {
+		out := captureStdout(func(io.Writer) {
+			// Set a really long delay to make sure text doesn't get updated before function returns.
+			p := DefaultSpinner.WithDelay(1*time.Hour)
+			p.Start("An initial long message")
+			p.UpdateText("A short message")
+		})
+		assert.Contains(t, out, "A short message")
+	})
 }
 
 func TestSpinnerPrinter_UpdateTextRawOutput(t *testing.T) {
