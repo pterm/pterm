@@ -2,7 +2,6 @@ package pterm
 
 import (
 	"fmt"
-	"io"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -15,20 +14,18 @@ func TestTreePrinterNilPrint(t *testing.T) {
 }
 
 func TestTreePrinter_Render(t *testing.T) {
-	testPrintContains(t, func(w io.Writer, a interface{}) {
-		DefaultTree.WithRoot(NewTreeFromLeveledList([]LeveledListItem{
-			{Level: 0, Text: fmt.Sprint(a)},
-			{Level: 0, Text: "0.0"},
-			{Level: 1, Text: "0.1"},
-			{Level: 1, Text: "0.2"},
-			{Level: 0, Text: "1.0"},
-			{Level: 0, Text: "2.0"},
-			{Level: 1, Text: "2.1"},
-			{Level: 1, Text: "2.2"},
-			{Level: 2, Text: "2.2.1"},
-			{Level: 1, Text: "2.3"},
-		})).Render()
-	})
+	DefaultTree.WithRoot(NewTreeFromLeveledList([]LeveledListItem{
+		{Level: 0, Text: fmt.Sprint("Hello, World!")},
+		{Level: 0, Text: "0.0"},
+		{Level: 1, Text: "0.1"},
+		{Level: 1, Text: "0.2"},
+		{Level: 0, Text: "1.0"},
+		{Level: 0, Text: "2.0"},
+		{Level: 1, Text: "2.1"},
+		{Level: 1, Text: "2.2"},
+		{Level: 2, Text: "2.2.1"},
+		{Level: 1, Text: "2.3"},
+	})).Render()
 }
 
 func TestTreePrinter_NewTreeFromLeveledList(t *testing.T) {
