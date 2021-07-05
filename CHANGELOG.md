@@ -1,8 +1,31 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Bug Fixes
+- **style:** fix multiline style coloring
+
+### Chore
+- trigger build
+- trigger build
+
+### Documentation Changes
+
+### Test
+- **style:** fix multiline style coloring
+- **style:** fix multiline style coloring
 
 
+<a name="v0.12.26"></a>
+## [v0.12.26] - 2021-07-01
+### Bug Fixes
+- **spinner:** Override previous text in `UpdateText`
+
+### Documentation Changes
+- **table:** add `Boxed` option to docs
+
+
+<a name="v0.12.25"></a>
+## [v0.12.25] - 2021-07-01
 ### Chore
 - trigger build
 - trigger build
@@ -11,6 +34,7 @@
 - **vsc:** add recommended extensions for VS Code
 
 ### Documentation Changes
+- update changelog
 - fix live printer template comment
 - add live printer template
 
@@ -1402,7 +1426,9 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.24...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.26...HEAD
+[v0.12.26]: https://github.com/pterm/pterm/compare/v0.12.25...v0.12.26
+[v0.12.25]: https://github.com/pterm/pterm/compare/v0.12.24...v0.12.25
 [v0.12.24]: https://github.com/pterm/pterm/compare/v0.12.23...v0.12.24
 [v0.12.23]: https://github.com/pterm/pterm/compare/v0.12.22...v0.12.23
 [v0.12.22]: https://github.com/pterm/pterm/compare/v0.12.21...v0.12.22
