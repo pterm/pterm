@@ -260,7 +260,11 @@ func (s Style) Add(styles ...Style) Style {
 // Input will be colored with the parent Style.
 func (s Style) Sprint(a ...interface{}) string {
 	message := Sprint(a...)
-	message = strings.ReplaceAll(message, color.ResetSet, Sprintf("\u001B[%sm", s.String()))
+	messageLines := strings.Split(message, "\n")
+	for i, line := range messageLines {
+		messageLines[i] = color.RenderCode(s.String(), strings.ReplaceAll(line, color.ResetSet, Sprintf("\u001B[%sm", s.String())))
+	}
+	message = strings.Join(messageLines, "\n")
 	return color.RenderCode(s.String(), message)
 }
 
