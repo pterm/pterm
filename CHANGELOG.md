@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+
+<a name="v0.12.27"></a>
+## [v0.12.27] - 2021-07-05
 ### Bug Fixes
 - **style:** fix multiline style coloring
 
@@ -1426,7 +1429,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.26...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.27...HEAD
+[v0.12.27]: https://github.com/pterm/pterm/compare/v0.12.26...v0.12.27
 [v0.12.26]: https://github.com/pterm/pterm/compare/v0.12.25...v0.12.26
 [v0.12.25]: https://github.com/pterm/pterm/compare/v0.12.24...v0.12.25
 [v0.12.24]: https://github.com/pterm/pterm/compare/v0.12.23...v0.12.24
