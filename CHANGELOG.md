@@ -7,12 +7,6 @@
 ### Bug Fixes
 - **style:** fix multiline style coloring
 
-### Chore
-- trigger build
-- trigger build
-
-### Documentation Changes
-
 ### Test
 - **style:** fix multiline style coloring
 - **style:** fix multiline style coloring
@@ -23,24 +17,9 @@
 ### Bug Fixes
 - **spinner:** Override previous text in `UpdateText`
 
-### Documentation Changes
-- **table:** add `Boxed` option to docs
-
 
 <a name="v0.12.25"></a>
 ## [v0.12.25] - 2021-07-01
-### Chore
-- trigger build
-- trigger build
-- **github:** add codespaces support
-- **gitpod:** remove gitpod config file
-- **vsc:** add recommended extensions for VS Code
-
-### Documentation Changes
-- update changelog
-- fix live printer template comment
-- add live printer template
-
 ### Features
 - **table:** add `Boxed` option
 
@@ -50,20 +29,6 @@
 
 <a name="v0.12.24"></a>
 ## [v0.12.24] - 2021-06-13
-### Chore
-- rename putils `TableData` generation files
-
-### Code Refactoring
-- **boxprinter:** prefix title positions with `Title`
-- **putils:** add `rowSeparator` to `TableFromSeparatedValues`
-
-### Documentation Changes
-- **boxprinter:** add title & title center position to `BoxPrinter`
-- **boxprinter:** add title & title position to `BoxPrinter`
-- **boxprinter:** add title & title positions to `BoxPrinter`
-- **boxprinter:** add title & title positions to `BoxPrinter`
-- **putils:** update putils docs
-
 ### Features
 - **boxprinter:** replace line breaks in title with space
 - **boxprinter:** add title center position to `BoxPrinter`
@@ -80,32 +45,28 @@
 - **boxprinter:** add tests for title center position to `BoxPrinter`
 - **boxprinter:** add tests for title & title position
 
+### Code Refactoring
+- **boxprinter:** prefix title positions with `Title`
+- **putils:** add `rowSeparator` to `TableFromSeparatedValues`
+
 
 <a name="v0.12.23"></a>
 ## [v0.12.23] - 2021-06-07
-### Bug Fixes
-- **headerprinter:** don't panic if content width > terminal width
-
-### Chore
-- **github:** update issue template
-
-### Code Refactoring
-- **prefix:** `pterm.Error` default no line number shown
-
-### Documentation Changes
-- **readme:** add cli-template link
-
 ### Features
 - Add util functions to create tables from slices of structs ([#217](https://github.com/pterm/pterm/issues/217))
 
+### Bug Fixes
+- **headerprinter:** don't panic if content width > terminal width
+
 ### Test
+- **prefix:** `pterm.Error` default no line number shown
+
+### Code Refactoring
 - **prefix:** `pterm.Error` default no line number shown
 
 
 <a name="v0.12.22"></a>
 ## [v0.12.22] - 2021-05-30
-### Documentation Changes
-
 ### Features
 - make spinner update faster
 
@@ -115,91 +76,42 @@
 
 <a name="v0.12.21"></a>
 ## [v0.12.21] - 2021-05-30
-### Chore
-- **github:** remove issue template config.yml
-
-### Code Refactoring
-- **putils:** change internal variable name
-
-### Documentation Changes
-- **putils:** add contributing notice to readme
-
 ### Features
 - print lines above active spinners
 - **putils:** add `DownloadFileWithProgressbar`
 
-### Style
-- **lint:** fix linting error
-
 ### Test
 - clear active spinners after tests complete
+
+### Code Refactoring
+- **putils:** change internal variable name
 
 
 <a name="v0.12.20"></a>
 ## [v0.12.20] - 2021-05-29
-### Ci
-- create putils README from template
-- automatically write putils docs to pterm.sh
-
-### Documentation Changes
-- **pterm-sh:** move putils section up in sidebar
-- **pterm-sh:** add putils docs to sidebar
-- **putils:** add pkg.go.dev docs link
-- **putils:** add better docs to putils
-- **readme:** update pkg.go.dev link to point to the docs section directly
-- **readme:** disable link styling in badges
-
 ### Features
 - force color output by default
 
 
 <a name="v0.12.19"></a>
 ## [v0.12.19] - 2021-05-29
+### Features
+- add `PrintOnError` for all printers and interface
+- **putils:** add `putils` package ([#206](https://github.com/pterm/pterm/issues/206))
+
 ### Bug Fixes
 - **header:** fix multiline header
 
-### Chore
-- **deps:** bump github.com/mattn/go-runewidth from 0.0.12 to 0.0.13
-- **github:** add slack channel link to issues
-
-### Ci
-- automatically copy readme to pterm.sh
+### Test
+- add tests for all printers for `PrintOnError`
 
 ### Code Refactoring
 - make `PrintOnError` return `*TextPrinter`
 - **area:** better height calculation
 
-### Documentation Changes
-- **pterm-sh:** update readme
-- **readme:** add `AreaPrinter` to feature list
-- **readme:** remove unstable notice
-
-### Features
-- add `PrintOnError` for all printers and interface
-- **putils:** add `putils` package ([#206](https://github.com/pterm/pterm/issues/206))
-
-### Test
-- add tests for all printers for `PrintOnError`
-
 
 <a name="v0.12.18"></a>
 ## [v0.12.18] - 2021-05-22
-### Chore
-- go mod tidy
-- **deps:** add atomicgo/cursor as dependency
-
-### Code Refactoring
-- fix linting errors
-
-### Documentation Changes
-- **area:** add comment for `DefaultArea`
-- **area:** add docs for `AreaPrinter`
-- **examples:** update area printer example to use `Center` option
-- **examples:** add `AreaPrinter` example
-- **pterm-sh:** create helper functions section
-- **pterm-sh:** add `EnableStyling` and `DisableStyling` to docs
-- **pterm-sh:** fix writing-documentation-template.md link
-
 ### Features
 - add `AreaPrinter`
 - **area:** add `Center` option
@@ -211,17 +123,15 @@
 - **area:** fix tests for `AreaPrinter`
 - **area:** add `AreaPrinter` tests
 
+### Code Refactoring
+- fix linting errors
+
 
 <a name="v0.12.17"></a>
 ## [v0.12.17] - 2021-05-14
 ### Bug Fixes
 - fix `pterm.Fatal.Printfln` not panicking
 - **prefix:** fix `pterm.Fatal.Printfln` not panicking and had output in debug mode
-
-### Chore
-- **deps:** bump github.com/gookit/color from 1.4.1 to 1.4.2
-
-### Documentation Changes
 
 ### Test
 - **prefix:** add tests for `Sprintfln` and `Printfln` function when in debug mode
@@ -232,26 +142,9 @@
 ### Code Refactoring
 - **prefix:** make `PrintOnError` accept multiple inputs
 
-### Documentation Changes
-
-### Style
-- remove unnecessary trailing newline
-
 
 <a name="v0.12.15"></a>
 ## [v0.12.15] - 2021-05-13
-### Bug Fixes
-- **prefix:** fix `PrintOnError`
-
-### Code Refactoring
-- correct behaviour of Enable-/DisableStyling
-- fix variable names
-
-### Documentation Changes
-- **contributing:** update test template
-- **examples:** add `disable-styling` example
-- **examples:** revert `BarChart` example
-
 ### Features
 - add raw output mode for `BarChart`
 - add disable styling boolean option
@@ -265,48 +158,21 @@
 - **progressbar:** add raw output mode
 - **spinner:** add raw output mode
 
+### Bug Fixes
+- **prefix:** fix `PrintOnError`
+
 ### Test
 - add tests with `RawOutput` enabled
 - add interface tests for `Color` and `RGB`
 - added tests for `DisableStyling` and `EnableStyling`
 
+### Code Refactoring
+- correct behaviour of Enable-/DisableStyling
+- fix variable names
+
 
 <a name="v0.12.14"></a>
 ## [v0.12.14] - 2021-05-09
-### Bug Fixes
-- **header:** fix inline color in `Header`
-
-### Ci
-- try to render SVGs with monospace font
-- try to render SVGs with monospace font
-- change color scheme for rendered examples
-
-### Code Refactoring
-- refactor `Sprintfln` and `Printfln` func. for better performance
-
-### Documentation Changes
-- add docs for `Sprintfln` and `Printfln` function for all printers
-- **examples:** fix line length of `BoxPrinter` example
-- **pterm-sh:** add docs for `Color` printer in `README.md`
-- **pterm-sh:** document global function
-- **pterm-sh:** update `edit on github` link
-- **pterm-sh:** add docs for `BarChart` printer in `README.md`
-- **pterm-sh:** add `Style` printer documentation
-- **pterm-sh:** add a `Style` printer example
-- **pterm-sh:** restructure sidebar
-- **pterm-sh:** add `RGB` printer documentation and in `README.md`
-- **pterm-sh:** add `RGB` and `Style` to features in `README.md`
-- **pterm-sh:** add docs for `Prefix` printer in `README.md`
-- **pterm-sh:** add docs for theming
-- **pterm-sh:** remove customizing intro from sidebar
-- **pterm-sh:** add docs for `Table` printer in `README.md`
-- **readme:** add docs for theming
-- **readme:** make feature tables shorter
-- **readme:** add supporters section
-- **readme:** move features section to goal of pterm
-- **readme:** move installation section to top
-- **readme:** make feature list to table
-
 ### Features
 - **basic-text:** add `Sprintfln` and `Printfln` function
 - **boxprinter:** add `Sprintfln` and `Printfln` function
@@ -320,8 +186,14 @@
 - **rgb:** add `Sprintfln` and `Printfln` function
 - **section:** add `Sprintfln` and `Printfln` function
 
+### Bug Fixes
+- **header:** fix inline color in `Header`
+
 ### Test
 - add tests for `Sprintfln` and `Printfln` function
+
+### Code Refactoring
+- refactor `Sprintfln` and `Printfln` func. for better performance
 
 ### Reverts
 - ci: change color scheme for rendered examples
@@ -333,34 +205,21 @@
 - **bigtext:** fix height of some characters [#180](https://github.com/pterm/pterm/issues/180)
 - **color:** make color implement `TextPrinter`
 
-### Chore
-- **deps:** bump github.com/gookit/color from 1.4.0 to 1.4.1
-- **deps:** bump github.com/gookit/color from 1.3.8 to 1.4.0
-- **deps:** bump github.com/mattn/go-runewidth from 0.0.10 to 0.0.12
-- **gitpod:** add gitpod support ([#172](https://github.com/pterm/pterm/issues/172))
+### Test
+- add interface tests
 
 ### Code Refactoring
 - **examples:** center the intro of `demo`
 - **examples:** add note to box printer
 
-### Documentation Changes
-
-### Test
-- add interface tests
-
 
 <a name="v0.12.12"></a>
 ## [v0.12.12] - 2021-03-01
-### Chore
-- **deps:** bump github.com/gookit/color from 1.3.7 to 1.3.8
+### Features
+- **prefixprinter:** Add option to show line number of caller
 
 ### Code Refactoring
 - **examples:** Update `PrefixPrinter` example
-
-### Documentation Changes
-
-### Features
-- **prefixprinter:** Add option to show line number of caller
 
 
 <a name="v0.12.11"></a>
@@ -369,18 +228,11 @@
 - refactor print logic of `BoxPrinter`
 - refactor print logic of `CenterPrinter`
 
-### Documentation Changes
-
 
 <a name="v0.12.10"></a>
 ## [v0.12.10] - 2021-02-26
 ### Bug Fixes
 - correct `pterm.Println()` behaviour to fit to `fmt.Println()`
-
-### Chore
-- **intellij:** update VersionControlSystem config
-
-### Documentation Changes
 
 
 <a name="v0.12.9"></a>
@@ -389,19 +241,27 @@
 - correct `pterm.Println()` behaviour to fit to `fmt.Println()`
 - change terminal package import path to updated version
 
-### Chore
-- **deps:** update dependencies
-
-### Documentation Changes
-
 
 <a name="v0.12.8"></a>
 ## [v0.12.8] - 2020-12-11
+### Features
+- **boxprinter:** add `WithHorizontalString` to `BoxPrinter`
+- **boxprinter:** add `BoxPrinter`
+- **panel:** add optional border for `Panel`
+- **panelprinter:** add theme support to `PanelPrinter`
+- **theme:** add `BoxStyle` and `BoxTextStyle`
+- **theme:** add optional theme for border in `Panel`
+
 ### Bug Fixes
 - revert change horizontal string change
 
-### Chore
-- **intellij:** update conventionalCommit.xml
+### Test
+- **boxprinter:** add test
+- **boxprinter:** test multiple lines in one box
+- **boxprinter:** add tests for `BoxPrinter`
+- **panelprinter:** add tests for adding box printer
+- **panelprinter:** add tests for optional border for `Panel`
+- **theme:** add tests for `BoxStyle` and `BoxTextStyle`
 
 ### Code Refactoring
 - remove analytics
@@ -413,53 +273,9 @@
 - **panelprinter:** optional border for `Panel`
 - **panelprinter:** add `BoxPrinter` to surround panels with a fully custom box
 
-### Documentation Changes
-- **boxprinter:** update `BoxPrinter` example
-- **boxprinter:** update documentation to printer
-- **boxprinter:** add documentation
-- **examples:** add example for `BoxPrinter`
-- **examples:** change example for `BoxPrinter`
-- **pterm-sh:** add `BoxPrinter`
-- **pterm-sh:** update sidebar
-- **readme:** update readme with new main features
-
-### Features
-- **boxprinter:** add `WithHorizontalString` to `BoxPrinter`
-- **boxprinter:** add `BoxPrinter`
-- **panel:** add optional border for `Panel`
-- **panelprinter:** add theme support to `PanelPrinter`
-- **theme:** add `BoxStyle` and `BoxTextStyle`
-- **theme:** add optional theme for border in `Panel`
-
-### Style
-- fix go vet issue
-- **panelprinter:** bottom padding in `PanelPrinter`
-
-### Test
-- **boxprinter:** add test
-- **boxprinter:** test multiple lines in one box
-- **boxprinter:** add tests for `BoxPrinter`
-- **panelprinter:** add tests for adding box printer
-- **panelprinter:** add tests for optional border for `Panel`
-- **theme:** add tests for `BoxStyle` and `BoxTextStyle`
-
 
 <a name="v0.12.7"></a>
 ## [v0.12.7] - 2020-11-24
-### Bug Fixes
-- center bars over colored labels in `BarChart`
-
-### Documentation Changes
-- change Template to BarChart
-- fix readme formatting
-- add buymeacoffee link to readme
-- **contributing:** update contributing file
-- **funding:** add buymeacoffee link to FUNDING.yml
-- **pterm-sh:** add docs for `BarChartPrinter`
-- **pterm-sh:** remove empty codeblock
-- **readme:** add emoji to support section
-- **readme:** add spacing between text
-
 ### Features
 - add values to chart
 - add horizontal `BarChartPrinter`
@@ -467,6 +283,9 @@
 - add `BarChartPrinter`
 - add `BarChartPrinter`
 - **theme:** add theme support to `BarChart`
+
+### Bug Fixes
+- center bars over colored labels in `BarChart`
 
 ### Test
 - add tests to `BarChartPrinter`
@@ -477,15 +296,11 @@
 ### Bug Fixes
 - disabling output works as expected now ([#149](https://github.com/pterm/pterm/issues/149))
 
-### Documentation Changes
-
 
 <a name="v0.12.5"></a>
 ## [v0.12.5] - 2020-11-17
 ### Bug Fixes
 - fix `PrefixPrinter` with multiple trailing newline endings.
-
-### Documentation Changes
 
 
 <a name="v0.12.4"></a>
@@ -493,38 +308,9 @@
 ### Bug Fixes
 - fix `Printf` of `PrefixPrinter`
 
-### Ci
-- count tests from all packages
-- read stderr to count unit tests
-- try to repeat unittest count
-
-### Documentation Changes
-- **contributing:** change examples to return error ([#145](https://github.com/pterm/pterm/issues/145))
-
-### Revert
-- "ci: try to repeat unittest count"
-
-### Style
-- remove commented code
-
 
 <a name="v0.12.3"></a>
 ## [v0.12.3] - 2020-11-12
-### Chore
-- **deps:** update dependencies
-
-### Ci
-- disable ubuntu and macOS tests
-- disable parallel unit test counting
-- fix generation of readmes
-- disable bodyclose
-- add stats
-- disable parallel tests
-- add timeout to unittests
-- add json output on unittest count fail
-
-### Documentation Changes
-
 ### Test
 - reduce tests
 - different test logic for rgb printing
@@ -533,92 +319,18 @@
 
 <a name="v0.12.2"></a>
 ## [v0.12.2] - 2020-11-05
-### Bug Fixes
-- fix internal `GetStringMaxWidth` max width
-
-### Chore
-- **intellij:** add conventional commit linting defaults
-
-### Ci
-- only count tests in pterm package
-- change svg font to JetBrains Mono
-
-### Code Refactoring
-- use `pterm.Sprint` to print
-
-### Documentation Changes
-- **code:** fix `Printo` comment
-- **panel:** update example
-- **pterm-sh:** remove variables for now
-- **pterm-sh:** add print methods documentation
-- **pterm-sh:** move bulletlistitem.md into types directory
-- **pterm-sh:** move printer files in own directory
-- **pterm-sh:** add better structure to the documentation
-- **pterm-sh:** add functions with descriptions
-- **pterm-sh:** update sidebar
-- **pterm-sh:** add panel-printer
-- **pterm-sh:** update sidebar
-- **pterm-sh:** sort sidebar
-- **pterm-sh:** rename basictext.md to basictext-printer.md
-- **pterm-sh:** update sidebar
-- **pterm-sh:** add basictext
-- **pterm-sh:** make writing-documentation-template.md to a codeblock again
-- **pterm-sh:** add custom functions to writing-documentation-template.md
-- **pterm-sh:** change basic usage of progressbar
-- **pterm-sh:** rename printer documentation files
-- **pterm-sh:** update sidebar
-- **pterm-sh:** add tree
-- **pterm-sh:** add table
-- **pterm-sh:** update sidebar
-- **pterm-sh:** change `bool` to `...bool`
-- **pterm-sh:** add spinner
-- **pterm-sh:** update sidebar
-- **pterm-sh:** update sidebar
-- **pterm-sh:** add section
-- **pterm-sh:** add progressbar
-- **pterm-sh:** update sidebar
-- **pterm-sh:** update sidebar
-- **pterm-sh:** add paragraph
-- **pterm-sh:** change to same naming convention
-- **pterm-sh:** add header
-- **pterm-sh:** update sidebar
-- **pterm-sh:** update sidebar
-- **pterm-sh:** add center
-- **pterm-sh:** add bulletlistitem
-- **pterm-sh:** add bulletlist
-- **pterm-sh:** update sidebar
-- **pterm-sh:** update sidebar
-- **pterm-sh:** add override-default-printer.md
-- **pterm-sh:** add `BigText` documentation
-- **pterm-sh:** add documentation on how to write documentation
-- **pterm-sh:** change style.css
-- **pterm-sh:** disbale service worker
-- **pterm-sh:** add favicon
-- **pterm-sh:** fix some styling issues
-- **pterm-sh:** disable share buttons
-- **pterm-sh:** add quick-start.md
-- **pterm-sh:** fix link in intro
-- **pterm-sh:** add readme
-- **pterm-sh:** add review check description
-- **pterm-sh:** update documentation intro
-- **pterm-sh:** write writing-documentation.md
-- **pterm-sh:** add flat style to alerts
-- **pterm-sh:** fix coverpage link to documentation
-- **pterm-sh:** add writing-documentation.md
-- **pterm-sh:** update sidebar
-- **pterm-sh:** add contributing.md, intro.md and review-checks.md
-- **pterm-sh:** update coverpage
-- **pterm-sh:** change `|` to `│`
-- **pterm.sh:** update pterm logo
-- **readme:** add link to pterm documentation
-- **readme:** add links to pterm website
-
 ### Features
 - color each line separately when using multi line input
+
+### Bug Fixes
+- fix internal `GetStringMaxWidth` max width
 
 ### Test
 - **basictext:** proxy print functions to DevNull
 - **progressbar:** proxy print functions to DevNull
+
+### Code Refactoring
+- use `pterm.Sprint` to print
 
 
 <a name="v0.12.1"></a>
@@ -626,40 +338,18 @@
 ### Bug Fixes
 - **panel:** Fix output when input is colored
 
-### Ci
-- fix unit test count glitch
-
-### Documentation Changes
-
 ### Performance Improvements
 - **header:** calculate margin faster
 
 
 <a name="v0.12.0"></a>
 ## [v0.12.0] - 2020-11-04
-### Bug Fixes
-- **panel:** add invalid check for `padding` in `panel`
-
-### Code Refactoring
-- make all printer names end with `Printer` ([#134](https://github.com/pterm/pterm/issues/134))
-- **bulletlist:** remove `DefaultBulletListItem`
-- **bulletlist:** `BulletListItem` remove `Render` and `Srender`
-- **bulletlist:** `BulletListItem` is no renderable anymore
-- **bulletlist:** change `BulletList` to `BulletListPrinter`
-- **progressbar:** change `ActiveProgressbars` to `ActiveProgressbarPrinters`
-- **progressbar:** change directory name `progressbar` to `progressbar_printer`
-- **progressbar:** change `Progressbar` to `ProgressbarPrinter`
-- **spinner:** change `Spinner` to `SpinnerPrinter`
-- **spinner:** change directory name `spinner` to `spinner_printer`
-- **table:** change `Table` to `TablePrinter`
-- **tree:** change `Tree` to `TreePrinter`
-
-### Documentation Changes
-- **tree:** change `Tree` to `TreePrinter`
-
 ### Features
 - **panel:** add an option to make a padding beneath `panel`
 - **panel:** add an option to make columns the same length
+
+### Bug Fixes
+- **panel:** add invalid check for `padding` in `panel`
 
 ### Test
 - **bulletlist:** `BulletListItem` remove `Render` and `Srender`
@@ -672,6 +362,20 @@
 - **progressbar:** change directory name `progressbar_test` to `progressbar_printer_test`
 - **spinner:** change directory name `spinner_test` to `spinner_printer_test`
 - **spinner:** change `Spinner` to `SpinnerPrinter`
+- **table:** change `Table` to `TablePrinter`
+- **tree:** change `Tree` to `TreePrinter`
+
+### Code Refactoring
+- make all printer names end with `Printer` ([#134](https://github.com/pterm/pterm/issues/134))
+- **bulletlist:** remove `DefaultBulletListItem`
+- **bulletlist:** `BulletListItem` remove `Render` and `Srender`
+- **bulletlist:** `BulletListItem` is no renderable anymore
+- **bulletlist:** change `BulletList` to `BulletListPrinter`
+- **progressbar:** change `ActiveProgressbars` to `ActiveProgressbarPrinters`
+- **progressbar:** change directory name `progressbar` to `progressbar_printer`
+- **progressbar:** change `Progressbar` to `ProgressbarPrinter`
+- **spinner:** change `Spinner` to `SpinnerPrinter`
+- **spinner:** change directory name `spinner` to `spinner_printer`
 - **table:** change `Table` to `TablePrinter`
 - **tree:** change `Tree` to `TreePrinter`
 
@@ -712,20 +416,11 @@ change `BulletList` to `BulletListPrinter` to unify the naming scheme
 
 <a name="v0.11.0"></a>
 ## [v0.11.0] - 2020-11-03
-### Bug Fixes
-- **centerprinter:** make centerprinter func return pointer
-
-### Chore
-- **deps:** bump github.com/gookit/color from 1.3.1 to 1.3.2
-
-### Documentation Changes
-- add docs website
-- **review:** add review docs check
-- **review:** update review checks
-- **review:** add review check file
-
 ### Features
 - add `PanelPrinter`
+
+### Bug Fixes
+- **centerprinter:** make centerprinter func return pointer
 
 ### BREAKING CHANGE
 
@@ -734,40 +429,21 @@ make centerprinter func `WithCenterEachLineSeparately` return a pointer of cente
 
 <a name="v0.10.1"></a>
 ## [v0.10.1] - 2020-11-02
-### Documentation Changes
-- **examples:** fix `disable-color` example
-- **examples:** add center examples
-- **examples:** fix examples
-- **examples:** fix demo
-- **readme:** add center to features
-
 ### Features
 - add `CenterPrinter`
 
 
 <a name="v0.10.0"></a>
 ## [v0.10.0] - 2020-11-01
-### Chore
-- **deps:** update dependencies
-
-### Ci
-- change font of animation SVGs to `consolas`
-- change font of animation SVGs
+### Features
+- make printers return errors
+- add `DisableOutput()` and `EnableOutput()` ([#108](https://github.com/pterm/pterm/issues/108))
 
 ### Code Refactoring
 - ignore errors where no errors can occur
 - **theme:** change `ListTextStyle` to `BulletListTextStyle` ([#104](https://github.com/pterm/pterm/issues/104))
 - **theme:** change `ProgressbarBarStyle` to `FgCyan` ([#106](https://github.com/pterm/pterm/issues/106))
 - **theme:** change white to default color in `Theme` ([#103](https://github.com/pterm/pterm/issues/103))
-
-### Documentation Changes
-- **examples:** update `disable-color` example ([#107](https://github.com/pterm/pterm/issues/107))
-- **examples:** change color of `BigLetter` P of PTerm to `FgLightCyan` ([#105](https://github.com/pterm/pterm/issues/105))
-- **examples:** change length of tree example in demo
-
-### Features
-- make printers return errors
-- add `DisableOutput()` and `EnableOutput()` ([#108](https://github.com/pterm/pterm/issues/108))
 
 ### BREAKING CHANGE
 
@@ -778,9 +454,14 @@ The global variable `DisableOutput` was renamed to `Output`.
 
 <a name="v0.9.3"></a>
 ## [v0.9.3] - 2020-10-31
-### Chore
-- approach for an interactive solution
-- **deps:** update dependencies
+### Features
+- add a levelList converter for TreeListPrinter
+- add `TreeListPrinter` as a renderable printer
+- add `TreeListPrinter` as a renderable printer
+- **theme:** add theme support for `Tree`
+
+### Test
+- **tree:** add `Tree` tests
 
 ### Code Refactoring
 - clean up `Tree`
@@ -793,32 +474,9 @@ The global variable `DisableOutput` was renamed to `Output`.
 - **tree:** refactor `Tree` code
 - **tree:** refactor `Tree` code and write tests for `Tree`
 
-### Documentation Changes
-- **examples:** add `Tree` to demo
-- **examples:** refactor `Tree` example
-- **examples:** refactor `treelist` example
-- **examples:** add example for `Tree`
-- **examples:** add example for `Tree`
-- **examples:** add `Tree` to demo
-- **examples:** refactor `treelist` example
-- **examples:** refactor `treelist` example
-- **readme:** add `Tree` to features
-
-### Features
-- add a levelList converter for TreeListPrinter
-- add `TreeListPrinter` as a renderable printer
-- add `TreeListPrinter` as a renderable printer
-- **theme:** add theme support for `Tree`
-
-### Test
-- **tree:** add `Tree` tests
-
 
 <a name="v0.9.2"></a>
 ## [v0.9.2] - 2020-10-29
-### Documentation Changes
-- **examples:** add `disable-color` example
-
 ### Features
 - add option to disable and enable colors
 
@@ -828,66 +486,25 @@ The global variable `DisableOutput` was renamed to `Output`.
 ### Code Refactoring
 - make the prefix of `Info` smaller again
 
-### Documentation Changes
-
 
 <a name="v0.9.0"></a>
 ## [v0.9.0] - 2020-10-27
+### Features
+- add `Debug` `PrefixPrinter`
+- add support for enabling and disabling debug messages
+
 ### Bug Fixes
 - progressbar disappears when done and something is printed after
 
-### Chore
-- **deps:** update dependencies
-
-### Ci
-- replace log panic with fatal
-- proxy cmd stdout to os stdout
+### Test
+- add debugger tests to `PrefixPrinter`
+- add progressbar tests
 
 ### Code Refactoring
 - remove `UpdateDelay` from `Progressbar`
 - change `NewList` to `NewBulletList`
 - change `NewList` to `NewBulletList`
 - deprecate `UpdateDelay` in `Progressbar`
-
-### Documentation Changes
-- **examples:** update `print-with-color` example
-- **examples:** remove 2 lines from max terminal max height in fade
-- **examples:** update `BigTextPrinter` example
-- **examples:** update `Theme` example
-- **examples:** update `BulletListPrinter` example
-- **examples:** change color fade multiple example ([#85](https://github.com/pterm/pterm/issues/85))
-- **examples:** update `BulletListPrinter` custom example
-- **examples:** add more delay between table and end
-- **examples:** redo demo ([#90](https://github.com/pterm/pterm/issues/90))
-- **examples:** update `Table` example
-- **examples:** update `Spinner` example
-- **examples:** update `DefaultSection` example
-- **examples:** update `DefaultProgressbar` example
-- **examples:** update `HeaderPrinter` example
-- **examples:** update `print-color-rgb` example
-- **examples:** update `print-color-fade-multiple` example
-- **examples:** update `print-color-fade` example
-- **examples:** update `BasicTextPrinter` example
-- **examples:** update `ParagraphPrinter` custom example
-- **examples:** update `HeaderPrinter` custom example
-- **examples:** update `override-default-printers` example
-- **examples:** update `ParagraphPrinter` example
-- **godoc:** add package description
-- **readme:** add features list to README ([#84](https://github.com/pterm/pterm/issues/84))
-- **readme:** add link to examples location
-- **readme:** shrink features list
-- **readme:** remove one space between demo and header
-- **readme:** use real emoji for features list
-- **readme:** add prefix to features
-- **readme:** add source link to demo
-
-### Features
-- add `Debug` `PrefixPrinter`
-- add support for enabling and disabling debug messages
-
-### Test
-- add debugger tests to `PrefixPrinter`
-- add progressbar tests
 
 ### BREAKING CHANGE
 
@@ -898,49 +515,16 @@ Changed `NewList` to `NewBulletList`.
 
 <a name="v0.8.1"></a>
 ## [v0.8.1] - 2020-10-26
+### Features
+- add fade from one RGB over several RGBs to another RGB
+
 ### Code Refactoring
 - refactor doc
 - refactor code
 
-### Documentation Changes
-- change bug emoji
-- add issue templates
-- update bug issue template
-- **examples:** add multiple color fade example
-- **examples:** add TrueColor info to fade examples
-- **examples:** add space to fade examples
-- **examples:** shrink fade TrueColor info
-- **readme:** add short description
-
-### Features
-- add fade from one RGB over several RGBs to another RGB
-
 
 <a name="v0.8.0"></a>
 ## [v0.8.0] - 2020-10-24
-### Ci
-- add restarting text
-- more logs in CI
-- remove goroutines to test efficiency
-- escape coverage filepath
-- fix codecov
-- upload coverage report
-
-### Code Refactoring
-- make `BigTextPrinter` release ready
-- change `LineCharacter` to `BarCharacter` ([#70](https://github.com/pterm/pterm/issues/70))
-
-### Documentation Changes
-- **contributing:** update contributing guides
-- **examples:** color fade demo, fade from cyan to magenta ([#68](https://github.com/pterm/pterm/issues/68))
-- **examples:** refactor demo
-- **examples:** add header to demo
-- **readme:** add test coverage to readme
-- **readme:** change unit tests badge color to magenta
-- **readme:** add coverage badge
-- **readme:** update readme
-- **readme:** add Q&A to readme
-
 ### Features
 - add `BigTextPrinter` ([#75](https://github.com/pterm/pterm/issues/75))
 - use level of section printer
@@ -949,6 +533,10 @@ Changed `NewList` to `NewBulletList`.
 ### Test
 - test that `%s` won't fail to print
 
+### Code Refactoring
+- make `BigTextPrinter` release ready
+- change `LineCharacter` to `BarCharacter` ([#70](https://github.com/pterm/pterm/issues/70))
+
 ### BREAKING CHANGE
 
 Changed `LineCharacter` to `BarCharacter`.
@@ -956,38 +544,15 @@ Changed `LineCharacter` to `BarCharacter`.
 
 <a name="v0.7.0"></a>
 ## [v0.7.0] - 2020-10-20
+### Features
+- **progressbar:** add RemoveWhenDone
+
 ### Bug Fixes
 - make theme accept pointer styles
 - make Spinner accept pointer Style
 - make WithMessageStyle accept Style pointer
 - add nil check to SectionPrinter Style
 - section printer Style to pointer
-
-### Ci
-- better error handling in CI System ([#61](https://github.com/pterm/pterm/issues/61))
-- disable paramTypeCombine
-- dont check for paramTypeCombine
-- put unit test count into readme
-
-### Code Refactoring
-- use log output
-- remove obsolete if
-- fit progressbar to new percentage calculation method
-- make fatal panic
-- rename parameters
-- don't show empty line when removing a progressbar
-
-### Documentation Changes
-- comment WithBoolean
-- less to-do checks
-- add unit test count badge
-- document test utils
-- **contributing:** update test template
-- **contributing:** add test template to contributing guides
-- **contributing:** add printer nil check example
-
-### Features
-- **progressbar:** add RemoveWhenDone
 
 ### Test
 - add tests color and style
@@ -1010,10 +575,13 @@ Changed `LineCharacter` to `BarCharacter`.
 - implement test utils
 - add rgb tests
 
-### Tests
-- add internal percentage tests
-- add BasicTextPrinter tests
-- test PrefixPrinter special cases
+### Code Refactoring
+- use log output
+- remove obsolete if
+- fit progressbar to new percentage calculation method
+- make fatal panic
+- rename parameters
+- don't show empty line when removing a progressbar
 
 
 <a name="v0.6.1"></a>
@@ -1021,29 +589,9 @@ Changed `LineCharacter` to `BarCharacter`.
 ### Bug Fixes
 - fix RGB methods
 
-### Documentation Changes
-- **examples:** fix override-default-printer example
-
 
 <a name="v0.6.0"></a>
 ## [v0.6.0] - 2020-10-19
-### Ci
-- disable gocritic in test files
-- disable some checks for test files
-- don't lint test files
-- don't check for pointer returns
-- don't check for pointer returns
-
-### Code Refactoring
-- make printers accept pointers to styles
-- remove emojis to comply with cross-platform policy
-- change LivePrinter interface to pointer output
-- change TextPrinter interface to pointer output
-
-### Documentation Changes
-- add to do list to PR template ([#52](https://github.com/pterm/pterm/issues/52))
-- add documentation to theme
-
 ### Features
 - add BasicTextPrinter
 - add theme support to section and table printer
@@ -1052,11 +600,14 @@ Changed `LineCharacter` to `BarCharacter`.
 - add template support for progressbars
 - add default theme
 
-### Style
-- code styling
-
 ### Test
 - **benchmark:** fix spinner benchmark
+
+### Code Refactoring
+- make printers accept pointers to styles
+- remove emojis to comply with cross-platform policy
+- change LivePrinter interface to pointer output
+- change TextPrinter interface to pointer output
 
 ### BREAKING CHANGE
 
@@ -1069,32 +620,6 @@ TextPrinter now requires to return a pointer.
 
 <a name="v0.5.1"></a>
 ## [v0.5.1] - 2020-10-14
-### Chore
-- **deps:** update deps
-
-### Ci
-- add codeowners file
-- update animations
-- write breaking changes into unreleased changelog version
-- disable cursor in animations
-
-### Code Refactoring
-- declare function name as `WithCSVReader`
-
-### Documentation Changes
-- **contributing:** change header name
-- **examples:** add every ANSI color to examples
-- **readme:** put header under demo
-- **readme:** update readme
-- **readme:** add goal to readme
-- **readme:** center header
-- **readme:** fix header links
-- **readme:** add space between demo and header
-- **readme:** add space between demo and header
-- **readme:** add easy to use section
-- **readme:** style readme
-- **readme:** replace emoji strings with actual emojis
-
 ### Features
 - add ability to disable output ([#44](https://github.com/pterm/pterm/issues/44))
 - add `Srender` to `RenderPrinter` interface
@@ -1107,16 +632,12 @@ TextPrinter now requires to return a pointer.
 - add color fade function and `RBG` ([#34](https://github.com/pterm/pterm/issues/34))
 - change `Section` style
 
+### Code Refactoring
+- declare function name as `WithCSVReader`
+
 
 <a name="v0.5.0"></a>
 ## [v0.5.0] - 2020-10-08
-### Code Refactoring
-- rename spinner_printer.go to spinner.go
-- rename `GenericPrinter` to `TextPrinter`
-
-### Documentation Changes
-- **demo:** add `SectionPrinter` to demo ([#25](https://github.com/pterm/pterm/issues/25))
-
 ### Features
 - implement `LivePrinter` in `Spinner`
 - add `BottomPadding` to `SectionPrinter`
@@ -1130,6 +651,10 @@ TextPrinter now requires to return a pointer.
 - add `Print` equals `Sprint` tests for `GenericPrinter`
 - add `Spinner` benchmarks
 
+### Code Refactoring
+- rename spinner_printer.go to spinner.go
+- rename `GenericPrinter` to `TextPrinter`
+
 ### BREAKING CHANGE
 
 The `GenericPrinter` is now called `TextPrinter`.
@@ -1137,36 +662,20 @@ The `GenericPrinter` is now called `TextPrinter`.
 
 <a name="v0.4.1"></a>
 ## [v0.4.1] - 2020-10-07
-### Documentation Changes
-- **examples:** fix examples
-
 
 <a name="v0.4.0"></a>
 ## [v0.4.0] - 2020-10-07
-### Chore
-- **deps:** bump github.com/stretchr/testify from 1.3.0 to 1.6.1 ([#22](https://github.com/pterm/pterm/issues/22))
-- **intellij:** add config for commit body styling
+### Features
+- add `Add` to `Style`
+- add options shorthands to `SectionPrinter`
+
+### Test
+- ignore writer close errors in stdout capture
 
 ### Code Refactoring
 - use `Style` instead of colors
 - refactor function parameters to fit expectation
 - rename `RemoveColors` to `RemoveColorFromString`
-
-### Documentation Changes
-- **examples:** restructure `examples` directory
-- **examples:** rename progressbar to progressbar-default
-- **examples:** add default and custom `HeaderPrinter` examples
-
-### Features
-- add `Add` to `Style`
-- add options shorthands to `SectionPrinter`
-
-### Style
-- restyle color fade table
-- format project
-
-### Test
-- ignore writer close errors in stdout capture
 
 ### BREAKING CHANGE
 
@@ -1180,13 +689,11 @@ rename `RemoveColors` to `RemoveColorFromString`
 
 <a name="v0.3.2"></a>
 ## [v0.3.2] - 2020-10-06
-### Bug Fixes
-- fix `Sprintf` function of `HeaderPrinter`
-
-### Documentation Changes
-
 ### Features
 - add `SectionPrinter`
+
+### Bug Fixes
+- fix `Sprintf` function of `HeaderPrinter`
 
 ### Test
 - add tests for `HeaderPrinter` and `SectionPrinter`
@@ -1194,16 +701,6 @@ rename `RemoveColors` to `RemoveColorFromString`
 
 <a name="v0.3.1"></a>
 ## [v0.3.1] - 2020-10-06
-### Ci
-- only test pterm package
-- test all packages
-
-### Code Refactoring
-- set default `BarFiller` to space
-- move tests directly into `pterm` module
-
-### Documentation Changes
-
 ### Features
 - add `BarFiller` to `Progressbar`
 
@@ -1213,6 +710,10 @@ rename `RemoveColors` to `RemoveColorFromString`
 - add more benchmarks
 - add benchmarks
 - add tests to `GenericPrinter` and default print methods
+
+### Code Refactoring
+- set default `BarFiller` to space
+- move tests directly into `pterm` module
 
 
 <a name="v0.3.0"></a>
@@ -1225,9 +726,6 @@ rename `RemoveColors` to `RemoveColorFromString`
 - change `WithXXX(b bool)` to `WithXXX(b ...bool)`
 - change `SetXXX` to `WithXXX`
 - change `Header` to `DefaultHeader`
-
-### Documentation Changes
-- **demo:** add `Progressbar` to demo
 
 ### BREAKING CHANGE
 
@@ -1243,46 +741,24 @@ rename `Header` to `DefaultHeader`
 ### Bug Fixes
 - `Printf` works again
 
-### Documentation Changes
-
 
 <a name="v0.2.3"></a>
 ## [v0.2.3] - 2020-10-04
-### Code Refactoring
-- remove goroutine from `Progressbar`
-
-### Documentation Changes
-
 ### Features
 - automatically print above `Progressbar`
+
+### Code Refactoring
+- remove goroutine from `Progressbar`
 
 
 <a name="v0.2.2"></a>
 ## [v0.2.2] - 2020-10-04
-### Documentation Changes
-
 ### Features
 - add `Fatal` printer
 
 
 <a name="v0.2.1"></a>
 ## [v0.2.1] - 2020-10-04
-### Ci
-- remove commit to tag
-- remove automatic releases
-- disable maligned
-
-### Code Refactoring
-- bump version to "v0.2.1"
-
-### Documentation Changes
-- add sponsor button
-- add pull_request_template
-- **demo:** fix updated timestamp
-- **readme:** `installation`, `documentation` and `contributing` sections
-- **reamde:** add emojis to sections
-- **reamde:** update examples section link
-
 ### Features
 - make progressbar configurable
 - add percentage helper
@@ -1292,40 +768,12 @@ rename `Header` to `DefaultHeader`
 - add fatal to `PrefixPrinter` ([#4](https://github.com/pterm/pterm/issues/4))
 - **progressbar:** fade percentage color according to value
 
-### Style
-- format code
+### Code Refactoring
+- bump version to "v0.2.1"
 
 
 <a name="v0.2.0"></a>
 ## [v0.2.0] - 2020-09-30
-### Bug Fixes
-- spinners spin evenly when multiple spinners are started
-
-### Chore
-- **deps:** update deps
-
-### Ci
-- update changelog generation
-- run golangci-lint on every push and pull-request
-- add golangci linting
-- make example source code expandable in main readme
-- add multi threaded animation generation
-- add dependabot
-
-### Code Refactoring
-- bump version to "v0.2.0"
-- change `WithXXX` to `SetXXX`
-- removed `Println` aliases
-
-### Documentation Changes
-- add CONTRIBUTING.md
-- add code of conduct
-- add unstable notice
-- **demo:** add space between intro and spinner
-- **examples:** update demo example
-- **examples:** update demo example
-- **examples:** break `demo` example into two parts
-
 ### Features
 - change style of `Description` printer
 - add color in color support
@@ -1333,11 +781,16 @@ rename `Header` to `DefaultHeader`
 - add multiline support to `PrefixPrinter`
 - add `UpdateText` to spinner
 
+### Bug Fixes
+- spinners spin evenly when multiple spinners are started
+
 ### Performance Improvements
 - improve spinner performance
 
-### Style
-- clean up code
+### Code Refactoring
+- bump version to "v0.2.0"
+- change `WithXXX` to `SetXXX`
+- removed `Println` aliases
 
 ### BREAKING CHANGE
 
@@ -1350,27 +803,18 @@ removed `Println` aliases
 
 <a name="v0.1.0"></a>
 ## [v0.1.0] - 2020-09-28
-### Ci
-- remove go dep
-- add go testing
-- update changelog config
-
-### Code Refactoring
-- bump version to "v0.1.0"
-- consistent example code for `Printo`
-- better comments for `Printo`
-- simplify `HeaderPrinter`
-
-### Documentation Changes
-- add symbols list (codepage 437)
-- fix doc link
-
 ### Features
 - add spinners
 - shorten printer names and add builder methods to printers
 - add `Printo` to override printed text
 - add `FullWidth` to `HeaderPrinter`
 - add terminal size detection
+
+### Code Refactoring
+- bump version to "v0.1.0"
+- consistent example code for `Printo`
+- better comments for `Printo`
+- simplify `HeaderPrinter`
 
 ### BREAKING CHANGE
 
@@ -1381,36 +825,6 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 
 <a name="v0.0.1"></a>
 ## [v0.0.1] - 2020-09-21
-### Bug Fixes
-- header should now work in CI
-
-### Chore
-- **gitignore:** ignore experimenting directory
-- **idea:** unexclude experimenting directory
-- **idea:** exclude experimenting directory
-
-### Ci
-- remove animationdata again
-- fix sleep timing of animations
-- update commit-to-tag.yml
-- add release system
-- automatically add example code to readme files
-
-### Code Refactoring
-- bump version to "v0.0.1"
-- refactor project
-- add comments to functions
-
-### Documentation Changes
-- put documentation flag in seperate line
-- add documentation badge
-- update demo
-- update header example
-- fix release badge style
-- add readme
-- **readme:** put demo animation under header
-- **readme:** fix readme animation href
-
 ### Features
 - add aliases to default printers
 - add header example
@@ -1419,6 +833,14 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - add exported version variable
 - add example `override-default-printer`
 - change prefix text color to `LightWhite`
+
+### Bug Fixes
+- header should now work in CI
+
+### Code Refactoring
+- bump version to "v0.0.1"
+- refactor project
+- add comments to functions
 
 
 <a name="v0.0.0"></a>
