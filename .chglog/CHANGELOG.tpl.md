@@ -5,23 +5,9 @@
 {{ if .Unreleased.CommitGroups -}}
 {{ range .Unreleased.CommitGroups -}}
 ### {{ .Title }}
-{{ range .Commits }}{{ if ne .Subject "autoupdate" }}- {{ if .Scope }}**{{ .Scope }}:** {{ end }}{{ .Subject }}{{ print "\n" }}{{ end -}}{{ end }}
-{{ end -}}
-
-{{- if .Unreleased.RevertCommits -}}
-### Reverts
-{{ range .Unreleased.RevertCommits -}}
-- {{ .Revert.Header }}
+{{ range .Commits -}}
+- {{ if .Scope }}**{{ .Scope }}:** {{ end }}{{ .Subject }}
 {{ end }}
-{{ end -}}
-
-{{- if .Unreleased.NoteGroups -}}
-{{ range .Unreleased.NoteGroups -}}
-### {{ .Title }}
-{{ range .Notes }}
-{{ .Body }}
-{{ end }}
-{{ end -}}
 {{ end -}}
 {{ end -}}
 {{ end -}}
@@ -31,13 +17,22 @@
 ## {{ if .Tag.Previous }}[{{ .Tag.Name }}]{{ else }}{{ .Tag.Name }}{{ end }} - {{ datetime "2006-01-02" .Tag.Date }}
 {{ range .CommitGroups -}}
 ### {{ .Title }}
-{{ range .Commits }}{{ if ne .Subject "autoupdate" }}- {{ if .Scope }}**{{ .Scope }}:** {{ end }}{{ .Subject }}{{ print "\n" }}{{ end -}}{{ end }}
+{{ range .Commits -}}
+- {{ if .Scope }}**{{ .Scope }}:** {{ end }}{{ .Subject }}
+{{ end }}
 {{ end -}}
 
 {{- if .RevertCommits -}}
 ### Reverts
 {{ range .RevertCommits -}}
 - {{ .Revert.Header }}
+{{ end }}
+{{ end -}}
+
+{{- if .MergeCommits -}}
+### Pull Requests
+{{ range .MergeCommits -}}
+- {{ .Header }}
 {{ end }}
 {{ end -}}
 
