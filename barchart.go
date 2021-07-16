@@ -126,7 +126,11 @@ func (p BarChartPrinter) Srender() (string, error) {
 		panels := Panels{[]Panel{{}, {}}}
 		for _, bar := range p.Bars {
 			panels[0][0].Data += "\n" + bar.Label
-			panels[0][1].Data += "\n" + bar.Style.Sprint(strings.Repeat(p.HorizontalBarCharacter, internal.MapRangeToRange(0, float32(maxBarValue), 0, float32(p.Width), float32(bar.Value))))
+			repeatCount := internal.MapRangeToRange(0, float32(maxBarValue), 0, float32(p.Width), float32(bar.Value))
+			if repeatCount < 0 {
+				repeatCount = 0
+			}
+			panels[0][1].Data += "\n" + bar.Style.Sprint(strings.Repeat(p.HorizontalBarCharacter, repeatCount))
 			if p.ShowValue {
 				panels[0][1].Data += " " + strconv.Itoa(bar.Value)
 			}

@@ -121,6 +121,21 @@ func TestBarChartPrinter_RenderNegativeBarValues(t *testing.T) {
 	}).Render()
 }
 
+func TestBarChartPrinter_RenderZeroBarValuesHorizontal(t *testing.T) {
+	DefaultBarChart.WithShowValue().WithHorizontal().WithBars(Bars{
+		Bar{
+			Label: "Test",
+			Value: 0,
+			Style: NewStyle(FgRed, BgBlue, Bold),
+		},
+		Bar{
+			Label: "Test",
+			Value: 0,
+			Style: NewStyle(FgRed, BgBlue, Bold),
+		},
+	}).Render()
+}
+
 func TestBarChartPrinter_RenderZeroBarValues(t *testing.T) {
 	DefaultBarChart.WithShowValue().WithBars(Bars{
 		Bar{
