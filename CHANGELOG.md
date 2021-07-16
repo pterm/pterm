@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Bug Fixes
+- **bar chart:** fix panic when rendering empty horizontal bar chart
+
 
 <a name="v0.12.27"></a>
 ## [v0.12.27] - 2021-07-05
