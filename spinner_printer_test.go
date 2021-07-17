@@ -156,8 +156,11 @@ func TestSpinnerPrinter_WithTimerRoundingFactor(t *testing.T) {
 func TestSpinnerPrinter_WithRawOutput(t *testing.T) {
 	RawOutput = true
 	s, _ := DefaultSpinner.Start()
-	s.Stop()
-	RawOutput = false
+	go func() {
+		time.Sleep(time.Millisecond * 50)
+		s.Stop()
+		RawOutput = false
+	}()
 }
 
 func TestSpinnerPrinter_DifferentVariations(t *testing.T) {
