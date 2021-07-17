@@ -130,6 +130,29 @@ func TestSpinnerPrinter_WithText(t *testing.T) {
 	assert.Equal(t, "test", p2.Text)
 }
 
+func TestSpinnerPrinter_WithShowTimer(t *testing.T) {
+	p := SpinnerPrinter{}
+	p2 := p.WithShowTimer()
+
+	assert.True(t, p2.ShowTimer)
+}
+
+func TestSpinnerPrinter_WithTimerStyle(t *testing.T) {
+	s := NewStyle(FgRed, BgBlue, Bold)
+	p := SpinnerPrinter{}
+	p2 := p.WithTimerStyle(s)
+
+	assert.Equal(t, s, p2.TimerStyle)
+}
+
+func TestSpinnerPrinter_WithTimerRoundingFactor(t *testing.T) {
+	s := time.Millisecond * 200
+	p := SpinnerPrinter{}
+	p2 := p.WithTimerRoundingFactor(s)
+
+	assert.Equal(t, s, p2.TimerRoundingFactor)
+}
+
 func TestSpinnerPrinter_DifferentVariations(t *testing.T) {
 	type fields struct {
 		Text           string

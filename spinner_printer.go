@@ -10,31 +10,38 @@ var activeSpinnerPrinters []*SpinnerPrinter
 
 // DefaultSpinner is the default SpinnerPrinter.
 var DefaultSpinner = SpinnerPrinter{
-	Sequence:       []string{"▀ ", " ▀", " ▄", "▄ "},
-	Style:          &ThemeDefault.SpinnerStyle,
-	Delay:          time.Millisecond * 200,
-	MessageStyle:   &ThemeDefault.SpinnerTextStyle,
-	SuccessPrinter: &Success,
-	FailPrinter:    &Error,
-	WarningPrinter: &Warning,
+	Sequence:            []string{"▀ ", " ▀", " ▄", "▄ "},
+	Style:               &ThemeDefault.SpinnerStyle,
+	Delay:               time.Millisecond * 200,
+	ShowTimer:           true,
+	TimerRoundingFactor: time.Second,
+	TimerStyle:          &ThemeDefault.TimerStyle,
+	MessageStyle:        &ThemeDefault.SpinnerTextStyle,
+	SuccessPrinter:      &Success,
+	FailPrinter:         &Error,
+	WarningPrinter:      &Warning,
 }
 
 // SpinnerPrinter is a loading animation, which can be used if the progress is unknown.
 // It's an animation loop, which can have a text and supports throwing errors or warnings.
 // A TextPrinter is used to display all outputs, after the SpinnerPrinter is done.
 type SpinnerPrinter struct {
-	Text           string
-	Sequence       []string
-	Style          *Style
-	Delay          time.Duration
-	MessageStyle   *Style
-	SuccessPrinter TextPrinter
-	FailPrinter    TextPrinter
-	WarningPrinter TextPrinter
-	RemoveWhenDone bool
+	Text                string
+	Sequence            []string
+	Style               *Style
+	Delay               time.Duration
+	MessageStyle        *Style
+	SuccessPrinter      TextPrinter
+	FailPrinter         TextPrinter
+	WarningPrinter      TextPrinter
+	RemoveWhenDone      bool
+	ShowTimer           bool
+	TimerRoundingFactor time.Duration
+	TimerStyle          *Style
 
 	IsActive bool
 
+	startedAt       time.Time
 	currentSequence string
 }
 
@@ -74,6 +81,24 @@ func (s SpinnerPrinter) WithRemoveWhenDone(b ...bool) *SpinnerPrinter {
 	return &s
 }
 
+// WithShowTimer shows how long the spinner is running.
+func (s SpinnerPrinter) WithShowTimer(b ...bool) *SpinnerPrinter {
+	s.ShowTimer = internal.WithBoolean(b)
+	return &s
+}
+
+// WithTimerRoundingFactor sets the rounding factor for the timer.
+func (s SpinnerPrinter) WithTimerRoundingFactor(factor time.Duration) *SpinnerPrinter {
+	s.TimerRoundingFactor = factor
+	return &s
+}
+
+// WithTimerStyle adds a style to the SpinnerPrinter timer.
+func (s SpinnerPrinter) WithTimerStyle(style *Style) *SpinnerPrinter {
+	s.TimerStyle = style
+	return &s
+}
+
 // UpdateText updates the message of the active SpinnerPrinter.
 // Can be used live.
 func (s *SpinnerPrinter) UpdateText(text string) {
@@ -90,6 +115,7 @@ func (s *SpinnerPrinter) UpdateText(text string) {
 // Start the SpinnerPrinter.
 func (s SpinnerPrinter) Start(text ...interface{}) (*SpinnerPrinter, error) {
 	s.IsActive = true
+	s.startedAt = time.Now()
 	activeSpinnerPrinters = append(activeSpinnerPrinters, &s)
 
 	if len(text) != 0 {
@@ -103,11 +129,17 @@ func (s SpinnerPrinter) Start(text ...interface{}) (*SpinnerPrinter, error) {
 	go func() {
 		for s.IsActive {
 			for _, seq := range s.Sequence {
-				if s.IsActive && !RawOutput {
-					Printo(s.Style.Sprint(seq) + " " + s.MessageStyle.Sprint(s.Text))
-					s.currentSequence = seq
-					time.Sleep(s.Delay)
+				if !(s.IsActive && !RawOutput) {
+					continue
 				}
+
+				var timer string
+				if s.ShowTimer {
+					timer = " (" + time.Since(s.startedAt).Round(s.TimerRoundingFactor).String() + ")"
+				}
+				Printo(s.Style.Sprint(seq) + " " + s.MessageStyle.Sprint(s.Text) + s.TimerStyle.Sprint(timer))
+				s.currentSequence = seq
+				time.Sleep(s.Delay)
 			}
 		}
 	}()
