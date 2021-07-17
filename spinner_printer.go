@@ -129,15 +129,17 @@ func (s SpinnerPrinter) Start(text ...interface{}) (*SpinnerPrinter, error) {
 	go func() {
 		for s.IsActive {
 			for _, seq := range s.Sequence {
-				if s.IsActive && !RawOutput {
-					var timer string
-					if s.ShowTimer {
-						timer = " (" + time.Since(s.startedAt).Round(s.TimerRoundingFactor).String() + ")"
-					}
-					Printo(s.Style.Sprint(seq) + " " + s.MessageStyle.Sprint(s.Text) + s.TimerStyle.Sprint(timer))
-					s.currentSequence = seq
-					time.Sleep(s.Delay)
+				if !s.IsActive || RawOutput {
+					continue
 				}
+
+				var timer string
+				if s.ShowTimer {
+					timer = " (" + time.Since(s.startedAt).Round(s.TimerRoundingFactor).String() + ")"
+				}
+				Printo(s.Style.Sprint(seq) + " " + s.MessageStyle.Sprint(s.Text) + s.TimerStyle.Sprint(timer))
+				s.currentSequence = seq
+				time.Sleep(s.Delay)
 			}
 		}
 	}()
