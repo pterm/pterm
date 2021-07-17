@@ -41,6 +41,7 @@ var (
 		BoxTextStyle:            Style{FgDefault},
 		BarLabelStyle:           Style{FgLightCyan},
 		BarStyle:                Style{FgCyan},
+		TimerStyle:              Style{FgGray},
 	}
 )
 
@@ -70,6 +71,7 @@ type Theme struct {
 	HeaderBackgroundStyle   Style
 	SpinnerStyle            Style
 	SpinnerTextStyle        Style
+	TimerStyle              Style
 	TableStyle              Style
 	TableHeaderStyle        Style
 	TableSeparatorStyle     Style
