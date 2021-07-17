@@ -46,6 +46,9 @@ pterm.DefaultSpinner.Start()
 |[Sequence](https://pkg.go.dev/github.com/pterm/pterm#SpinnerPrinter.WithSequence)|...string|
 |[Style](https://pkg.go.dev/github.com/pterm/pterm#SpinnerPrinter.WithStyle)|[*Style](https://pkg.go.dev/github.com/pterm/pterm#Style)|
 |[Text](https://pkg.go.dev/github.com/pterm/pterm#SpinnerPrinter.WithText)|string|
+|[ShowTimer](https://pkg.go.dev/github.com/pterm/pterm#SpinnerPrinter.WithShowTimer)|...bool|
+|[TimerRoundingFactor](https://pkg.go.dev/github.com/pterm/pterm#SpinnerPrinter.WithTimerRoundingFactor)|time.Duration|
+|[TimerStyle](https://pkg.go.dev/github.com/pterm/pterm#SpinnerPrinter.WithTimerStyle)|[*Style](https://pkg.go.dev/github.com/pterm/pterm#Style)|
 
 
 ### Output functions
