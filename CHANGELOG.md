@@ -1,8 +1,19 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Features
+- **spinner:** add option to show a timer
+
 ### Bug Fixes
 - **bar chart:** fix panic when rendering empty horizontal bar chart
+
+### Test
+- **spinner:** try to fix RawOutput text
+- **spinner:** add raw output test
+
+### Code Refactoring
+- **spinner:** better raw output logic
+- **spinner:** refactor
 
 
 <a name="v0.12.27"></a>
