@@ -2,6 +2,12 @@
 ## [Unreleased]
 
 ### Features
+- **putils:** add `PrintAverageExecutionTime`
+
+
+<a name="v0.12.28"></a>
+## [v0.12.28] - 2021-07-17
+### Features
 - **spinner:** add option to show a timer
 
 ### Bug Fixes
@@ -865,7 +871,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.27...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.28...HEAD
+[v0.12.28]: https://github.com/pterm/pterm/compare/v0.12.27...v0.12.28
 [v0.12.27]: https://github.com/pterm/pterm/compare/v0.12.26...v0.12.27
 [v0.12.26]: https://github.com/pterm/pterm/compare/v0.12.25...v0.12.26
 [v0.12.25]: https://github.com/pterm/pterm/compare/v0.12.24...v0.12.25
