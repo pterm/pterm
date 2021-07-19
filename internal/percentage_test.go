@@ -1,6 +1,10 @@
-package internal
+package internal_test
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/pterm/pterm/internal"
+)
 
 func TestPercentage(t *testing.T) {
 	type args struct {
@@ -19,7 +23,7 @@ func TestPercentage(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := Percentage(tt.args.total, tt.args.current); got != tt.want {
+			if got := internal.Percentage(tt.args.total, tt.args.current); got != tt.want {
 				t.Errorf("Percentage() = %v, want %v", got, tt.want)
 			}
 		})
@@ -44,7 +48,7 @@ func TestPercentageRound(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := PercentageRound(tt.args.total, tt.args.current); got != tt.want {
+			if got := internal.PercentageRound(tt.args.total, tt.args.current); got != tt.want {
 				t.Errorf("PercentageRound() = %v, want %v", got, tt.want)
 			}
 		})
