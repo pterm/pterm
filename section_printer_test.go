@@ -1,20 +1,21 @@
-package pterm
+package pterm_test
 
 import (
 	"errors"
 	"io"
 	"testing"
 
+	"github.com/pterm/pterm"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestSectionPrinterNilPrint(t *testing.T) {
-	p := SectionPrinter{}
+	p := pterm.SectionPrinter{}
 	p.Println("Hello, World!")
 }
 
 func TestSectionPrinterPrintMethods(t *testing.T) {
-	p := DefaultSection
+	p := pterm.DefaultSection
 
 	t.Run("Print", func(t *testing.T) {
 		testPrintContains(t, func(w io.Writer, a interface{}) {
@@ -80,7 +81,7 @@ func TestSectionPrinterPrintMethods(t *testing.T) {
 }
 
 func TestSectionPrinter_WithBottomPadding(t *testing.T) {
-	p := SectionPrinter{}
+	p := pterm.SectionPrinter{}
 	p2 := p.WithBottomPadding(1337)
 
 	assert.Equal(t, 1337, p2.BottomPadding)
@@ -88,7 +89,7 @@ func TestSectionPrinter_WithBottomPadding(t *testing.T) {
 }
 
 func TestSectionPrinter_WithLevel(t *testing.T) {
-	p := SectionPrinter{}
+	p := pterm.SectionPrinter{}
 	p2 := p.WithLevel(1337)
 
 	assert.Equal(t, 1337, p2.Level)
@@ -96,8 +97,8 @@ func TestSectionPrinter_WithLevel(t *testing.T) {
 }
 
 func TestSectionPrinter_WithStyle(t *testing.T) {
-	p := SectionPrinter{}
-	s := NewStyle(FgRed, BgRed, Bold)
+	p := pterm.SectionPrinter{}
+	s := pterm.NewStyle(pterm.FgRed, pterm.BgRed, pterm.Bold)
 	p2 := p.WithStyle(s)
 
 	assert.Equal(t, s, p2.Style)
@@ -105,7 +106,7 @@ func TestSectionPrinter_WithStyle(t *testing.T) {
 }
 
 func TestSectionPrinter_WithTopPadding(t *testing.T) {
-	p := SectionPrinter{}
+	p := pterm.SectionPrinter{}
 	p2 := p.WithTopPadding(1337)
 
 	assert.Equal(t, 1337, p2.TopPadding)
@@ -113,7 +114,7 @@ func TestSectionPrinter_WithTopPadding(t *testing.T) {
 }
 
 func TestSectionPrinter_WithIndentCharacter(t *testing.T) {
-	p := SectionPrinter{}
+	p := pterm.SectionPrinter{}
 	p2 := p.WithIndentCharacter("#")
 
 	assert.Equal(t, "#", p2.IndentCharacter)

@@ -1,15 +1,16 @@
-package pterm
+package pterm_test
 
 import (
 	"errors"
 	"io"
 	"testing"
 
+	"github.com/pterm/pterm"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestCenterPrinter_WithCenterEachLineSeparately(t *testing.T) {
-	p := CenterPrinter{}
+	p := pterm.CenterPrinter{}
 	p2 := p.WithCenterEachLineSeparately()
 
 	assert.True(t, p2.CenterEachLineSeparately)
@@ -17,7 +18,7 @@ func TestCenterPrinter_WithCenterEachLineSeparately(t *testing.T) {
 }
 
 func TestCenterPrinterPrintMethods(t *testing.T) {
-	p := DefaultCenter
+	p := pterm.DefaultCenter
 
 	t.Run("Print", func(t *testing.T) {
 		testPrintContains(t, func(w io.Writer, a interface{}) {
@@ -83,7 +84,7 @@ func TestCenterPrinterPrintMethods(t *testing.T) {
 }
 
 func TestCenterPrinterPrintMethodsCenterSeparately(t *testing.T) {
-	p := DefaultCenter.WithCenterEachLineSeparately()
+	p := pterm.DefaultCenter.WithCenterEachLineSeparately()
 
 	t.Run("Print", func(t *testing.T) {
 		testPrintContains(t, func(w io.Writer, a interface{}) {
@@ -123,14 +124,14 @@ func TestCenterPrinterPrintMethodsCenterSeparately(t *testing.T) {
 }
 
 func TestCenterPrinter_SprintLineLongerThanTerminal(t *testing.T) {
-	p := DefaultCenter
+	p := pterm.DefaultCenter
 	p2 := p.Sprint("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 
 	assert.Contains(t, p2, "a")
 }
 
 func TestCenterPrinter_SprintLineLongerThanTerminalWithCenterEachLineSeparately(t *testing.T) {
-	p := DefaultCenter
+	p := pterm.DefaultCenter
 	p2 := p.WithCenterEachLineSeparately().Sprint("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 
 	assert.Contains(t, p2, "a")

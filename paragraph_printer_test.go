@@ -1,20 +1,21 @@
-package pterm
+package pterm_test
 
 import (
 	"errors"
 	"io"
 	"testing"
 
+	"github.com/pterm/pterm"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestParagraphPrinterNilPrint(t *testing.T) {
-	p := ParagraphPrinter{}
+	p := pterm.ParagraphPrinter{}
 	p.Println("Hello, World!")
 }
 
 func TestParagraphPrinterPrintMethods(t *testing.T) {
-	p := DefaultParagraph
+	p := pterm.DefaultParagraph
 
 	t.Run("Print", func(t *testing.T) {
 		testPrintContains(t, func(w io.Writer, a interface{}) {
@@ -90,7 +91,7 @@ func TestParagraphPrinterPrintMethods(t *testing.T) {
 }
 
 func TestParagraphPrinter_WithMaxWidth(t *testing.T) {
-	p := ParagraphPrinter{}
+	p := pterm.ParagraphPrinter{}
 	p2 := p.WithMaxWidth(1337)
 
 	assert.Equal(t, 1337, p2.MaxWidth)

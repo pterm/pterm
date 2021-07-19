@@ -1,48 +1,49 @@
-package pterm
+package pterm_test
 
 import (
 	"testing"
 
+	"github.com/pterm/pterm"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestDisableDebugMessages(t *testing.T) {
-	PrintDebugMessages = true
-	DisableDebugMessages()
-	assert.False(t, PrintDebugMessages)
+	pterm.PrintDebugMessages = true
+	pterm.DisableDebugMessages()
+	assert.False(t, pterm.PrintDebugMessages)
 }
 
 func TestEnableDebugMessages(t *testing.T) {
-	EnableDebugMessages()
-	assert.True(t, PrintDebugMessages)
+	pterm.EnableDebugMessages()
+	assert.True(t, pterm.PrintDebugMessages)
 }
 
 func TestDisableOutput(t *testing.T) {
-	DisableOutput()
-	assert.False(t, Output)
+	pterm.DisableOutput()
+	assert.False(t, pterm.Output)
 }
 
 func TestEnableOutput(t *testing.T) {
-	DisableOutput()
-	EnableOutput()
-	assert.True(t, Output)
+	pterm.DisableOutput()
+	pterm.EnableOutput()
+	assert.True(t, pterm.Output)
 }
 
 func TestDisableStyling(t *testing.T) {
-	RawOutput = false
-	DisableStyling()
-	assert.True(t, RawOutput)
+	pterm.RawOutput = false
+	pterm.DisableStyling()
+	assert.True(t, pterm.RawOutput)
 }
 
 func TestEnableStyling(t *testing.T) {
-	RawOutput = true
-	EnableStyling()
-	assert.False(t, RawOutput)
+	pterm.RawOutput = true
+	pterm.EnableStyling()
+	assert.False(t, pterm.RawOutput)
 }
 
 func TestInterfaceImplementation(t *testing.T) {
 	// If a printer doesn't fit into the slice, the printer doesn't has the right interface anymore.
-	_ = []TextPrinter{&DefaultBasicText, DefaultBox, DefaultCenter, &DefaultHeader, &DefaultParagraph, &Info, &DefaultSection, FgRed, NewRGB(0, 0, 0)}
-	_ = []LivePrinter{DefaultProgressbar, &DefaultSpinner}
-	_ = []RenderPrinter{DefaultBarChart, DefaultBigText, DefaultBulletList, DefaultPanel, DefaultTable, DefaultTree}
+	_ = []pterm.TextPrinter{&pterm.DefaultBasicText, pterm.DefaultBox, pterm.DefaultCenter, &pterm.DefaultHeader, &pterm.DefaultParagraph, &pterm.Info, &pterm.DefaultSection, pterm.FgRed, pterm.NewRGB(0, 0, 0)}
+	_ = []pterm.LivePrinter{pterm.DefaultProgressbar, &pterm.DefaultSpinner}
+	_ = []pterm.RenderPrinter{pterm.DefaultBarChart, pterm.DefaultBigText, pterm.DefaultBulletList, pterm.DefaultPanel, pterm.DefaultTable, pterm.DefaultTree}
 }

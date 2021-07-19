@@ -1,35 +1,36 @@
-package pterm
+package pterm_test
 
 import (
 	"io"
 	"strings"
 	"testing"
 
+	"github.com/pterm/pterm"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestBigTextPrinterNilPrint(t *testing.T) {
-	p := BigTextPrinter{}
+	p := pterm.BigTextPrinter{}
 	p.Render()
 }
 
 func TestBigTextPrinter_Render(t *testing.T) {
 	testDoesOutput(t, func(w io.Writer) {
-		DefaultBigText.WithLetters(NewLettersFromString("Hello")).Render()
+		pterm.DefaultBigText.WithLetters(pterm.NewLettersFromString("Hello")).Render()
 	})
 }
 
 func TestBigTextPrinter_RenderRawOutput(t *testing.T) {
-	DisableStyling()
+	pterm.DisableStyling()
 	testDoesOutput(t, func(w io.Writer) {
-		DefaultBigText.WithLetters(NewLettersFromString("Hello")).Render()
+		pterm.DefaultBigText.WithLetters(pterm.NewLettersFromString("Hello")).Render()
 	})
-	EnableStyling()
+	pterm.EnableStyling()
 }
 
 func TestBigTextPrinter_WithBigCharacters(t *testing.T) {
 	e := map[string]string{"a": "b", "c": "d"}
-	p := BigTextPrinter{}
+	p := pterm.BigTextPrinter{}
 	p2 := p.WithBigCharacters(e)
 
 	assert.Equal(t, e, p2.BigCharacters)
@@ -37,17 +38,17 @@ func TestBigTextPrinter_WithBigCharacters(t *testing.T) {
 }
 
 func TestBigTextPrinter_WithLetters(t *testing.T) {
-	e := Letters{
-		Letter{
+	e := pterm.Letters{
+		pterm.Letter{
 			String: "test",
-			Style:  NewStyle(FgRed, BgBlue, Bold),
+			Style:  pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
 		},
-		Letter{
+		pterm.Letter{
 			String: "test2",
-			Style:  NewStyle(FgRed, BgBlue, Bold),
+			Style:  pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
 		},
 	}
-	p := BigTextPrinter{}
+	p := pterm.BigTextPrinter{}
 	p2 := p.WithLetters(e)
 
 	assert.Equal(t, e, p2.Letters)
@@ -56,7 +57,7 @@ func TestBigTextPrinter_WithLetters(t *testing.T) {
 
 func TestLetter_WithString(t *testing.T) {
 	e := "Hello, World!"
-	p := Letter{}
+	p := pterm.Letter{}
 	p2 := p.WithString(e)
 
 	assert.Equal(t, e, p2.String)
@@ -64,8 +65,8 @@ func TestLetter_WithString(t *testing.T) {
 }
 
 func TestLetter_WithStyle(t *testing.T) {
-	p := Letter{}
-	s := NewStyle(FgRed, BgRed, Bold)
+	p := pterm.Letter{}
+	s := pterm.NewStyle(pterm.FgRed, pterm.BgRed, pterm.Bold)
 	p2 := p.WithStyle(s)
 
 	assert.Equal(t, s, p2.Style)
@@ -73,40 +74,40 @@ func TestLetter_WithStyle(t *testing.T) {
 }
 
 func TestNewLettersFromText(t *testing.T) {
-	e := Letters{
-		Letter{
+	e := pterm.Letters{
+		pterm.Letter{
 			String: "a",
-			Style:  &ThemeDefault.LetterStyle,
+			Style:  &pterm.ThemeDefault.LetterStyle,
 		},
-		Letter{
+		pterm.Letter{
 			String: "b",
-			Style:  &ThemeDefault.LetterStyle,
+			Style:  &pterm.ThemeDefault.LetterStyle,
 		},
 	}
-	p := NewLettersFromString("ab")
+	p := pterm.NewLettersFromString("ab")
 
 	assert.Equal(t, e, p)
 }
 
 func TestNewLettersFromTextWithStyle(t *testing.T) {
-	e := Letters{
-		Letter{
+	e := pterm.Letters{
+		pterm.Letter{
 			String: "a",
-			Style:  NewStyle(FgRed, BgBlue, Bold),
+			Style:  pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
 		},
-		Letter{
+		pterm.Letter{
 			String: "b",
-			Style:  NewStyle(FgRed, BgBlue, Bold),
+			Style:  pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
 		},
 	}
-	p := NewLettersFromStringWithStyle("ab", NewStyle(FgRed, BgBlue, Bold))
+	p := pterm.NewLettersFromStringWithStyle("ab", pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold))
 
 	assert.Equal(t, e, p)
 }
 
 func TestDefaultLettersMaxHeight(t *testing.T) {
 	maxHeight := 5
-	chars := DefaultBigText.BigCharacters
+	chars := pterm.DefaultBigText.BigCharacters
 	for s, l := range chars {
 		h := strings.Count(l, "\n")
 		assert.LessOrEqualf(t, h, maxHeight, "'%s' is too high", s)

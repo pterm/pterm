@@ -1,68 +1,69 @@
-package pterm
+package pterm_test
 
 import (
 	"testing"
 
+	"github.com/MarvinJWendt/testza"
+	"github.com/pterm/pterm"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestAreaPrinter_NilPrint(t *testing.T) {
-	p := AreaPrinter{}
+	p := pterm.AreaPrinter{}
 	p.Update("asd")
 }
 
 func TestAreaPrinter_GenericStart(t *testing.T) {
-	p := DefaultArea
+	p := pterm.DefaultArea
 	p.GenericStart()
 }
 
 func TestAreaPrinter_GenericStartRawOutput(t *testing.T) {
-	DisableStyling()
-	p := DefaultArea
+	pterm.DisableStyling()
+	p := pterm.DefaultArea
 	p.GenericStart()
-	EnableStyling()
+	pterm.EnableStyling()
 }
 
 func TestAreaPrinter_GenericStop(t *testing.T) {
-	p := DefaultArea
+	p := pterm.DefaultArea
 	p.GenericStop()
 }
 
 func TestAreaPrinter_RemoveWhenDone(t *testing.T) {
-	a, _ := DefaultArea.WithRemoveWhenDone().Start()
+	a, _ := pterm.DefaultArea.WithRemoveWhenDone().Start()
 
 	a.Update("asd")
 	a.Stop()
 }
 
 func TestAreaPrinter_CenterFullscreen(t *testing.T) {
-	a, _ := DefaultArea.WithRemoveWhenDone().WithFullscreen().WithCenter().Start()
+	a, _ := pterm.DefaultArea.WithRemoveWhenDone().WithFullscreen().WithCenter().Start()
 
 	a.Update("asd")
 	a.Stop()
 }
 
 func TestAreaPrinter_GetContent(t *testing.T) {
-	a, _ := DefaultArea.Start()
+	a, _ := pterm.DefaultArea.Start()
 
 	for _, printable := range printables {
 		a.Update(printable)
-		assert.Equal(t, a.GetContent(), Sprint(printable))
-		assert.Equal(t, a.GetContent(), a.content)
+		testza.AssertEqual(t, a.GetContent(), pterm.Sprint(printable))
 	}
 
 	a.Stop()
 }
 
 func TestAreaPrinter_WithRemoveWhenDone(t *testing.T) {
-	p := AreaPrinter{}
+	p := pterm.AreaPrinter{}
 	p2 := p.WithRemoveWhenDone()
 
 	assert.True(t, p2.RemoveWhenDone)
 }
 
 func TestAreaPrinter_WithFullscreen(t *testing.T) {
-	p := AreaPrinter{}
+	p := pterm.AreaPrinter{}
 	p2 := p.WithFullscreen()
 
 	assert.True(t, p2.Fullscreen)
