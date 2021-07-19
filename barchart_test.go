@@ -1,14 +1,15 @@
-package pterm
+package pterm_test
 
 import (
 	"testing"
 
+	"github.com/pterm/pterm"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestBarChartPrinterNilPrint(t *testing.T) {
 	proxyToDevNull()
-	p := BarChartPrinter{}
+	p := pterm.BarChartPrinter{}
 	err := p.Render()
 	if err != nil {
 		panic(err)
@@ -17,22 +18,22 @@ func TestBarChartPrinterNilPrint(t *testing.T) {
 
 func TestBarChartPrinterNilStylePrint(t *testing.T) {
 	proxyToDevNull()
-	bars := Bars{
-		Bar{
+	bars := pterm.Bars{
+		pterm.Bar{
 			Label: "Bar 1",
 			Value: 5,
 		},
-		Bar{
+		pterm.Bar{
 			Label: "Bar 2",
 			Value: 3,
 		},
-		Bar{
+		pterm.Bar{
 			Label: "Longer Label",
 			Value: 7,
 		},
 	}
 
-	err := DefaultBarChart.WithBars(bars).Render()
+	err := pterm.DefaultBarChart.WithBars(bars).Render()
 	if err != nil {
 		panic(err)
 	}
@@ -40,164 +41,164 @@ func TestBarChartPrinterNilStylePrint(t *testing.T) {
 
 func TestBarChartPrinter_RenderExample(t *testing.T) {
 	proxyToDevNull()
-	bars := Bars{
-		Bar{
+	bars := pterm.Bars{
+		pterm.Bar{
 			Label: "Bar 1",
 			Value: 5,
-			Style: NewStyle(FgCyan),
+			Style: pterm.NewStyle(pterm.FgCyan),
 		},
-		Bar{
+		pterm.Bar{
 			Label: "Bar 2",
 			Value: 3,
-			Style: NewStyle(FgCyan),
+			Style: pterm.NewStyle(pterm.FgCyan),
 		},
-		Bar{
+		pterm.Bar{
 			Label: "Longer Label",
 			Value: 7,
-			Style: NewStyle(FgCyan),
+			Style: pterm.NewStyle(pterm.FgCyan),
 		},
 	}
 
-	_ = DefaultBarChart.WithBars(bars).Render()
+	_ = pterm.DefaultBarChart.WithBars(bars).Render()
 }
 
 func TestBarChartPrinter_RenderExampleRawOutput(t *testing.T) {
 	proxyToDevNull()
-	DisableStyling()
-	bars := Bars{
-		Bar{
+	pterm.DisableStyling()
+	bars := pterm.Bars{
+		pterm.Bar{
 			Label: "Bar 1",
 			Value: 5,
-			Style: NewStyle(FgCyan),
+			Style: pterm.NewStyle(pterm.FgCyan),
 		},
-		Bar{
+		pterm.Bar{
 			Label: "Bar 2",
 			Value: 3,
-			Style: NewStyle(FgCyan),
+			Style: pterm.NewStyle(pterm.FgCyan),
 		},
-		Bar{
+		pterm.Bar{
 			Label: "Longer Label",
 			Value: 7,
-			Style: NewStyle(FgCyan),
+			Style: pterm.NewStyle(pterm.FgCyan),
 		},
 	}
 
-	_ = DefaultBarChart.WithBars(bars).Render()
-	EnableStyling()
+	_ = pterm.DefaultBarChart.WithBars(bars).Render()
+	pterm.EnableStyling()
 }
 
 func TestBarChartPrinter_RenderMultipleLineLabel(t *testing.T) {
-	DefaultBarChart.WithShowValue().WithBars(Bars{
-		Bar{
+	pterm.DefaultBarChart.WithShowValue().WithBars(pterm.Bars{
+		pterm.Bar{
 			Label: "Test",
 			Value: -1337,
-			Style: NewStyle(FgRed, BgBlue, Bold),
+			Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
 		},
-		Bar{
+		pterm.Bar{
 			Label: "Test\nNew Line",
 			Value: -1337,
-			Style: NewStyle(FgRed, BgBlue, Bold),
+			Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
 		},
-		Bar{
+		pterm.Bar{
 			Label: "Test",
 			Value: -1337,
-			Style: NewStyle(FgRed, BgBlue, Bold),
+			Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
 		},
 	}).Render()
 }
 
 func TestBarChartPrinter_RenderNegativeBarValues(t *testing.T) {
-	DefaultBarChart.WithShowValue().WithBars(Bars{
-		Bar{
+	pterm.DefaultBarChart.WithShowValue().WithBars(pterm.Bars{
+		pterm.Bar{
 			Label: "Test",
 			Value: -1337,
-			Style: NewStyle(FgRed, BgBlue, Bold),
+			Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
 		},
-		Bar{
+		pterm.Bar{
 			Label: "Test",
 			Value: -1337,
-			Style: NewStyle(FgRed, BgBlue, Bold),
+			Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
 		},
 	}).Render()
 }
 
 func TestBarChartPrinter_RenderZeroBarValuesHorizontal(t *testing.T) {
-	DefaultBarChart.WithShowValue().WithHorizontal().WithBars(Bars{
-		Bar{
+	pterm.DefaultBarChart.WithShowValue().WithHorizontal().WithBars(pterm.Bars{
+		pterm.Bar{
 			Label: "Test",
 			Value: 0,
-			Style: NewStyle(FgRed, BgBlue, Bold),
+			Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
 		},
-		Bar{
+		pterm.Bar{
 			Label: "Test",
 			Value: 0,
-			Style: NewStyle(FgRed, BgBlue, Bold),
+			Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
 		},
 	}).Render()
 }
 
 func TestBarChartPrinter_RenderZeroBarValues(t *testing.T) {
-	DefaultBarChart.WithShowValue().WithBars(Bars{
-		Bar{
+	pterm.DefaultBarChart.WithShowValue().WithBars(pterm.Bars{
+		pterm.Bar{
 			Label: "Test",
 			Value: 0,
-			Style: NewStyle(FgRed, BgBlue, Bold),
+			Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
 		},
-		Bar{
+		pterm.Bar{
 			Label: "Test",
 			Value: 0,
-			Style: NewStyle(FgRed, BgBlue, Bold),
+			Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
 		},
 	}).Render()
 }
 
 func TestBarChartPrinter_RenderLowBarValues(t *testing.T) {
-	DefaultBarChart.WithShowValue().WithBars(Bars{
-		Bar{
+	pterm.DefaultBarChart.WithShowValue().WithBars(pterm.Bars{
+		pterm.Bar{
 			Label: "Test",
 			Value: 1,
-			Style: NewStyle(FgRed, BgBlue, Bold),
+			Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
 		},
-		Bar{
+		pterm.Bar{
 			Label: "Test",
 			Value: 1,
-			Style: NewStyle(FgRed, BgBlue, Bold),
+			Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
 		},
 	}).Render()
 }
 
 func TestBarChartPrinter_Render(t *testing.T) {
-	DefaultBarChart.WithShowValue().WithBars(Bars{
-		Bar{
+	pterm.DefaultBarChart.WithShowValue().WithBars(pterm.Bars{
+		pterm.Bar{
 			Label: "Test",
 			Value: 1337,
-			Style: NewStyle(FgRed, BgBlue, Bold),
+			Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
 		},
-		Bar{
+		pterm.Bar{
 			Label: "Test",
 			Value: 1337,
-			Style: NewStyle(FgRed, BgBlue, Bold),
+			Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
 		},
 	}).Render()
 }
 
 func TestBarChartPrinter_RenderHorizonzal(t *testing.T) {
-	DefaultBarChart.WithShowValue().WithHorizontal().WithBars(Bars{
-		Bar{
+	pterm.DefaultBarChart.WithShowValue().WithHorizontal().WithBars(pterm.Bars{
+		pterm.Bar{
 			Label: "Test",
 			Value: 1337,
-			Style: NewStyle(FgRed, BgBlue, Bold),
+			Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
 		},
-		Bar{
+		pterm.Bar{
 			Label: "Test",
 			Value: 1337,
-			Style: NewStyle(FgRed, BgBlue, Bold),
+			Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
 		},
 	}).Render()
 }
 
 func TestBarChartPrinter_WithHorizontalBarCharacter(t *testing.T) {
-	p := BarChartPrinter{}
+	p := pterm.BarChartPrinter{}
 	s := "X"
 	p2 := p.WithHorizontalBarCharacter(s)
 
@@ -206,7 +207,7 @@ func TestBarChartPrinter_WithHorizontalBarCharacter(t *testing.T) {
 }
 
 func TestBarChartPrinter_WithVerticalBarCharacter(t *testing.T) {
-	p := BarChartPrinter{}
+	p := pterm.BarChartPrinter{}
 	s := "X"
 	p2 := p.WithVerticalBarCharacter(s)
 
@@ -215,17 +216,17 @@ func TestBarChartPrinter_WithVerticalBarCharacter(t *testing.T) {
 }
 
 func TestBarChartPrinter_WithBars(t *testing.T) {
-	p := BarChartPrinter{}
-	s := Bars{
-		Bar{
+	p := pterm.BarChartPrinter{}
+	s := pterm.Bars{
+		pterm.Bar{
 			Label: "Test",
 			Value: 1337,
-			Style: NewStyle(FgRed, BgBlue, Bold),
+			Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
 		},
-		Bar{
+		pterm.Bar{
 			Label: "Test",
 			Value: 1337,
-			Style: NewStyle(FgRed, BgBlue, Bold),
+			Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
 		},
 	}
 	p2 := p.WithBars(s)
@@ -235,7 +236,7 @@ func TestBarChartPrinter_WithBars(t *testing.T) {
 }
 
 func TestBarChartPrinter_WithHeight(t *testing.T) {
-	p := BarChartPrinter{}
+	p := pterm.BarChartPrinter{}
 	s := 1337
 	p2 := p.WithHeight(s)
 
@@ -244,7 +245,7 @@ func TestBarChartPrinter_WithHeight(t *testing.T) {
 }
 
 func TestBarChartPrinter_WithHorizontal(t *testing.T) {
-	p := BarChartPrinter{}
+	p := pterm.BarChartPrinter{}
 	s := true
 	p2 := p.WithHorizontal(s)
 
@@ -253,7 +254,7 @@ func TestBarChartPrinter_WithHorizontal(t *testing.T) {
 }
 
 func TestBarChartPrinter_WithShowValue(t *testing.T) {
-	p := BarChartPrinter{}
+	p := pterm.BarChartPrinter{}
 	s := true
 	p2 := p.WithShowValue(s)
 
@@ -262,7 +263,7 @@ func TestBarChartPrinter_WithShowValue(t *testing.T) {
 }
 
 func TestBarChartPrinter_WithWidth(t *testing.T) {
-	p := BarChartPrinter{}
+	p := pterm.BarChartPrinter{}
 	s := 1337
 	p2 := p.WithWidth(s)
 

@@ -1,4 +1,4 @@
-package pterm
+package pterm_test
 
 import (
 	"errors"
@@ -6,6 +6,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/pterm/pterm"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -18,16 +19,16 @@ func TestNewRGB(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want RGB
+		want pterm.RGB
 	}{
-		{name: "1", args: args{0, 0, 0}, want: RGB{0, 0, 0}},
-		{name: "3", args: args{255, 255, 255}, want: RGB{255, 255, 255}},
-		{name: "4", args: args{127, 127, 127}, want: RGB{127, 127, 127}},
-		{name: "5", args: args{1, 2, 3}, want: RGB{1, 2, 3}},
+		{name: "1", args: args{0, 0, 0}, want: pterm.RGB{0, 0, 0}},
+		{name: "3", args: args{255, 255, 255}, want: pterm.RGB{255, 255, 255}},
+		{name: "4", args: args{127, 127, 127}, want: pterm.RGB{127, 127, 127}},
+		{name: "5", args: args{1, 2, 3}, want: pterm.RGB{1, 2, 3}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewRGB(tt.args.r, tt.args.g, tt.args.b); !reflect.DeepEqual(got, tt.want) {
+			if got := pterm.NewRGB(tt.args.r, tt.args.g, tt.args.b); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewRGB() = %v, want %v", got, tt.want)
 			}
 		})
@@ -37,19 +38,19 @@ func TestNewRGB(t *testing.T) {
 func TestNewRGBFromHEX(t *testing.T) {
 	tests := []struct {
 		hex  string
-		want RGB
+		want pterm.RGB
 	}{
-		{hex: "#ff0009", want: RGB{R: 255, G: 0, B: 9}},
-		{hex: "ff0009", want: RGB{R: 255, G: 0, B: 9}},
-		{hex: "ff00090x", want: RGB{R: 255, G: 0, B: 9}},
-		{hex: "ff00090X", want: RGB{R: 255, G: 0, B: 9}},
-		{hex: "#fba", want: RGB{R: 255, G: 187, B: 170}},
-		{hex: "fba", want: RGB{R: 255, G: 187, B: 170}},
-		{hex: "fba0x", want: RGB{R: 255, G: 187, B: 170}},
+		{hex: "#ff0009", want: pterm.RGB{R: 255, G: 0, B: 9}},
+		{hex: "ff0009", want: pterm.RGB{R: 255, G: 0, B: 9}},
+		{hex: "ff00090x", want: pterm.RGB{R: 255, G: 0, B: 9}},
+		{hex: "ff00090X", want: pterm.RGB{R: 255, G: 0, B: 9}},
+		{hex: "#fba", want: pterm.RGB{R: 255, G: 187, B: 170}},
+		{hex: "fba", want: pterm.RGB{R: 255, G: 187, B: 170}},
+		{hex: "fba0x", want: pterm.RGB{R: 255, G: 187, B: 170}},
 	}
 	for _, test := range tests {
 		t.Run("", func(t *testing.T) {
-			rgb, err := NewRGBFromHEX(test.hex)
+			rgb, err := pterm.NewRGBFromHEX(test.hex)
 			assert.Equal(t, test.want, rgb)
 			assert.NoError(t, err)
 		})
@@ -58,15 +59,15 @@ func TestNewRGBFromHEX(t *testing.T) {
 		hex  string
 		want error
 	}{
-		{hex: "faba0x", want: ErrHexCodeIsInvalid},
-		{hex: "faba", want: ErrHexCodeIsInvalid},
-		{hex: "#faba", want: ErrHexCodeIsInvalid},
-		{hex: "faba0x", want: ErrHexCodeIsInvalid},
+		{hex: "faba0x", want: pterm.ErrHexCodeIsInvalid},
+		{hex: "faba", want: pterm.ErrHexCodeIsInvalid},
+		{hex: "#faba", want: pterm.ErrHexCodeIsInvalid},
+		{hex: "faba0x", want: pterm.ErrHexCodeIsInvalid},
 		{hex: "#fax", want: assert.AnError},
 	}
 	for _, test := range testsFail {
 		t.Run("", func(t *testing.T) {
-			_, err := NewRGBFromHEX(test.hex)
+			_, err := pterm.NewRGBFromHEX(test.hex)
 			assert.Error(t, test.want, err)
 		})
 	}
@@ -82,27 +83,27 @@ func TestRGB_Fade(t *testing.T) {
 		min     float32
 		max     float32
 		current float32
-		end     []RGB
+		end     []pterm.RGB
 	}
 	tests := []struct {
 		name   string
 		fields fields
 		args   args
-		want   RGB
+		want   pterm.RGB
 	}{
-		{name: "Middle", fields: fields{0, 0, 0}, args: args{min: 0, max: 100, current: 50, end: []RGB{{255, 255, 255}}}, want: RGB{127, 127, 127}},
-		{name: "ZeroToZero", fields: fields{0, 0, 0}, args: args{min: 0, max: 100, current: 50, end: []RGB{{0, 0, 0}}}, want: RGB{0, 0, 0}},
-		{name: "DifferentValues", fields: fields{0, 1, 2}, args: args{min: 0, max: 100, current: 50, end: []RGB{{0, 1, 2}}}, want: RGB{0, 1, 2}},
-		{name: "NegativeRangeMiddle", fields: fields{0, 0, 0}, args: args{min: -50, max: 50, current: 0, end: []RGB{{255, 255, 255}}}, want: RGB{127, 127, 127}},
-		{name: "NegativeRangeMiddleMultipleRGB", fields: fields{0, 0, 0}, args: args{min: -50, max: 50, current: 0, end: []RGB{{127, 127, 127}, {255, 255, 255}}}, want: RGB{127, 127, 127}},
-		{name: "MiddleMultipleRGB", fields: fields{0, 0, 0}, args: args{min: 0, max: 100, current: 50, end: []RGB{{127, 127, 127}, {255, 255, 255}}}, want: RGB{127, 127, 127}},
-		{name: "1/4MultipleRGB", fields: fields{0, 0, 0}, args: args{min: 0, max: 100, current: 25, end: []RGB{{255, 255, 255}, {255, 255, 255}}}, want: RGB{127, 127, 127}},
-		{name: "MiddleMultipleRGBPositiveMin", fields: fields{0, 0, 0}, args: args{min: 10, max: 110, current: 60, end: []RGB{{127, 127, 127}, {255, 255, 255}}}, want: RGB{127, 127, 127}},
-		{name: "MiddleNoRGB", fields: fields{0, 0, 0}, args: args{min: 10, max: 110, current: 60, end: []RGB{}}, want: RGB{0, 0, 0}},
+		{name: "Middle", fields: fields{0, 0, 0}, args: args{min: 0, max: 100, current: 50, end: []pterm.RGB{{255, 255, 255}}}, want: pterm.RGB{127, 127, 127}},
+		{name: "ZeroToZero", fields: fields{0, 0, 0}, args: args{min: 0, max: 100, current: 50, end: []pterm.RGB{{0, 0, 0}}}, want: pterm.RGB{0, 0, 0}},
+		{name: "DifferentValues", fields: fields{0, 1, 2}, args: args{min: 0, max: 100, current: 50, end: []pterm.RGB{{0, 1, 2}}}, want: pterm.RGB{0, 1, 2}},
+		{name: "NegativeRangeMiddle", fields: fields{0, 0, 0}, args: args{min: -50, max: 50, current: 0, end: []pterm.RGB{{255, 255, 255}}}, want: pterm.RGB{127, 127, 127}},
+		{name: "NegativeRangeMiddleMultipleRGB", fields: fields{0, 0, 0}, args: args{min: -50, max: 50, current: 0, end: []pterm.RGB{{127, 127, 127}, {255, 255, 255}}}, want: pterm.RGB{127, 127, 127}},
+		{name: "MiddleMultipleRGB", fields: fields{0, 0, 0}, args: args{min: 0, max: 100, current: 50, end: []pterm.RGB{{127, 127, 127}, {255, 255, 255}}}, want: pterm.RGB{127, 127, 127}},
+		{name: "1/4MultipleRGB", fields: fields{0, 0, 0}, args: args{min: 0, max: 100, current: 25, end: []pterm.RGB{{255, 255, 255}, {255, 255, 255}}}, want: pterm.RGB{127, 127, 127}},
+		{name: "MiddleMultipleRGBPositiveMin", fields: fields{0, 0, 0}, args: args{min: 10, max: 110, current: 60, end: []pterm.RGB{{127, 127, 127}, {255, 255, 255}}}, want: pterm.RGB{127, 127, 127}},
+		{name: "MiddleNoRGB", fields: fields{0, 0, 0}, args: args{min: 10, max: 110, current: 60, end: []pterm.RGB{}}, want: pterm.RGB{0, 0, 0}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			p := RGB{
+			p := pterm.RGB{
 				R: tt.fields.R,
 				G: tt.fields.G,
 				B: tt.fields.B,
@@ -132,7 +133,7 @@ func TestRGB_GetValues(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			p := RGB{
+			p := pterm.RGB{
 				R: tt.fields.R,
 				G: tt.fields.G,
 				B: tt.fields.B,
@@ -152,10 +153,10 @@ func TestRGB_GetValues(t *testing.T) {
 }
 
 func TestRGB_Print(t *testing.T) {
-	RGBs := []RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
+	RGBs := []pterm.RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
 
 	for _, rgb := range RGBs {
-		t.Run(Sprintf("%v %v %v", rgb.R, rgb.G, rgb.B), func(t *testing.T) {
+		t.Run(pterm.Sprintf("%v %v %v", rgb.R, rgb.G, rgb.B), func(t *testing.T) {
 			testPrintContains(t, func(w io.Writer, a interface{}) {
 				p := rgb.Print(a)
 				assert.NotNil(t, p)
@@ -165,10 +166,10 @@ func TestRGB_Print(t *testing.T) {
 }
 
 func TestRGB_Printf(t *testing.T) {
-	RGBs := []RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
+	RGBs := []pterm.RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
 
 	for _, rgb := range RGBs {
-		t.Run(Sprintf("%v %v %v", rgb.R, rgb.G, rgb.B), func(t *testing.T) {
+		t.Run(pterm.Sprintf("%v %v %v", rgb.R, rgb.G, rgb.B), func(t *testing.T) {
 			testPrintfContains(t, func(w io.Writer, format string, a interface{}) {
 				p := rgb.Printf(format, a)
 				assert.NotNil(t, p)
@@ -178,10 +179,10 @@ func TestRGB_Printf(t *testing.T) {
 }
 
 func TestRGB_Printfln(t *testing.T) {
-	RGBs := []RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
+	RGBs := []pterm.RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
 
 	for _, rgb := range RGBs {
-		t.Run(Sprintfln("%v %v %v", rgb.R, rgb.G, rgb.B), func(t *testing.T) {
+		t.Run(pterm.Sprintfln("%v %v %v", rgb.R, rgb.G, rgb.B), func(t *testing.T) {
 			testPrintflnContains(t, func(w io.Writer, format string, a interface{}) {
 				p := rgb.Printfln(format, a)
 				assert.NotNil(t, p)
@@ -191,10 +192,10 @@ func TestRGB_Printfln(t *testing.T) {
 }
 
 func TestRGB_Println(t *testing.T) {
-	RGBs := []RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
+	RGBs := []pterm.RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
 
 	for _, rgb := range RGBs {
-		t.Run(Sprintf("%v %v %v", rgb.R, rgb.G, rgb.B), func(t *testing.T) {
+		t.Run(pterm.Sprintf("%v %v %v", rgb.R, rgb.G, rgb.B), func(t *testing.T) {
 			testPrintlnContains(t, func(w io.Writer, a interface{}) {
 				p := rgb.Println(a)
 				assert.NotNil(t, p)
@@ -204,10 +205,10 @@ func TestRGB_Println(t *testing.T) {
 }
 
 func TestRGB_Sprint(t *testing.T) {
-	RGBs := []RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
+	RGBs := []pterm.RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
 
 	for _, rgb := range RGBs {
-		t.Run(Sprintf("%v %v %v", rgb.R, rgb.G, rgb.B), func(t *testing.T) {
+		t.Run(pterm.Sprintf("%v %v %v", rgb.R, rgb.G, rgb.B), func(t *testing.T) {
 			testSprintContains(t, func(a interface{}) string {
 				return rgb.Sprint(a)
 			})
@@ -216,7 +217,7 @@ func TestRGB_Sprint(t *testing.T) {
 }
 
 func TestRGB_Sprintf(t *testing.T) {
-	RGBs := []RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
+	RGBs := []pterm.RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
 
 	for _, rgb := range RGBs {
 		t.Run("", func(t *testing.T) {
@@ -228,7 +229,7 @@ func TestRGB_Sprintf(t *testing.T) {
 }
 
 func TestRGB_Sprintfln(t *testing.T) {
-	RGBs := []RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
+	RGBs := []pterm.RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
 
 	for _, rgb := range RGBs {
 		t.Run("", func(t *testing.T) {
@@ -240,10 +241,10 @@ func TestRGB_Sprintfln(t *testing.T) {
 }
 
 func TestRGB_Sprintln(t *testing.T) {
-	RGBs := []RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
+	RGBs := []pterm.RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
 
 	for _, rgb := range RGBs {
-		t.Run(Sprintf("%v %v %v", rgb.R, rgb.G, rgb.B), func(t *testing.T) {
+		t.Run(pterm.Sprintf("%v %v %v", rgb.R, rgb.G, rgb.B), func(t *testing.T) {
 			testSprintlnContains(t, func(a interface{}) string {
 				return rgb.Sprintln(a)
 			})
@@ -252,7 +253,7 @@ func TestRGB_Sprintln(t *testing.T) {
 }
 
 func TestRGB_PrintOnError(t *testing.T) {
-	RGBs := []RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
+	RGBs := []pterm.RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
 
 	for _, rgb := range RGBs {
 		t.Run("PrintOnError", func(t *testing.T) {
@@ -265,7 +266,7 @@ func TestRGB_PrintOnError(t *testing.T) {
 }
 
 func TestRGB_PrintIfError_WithoutError(t *testing.T) {
-	RGBs := []RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
+	RGBs := []pterm.RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
 
 	for _, rgb := range RGBs {
 		t.Run("PrintIfError_WithoutError", func(t *testing.T) {

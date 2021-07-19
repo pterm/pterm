@@ -1,13 +1,14 @@
-package pterm
+package pterm_test
 
 import (
 	"testing"
 
+	"github.com/pterm/pterm"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestBar_WithLabel(t *testing.T) {
-	p := Bar{}
+	p := pterm.Bar{}
 	s := "X"
 	p2 := p.WithLabel(s)
 
@@ -16,8 +17,8 @@ func TestBar_WithLabel(t *testing.T) {
 }
 
 func TestBar_WithStyle(t *testing.T) {
-	p := Bar{}
-	s := NewStyle(FgRed, BgBlue, Bold)
+	p := pterm.Bar{}
+	s := pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold)
 	p2 := p.WithStyle(s)
 
 	assert.Equal(t, s, p2.Style)
@@ -25,7 +26,7 @@ func TestBar_WithStyle(t *testing.T) {
 }
 
 func TestBar_WithValue(t *testing.T) {
-	p := Bar{}
+	p := pterm.Bar{}
 	s := 1337
 	p2 := p.WithValue(s)
 
@@ -34,8 +35,8 @@ func TestBar_WithValue(t *testing.T) {
 }
 
 func TestBar_WithLabelStyle(t *testing.T) {
-	p := Bar{}
-	s := NewStyle(FgRed, BgBlue, Bold)
+	p := pterm.Bar{}
+	s := pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold)
 	p2 := p.WithLabelStyle(s)
 
 	assert.Equal(t, s, p2.LabelStyle)

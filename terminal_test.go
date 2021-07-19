@@ -1,20 +1,22 @@
-package pterm
+package pterm_test
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/pterm/pterm"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGetTerminalHeight(t *testing.T) {
-	assert.NotEmpty(t, GetTerminalHeight())
+	assert.NotEmpty(t, pterm.GetTerminalHeight())
 }
 
 func TestGetTerminalWidth(t *testing.T) {
-	assert.NotEmpty(t, GetTerminalWidth())
+	assert.NotEmpty(t, pterm.GetTerminalWidth())
 }
 
 func TestGetTerminalSize(t *testing.T) {
-	w, h, _ := GetTerminalSize()
+	w, h, _ := pterm.GetTerminalSize()
 	assert.NotEmpty(t, w)
 	assert.NotEmpty(t, h)
 }

@@ -1,21 +1,22 @@
-package pterm
+package pterm_test
 
 import (
 	"errors"
 	"io"
 	"testing"
 
+	"github.com/pterm/pterm"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestBasicTextPrinterNilPrint(t *testing.T) {
 	proxyToDevNull()
-	p := BasicTextPrinter{}
+	p := pterm.BasicTextPrinter{}
 	p.Println("Hello, World!")
 }
 
 func TestBasicTextPrinterPrintMethods(t *testing.T) {
-	p := DefaultBasicText
+	p := pterm.DefaultBasicText
 
 	t.Run("Print", func(t *testing.T) {
 		testPrintContains(t, func(w io.Writer, a interface{}) {
@@ -81,8 +82,8 @@ func TestBasicTextPrinterPrintMethods(t *testing.T) {
 }
 
 func TestBasicTextPrinter_WithStyle(t *testing.T) {
-	s := NewStyle(FgRed, BgBlue, Bold)
-	p := BasicTextPrinter{}
+	s := pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold)
+	p := pterm.BasicTextPrinter{}
 	p2 := p.WithStyle(s)
 
 	assert.Equal(t, s, p2.Style)
