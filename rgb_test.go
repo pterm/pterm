@@ -4,6 +4,7 @@ import (
 	"errors"
 	"io"
 	"reflect"
+	"strconv"
 	"testing"
 
 	"github.com/MarvinJWendt/testza"
@@ -63,11 +64,12 @@ func TestNewRGBFromHEX(t *testing.T) {
 		{hex: "faba", want: pterm.ErrHexCodeIsInvalid},
 		{hex: "#faba", want: pterm.ErrHexCodeIsInvalid},
 		{hex: "faba0x", want: pterm.ErrHexCodeIsInvalid},
+		{hex: "fax", want: strconv.ErrSyntax},
 	}
 	for _, test := range testsFail {
 		t.Run("", func(t *testing.T) {
 			_, err := pterm.NewRGBFromHEX(test.hex)
-			testza.AssertEqual(t, test.want, err)
+			testza.AssertTrue(t, errors.Is(err, test.want))
 		})
 	}
 }
