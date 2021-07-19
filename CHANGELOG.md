@@ -4,6 +4,14 @@
 ### Features
 - **putils:** add `PrintAverageExecutionTime`
 
+### Test
+- fix rgb error test
+- fix internal test import cycle
+- move tests into own package
+
+### Code Refactoring
+- replace `testify` with `testza`
+
 
 <a name="v0.12.28"></a>
 ## [v0.12.28] - 2021-07-17
