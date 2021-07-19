@@ -9,7 +9,6 @@ Replace all of the following strings with the current printer.
 
 <p align="center"><a href="https://github.com/pterm/pterm/blob/master/_examples/section/main.go" target="_blank">(Show source of demo)</a></p>
 
-
 ## Usage
 
 ### Basic usage
@@ -53,4 +52,5 @@ pterm.DefaultSection.Println("Hello, World!")
 |Printfln(format string, a ...interface{})|Prints to the terminal, formatted according to a format specifier with a new line at the end|
 
 ## Related
+
 - [Override default printers](docs/customizing/override-default-printer.md)

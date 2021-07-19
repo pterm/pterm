@@ -6,8 +6,8 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/MarvinJWendt/testza"
 	"github.com/pterm/pterm"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestNewRGB(t *testing.T) {
@@ -51,8 +51,8 @@ func TestNewRGBFromHEX(t *testing.T) {
 	for _, test := range tests {
 		t.Run("", func(t *testing.T) {
 			rgb, err := pterm.NewRGBFromHEX(test.hex)
-			assert.Equal(t, test.want, rgb)
-			assert.NoError(t, err)
+			testza.AssertEqual(t, test.want, rgb)
+			testza.AssertNoError(t, err)
 		})
 	}
 	testsFail := []struct {
@@ -63,12 +63,11 @@ func TestNewRGBFromHEX(t *testing.T) {
 		{hex: "faba", want: pterm.ErrHexCodeIsInvalid},
 		{hex: "#faba", want: pterm.ErrHexCodeIsInvalid},
 		{hex: "faba0x", want: pterm.ErrHexCodeIsInvalid},
-		{hex: "#fax", want: assert.AnError},
 	}
 	for _, test := range testsFail {
 		t.Run("", func(t *testing.T) {
 			_, err := pterm.NewRGBFromHEX(test.hex)
-			assert.Error(t, test.want, err)
+			testza.AssertEqual(t, test.want, err)
 		})
 	}
 }
@@ -159,7 +158,7 @@ func TestRGB_Print(t *testing.T) {
 		t.Run(pterm.Sprintf("%v %v %v", rgb.R, rgb.G, rgb.B), func(t *testing.T) {
 			testPrintContains(t, func(w io.Writer, a interface{}) {
 				p := rgb.Print(a)
-				assert.NotNil(t, p)
+				testza.AssertNotNil(t, p)
 			})
 		})
 	}
@@ -172,7 +171,7 @@ func TestRGB_Printf(t *testing.T) {
 		t.Run(pterm.Sprintf("%v %v %v", rgb.R, rgb.G, rgb.B), func(t *testing.T) {
 			testPrintfContains(t, func(w io.Writer, format string, a interface{}) {
 				p := rgb.Printf(format, a)
-				assert.NotNil(t, p)
+				testza.AssertNotNil(t, p)
 			})
 		})
 	}
@@ -185,7 +184,7 @@ func TestRGB_Printfln(t *testing.T) {
 		t.Run(pterm.Sprintfln("%v %v %v", rgb.R, rgb.G, rgb.B), func(t *testing.T) {
 			testPrintflnContains(t, func(w io.Writer, format string, a interface{}) {
 				p := rgb.Printfln(format, a)
-				assert.NotNil(t, p)
+				testza.AssertNotNil(t, p)
 			})
 		})
 	}
@@ -198,7 +197,7 @@ func TestRGB_Println(t *testing.T) {
 		t.Run(pterm.Sprintf("%v %v %v", rgb.R, rgb.G, rgb.B), func(t *testing.T) {
 			testPrintlnContains(t, func(w io.Writer, a interface{}) {
 				p := rgb.Println(a)
-				assert.NotNil(t, p)
+				testza.AssertNotNil(t, p)
 			})
 		})
 	}
@@ -260,7 +259,7 @@ func TestRGB_PrintOnError(t *testing.T) {
 			result := captureStdout(func(w io.Writer) {
 				rgb.PrintOnError(errors.New("hello world"))
 			})
-			assert.Contains(t, result, "hello world")
+			testza.AssertContains(t, result, "hello world")
 		})
 	}
 }
@@ -273,7 +272,7 @@ func TestRGB_PrintIfError_WithoutError(t *testing.T) {
 			result := captureStdout(func(w io.Writer) {
 				rgb.PrintOnError(nil)
 			})
-			assert.Empty(t, result)
+			testza.AssertZero(t, result)
 		})
 	}
 }

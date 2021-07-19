@@ -4,14 +4,14 @@ import (
 	"io"
 	"testing"
 
+	"github.com/MarvinJWendt/testza"
 	"github.com/pterm/pterm"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestPanelPrinterNilPrint(t *testing.T) {
 	p := pterm.PanelPrinter{}
 	err := p.Render()
-	assert.NoError(t, err)
+	testza.AssertNoError(t, err)
 }
 
 func TestPanelPrinterNilPrintWithPanels(t *testing.T) {
@@ -22,7 +22,7 @@ func TestPanelPrinterNilPrintWithPanels(t *testing.T) {
 	}
 	p := pterm.PanelPrinter{}.WithPanels(panels)
 	err := p.Render()
-	assert.NoError(t, err)
+	testza.AssertNoError(t, err)
 }
 
 func TestPanelPrinter_Render(t *testing.T) {
@@ -32,7 +32,7 @@ func TestPanelPrinter_Render(t *testing.T) {
 		}
 		p := pterm.PanelPrinter{}.WithPanels(panels)
 		err := p.Render()
-		assert.NoError(t, err)
+		testza.AssertNoError(t, err)
 	})
 }
 
@@ -44,7 +44,7 @@ func TestPanelPrinter_RenderMultiplePanels(t *testing.T) {
 		}
 		p := pterm.PanelPrinter{}.WithPanels(panels)
 		err := p.Render()
-		assert.NoError(t, err)
+		testza.AssertNoError(t, err)
 	})
 }
 
@@ -56,7 +56,7 @@ func TestPanelPrinter_RenderMultiplePanelsWithBorder(t *testing.T) {
 		}
 		p := pterm.PanelPrinter{}.WithPanels(panels).WithBoxPrinter(pterm.DefaultBox)
 		err := p.Render()
-		assert.NoError(t, err)
+		testza.AssertNoError(t, err)
 	})
 }
 
@@ -69,7 +69,7 @@ func TestPanelPrinter_RenderWithSameColumnWidth(t *testing.T) {
 		}
 		p := pterm.PanelPrinter{}.WithPanels(panels).WithSameColumnWidth()
 		err := p.Render()
-		assert.NoError(t, err)
+		testza.AssertNoError(t, err)
 	})
 }
 
@@ -82,7 +82,7 @@ func TestPanelPrinter_RenderWithBottomPadding(t *testing.T) {
 		}
 		p := pterm.PanelPrinter{}.WithPanels(panels).WithBottomPadding(1)
 		err := p.Render()
-		assert.NoError(t, err)
+		testza.AssertNoError(t, err)
 	})
 }
 
@@ -95,8 +95,8 @@ func TestPanelPrinter_WithPanels(t *testing.T) {
 	p := pterm.PanelPrinter{}
 	p2 := p.WithPanels(panels)
 
-	assert.Equal(t, panels, p2.Panels)
-	assert.Empty(t, p.Panels)
+	testza.AssertEqual(t, panels, p2.Panels)
+	testza.AssertZero(t, p.Panels)
 }
 
 func TestPanelPrinter_WithPadding(t *testing.T) {
@@ -104,8 +104,8 @@ func TestPanelPrinter_WithPadding(t *testing.T) {
 	p := pterm.PanelPrinter{}
 	p2 := p.WithPadding(padding)
 
-	assert.Equal(t, padding, p2.Padding)
-	assert.Empty(t, p.Padding)
+	testza.AssertEqual(t, padding, p2.Padding)
+	testza.AssertZero(t, p.Padding)
 }
 
 func TestPanelPrinter_WithInvalidPadding(t *testing.T) {
@@ -113,8 +113,8 @@ func TestPanelPrinter_WithInvalidPadding(t *testing.T) {
 	p := pterm.PanelPrinter{}
 	p2 := p.WithPadding(padding)
 
-	assert.Equal(t, 0, p2.Padding)
-	assert.Empty(t, p.Padding)
+	testza.AssertEqual(t, 0, p2.Padding)
+	testza.AssertZero(t, p.Padding)
 }
 
 func TestPanelPrinter_WithBottomPadding(t *testing.T) {
@@ -122,8 +122,8 @@ func TestPanelPrinter_WithBottomPadding(t *testing.T) {
 	p := pterm.PanelPrinter{}
 	p2 := p.WithBottomPadding(padding)
 
-	assert.Equal(t, padding, p2.BottomPadding)
-	assert.Empty(t, p.BottomPadding)
+	testza.AssertEqual(t, padding, p2.BottomPadding)
+	testza.AssertZero(t, p.BottomPadding)
 }
 
 func TestPanelPrinter_WithInvalidBottomPadding(t *testing.T) {
@@ -131,22 +131,22 @@ func TestPanelPrinter_WithInvalidBottomPadding(t *testing.T) {
 	p := pterm.PanelPrinter{}
 	p2 := p.WithBottomPadding(padding)
 
-	assert.Equal(t, 0, p2.BottomPadding)
-	assert.Empty(t, p.BottomPadding)
+	testza.AssertEqual(t, 0, p2.BottomPadding)
+	testza.AssertZero(t, p.BottomPadding)
 }
 
 func TestPanelPrinter_WithSameColumnWidth(t *testing.T) {
 	p := pterm.PanelPrinter{}
 	p2 := p.WithSameColumnWidth()
 
-	assert.True(t, p2.SameColumnWidth)
-	assert.False(t, p.SameColumnWidth)
+	testza.AssertTrue(t, p2.SameColumnWidth)
+	testza.AssertFalse(t, p.SameColumnWidth)
 }
 
 func TestPanelPrinter_WithBoxPrinter(t *testing.T) {
 	p := pterm.PanelPrinter{}
 	p2 := p.WithBoxPrinter(pterm.DefaultBox)
 
-	assert.Equal(t, pterm.DefaultBox, p2.BoxPrinter)
-	assert.Empty(t, p.BoxPrinter)
+	testza.AssertEqual(t, pterm.DefaultBox, p2.BoxPrinter)
+	testza.AssertZero(t, p.BoxPrinter)
 }

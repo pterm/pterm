@@ -5,8 +5,8 @@ import (
 	"io"
 	"testing"
 
+	"github.com/MarvinJWendt/testza"
 	"github.com/pterm/pterm"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestSectionPrinterNilPrint(t *testing.T) {
@@ -69,14 +69,14 @@ func TestSectionPrinterPrintMethods(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			p.PrintOnError(errors.New("hello world"))
 		})
-		assert.Contains(t, result, "hello world")
+		testza.AssertContains(t, result, "hello world")
 	})
 
 	t.Run("PrintIfError_WithoutError", func(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			p.PrintOnError(nil)
 		})
-		assert.Empty(t, result)
+		testza.AssertZero(t, result)
 	})
 }
 
@@ -84,16 +84,16 @@ func TestSectionPrinter_WithBottomPadding(t *testing.T) {
 	p := pterm.SectionPrinter{}
 	p2 := p.WithBottomPadding(1337)
 
-	assert.Equal(t, 1337, p2.BottomPadding)
-	assert.Empty(t, p.BottomPadding)
+	testza.AssertEqual(t, 1337, p2.BottomPadding)
+	testza.AssertZero(t, p.BottomPadding)
 }
 
 func TestSectionPrinter_WithLevel(t *testing.T) {
 	p := pterm.SectionPrinter{}
 	p2 := p.WithLevel(1337)
 
-	assert.Equal(t, 1337, p2.Level)
-	assert.Empty(t, p.Level)
+	testza.AssertEqual(t, 1337, p2.Level)
+	testza.AssertZero(t, p.Level)
 }
 
 func TestSectionPrinter_WithStyle(t *testing.T) {
@@ -101,22 +101,22 @@ func TestSectionPrinter_WithStyle(t *testing.T) {
 	s := pterm.NewStyle(pterm.FgRed, pterm.BgRed, pterm.Bold)
 	p2 := p.WithStyle(s)
 
-	assert.Equal(t, s, p2.Style)
-	assert.Empty(t, p.Style)
+	testza.AssertEqual(t, s, p2.Style)
+	testza.AssertZero(t, p.Style)
 }
 
 func TestSectionPrinter_WithTopPadding(t *testing.T) {
 	p := pterm.SectionPrinter{}
 	p2 := p.WithTopPadding(1337)
 
-	assert.Equal(t, 1337, p2.TopPadding)
-	assert.Empty(t, p.TopPadding)
+	testza.AssertEqual(t, 1337, p2.TopPadding)
+	testza.AssertZero(t, p.TopPadding)
 }
 
 func TestSectionPrinter_WithIndentCharacter(t *testing.T) {
 	p := pterm.SectionPrinter{}
 	p2 := p.WithIndentCharacter("#")
 
-	assert.Equal(t, "#", p2.IndentCharacter)
-	assert.Empty(t, p.IndentCharacter)
+	testza.AssertEqual(t, "#", p2.IndentCharacter)
+	testza.AssertZero(t, p.IndentCharacter)
 }

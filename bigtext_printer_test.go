@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/MarvinJWendt/testza"
 	"github.com/pterm/pterm"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestBigTextPrinterNilPrint(t *testing.T) {
@@ -33,8 +33,8 @@ func TestBigTextPrinter_WithBigCharacters(t *testing.T) {
 	p := pterm.BigTextPrinter{}
 	p2 := p.WithBigCharacters(e)
 
-	assert.Equal(t, e, p2.BigCharacters)
-	assert.Empty(t, p.BigCharacters)
+	testza.AssertEqual(t, e, p2.BigCharacters)
+	testza.AssertZero(t, p.BigCharacters)
 }
 
 func TestBigTextPrinter_WithLetters(t *testing.T) {
@@ -51,8 +51,8 @@ func TestBigTextPrinter_WithLetters(t *testing.T) {
 	p := pterm.BigTextPrinter{}
 	p2 := p.WithLetters(e)
 
-	assert.Equal(t, e, p2.Letters)
-	assert.Empty(t, p.Letters)
+	testza.AssertEqual(t, e, p2.Letters)
+	testza.AssertZero(t, p.Letters)
 }
 
 func TestLetter_WithString(t *testing.T) {
@@ -60,8 +60,8 @@ func TestLetter_WithString(t *testing.T) {
 	p := pterm.Letter{}
 	p2 := p.WithString(e)
 
-	assert.Equal(t, e, p2.String)
-	assert.Empty(t, p.String)
+	testza.AssertEqual(t, e, p2.String)
+	testza.AssertZero(t, p.String)
 }
 
 func TestLetter_WithStyle(t *testing.T) {
@@ -69,8 +69,8 @@ func TestLetter_WithStyle(t *testing.T) {
 	s := pterm.NewStyle(pterm.FgRed, pterm.BgRed, pterm.Bold)
 	p2 := p.WithStyle(s)
 
-	assert.Equal(t, s, p2.Style)
-	assert.Empty(t, p.Style)
+	testza.AssertEqual(t, s, p2.Style)
+	testza.AssertZero(t, p.Style)
 }
 
 func TestNewLettersFromText(t *testing.T) {
@@ -86,7 +86,7 @@ func TestNewLettersFromText(t *testing.T) {
 	}
 	p := pterm.NewLettersFromString("ab")
 
-	assert.Equal(t, e, p)
+	testza.AssertEqual(t, e, p)
 }
 
 func TestNewLettersFromTextWithStyle(t *testing.T) {
@@ -102,7 +102,7 @@ func TestNewLettersFromTextWithStyle(t *testing.T) {
 	}
 	p := pterm.NewLettersFromStringWithStyle("ab", pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold))
 
-	assert.Equal(t, e, p)
+	testza.AssertEqual(t, e, p)
 }
 
 func TestDefaultLettersMaxHeight(t *testing.T) {
@@ -110,6 +110,6 @@ func TestDefaultLettersMaxHeight(t *testing.T) {
 	chars := pterm.DefaultBigText.BigCharacters
 	for s, l := range chars {
 		h := strings.Count(l, "\n")
-		assert.LessOrEqualf(t, h, maxHeight, "'%s' is too high", s)
+		testza.AssertTrue(t, h <= maxHeight, "'%s' is too high", s)
 	}
 }

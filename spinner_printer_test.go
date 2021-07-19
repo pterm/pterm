@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/MarvinJWendt/testza"
 	"github.com/pterm/pterm"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestSpinnerPrinter_NilPrint(t *testing.T) {
@@ -55,7 +55,7 @@ func TestSpinnerPrinter_UpdateText(t *testing.T) {
 		p.Start()
 		p.UpdateText("test")
 
-		assert.Equal(t, "test", p.Text)
+		testza.AssertEqual(t, "test", p.Text)
 	})
 
 	t.Run("Override", func(t *testing.T) {
@@ -65,7 +65,7 @@ func TestSpinnerPrinter_UpdateText(t *testing.T) {
 			p.Start("An initial long message")
 			p.UpdateText("A short message")
 		})
-		assert.Contains(t, out, "A short message")
+		testza.AssertContains(t, out, "A short message")
 	})
 }
 
@@ -75,7 +75,7 @@ func TestSpinnerPrinter_UpdateTextRawOutput(t *testing.T) {
 	p.Start()
 	p.UpdateText("test")
 
-	assert.Equal(t, "test", p.Text)
+	testza.AssertEqual(t, "test", p.Text)
 	p.Stop()
 	pterm.EnableStyling()
 }
@@ -91,7 +91,7 @@ func TestSpinnerPrinter_WithDelay(t *testing.T) {
 	p := pterm.SpinnerPrinter{}
 	p2 := p.WithDelay(time.Second)
 
-	assert.Equal(t, time.Second, p2.Delay)
+	testza.AssertEqual(t, time.Second, p2.Delay)
 }
 
 func TestSpinnerPrinter_WithMessageStyle(t *testing.T) {
@@ -99,21 +99,21 @@ func TestSpinnerPrinter_WithMessageStyle(t *testing.T) {
 	p := pterm.SpinnerPrinter{}
 	p2 := p.WithMessageStyle(s)
 
-	assert.Equal(t, s, p2.MessageStyle)
+	testza.AssertEqual(t, s, p2.MessageStyle)
 }
 
 func TestSpinnerPrinter_WithRemoveWhenDone(t *testing.T) {
 	p := pterm.SpinnerPrinter{}
 	p2 := p.WithRemoveWhenDone()
 
-	assert.True(t, p2.RemoveWhenDone)
+	testza.AssertTrue(t, p2.RemoveWhenDone)
 }
 
 func TestSpinnerPrinter_WithSequence(t *testing.T) {
 	p := pterm.SpinnerPrinter{}
 	p2 := p.WithSequence("a", "b", "c")
 
-	assert.Equal(t, []string{"a", "b", "c"}, p2.Sequence)
+	testza.AssertEqual(t, []string{"a", "b", "c"}, p2.Sequence)
 }
 
 func TestSpinnerPrinter_WithStyle(t *testing.T) {
@@ -121,21 +121,21 @@ func TestSpinnerPrinter_WithStyle(t *testing.T) {
 	p := pterm.SpinnerPrinter{}
 	p2 := p.WithStyle(s)
 
-	assert.Equal(t, s, p2.Style)
+	testza.AssertEqual(t, s, p2.Style)
 }
 
 func TestSpinnerPrinter_WithText(t *testing.T) {
 	p := pterm.SpinnerPrinter{}
 	p2 := p.WithText("test")
 
-	assert.Equal(t, "test", p2.Text)
+	testza.AssertEqual(t, "test", p2.Text)
 }
 
 func TestSpinnerPrinter_WithShowTimer(t *testing.T) {
 	p := pterm.SpinnerPrinter{}
 	p2 := p.WithShowTimer()
 
-	assert.True(t, p2.ShowTimer)
+	testza.AssertTrue(t, p2.ShowTimer)
 }
 
 func TestSpinnerPrinter_WithTimerStyle(t *testing.T) {
@@ -143,7 +143,7 @@ func TestSpinnerPrinter_WithTimerStyle(t *testing.T) {
 	p := pterm.SpinnerPrinter{}
 	p2 := p.WithTimerStyle(s)
 
-	assert.Equal(t, s, p2.TimerStyle)
+	testza.AssertEqual(t, s, p2.TimerStyle)
 }
 
 func TestSpinnerPrinter_WithTimerRoundingFactor(t *testing.T) {
@@ -151,7 +151,7 @@ func TestSpinnerPrinter_WithTimerRoundingFactor(t *testing.T) {
 	p := pterm.SpinnerPrinter{}
 	p2 := p.WithTimerRoundingFactor(s)
 
-	assert.Equal(t, s, p2.TimerRoundingFactor)
+	testza.AssertEqual(t, s, p2.TimerRoundingFactor)
 }
 
 func TestSpinnerPrinter_WithRawOutput(t *testing.T) {

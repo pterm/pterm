@@ -5,8 +5,8 @@ import (
 	"io"
 	"testing"
 
+	"github.com/MarvinJWendt/testza"
 	"github.com/pterm/pterm"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestBasicTextPrinterNilPrint(t *testing.T) {
@@ -70,14 +70,14 @@ func TestBasicTextPrinterPrintMethods(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			p.PrintOnError(errors.New("hello world"))
 		})
-		assert.Contains(t, result, "hello world")
+		testza.AssertContains(t, result, "hello world")
 	})
 
 	t.Run("PrintIfError_WithoutError", func(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			p.PrintOnError(nil)
 		})
-		assert.Empty(t, result)
+		testza.AssertZero(t, result)
 	})
 }
 
@@ -86,5 +86,5 @@ func TestBasicTextPrinter_WithStyle(t *testing.T) {
 	p := pterm.BasicTextPrinter{}
 	p2 := p.WithStyle(s)
 
-	assert.Equal(t, s, p2.Style)
+	testza.AssertEqual(t, s, p2.Style)
 }

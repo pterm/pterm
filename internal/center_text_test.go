@@ -3,10 +3,10 @@ package internal
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/MarvinJWendt/testza"
 )
 
 func TestCenterText(t *testing.T) {
-	assert.Equal(t, "  Hello Wolrd  \n      !!!      ", CenterText("Hello Wolrd\n!!!", 15))
-	assert.Equal(t, "Hello\n Wolr\n  d  \n !!! ", CenterText("Hello Wolrd\n!!!", 5))
+	testza.AssertEqual(t, "  Hello Wolrd  \n      !!!      ", CenterText("Hello Wolrd\n!!!", 15))
+	testza.AssertEqual(t, "Hello\n Wolr\n  d  \n !!! ", CenterText("Hello Wolrd\n!!!", 5))
 }

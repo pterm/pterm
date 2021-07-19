@@ -5,8 +5,8 @@ import (
 	"io"
 	"testing"
 
+	"github.com/MarvinJWendt/testza"
 	"github.com/pterm/pterm"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestHeaderPrinterNilPrint(t *testing.T) {
@@ -76,14 +76,14 @@ func TestHeaderPrinterPrintMethods(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			p.PrintOnError(errors.New("hello world"))
 		})
-		assert.Contains(t, result, "hello world")
+		testza.AssertContains(t, result, "hello world")
 	})
 
 	t.Run("PrintIfError_WithoutError", func(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			p.PrintOnError(nil)
 		})
-		assert.Empty(t, result)
+		testza.AssertZero(t, result)
 	})
 }
 
@@ -92,35 +92,35 @@ func TestHeaderPrinter_WithBackgroundStyle(t *testing.T) {
 	p := pterm.HeaderPrinter{}
 	p2 := p.WithBackgroundStyle(s)
 
-	assert.Equal(t, s, p2.BackgroundStyle)
+	testza.AssertEqual(t, s, p2.BackgroundStyle)
 }
 
 func TestHeaderPrinter_WithFullWidth(t *testing.T) {
 	p := pterm.HeaderPrinter{}
 	p2 := p.WithFullWidth()
 
-	assert.Equal(t, true, p2.FullWidth)
+	testza.AssertEqual(t, true, p2.FullWidth)
 }
 
 func TestHeaderPrinter_WithFullWidthToLongForTerminal(t *testing.T) {
 	p := pterm.HeaderPrinter{}
 	p2 := p.WithFullWidth().Sprint("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 
-	assert.Contains(t, p2, "a")
+	testza.AssertContains(t, p2, "a")
 }
 
 func TestHeaderPrinter_ToLongForTerminal(t *testing.T) {
 	p := pterm.HeaderPrinter{}
 	p2 := p.Sprint("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 
-	assert.Contains(t, p2, "a")
+	testza.AssertContains(t, p2, "a")
 }
 
 func TestHeaderPrinter_WithMargin(t *testing.T) {
 	p := pterm.HeaderPrinter{}
 	p2 := p.WithMargin(1337)
 
-	assert.Equal(t, 1337, p2.Margin)
+	testza.AssertEqual(t, 1337, p2.Margin)
 }
 
 func TestHeaderPrinter_WithTextStyle(t *testing.T) {
@@ -128,5 +128,5 @@ func TestHeaderPrinter_WithTextStyle(t *testing.T) {
 	p := pterm.HeaderPrinter{}
 	p2 := p.WithTextStyle(s)
 
-	assert.Equal(t, s, p2.TextStyle)
+	testza.AssertEqual(t, s, p2.TextStyle)
 }

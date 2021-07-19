@@ -5,8 +5,8 @@ import (
 	"os"
 	"testing"
 
+	"github.com/MarvinJWendt/testza"
 	"github.com/pterm/pterm"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestTablePrinter_NilPrint(t *testing.T) {
@@ -49,14 +49,14 @@ func TestTablePrinter_WithData(t *testing.T) {
 	p := pterm.TablePrinter{}
 	p2 := p.WithData(d)
 
-	assert.Equal(t, d, p2.Data)
+	testza.AssertEqual(t, d, p2.Data)
 }
 
 func TestTablePrinter_WithHasHeader(t *testing.T) {
 	p := pterm.TablePrinter{}
 	p2 := p.WithHasHeader()
 
-	assert.True(t, p2.HasHeader)
+	testza.AssertTrue(t, p2.HasHeader)
 }
 
 func TestTablePrinter_WithHeaderStyle(t *testing.T) {
@@ -64,14 +64,14 @@ func TestTablePrinter_WithHeaderStyle(t *testing.T) {
 	p := pterm.TablePrinter{}
 	p2 := p.WithHeaderStyle(s)
 
-	assert.Equal(t, s, p2.HeaderStyle)
+	testza.AssertEqual(t, s, p2.HeaderStyle)
 }
 
 func TestTablePrinter_WithSeparator(t *testing.T) {
 	p := pterm.TablePrinter{}
 	p2 := p.WithSeparator("-")
 
-	assert.Equal(t, "-", p2.Separator)
+	testza.AssertEqual(t, "-", p2.Separator)
 }
 
 func TestTablePrinter_WithSeparatorStyle(t *testing.T) {
@@ -79,7 +79,7 @@ func TestTablePrinter_WithSeparatorStyle(t *testing.T) {
 	p := pterm.TablePrinter{}
 	p2 := p.WithSeparatorStyle(s)
 
-	assert.Equal(t, s, p2.SeparatorStyle)
+	testza.AssertEqual(t, s, p2.SeparatorStyle)
 }
 
 func TestTablePrinter_WithStyle(t *testing.T) {
@@ -87,5 +87,5 @@ func TestTablePrinter_WithStyle(t *testing.T) {
 	p := pterm.TablePrinter{}
 	p2 := p.WithStyle(s)
 
-	assert.Equal(t, s, p2.Style)
+	testza.AssertEqual(t, s, p2.Style)
 }
