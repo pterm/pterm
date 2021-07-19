@@ -6,8 +6,8 @@ import (
 	"io"
 	"testing"
 
+	"github.com/MarvinJWendt/testza"
 	"github.com/pterm/pterm"
-	"github.com/stretchr/testify/assert"
 )
 
 var prefixPrinters = []pterm.PrefixPrinter{pterm.Info, pterm.Success, pterm.Warning, pterm.Error, *pterm.Fatal.WithFatal(false)}
@@ -97,14 +97,14 @@ func TestPrefixPrinterPrintMethods(t *testing.T) {
 			result := captureStdout(func(w io.Writer) {
 				p.PrintOnError(errors.New("hello world"))
 			})
-			assert.Contains(t, result, "hello world")
+			testza.AssertContains(t, result, "hello world")
 		})
 
 		t.Run("PrintIfError_WithoutError", func(t *testing.T) {
 			result := captureStdout(func(w io.Writer) {
 				p.PrintOnError(nil)
 			})
-			assert.Empty(t, result)
+			testza.AssertZero(t, result)
 		})
 	}
 }
@@ -118,7 +118,7 @@ func TestPrefixPrinterWithoutPrefix(t *testing.T) {
 				ret := captureStdout(func(w io.Writer) {
 					p2.Print(printable)
 				})
-				assert.Equal(t, ret, fmt.Sprint(printable))
+				testza.AssertEqual(t, ret, fmt.Sprint(printable))
 			}
 		})
 	}
@@ -128,7 +128,7 @@ func TestPrefixPrinterWithoutPrefix(t *testing.T) {
 func TestSprintfWithNewLineEnding(t *testing.T) {
 	for _, p := range prefixPrinters {
 		t.Run("", func(t *testing.T) {
-			assert.NotContains(t, "\n\n", p.Sprintf("%s\n\n\n\n", "Hello, World!"))
+			testza.AssertNotContains(t, "\n\n", p.Sprintf("%s\n\n\n\n", "Hello, World!"))
 		})
 	}
 }
@@ -136,7 +136,7 @@ func TestSprintfWithNewLineEnding(t *testing.T) {
 func TestPrefixPrinter_GetFormattedPrefix(t *testing.T) {
 	for _, p := range prefixPrinters {
 		t.Run("", func(t *testing.T) {
-			assert.NotEmpty(t, p.GetFormattedPrefix())
+			testza.AssertNotZero(t, p.GetFormattedPrefix())
 		})
 	}
 }
@@ -146,7 +146,7 @@ func TestPrefixPrinter_WithFatal(t *testing.T) {
 		t.Run("", func(t *testing.T) {
 			p2 := p.WithFatal()
 
-			assert.Equal(t, true, p2.Fatal)
+			testza.AssertEqual(t, true, p2.Fatal)
 		})
 	}
 }
@@ -156,7 +156,7 @@ func TestPrefixPrinter_WithShowLineNumber(t *testing.T) {
 		t.Run("", func(t *testing.T) {
 			p2 := p.WithShowLineNumber()
 
-			assert.Equal(t, true, p2.ShowLineNumber)
+			testza.AssertEqual(t, true, p2.ShowLineNumber)
 		})
 	}
 }
@@ -167,7 +167,7 @@ func TestPrefixPrinter_WithMessageStyle(t *testing.T) {
 			s := pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold)
 			p2 := p.WithMessageStyle(s)
 
-			assert.Equal(t, s, p2.MessageStyle)
+			testza.AssertEqual(t, s, p2.MessageStyle)
 		})
 	}
 }
@@ -181,7 +181,7 @@ func TestPrefixPrinter_WithPrefix(t *testing.T) {
 			}
 			p2 := p.WithPrefix(s)
 
-			assert.Equal(t, s, p2.Prefix)
+			testza.AssertEqual(t, s, p2.Prefix)
 		})
 	}
 }
@@ -195,7 +195,7 @@ func TestPrefixPrinter_WithScope(t *testing.T) {
 			}
 			p2 := p.WithScope(s)
 
-			assert.Equal(t, s, p2.Scope)
+			testza.AssertEqual(t, s, p2.Scope)
 		})
 	}
 }
@@ -204,7 +204,7 @@ func Test_checkFatal(t *testing.T) {
 	for _, p := range prefixPrinters {
 		t.Run("", func(t *testing.T) {
 			p2 := p.WithFatal()
-			assert.Panics(t, func() {
+			testza.AssertPanic(t, func() {
 				p2.Println("Hello, World!")
 			})
 		})
@@ -216,7 +216,7 @@ func TestPrefixPrinter_WithDebugger(t *testing.T) {
 		t.Run("", func(t *testing.T) {
 			p2 := p.WithDebugger()
 
-			assert.True(t, p2.Debugger)
+			testza.AssertTrue(t, p2.Debugger)
 		})
 	}
 }

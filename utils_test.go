@@ -7,9 +7,9 @@ import (
 	"os"
 	"testing"
 
+	"github.com/MarvinJWendt/testza"
 	"github.com/gookit/color"
 	"github.com/pterm/pterm"
-	"github.com/stretchr/testify/assert"
 )
 
 var printables = []interface{}{"Hello, World!", 1337, true, false, -1337, 'c', 1.5, "\\", "%s"}
@@ -21,14 +21,14 @@ func testPrintContains(t *testing.T, logic func(w io.Writer, a interface{})) {
 			s := captureStdout(func(w io.Writer) {
 				logic(w, printable)
 			})
-			assert.Contains(t, s, fmt.Sprint(printable))
+			testza.AssertContains(t, s, fmt.Sprint(printable))
 		})
 		pterm.DisableStyling()
 		t.Run(fmt.Sprint(printable), func(t *testing.T) {
 			s := captureStdout(func(w io.Writer) {
 				logic(w, printable)
 			})
-			assert.Contains(t, s, fmt.Sprint(printable))
+			testza.AssertContains(t, s, fmt.Sprint(printable))
 		})
 		pterm.EnableStyling()
 	}
@@ -41,14 +41,14 @@ func testPrintfContains(t *testing.T, logic func(w io.Writer, format string, a i
 			s := captureStdout(func(w io.Writer) {
 				logic(w, "Hello, %v!", printable)
 			})
-			assert.Contains(t, s, fmt.Sprintf("Hello, %v!", fmt.Sprint(printable)))
+			testza.AssertContains(t, s, fmt.Sprintf("Hello, %v!", fmt.Sprint(printable)))
 		})
 		pterm.DisableStyling()
 		t.Run(fmt.Sprint(printable), func(t *testing.T) {
 			s := captureStdout(func(w io.Writer) {
 				logic(w, "Hello, %v!", printable)
 			})
-			assert.Contains(t, s, fmt.Sprintf("Hello, %v!", fmt.Sprint(printable)))
+			testza.AssertContains(t, s, fmt.Sprintf("Hello, %v!", fmt.Sprint(printable)))
 		})
 		pterm.EnableStyling()
 	}
@@ -86,11 +86,11 @@ func testPrintlnContains(t *testing.T, logic func(w io.Writer, a interface{})) {
 func testSprintContains(t *testing.T, logic func(a interface{}) string) {
 	for _, printable := range printables {
 		t.Run(fmt.Sprint(printable), func(t *testing.T) {
-			assert.Contains(t, logic(printable), fmt.Sprint(printable))
+			testza.AssertContains(t, logic(printable), fmt.Sprint(printable))
 		})
 		pterm.DisableStyling()
 		t.Run(fmt.Sprint(printable), func(t *testing.T) {
-			assert.Contains(t, logic(printable), fmt.Sprint(printable))
+			testza.AssertContains(t, logic(printable), fmt.Sprint(printable))
 		})
 		pterm.EnableStyling()
 	}
@@ -101,14 +101,14 @@ func testSprintContainsWithoutError(t *testing.T, logic func(a interface{}) (str
 	for _, printable := range printables {
 		t.Run(fmt.Sprint(printable), func(t *testing.T) {
 			s, err := logic(printable)
-			assert.Contains(t, s, fmt.Sprint(printable))
-			assert.NoError(t, err)
+			testza.AssertContains(t, s, fmt.Sprint(printable))
+			testza.AssertNoError(t, err)
 		})
 		pterm.DisableStyling()
 		t.Run(fmt.Sprint(printable), func(t *testing.T) {
 			s, err := logic(printable)
-			assert.Contains(t, s, fmt.Sprint(printable))
-			assert.NoError(t, err)
+			testza.AssertContains(t, s, fmt.Sprint(printable))
+			testza.AssertNoError(t, err)
 		})
 		pterm.EnableStyling()
 	}
@@ -118,11 +118,11 @@ func testSprintContainsWithoutError(t *testing.T, logic func(a interface{}) (str
 func testSprintfContains(t *testing.T, logic func(format string, a interface{}) string) {
 	for _, printable := range printables {
 		t.Run(fmt.Sprint(printable), func(t *testing.T) {
-			assert.Contains(t, logic("Hello, %v!", printable), fmt.Sprintf("Hello, %v!", printable))
+			testza.AssertContains(t, logic("Hello, %v!", printable), fmt.Sprintf("Hello, %v!", printable))
 		})
 		pterm.DisableStyling()
 		t.Run(fmt.Sprint(printable), func(t *testing.T) {
-			assert.Contains(t, logic("Hello, %v!", printable), fmt.Sprintf("Hello, %v!", printable))
+			testza.AssertContains(t, logic("Hello, %v!", printable), fmt.Sprintf("Hello, %v!", printable))
 		})
 		pterm.EnableStyling()
 	}
@@ -158,27 +158,27 @@ func testSprintlnContains(t *testing.T, logic func(a interface{}) string) {
 
 // testDoesOutput can be used to test if something is outputted to stdout.
 func testDoesOutput(t *testing.T, logic func(w io.Writer)) {
-	assert.NotEmpty(t, captureStdout(logic))
+	testza.AssertNotZero(t, captureStdout(logic))
 	pterm.DisableStyling()
-	assert.NotEmpty(t, captureStdout(logic))
+	testza.AssertNotZero(t, captureStdout(logic))
 	pterm.EnableStyling()
 }
 
 // testEmpty checks that a function does not return a string.
 func testEmpty(t *testing.T, logic func(a interface{}) string) {
 	for _, printable := range printables {
-		assert.Empty(t, logic(printable))
+		testza.AssertZero(t, logic(printable))
 		pterm.DisableStyling()
-		assert.Empty(t, logic(printable))
+		testza.AssertZero(t, logic(printable))
 		pterm.EnableStyling()
 	}
 }
 
 // testDoesNotOutput can be used, to test that something does not output anything to stdout.
 func testDoesNotOutput(t *testing.T, logic func(w io.Writer)) {
-	assert.Empty(t, captureStdout(logic))
+	testza.AssertZero(t, captureStdout(logic))
 	pterm.DisableStyling()
-	assert.Empty(t, captureStdout(logic))
+	testza.AssertZero(t, captureStdout(logic))
 	pterm.EnableStyling()
 }
 

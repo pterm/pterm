@@ -5,7 +5,6 @@ import (
 
 	"github.com/MarvinJWendt/testza"
 	"github.com/pterm/pterm"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestAreaPrinter_NilPrint(t *testing.T) {
@@ -59,12 +58,12 @@ func TestAreaPrinter_WithRemoveWhenDone(t *testing.T) {
 	p := pterm.AreaPrinter{}
 	p2 := p.WithRemoveWhenDone()
 
-	assert.True(t, p2.RemoveWhenDone)
+	testza.AssertTrue(t, p2.RemoveWhenDone)
 }
 
 func TestAreaPrinter_WithFullscreen(t *testing.T) {
 	p := pterm.AreaPrinter{}
 	p2 := p.WithFullscreen()
 
-	assert.True(t, p2.Fullscreen)
+	testza.AssertTrue(t, p2.Fullscreen)
 }

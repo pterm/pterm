@@ -3,42 +3,42 @@ package pterm_test
 import (
 	"testing"
 
+	"github.com/MarvinJWendt/testza"
 	"github.com/pterm/pterm"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestDisableDebugMessages(t *testing.T) {
 	pterm.PrintDebugMessages = true
 	pterm.DisableDebugMessages()
-	assert.False(t, pterm.PrintDebugMessages)
+	testza.AssertFalse(t, pterm.PrintDebugMessages)
 }
 
 func TestEnableDebugMessages(t *testing.T) {
 	pterm.EnableDebugMessages()
-	assert.True(t, pterm.PrintDebugMessages)
+	testza.AssertTrue(t, pterm.PrintDebugMessages)
 }
 
 func TestDisableOutput(t *testing.T) {
 	pterm.DisableOutput()
-	assert.False(t, pterm.Output)
+	testza.AssertFalse(t, pterm.Output)
 }
 
 func TestEnableOutput(t *testing.T) {
 	pterm.DisableOutput()
 	pterm.EnableOutput()
-	assert.True(t, pterm.Output)
+	testza.AssertTrue(t, pterm.Output)
 }
 
 func TestDisableStyling(t *testing.T) {
 	pterm.RawOutput = false
 	pterm.DisableStyling()
-	assert.True(t, pterm.RawOutput)
+	testza.AssertTrue(t, pterm.RawOutput)
 }
 
 func TestEnableStyling(t *testing.T) {
 	pterm.RawOutput = true
 	pterm.EnableStyling()
-	assert.False(t, pterm.RawOutput)
+	testza.AssertFalse(t, pterm.RawOutput)
 }
 
 func TestInterfaceImplementation(t *testing.T) {

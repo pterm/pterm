@@ -5,8 +5,8 @@ import (
 	"io"
 	"testing"
 
+	"github.com/MarvinJWendt/testza"
 	"github.com/pterm/pterm"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestParagraphPrinterNilPrint(t *testing.T) {
@@ -25,12 +25,12 @@ func TestParagraphPrinterPrintMethods(t *testing.T) {
 
 	t.Run("PrintWithLongText", func(t *testing.T) {
 		proxyToDevNull()
-		assert.NotEmpty(t, p.Print("This is a longer text to test the paragraph printer. I don't know when this text will be long enough so I will just write until I get the feeling that it's enough. Maybe about now."))
+		testza.AssertNotZero(t, p.Print("This is a longer text to test the paragraph printer. I don't know when this text will be long enough so I will just write until I get the feeling that it's enough. Maybe about now."))
 	})
 
 	t.Run("PrintWithoutText", func(t *testing.T) {
 		proxyToDevNull()
-		assert.NotEmpty(t, p.Print(""))
+		testza.AssertNotZero(t, p.Print(""))
 	})
 
 	t.Run("Printf", func(t *testing.T) {
@@ -79,14 +79,14 @@ func TestParagraphPrinterPrintMethods(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			p.PrintOnError(errors.New("hello world"))
 		})
-		assert.Contains(t, result, "hello world")
+		testza.AssertContains(t, result, "hello world")
 	})
 
 	t.Run("PrintIfError_WithoutError", func(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			p.PrintOnError(nil)
 		})
-		assert.Empty(t, result)
+		testza.AssertZero(t, result)
 	})
 }
 
@@ -94,5 +94,5 @@ func TestParagraphPrinter_WithMaxWidth(t *testing.T) {
 	p := pterm.ParagraphPrinter{}
 	p2 := p.WithMaxWidth(1337)
 
-	assert.Equal(t, 1337, p2.MaxWidth)
+	testza.AssertEqual(t, 1337, p2.MaxWidth)
 }

@@ -5,16 +5,16 @@ import (
 	"io"
 	"testing"
 
+	"github.com/MarvinJWendt/testza"
 	"github.com/pterm/pterm"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestCenterPrinter_WithCenterEachLineSeparately(t *testing.T) {
 	p := pterm.CenterPrinter{}
 	p2 := p.WithCenterEachLineSeparately()
 
-	assert.True(t, p2.CenterEachLineSeparately)
-	assert.False(t, p.CenterEachLineSeparately)
+	testza.AssertTrue(t, p2.CenterEachLineSeparately)
+	testza.AssertFalse(t, p.CenterEachLineSeparately)
 }
 
 func TestCenterPrinterPrintMethods(t *testing.T) {
@@ -72,14 +72,14 @@ func TestCenterPrinterPrintMethods(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			p.PrintOnError(errors.New("hello world"))
 		})
-		assert.Contains(t, result, "hello world")
+		testza.AssertContains(t, result, "hello world")
 	})
 
 	t.Run("PrintIfError_WithoutError", func(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			p.PrintOnError(nil)
 		})
-		assert.Empty(t, result)
+		testza.AssertZero(t, result)
 	})
 }
 
@@ -127,12 +127,12 @@ func TestCenterPrinter_SprintLineLongerThanTerminal(t *testing.T) {
 	p := pterm.DefaultCenter
 	p2 := p.Sprint("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 
-	assert.Contains(t, p2, "a")
+	testza.AssertContains(t, p2, "a")
 }
 
 func TestCenterPrinter_SprintLineLongerThanTerminalWithCenterEachLineSeparately(t *testing.T) {
 	p := pterm.DefaultCenter
 	p2 := p.WithCenterEachLineSeparately().Sprint("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 
-	assert.Contains(t, p2, "a")
+	testza.AssertContains(t, p2, "a")
 }

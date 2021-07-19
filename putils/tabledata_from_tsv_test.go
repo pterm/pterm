@@ -3,8 +3,7 @@ package putils
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
+	"github.com/MarvinJWendt/testza"
 	"github.com/pterm/pterm"
 )
 
@@ -16,5 +15,5 @@ func TestTableDataFromTSV(t *testing.T) {
 
 	input := "firstname	lastname	username\nMarvin	Wendt	MarvinJWendt"
 
-	assert.EqualValues(t, expected, TableDataFromTSV(input))
+	testza.AssertEqualValues(t, expected, TableDataFromTSV(input))
 }

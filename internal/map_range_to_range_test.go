@@ -1,13 +1,14 @@
 package internal
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/MarvinJWendt/testza"
 )
 
 func TestMapRangeToRange(t *testing.T) {
-	assert.Equal(t, 127, MapRangeToRange(0, 100, 0, 255, 50))
-	assert.Equal(t, 127, MapRangeToRange(0, 400, 0, 255, 200))
-	assert.Equal(t, 127, MapRangeToRange(-200, 200, 0, 255, 0))
-	assert.Equal(t, 127, MapRangeToRange(0, 200.123, 0, 254.3, 100))
+	testza.AssertEqual(t, 127, MapRangeToRange(0, 100, 0, 255, 50))
+	testza.AssertEqual(t, 127, MapRangeToRange(0, 400, 0, 255, 200))
+	testza.AssertEqual(t, 127, MapRangeToRange(-200, 200, 0, 255, 0))
+	testza.AssertEqual(t, 127, MapRangeToRange(0, 200.123, 0, 254.3, 100))
 }
