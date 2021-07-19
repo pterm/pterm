@@ -132,7 +132,7 @@ func introScreen() {
 		"\n" +
 		"\nThis demo was updated at: " + pterm.Green(time.Now().Format("02 Jan 2006 - 15:04:05 MST")))
 	pterm.Println()
-	introSpinner, _ := pterm.DefaultSpinner.WithRemoveWhenDone(true).Start("Waiting for 15 seconds...")
+	introSpinner, _ := pterm.DefaultSpinner.WithShowTimer(false).WithRemoveWhenDone(true).Start("Waiting for 15 seconds...")
 	time.Sleep(second)
 	for i := 14; i > 0; i-- {
 		if i > 1 {
