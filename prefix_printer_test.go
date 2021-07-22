@@ -204,7 +204,7 @@ func Test_checkFatal(t *testing.T) {
 	for _, p := range prefixPrinters {
 		t.Run("", func(t *testing.T) {
 			p2 := p.WithFatal()
-			testza.AssertPanic(t, func() {
+			testza.AssertPanics(t, func() {
 				p2.Println("Hello, World!")
 			})
 		})
