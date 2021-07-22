@@ -1,6 +1,12 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Code Refactoring
+- adapt new testza function name
+
+
+<a name="v0.12.29"></a>
+## [v0.12.29] - 2021-07-19
 ### Features
 - **putils:** add `PrintAverageExecutionTime`
 
@@ -879,7 +885,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.28...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.29...HEAD
+[v0.12.29]: https://github.com/pterm/pterm/compare/v0.12.28...v0.12.29
 [v0.12.28]: https://github.com/pterm/pterm/compare/v0.12.27...v0.12.28
 [v0.12.27]: https://github.com/pterm/pterm/compare/v0.12.26...v0.12.27
 [v0.12.26]: https://github.com/pterm/pterm/compare/v0.12.25...v0.12.26
