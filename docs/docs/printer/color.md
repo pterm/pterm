@@ -30,6 +30,11 @@ pterm.FgLightBlue.Println("FgLightBlue")
 pterm.FgLightMagenta.Println("FgLightMagenta")
 pterm.FgLightCyan.Println("FgLightCyan")
 pterm.FgLightWhite.Println("FgLightWhite")
+
+// For quick usage in strings, you can also use the color names as functions:
+pterm.Cyan("Cyan")
+pterm.LightMagenta("LightMagenta")
+// etc...
 ```
 <!-- Delete this section if the printer does not expose functions other than the default output functions -->
 ### Functions
