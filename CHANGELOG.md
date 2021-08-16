@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+
+<a name="v0.12.30"></a>
+## [v0.12.30] - 2021-08-16
 ### Bug Fixes
 - **style:** resetting to previous color also resets attributes
 
@@ -888,7 +891,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.29...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.30...HEAD
+[v0.12.30]: https://github.com/pterm/pterm/compare/v0.12.29...v0.12.30
 [v0.12.29]: https://github.com/pterm/pterm/compare/v0.12.28...v0.12.29
 [v0.12.28]: https://github.com/pterm/pterm/compare/v0.12.27...v0.12.28
 [v0.12.27]: https://github.com/pterm/pterm/compare/v0.12.26...v0.12.27
