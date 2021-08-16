@@ -151,7 +151,7 @@ func (c Color) Sprint(a ...interface{}) string {
 	message := Sprint(a...)
 	messageLines := strings.Split(message, "\n")
 	for i, line := range messageLines {
-		messageLines[i] = color.RenderCode(c.String(), strings.ReplaceAll(line, color.ResetSet, Sprintf("\u001B[%sm", c.String())))
+		messageLines[i] = color.RenderCode(c.String(), strings.ReplaceAll(line, color.ResetSet, Sprintf("\x1b[0m\u001B[%sm", c.String())))
 	}
 	message = strings.Join(messageLines, "\n")
 	return message
@@ -262,7 +262,7 @@ func (s Style) Sprint(a ...interface{}) string {
 	message := Sprint(a...)
 	messageLines := strings.Split(message, "\n")
 	for i, line := range messageLines {
-		messageLines[i] = color.RenderCode(s.String(), strings.ReplaceAll(line, color.ResetSet, Sprintf("\u001B[%sm", s.String())))
+		messageLines[i] = color.RenderCode(s.String(), strings.ReplaceAll(line, color.ResetSet, Sprintf("\x1b[0m\u001B[%sm", s.String())))
 	}
 	message = strings.Join(messageLines, "\n")
 	return color.RenderCode(s.String(), message)
