@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Bug Fixes
+- **style:** resetting to previous color also resets attributes
+
 ### Code Refactoring
 - adapt new testza function name
 
