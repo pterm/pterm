@@ -12,8 +12,10 @@ var (
 	// PrintDebugMessages sets if messages printed by the DebugPrinter should be printed.
 	PrintDebugMessages = false
 
-	// RawOutput disables any styling and color output of pterm, if set to true.
-	// You can use this to get raw output for text files etc.
+	// RawOutput is set to true if pterm.DisableStyling() was called.
+	// The variable indicates that PTerm will not add additional styling to text.
+	// Use pterm.DisableStyling() or pterm.EnableStyling() to change this variable.
+	// Changing this variable directly, will disable or enable the output of colored text.
 	RawOutput = false
 )
 
