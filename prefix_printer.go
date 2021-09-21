@@ -136,7 +136,9 @@ func (p PrefixPrinter) WithDebugger(b ...bool) *PrefixPrinter {
 	return &p
 }
 
-// WithLineNumberOffset adds a custom prefix to the printer.
+// WithLineNumberOffset can be used to exclude a specific amount of calls in the call stack.
+// If you make a wrapper function for example, you can set this to one.
+// The printed line number will then be the line number where your wrapper function is called.
 func (p PrefixPrinter) WithLineNumberOffset(offset int) *PrefixPrinter {
 	p.LineNumberOffset = offset
 	return &p
