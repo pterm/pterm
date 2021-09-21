@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Features
+- **prefix:** added `LineNumberOffset` to `PrefixPrinter`
+
 
 <a name="v0.12.30"></a>
 ## [v0.12.30] - 2021-08-16
