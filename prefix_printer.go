@@ -84,11 +84,12 @@ var (
 
 // PrefixPrinter is the printer used to print a Prefix.
 type PrefixPrinter struct {
-	Prefix         Prefix
-	Scope          Scope
-	MessageStyle   *Style
-	Fatal          bool
-	ShowLineNumber bool
+	Prefix           Prefix
+	Scope            Scope
+	MessageStyle     *Style
+	Fatal            bool
+	ShowLineNumber   bool
+	LineNumberOffset int
 	// If Debugger is true, the printer will only print if PrintDebugMessages is set to true.
 	// You can change PrintDebugMessages with EnableDebugMessages and DisableDebugMessages, or by setting the variable itself.
 	Debugger bool
@@ -132,6 +133,12 @@ func (p PrefixPrinter) WithShowLineNumber(b ...bool) *PrefixPrinter {
 // You can change PrintDebugMessages with EnableDebugMessages and DisableDebugMessages, or by setting the variable itself.
 func (p PrefixPrinter) WithDebugger(b ...bool) *PrefixPrinter {
 	p.Debugger = internal.WithBoolean(b)
+	return &p
+}
+
+// WithLineNumberOffset adds a custom prefix to the printer.
+func (p PrefixPrinter) WithLineNumberOffset(offset int) *PrefixPrinter {
+	p.LineNumberOffset = offset
 	return &p
 }
 
@@ -182,7 +189,7 @@ func (p *PrefixPrinter) Sprint(a ...interface{}) string {
 		}
 	}
 
-	_, fileName, line, _ := runtime.Caller(3)
+	_, fileName, line, _ := runtime.Caller(3 + p.LineNumberOffset)
 
 	if p.ShowLineNumber {
 		ret += FgGray.Sprint("\n└ " + fmt.Sprintf("(%s:%d)\n", fileName, line))

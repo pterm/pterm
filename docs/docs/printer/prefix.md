@@ -62,6 +62,7 @@ pterm.Fatal.WithOptionName(option).WithOptionName2(option2).Println("Hello, Worl
 |[Prefix](https://pkg.go.dev/github.com/pterm/pterm#PrefixPrinter.WithPrefix)|[Prefix](https://pkg.go.dev/github.com/pterm/pterm#Prefix)|
 |[Scope](https://pkg.go.dev/github.com/pterm/pterm#PrefixPrinter.WithPrefix)|[Scope](https://pkg.go.dev/github.com/pterm/pterm#Scope)|
 |[ShowLineNumber](https://pkg.go.dev/github.com/pterm/pterm#PrefixPrinter.WithShowLineNumber)|bool|
+|[LineNumberOffset](https://pkg.go.dev/github.com/pterm/pterm#PrefixPrinter.WithLineNumberOffset)|int|
 
 ### Output functions
 

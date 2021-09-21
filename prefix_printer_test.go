@@ -387,3 +387,13 @@ func TestPrefixPrinter_SprintflnWithoutDebugger(t *testing.T) {
 		})
 	}
 }
+
+func TestPrefixPrinter_WithLineNumberOffset(t *testing.T) {
+	for _, p := range prefixPrinters {
+		t.Run("", func(t *testing.T) {
+			p2 := p.WithLineNumberOffset(1337)
+
+			testza.AssertEqual(t, 1337, p2.LineNumberOffset)
+		})
+	}
+}
