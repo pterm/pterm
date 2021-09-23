@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+
+<a name="v0.12.31"></a>
+## [v0.12.31] - 2021-09-21
 ### Features
 - **prefix:** added `LineNumberOffset` to `PrefixPrinter`
 
@@ -894,7 +897,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.30...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.31...HEAD
+[v0.12.31]: https://github.com/pterm/pterm/compare/v0.12.30...v0.12.31
 [v0.12.30]: https://github.com/pterm/pterm/compare/v0.12.29...v0.12.30
 [v0.12.29]: https://github.com/pterm/pterm/compare/v0.12.28...v0.12.29
 [v0.12.28]: https://github.com/pterm/pterm/compare/v0.12.27...v0.12.28
