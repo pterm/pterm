@@ -52,7 +52,7 @@ func Print(a ...interface{}) {
 	var ret string
 	var printed bool
 
-	for _, bar := range ActiveProgressBarPrinters {
+	for _, bar := range ActiveSoloProgressBarPrinters {
 		if bar.IsActive {
 			ret += sClearLine()
 			ret += Sprinto(a...)

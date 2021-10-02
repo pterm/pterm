@@ -10,9 +10,11 @@ import (
 	"github.com/pterm/pterm/internal"
 )
 
-// ActiveProgressBarPrinters contains all running ProgressbarPrinters.
-// Generally, there should only be one active ProgressbarPrinter at a time.
-var ActiveProgressBarPrinters []*ProgressbarPrinter
+// ActiveSoloProgressBarPrinters contains all solo running ProgressbarPrinters.
+var ActiveSoloProgressBarPrinters []*ProgressbarPrinter
+
+// ActiveMultiProgressBarPrinters contains all running ProgressbarPrinters that should be printed together.
+var ActiveMultiProgressBarPrinters []*ProgressbarPrinter
 
 var (
 	// DefaultProgressbar is the default ProgressbarPrinter.
@@ -40,6 +42,8 @@ type ProgressbarPrinter struct {
 	LastCharacter             string
 	ElapsedTimeRoundingFactor time.Duration
 	BarFiller                 string
+	area                      *AreaPrinter
+	timePassed                string
 
 	ShowElapsedTime bool
 	ShowCount       bool
@@ -51,6 +55,8 @@ type ProgressbarPrinter struct {
 	BarStyle   *Style
 
 	IsActive bool
+
+	PrintTogether bool
 
 	startedAt time.Time
 }
@@ -133,6 +139,13 @@ func (p ProgressbarPrinter) WithRemoveWhenDone(b ...bool) *ProgressbarPrinter {
 	return &p
 }
 
+// WithPrintTogether sets if the ProgressbarPrinter should be printed with other ProgressbarPrinters.
+func (p ProgressbarPrinter) WithPrintTogether(area *AreaPrinter, b ...bool) *ProgressbarPrinter {
+	p.PrintTogether = internal.WithBoolean(b)
+	p.area = area
+	return &p
+}
+
 // Increment current value by one.
 func (p *ProgressbarPrinter) Increment() *ProgressbarPrinter {
 	p.Add(1)
@@ -141,61 +154,85 @@ func (p *ProgressbarPrinter) Increment() *ProgressbarPrinter {
 
 // Add to current value.
 func (p *ProgressbarPrinter) Add(count int) *ProgressbarPrinter {
-	if p.TitleStyle == nil {
-		p.TitleStyle = NewStyle()
+	var progressBars string
+	if p.PrintTogether {
+		p.area.Update(Sprinto(progressBars))
+		for i, printer := range ActiveMultiProgressBarPrinters {
+			if !RawOutput {
+				progressBars += retProgressbarString(printer, count, printer == p)
+				if i < len(ActiveMultiProgressBarPrinters)-1 {
+					progressBars += "\n"
+				}
+			}
+		}
+		p.area.Update(progressBars)
+	} else {
+		Printo(retProgressbarString(p, count, true))
 	}
-	if p.BarStyle == nil {
-		p.BarStyle = NewStyle()
+	return p
+}
+
+func retProgressbarString(printer *ProgressbarPrinter, count int, same bool) string {
+	var ret string
+	if printer.TitleStyle == nil {
+		printer.TitleStyle = NewStyle()
+	}
+	if printer.BarStyle == nil {
+		printer.BarStyle = NewStyle()
 	}
 
-	if p.Total == 0 {
-		return nil
+	if printer.Total == 0 {
+		return ""
 	}
 
-	p.Current += count
+	if same {
+		printer.Current += count
+	}
 
 	var before string
 	var after string
 
 	width := GetTerminalWidth()
-	currentPercentage := int(internal.PercentageRound(float64(int64(p.Total)), float64(int64(p.Current))))
+	currentPercentage := int(internal.PercentageRound(float64(int64(printer.Total)), float64(int64(printer.Current))))
 
-	decoratorCount := Gray("[") + LightWhite(p.Current) + Gray("/") + LightWhite(p.Total) + Gray("]")
+	decoratorCount := Gray("[") + LightWhite(printer.Current) + Gray("/") + LightWhite(printer.Total) + Gray("]")
 
-	decoratorCurrentPercentage := color.RGB(NewRGB(255, 0, 0).Fade(0, float32(p.Total), float32(p.Current), NewRGB(0, 255, 0)).GetValues()).
+	decoratorCurrentPercentage := color.RGB(NewRGB(255, 0, 0).Fade(0, float32(printer.Total), float32(printer.Current), NewRGB(0, 255, 0)).GetValues()).
 		Sprint(strconv.Itoa(currentPercentage) + "%")
 
-	decoratorTitle := p.TitleStyle.Sprint(p.Title)
+	decoratorTitle := printer.TitleStyle.Sprint(printer.Title)
 
-	if p.ShowTitle {
+	if printer.ShowTitle {
 		before += decoratorTitle + " "
 	}
-	if p.ShowCount {
+	if printer.ShowCount {
 		before += decoratorCount + " "
 	}
 
 	after += " "
 
-	if p.ShowPercentage {
+	if printer.ShowPercentage {
 		after += decoratorCurrentPercentage + " "
 	}
-	if p.ShowElapsedTime {
-		after += "| " + p.parseElapsedTime()
+	if printer.ShowElapsedTime {
+		after += "| " + printer.parseElapsedTime()
 	}
 
 	barMaxLength := width - len(RemoveColorFromString(before)) - len(RemoveColorFromString(after)) - 1
-	barCurrentLength := (p.Current * barMaxLength) / p.Total
-	barFiller := strings.Repeat(p.BarFiller, barMaxLength-barCurrentLength)
+	barCurrentLength := (printer.Current * barMaxLength) / printer.Total
+	barFiller := strings.Repeat(printer.BarFiller, barMaxLength-barCurrentLength)
 
-	bar := p.BarStyle.Sprint(strings.Repeat(p.BarCharacter, barCurrentLength)+p.LastCharacter) + barFiller
+	bar := printer.BarStyle.Sprint(strings.Repeat(printer.BarCharacter, barCurrentLength)+printer.LastCharacter) + barFiller
+
+	if same && printer.Current == printer.Total {
+		printer.Stop()
+	}
+
 	if !RawOutput {
-		Printo(before + bar + after)
+		ret += before + bar + after
 	}
 
-	if p.Current == p.Total {
-		p.Stop()
-	}
-	return p
+	return ret
 }
 
 // Start the ProgressbarPrinter.
@@ -204,7 +241,11 @@ func (p ProgressbarPrinter) Start() (*ProgressbarPrinter, error) {
 		Println(p.Title)
 	}
 	p.IsActive = true
-	ActiveProgressBarPrinters = append(ActiveProgressBarPrinters, &p)
+	if p.PrintTogether {
+		ActiveMultiProgressBarPrinters = append(ActiveMultiProgressBarPrinters, &p)
+	} else {
+		ActiveSoloProgressBarPrinters = append(ActiveSoloProgressBarPrinters, &p)
+	}
 	p.startedAt = time.Now()
 
 	p.Add(0)
@@ -251,6 +292,8 @@ func (p *ProgressbarPrinter) GetElapsedTime() time.Duration {
 }
 
 func (p *ProgressbarPrinter) parseElapsedTime() string {
-	s := p.GetElapsedTime().Round(p.ElapsedTimeRoundingFactor).String()
-	return s
+	if p.IsActive {
+		p.timePassed = p.GetElapsedTime().Round(p.ElapsedTimeRoundingFactor).String()
+	}
+	return p.timePassed
 }
