@@ -67,3 +67,10 @@ func TestAreaPrinter_WithFullscreen(t *testing.T) {
 
 	testza.AssertTrue(t, p2.Fullscreen)
 }
+
+func TestAreaPrinter_Clear(t *testing.T) {
+	p := pterm.AreaPrinter{}
+	p.Update("asd")
+	
+	p.Clear()
+}
