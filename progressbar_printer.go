@@ -139,12 +139,14 @@ func (p *ProgressbarPrinter) Increment() *ProgressbarPrinter {
 	return p
 }
 
+// This method changed the title and re-renders the progressbar
 func (p *ProgressbarPrinter) UpdateTitle(title string) *ProgressbarPrinter{
 	p.Title = title
 	p.updateProgress()
 	return p
 }
 
+// This is the update logic, renders the progressbar
 func (p *ProgressbarPrinter) updateProgress() *ProgressbarPrinter{
 	if p.TitleStyle == nil {
 		p.TitleStyle = NewStyle()
