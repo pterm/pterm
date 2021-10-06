@@ -155,10 +155,6 @@ func (p *ProgressbarPrinter) updateProgress() *ProgressbarPrinter{
 		p.BarStyle = NewStyle()
 	}
 
-	if p.Total == 0 {
-		return nil
-	}
-
 	var before string
 	var after string
 
@@ -197,11 +193,14 @@ func (p *ProgressbarPrinter) updateProgress() *ProgressbarPrinter{
 		Printo(before + bar + after)
 	}
 	return p
-
 }
 
 // Add to current value.
 func (p *ProgressbarPrinter) Add(count int) *ProgressbarPrinter {
+	if p.Total == 0 {
+		return nil
+	}
+
 	p.Current += count
 	p.updateProgress()
 

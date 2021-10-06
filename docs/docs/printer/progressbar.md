@@ -28,6 +28,7 @@ progressbar.Increase()
 |[Add(count int)](https://pkg.go.dev/github.com/pterm/pterm#TemplatePrinter.Add)|Add `count` to current value.|
 |[GetElapsedTime()](https://pkg.go.dev/github.com/pterm/pterm#TemplatePrinter.GetElapsedTime)|GetElapsedTime returns the elapsed time, since the ProgressbarPrinter was started.|
 |[Increment()](https://pkg.go.dev/github.com/pterm/pterm#TemplatePrinter.Increment)|Increment current value by one.|
+|[UpdateTitle(title string)](https://pkg.go.dev/github.com/pterm/pterm#TemplatePrinter.UpdateTitle)|Update the progressbar's title.|
 
 ### Options
 

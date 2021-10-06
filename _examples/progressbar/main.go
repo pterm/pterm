@@ -16,7 +16,7 @@ func main() {
 	p, _ := pterm.DefaultProgressbar.WithTotal(len(fakeInstallList)).WithTitle("Downloading stuff").Start()
 
 	for i := 0; i < p.Total; i++ {
-		p.Title = "Downloading " + fakeInstallList[i]              // Update the title of the progressbar.
+		p.UpdateTitle("Downloading " + fakeInstallList[i])         // Update the title of the progressbar.
 		pterm.Success.Println("Downloading " + fakeInstallList[i]) // If a progressbar is running, each print will be printed above the progressbar.
 		p.Increment()                                              // Increment the progressbar by one. Use Add(x int) to increment by a custom amount.
 		time.Sleep(time.Millisecond * 350)                         // Sleep 350 milliseconds.
