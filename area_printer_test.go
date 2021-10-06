@@ -71,6 +71,6 @@ func TestAreaPrinter_WithFullscreen(t *testing.T) {
 func TestAreaPrinter_Clear(t *testing.T) {
 	p := pterm.AreaPrinter{}
 	p.Update("asd")
-	
+
 	p.Clear()
 }

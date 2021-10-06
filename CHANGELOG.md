@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Features
+- added `AreaPrinter.Clear()`
+
 
 <a name="v0.12.31"></a>
 ## [v0.12.31] - 2021-09-21
