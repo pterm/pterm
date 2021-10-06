@@ -139,8 +139,13 @@ func (p *ProgressbarPrinter) Increment() *ProgressbarPrinter {
 	return p
 }
 
-// Add to current value.
-func (p *ProgressbarPrinter) Add(count int) *ProgressbarPrinter {
+func (p *ProgressbarPrinter) UpdateTitle(title string) *ProgressbarPrinter{
+	p.Title = title
+	p.updateProgress()
+	return p
+}
+
+func (p *ProgressbarPrinter) updateProgress() *ProgressbarPrinter{
 	if p.TitleStyle == nil {
 		p.TitleStyle = NewStyle()
 	}
@@ -151,8 +156,6 @@ func (p *ProgressbarPrinter) Add(count int) *ProgressbarPrinter {
 	if p.Total == 0 {
 		return nil
 	}
-
-	p.Current += count
 
 	var before string
 	var after string
@@ -191,6 +194,14 @@ func (p *ProgressbarPrinter) Add(count int) *ProgressbarPrinter {
 	if !RawOutput {
 		Printo(before + bar + after)
 	}
+	return p
+
+}
+
+// Add to current value.
+func (p *ProgressbarPrinter) Add(count int) *ProgressbarPrinter {
+	p.Current += count
+	p.updateProgress()
 
 	if p.Current == p.Total {
 		p.Stop()
@@ -207,7 +218,7 @@ func (p ProgressbarPrinter) Start() (*ProgressbarPrinter, error) {
 	ActiveProgressBarPrinters = append(ActiveProgressBarPrinters, &p)
 	p.startedAt = time.Now()
 
-	p.Add(0)
+	p.updateProgress()
 
 	return &p, nil
 }
@@ -254,3 +265,4 @@ func (p *ProgressbarPrinter) parseElapsedTime() string {
 	s := p.GetElapsedTime().Round(p.ElapsedTimeRoundingFactor).String()
 	return s
 }
+
