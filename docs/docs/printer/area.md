@@ -25,6 +25,7 @@ area.Stop()
 |--------|-----------|
 |[Update](https://pkg.go.dev/github.com/pterm/pterm#AreaPrinter.Update)|Update overwrites the content of the AreaPrinter.|
 |[GetContent](https://pkg.go.dev/github.com/pterm/pterm#AreaPrinter.GetContent)|GetContent returns the current area content.|
+|[Clear](https://pkg.go.dev/github.com/pterm/pterm#AreaPrinter.Clear)|Clear function clears the content of the area.|
 
 ### Options
 
