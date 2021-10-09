@@ -8,12 +8,21 @@ import (
 	"github.com/pterm/pterm/internal"
 )
 
+// TableAlignment determines the alignment of data within a table.
+type TableAlignment int
+
+const (
+	LeftAlignment TableAlignment = iota
+	RightAlignment
+)
+
 // DefaultTable contains standards, which can be used to print a TablePrinter.
 var DefaultTable = TablePrinter{
 	Style:          &ThemeDefault.TableStyle,
 	HeaderStyle:    &ThemeDefault.TableHeaderStyle,
 	Separator:      " | ",
 	SeparatorStyle: &ThemeDefault.TableSeparatorStyle,
+	Alignment:      LeftAlignment,
 }
 
 // TableData is the type that contains the data of a TablePrinter.
@@ -28,6 +37,7 @@ type TablePrinter struct {
 	SeparatorStyle *Style
 	Data           TableData
 	Boxed          bool
+	Alignment      TableAlignment
 }
 
 // WithStyle returns a new TablePrinter with a specific Style.
@@ -80,6 +90,12 @@ func (p TablePrinter) WithBoxed(b ...bool) *TablePrinter {
 	return &p
 }
 
+// WithAlignment returns a new TablePrinter with specific alignment.
+func (p TablePrinter) WithAlignment(alignment TableAlignment) *TablePrinter {
+	p.Alignment = alignment
+	return &p
+}
+
 // Srender renders the TablePrinter as a string.
 func (p TablePrinter) Srender() (string, error) {
 	if p.Style == nil {
@@ -106,8 +122,7 @@ func (p TablePrinter) Srender() (string, error) {
 
 	for ri, row := range p.Data {
 		for ci, column := range row {
-			columnLength := utf8.RuneCountInString(RemoveColorFromString(column))
-			columnString := column + strings.Repeat(" ", maxColumnWidth[ci]-columnLength)
+			columnString := p.createColumnString(column, maxColumnWidth[ci])
 
 			if ci != len(row) && ci != 0 {
 				ret += p.Style.Sprint(p.SeparatorStyle.Sprint(p.Separator))
@@ -130,6 +145,18 @@ func (p TablePrinter) Srender() (string, error) {
 	}
 
 	return ret, nil
+}
+
+func (p TablePrinter) createColumnString(data string, maxColumnWidth int) string {
+	columnLength := utf8.RuneCountInString(RemoveColorFromString(data))
+	switch p.Alignment {
+	case RightAlignment:
+		return strings.Repeat(" ", maxColumnWidth-columnLength) + data
+	case LeftAlignment:
+		fallthrough
+	default:
+		return data + strings.Repeat(" ", maxColumnWidth-columnLength)
+	}
 }
 
 // Render prints the TablePrinter to the terminal.
