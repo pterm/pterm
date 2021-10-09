@@ -89,3 +89,11 @@ func TestTablePrinter_WithStyle(t *testing.T) {
 
 	testza.AssertEqual(t, s, p2.Style)
 }
+
+func TestTablePrinter_WithAlignment(t *testing.T) {
+	s := pterm.RightAlignment
+	p := pterm.TablePrinter{}
+	p2 := p.WithAlignment(pterm.RightAlignment)
+
+	testza.AssertEqual(t, s, p2.Alignment)
+}
