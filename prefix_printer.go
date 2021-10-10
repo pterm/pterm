@@ -2,6 +2,8 @@ package pterm
 
 import (
 	"fmt"
+	"io"
+	"os"
 	"runtime"
 	"strings"
 
@@ -21,6 +23,7 @@ var (
 			Style: &ThemeDefault.InfoPrefixStyle,
 			Text:  "INFO",
 		},
+		Writer: os.Stdout,
 	}
 
 	// Warning returns a PrefixPrinter, which can be used to print text with a "warning" Prefix.
@@ -30,6 +33,7 @@ var (
 			Style: &ThemeDefault.WarningPrefixStyle,
 			Text:  "WARNING",
 		},
+		Writer: os.Stdout,
 	}
 
 	// Success returns a PrefixPrinter, which can be used to print text with a "success" Prefix.
@@ -39,6 +43,7 @@ var (
 			Style: &ThemeDefault.SuccessPrefixStyle,
 			Text:  "SUCCESS",
 		},
+		Writer: os.Stdout,
 	}
 
 	// Error returns a PrefixPrinter, which can be used to print text with an "error" Prefix.
@@ -48,6 +53,7 @@ var (
 			Style: &ThemeDefault.ErrorPrefixStyle,
 			Text:  " ERROR ",
 		},
+		Writer: os.Stdout,
 	}
 
 	// Fatal returns a PrefixPrinter, which can be used to print text with an "fatal" Prefix.
@@ -58,7 +64,8 @@ var (
 			Style: &ThemeDefault.FatalPrefixStyle,
 			Text:  " FATAL ",
 		},
-		Fatal: true,
+		Fatal:  true,
+		Writer: os.Stdout,
 	}
 
 	// Debug Prints debug messages. By default it will only print if PrintDebugMessages is true.
@@ -69,6 +76,7 @@ var (
 			Text:  " DEBUG ",
 			Style: &ThemeDefault.DebugPrefixStyle,
 		},
+		Writer:   os.Stdout,
 		Debugger: true,
 	}
 
@@ -79,6 +87,7 @@ var (
 			Style: &ThemeDefault.DescriptionPrefixStyle,
 			Text:  "Description",
 		},
+		Writer: os.Stdout,
 	}
 )
 
@@ -90,6 +99,7 @@ type PrefixPrinter struct {
 	Fatal            bool
 	ShowLineNumber   bool
 	LineNumberOffset int
+	Writer           io.Writer
 	// If Debugger is true, the printer will only print if PrintDebugMessages is set to true.
 	// You can change PrintDebugMessages with EnableDebugMessages and DisableDebugMessages, or by setting the variable itself.
 	Debugger bool
@@ -141,6 +151,12 @@ func (p PrefixPrinter) WithDebugger(b ...bool) *PrefixPrinter {
 // The printed line number will then be the line number where your wrapper function is called.
 func (p PrefixPrinter) WithLineNumberOffset(offset int) *PrefixPrinter {
 	p.LineNumberOffset = offset
+	return &p
+}
+
+// WithCustomWriter sets the custom Writer.
+func (p PrefixPrinter) WithCustomWriter(writer io.Writer) *PrefixPrinter {
+	p.Writer = writer
 	return &p
 }
 
@@ -240,7 +256,7 @@ func (p *PrefixPrinter) Print(a ...interface{}) *TextPrinter {
 	if p.Debugger && !PrintDebugMessages {
 		return &tp
 	}
-	Print(p.Sprint(a...))
+	Fprint(p.Writer, p.Sprint(a...))
 	checkFatal(p)
 	return &tp
 }
@@ -253,7 +269,7 @@ func (p *PrefixPrinter) Println(a ...interface{}) *TextPrinter {
 	if p.Debugger && !PrintDebugMessages {
 		return &tp
 	}
-	Print(p.Sprintln(a...))
+	Fprint(p.Writer, p.Sprintln(a...))
 	checkFatal(p)
 	return &tp
 }
@@ -265,7 +281,7 @@ func (p *PrefixPrinter) Printf(format string, a ...interface{}) *TextPrinter {
 	if p.Debugger && !PrintDebugMessages {
 		return &tp
 	}
-	Print(p.Sprintf(format, a...))
+	Fprint(p.Writer, p.Sprintf(format, a...))
 	checkFatal(p)
 	return &tp
 }
@@ -278,7 +294,7 @@ func (p *PrefixPrinter) Printfln(format string, a ...interface{}) *TextPrinter {
 	if p.Debugger && !PrintDebugMessages {
 		return &tp
 	}
-	Print(p.Sprintfln(format, a...))
+	Fprint(p.Writer, p.Sprintfln(format, a...))
 	checkFatal(p)
 	return &tp
 }

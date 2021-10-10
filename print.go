@@ -154,6 +154,10 @@ func clearLine() {
 	Printo(strings.Repeat(" ", GetTerminalWidth()))
 }
 
+func fClearLine(writer io.Writer) {
+	Fprinto(writer, strings.Repeat(" ", GetTerminalWidth()))
+}
+
 func sClearLine() string {
 	return Sprinto(strings.Repeat(" ", GetTerminalWidth()))
 }

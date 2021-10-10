@@ -1,6 +1,8 @@
 package pterm
 
 import (
+	"io"
+	"os"
 	"strings"
 
 	"github.com/mattn/go-runewidth"
@@ -11,17 +13,25 @@ import (
 // DefaultCenter is the default CenterPrinter.
 var DefaultCenter = CenterPrinter{
 	CenterEachLineSeparately: false,
+	Writer:                   os.Stdout,
 }
 
 // CenterPrinter prints centered text.
 type CenterPrinter struct {
 	CenterEachLineSeparately bool
+	Writer                   io.Writer
 }
 
 // WithCenterEachLineSeparately centers each line separately.
 func (p CenterPrinter) WithCenterEachLineSeparately(b ...bool) *CenterPrinter {
 	bt := internal.WithBoolean(b)
 	p.CenterEachLineSeparately = bt
+	return &p
+}
+
+// WithCustomWriter sets the custom Writer.
+func (p CenterPrinter) WithCustomWriter(writer io.Writer) *CenterPrinter {
+	p.Writer = writer
 	return &p
 }
 
@@ -95,7 +105,7 @@ func (p CenterPrinter) Sprintfln(format string, a ...interface{}) string {
 // Spaces are added between operands when neither is a string.
 // It returns the number of bytes written and any write error encountered.
 func (p CenterPrinter) Print(a ...interface{}) *TextPrinter {
-	Print(p.Sprint(a...))
+	Fprint(p.Writer, p.Sprint(a...))
 	tp := TextPrinter(p)
 	return &tp
 }
@@ -104,7 +114,7 @@ func (p CenterPrinter) Print(a ...interface{}) *TextPrinter {
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
 func (p CenterPrinter) Println(a ...interface{}) *TextPrinter {
-	Print(p.Sprintln(a...))
+	Fprint(p.Writer, p.Sprintln(a...))
 	tp := TextPrinter(p)
 	return &tp
 }
@@ -112,7 +122,7 @@ func (p CenterPrinter) Println(a ...interface{}) *TextPrinter {
 // Printf formats according to a format specifier and writes to standard output.
 // It returns the number of bytes written and any write error encountered.
 func (p CenterPrinter) Printf(format string, a ...interface{}) *TextPrinter {
-	Print(p.Sprintf(format, a...))
+	Fprint(p.Writer, p.Sprintf(format, a...))
 	tp := TextPrinter(p)
 	return &tp
 }
@@ -121,7 +131,7 @@ func (p CenterPrinter) Printf(format string, a ...interface{}) *TextPrinter {
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
 func (p CenterPrinter) Printfln(format string, a ...interface{}) *TextPrinter {
-	Print(p.Sprintfln(format, a...))
+	Fprint(p.Writer, p.Sprintfln(format, a...))
 	tp := TextPrinter(p)
 	return &tp
 }

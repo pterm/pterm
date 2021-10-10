@@ -1,6 +1,8 @@
 package pterm
 
 import (
+	"io"
+	"os"
 	"strings"
 
 	"github.com/pterm/pterm/internal"
@@ -73,6 +75,7 @@ var DefaultBulletList = BulletListPrinter{
 	Bullet:      "•",
 	TextStyle:   &ThemeDefault.BulletListTextStyle,
 	BulletStyle: &ThemeDefault.BulletListBulletStyle,
+	Writer:      os.Stdout,
 }
 
 // BulletListPrinter is able to render a list.
@@ -81,6 +84,7 @@ type BulletListPrinter struct {
 	TextStyle   *Style
 	Bullet      string
 	BulletStyle *Style
+	Writer      io.Writer
 }
 
 // WithItems returns a new list with specific Items.
@@ -107,10 +111,16 @@ func (l BulletListPrinter) WithBulletStyle(style *Style) *BulletListPrinter {
 	return &l
 }
 
+// WithCustomWriter sets the custom Writer.
+func (l BulletListPrinter) WithCustomWriter(writer io.Writer) *BulletListPrinter {
+	l.Writer = writer
+	return &l
+}
+
 // Render prints the list to the terminal.
 func (l BulletListPrinter) Render() error {
 	s, _ := l.Srender()
-	Println(s)
+	Fprintln(l.Writer, s)
 
 	return nil
 }

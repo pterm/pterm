@@ -2,6 +2,8 @@ package pterm
 
 import (
 	"encoding/csv"
+	"io"
+	"os"
 	"strings"
 	"unicode/utf8"
 
@@ -14,6 +16,7 @@ var DefaultTable = TablePrinter{
 	HeaderStyle:    &ThemeDefault.TableHeaderStyle,
 	Separator:      " | ",
 	SeparatorStyle: &ThemeDefault.TableSeparatorStyle,
+	Writer:         os.Stdout,
 }
 
 // TableData is the type that contains the data of a TablePrinter.
@@ -28,6 +31,7 @@ type TablePrinter struct {
 	SeparatorStyle *Style
 	Data           TableData
 	Boxed          bool
+	Writer         io.Writer
 }
 
 // WithStyle returns a new TablePrinter with a specific Style.
@@ -77,6 +81,12 @@ func (p TablePrinter) WithCSVReader(reader *csv.Reader) *TablePrinter {
 // WithBoxed returns a new TablePrinter with a box around the table.
 func (p TablePrinter) WithBoxed(b ...bool) *TablePrinter {
 	p.Boxed = internal.WithBoolean(b)
+	return &p
+}
+
+// WithCustomWriter sets the Writer.
+func (p TablePrinter) WithCustomWriter(writer io.Writer) *TablePrinter {
+	p.Writer = writer
 	return &p
 }
 
@@ -135,7 +145,7 @@ func (p TablePrinter) Srender() (string, error) {
 // Render prints the TablePrinter to the terminal.
 func (p TablePrinter) Render() error {
 	s, _ := p.Srender()
-	Println(s)
+	Fprintln(p.Writer, s)
 
 	return nil
 }
