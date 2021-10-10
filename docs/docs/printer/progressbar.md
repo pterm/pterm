@@ -17,7 +17,7 @@ Replace all of the following strings with the current printer.
 ```go
 progressbar := pterm.DefaultProgressbar.WithTotal(totalSteps).Start()
 // Logic here
-progressbar.Increase()
+progressbar.Increment()
 // More logic
 ```
 
