@@ -4,6 +4,9 @@
 ### Features
 - added `AreaPrinter.Clear()`
 
+### Bug Fixes
+- progressbar method name
+
 
 <a name="v0.12.31"></a>
 ## [v0.12.31] - 2021-09-21
