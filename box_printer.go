@@ -2,6 +2,8 @@ package pterm
 
 import (
 	"fmt"
+	"io"
+	"os"
 	"strings"
 
 	"github.com/mattn/go-runewidth"
@@ -30,6 +32,7 @@ type BoxPrinter struct {
 	BottomPadding           int
 	RightPadding            int
 	LeftPadding             int
+	Writer                  io.Writer
 }
 
 // DefaultBox is the default BoxPrinter.
@@ -47,6 +50,7 @@ var DefaultBox = BoxPrinter{
 	TopPadding:              0,
 	BottomPadding:           0,
 	TitleTopLeft:            true,
+	Writer:                  os.Stdout,
 }
 
 // WithTitle returns a new box with a specific Title.
@@ -211,6 +215,12 @@ func (p BoxPrinter) WithLeftPadding(padding int) *BoxPrinter {
 	return &p
 }
 
+// WithCustomWriter sets the custom Writer.
+func (p BoxPrinter) WithCustomWriter(writer io.Writer) *BoxPrinter {
+	p.Writer = writer
+	return &p
+}
+
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
 func (p BoxPrinter) Sprint(a ...interface{}) string {
@@ -299,7 +309,7 @@ func (p BoxPrinter) Sprintfln(format string, a ...interface{}) string {
 // Spaces are added between operands when neither is a string.
 // It returns the number of bytes written and any write error encountered.
 func (p BoxPrinter) Print(a ...interface{}) *TextPrinter {
-	Print(p.Sprint(a...))
+	Fprint(p.Writer, p.Sprint(a...))
 	tp := TextPrinter(p)
 	return &tp
 }
@@ -308,7 +318,7 @@ func (p BoxPrinter) Print(a ...interface{}) *TextPrinter {
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
 func (p BoxPrinter) Println(a ...interface{}) *TextPrinter {
-	Print(p.Sprintln(a...))
+	Fprint(p.Writer, p.Sprintln(a...))
 	tp := TextPrinter(p)
 	return &tp
 }
@@ -316,7 +326,7 @@ func (p BoxPrinter) Println(a ...interface{}) *TextPrinter {
 // Printf formats according to a format specifier and writes to standard output.
 // It returns the number of bytes written and any write error encountered.
 func (p BoxPrinter) Printf(format string, a ...interface{}) *TextPrinter {
-	Print(p.Sprintf(format, a...))
+	Fprint(p.Writer, p.Sprintf(format, a...))
 	tp := TextPrinter(p)
 	return &tp
 }
@@ -325,7 +335,7 @@ func (p BoxPrinter) Printf(format string, a ...interface{}) *TextPrinter {
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
 func (p BoxPrinter) Printfln(format string, a ...interface{}) *TextPrinter {
-	Print(p.Sprintfln(format, a...))
+	Fprint(p.Writer, p.Sprintfln(format, a...))
 	tp := TextPrinter(p)
 	return &tp
 }

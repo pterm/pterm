@@ -1,6 +1,8 @@
 package pterm
 
 import (
+	"io"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -29,6 +31,7 @@ var (
 		ShowElapsedTime:           true,
 		BarFiller:                 "░",
 		MaxWidth:                  80,
+		Writer:                    os.Stdout,
 	}
 )
 
@@ -42,6 +45,7 @@ type ProgressbarPrinter struct {
 	ElapsedTimeRoundingFactor time.Duration
 	BarFiller                 string
 	MaxWidth                  int
+	Writer                    io.Writer
 
 	ShowElapsedTime bool
 	ShowCount       bool
@@ -149,6 +153,12 @@ func (p ProgressbarPrinter) WithBarFiller(char string) *ProgressbarPrinter {
 	return &p
 }
 
+// WithCustomWriter sets the custom Writer.
+func (p ProgressbarPrinter) WithCustomWriter(writer io.Writer) *ProgressbarPrinter {
+	p.Writer = writer
+	return &p
+}
+
 // Increment current value by one.
 func (p *ProgressbarPrinter) Increment() *ProgressbarPrinter {
 	p.Add(1)
@@ -227,7 +237,7 @@ func (p *ProgressbarPrinter) updateProgress() *ProgressbarPrinter {
 	}
 
 	if !RawOutput {
-		Printo(before + bar + after)
+		Fprinto(p.Writer, before+bar+after)
 	}
 	return p
 }
@@ -268,10 +278,10 @@ func (p *ProgressbarPrinter) Stop() (*ProgressbarPrinter, error) {
 	}
 	p.IsActive = false
 	if p.RemoveWhenDone {
-		clearLine()
-		Printo()
+		fClearLine(p.Writer)
+		Fprinto(p.Writer)
 	} else {
-		Println()
+		Fprintln(p.Writer)
 	}
 	return p, nil
 }

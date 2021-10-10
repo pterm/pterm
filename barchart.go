@@ -1,6 +1,8 @@
 package pterm
 
 import (
+	"io"
+	"os"
 	"strconv"
 	"strings"
 
@@ -11,6 +13,7 @@ import (
 
 // BarChartPrinter is used to print bar charts.
 type BarChartPrinter struct {
+	Writer     io.Writer
 	Bars       Bars
 	Horizontal bool
 	ShowValue  bool
@@ -29,6 +32,7 @@ type BarChartPrinter struct {
 var (
 	// DefaultBarChart is the default BarChartPrinter.
 	DefaultBarChart = BarChartPrinter{
+		Writer:                 os.Stdout,
 		Horizontal:             false,
 		VerticalBarCharacter:   "██",
 		HorizontalBarCharacter: "█",
@@ -78,6 +82,12 @@ func (p BarChartPrinter) WithWidth(value int) *BarChartPrinter {
 // WithShowValue returns a new BarChartPrinter with a specific option.
 func (p BarChartPrinter) WithShowValue(b ...bool) *BarChartPrinter {
 	p.ShowValue = internal.WithBoolean(b)
+	return &p
+}
+
+// WithCustomWriter sets the custom Writer.
+func (p BarChartPrinter) WithCustomWriter(writer io.Writer) *BarChartPrinter {
+	p.Writer = writer
 	return &p
 }
 
@@ -410,7 +420,7 @@ func (p BarChartPrinter) Srender() (string, error) {
 // Render prints the Template to the terminal.
 func (p BarChartPrinter) Render() error {
 	s, _ := p.Srender()
-	Println(s)
+	Fprintln(p.Writer, s)
 
 	return nil
 }

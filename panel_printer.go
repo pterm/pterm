@@ -1,6 +1,8 @@
 package pterm
 
 import (
+	"io"
+	"os"
 	"strings"
 
 	"github.com/mattn/go-runewidth"
@@ -19,6 +21,7 @@ type Panels [][]Panel
 // DefaultPanel is the default PanelPrinter.
 var DefaultPanel = PanelPrinter{
 	Padding: 1,
+	Writer:  os.Stdout,
 }
 
 // PanelPrinter prints content in boxes.
@@ -28,6 +31,7 @@ type PanelPrinter struct {
 	BottomPadding   int
 	SameColumnWidth bool
 	BoxPrinter      BoxPrinter
+	Writer          io.Writer
 }
 
 // WithPanels returns a new PanelPrinter with specific options.
@@ -64,6 +68,12 @@ func (p PanelPrinter) WithSameColumnWidth(b ...bool) *PanelPrinter {
 // WithBoxPrinter returns a new PanelPrinter with specific options.
 func (p PanelPrinter) WithBoxPrinter(boxPrinter BoxPrinter) *PanelPrinter {
 	p.BoxPrinter = boxPrinter
+	return &p
+}
+
+// WithCustomWriter sets the custom Writer.
+func (p PanelPrinter) WithCustomWriter(writer io.Writer) *PanelPrinter {
+	p.Writer = writer
 	return &p
 }
 

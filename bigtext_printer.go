@@ -1,8 +1,10 @@
 package pterm
 
 import (
-	"github.com/gookit/color"
+	"io"
 	"strings"
+
+	"github.com/gookit/color"
 
 	"github.com/mattn/go-runewidth"
 
@@ -80,6 +82,7 @@ type BigTextPrinter struct {
 	// BigCharacters holds the map from a normal character to it's big version.
 	BigCharacters map[string]string
 	Letters       Letters
+	Writer        io.Writer
 }
 
 // WithBigCharacters returns a new BigTextPrinter with specific BigCharacters.
@@ -95,6 +98,12 @@ func (p BigTextPrinter) WithLetters(letters ...Letters) *BigTextPrinter {
 		l = append(l, letter...)
 	}
 	p.Letters = l
+	return &p
+}
+
+// WithCustomWriter sets the custom Writer.
+func (p BigTextPrinter) WithCustomWriter(writer io.Writer) *BigTextPrinter {
+	p.Writer = writer
 	return &p
 }
 
@@ -157,7 +166,7 @@ func (p BigTextPrinter) Srender() (string, error) {
 // Render prints the BigText to the terminal.
 func (p BigTextPrinter) Render() error {
 	s, _ := p.Srender()
-	Println(s)
+	Fprintln(p.Writer, s)
 
 	return nil
 }

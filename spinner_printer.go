@@ -1,6 +1,8 @@
 package pterm
 
 import (
+	"io"
+	"os"
 	"time"
 
 	"github.com/pterm/pterm/internal"
@@ -20,6 +22,7 @@ var DefaultSpinner = SpinnerPrinter{
 	SuccessPrinter:      &Success,
 	FailPrinter:         &Error,
 	WarningPrinter:      &Warning,
+	Writer:              os.Stdout,
 }
 
 // SpinnerPrinter is a loading animation, which can be used if the progress is unknown.
@@ -38,6 +41,7 @@ type SpinnerPrinter struct {
 	ShowTimer           bool
 	TimerRoundingFactor time.Duration
 	TimerStyle          *Style
+	Writer              io.Writer
 
 	IsActive bool
 
@@ -99,16 +103,22 @@ func (s SpinnerPrinter) WithTimerStyle(style *Style) *SpinnerPrinter {
 	return &s
 }
 
+// WithCustomWriter sets the Writer.
+func (s SpinnerPrinter) WithCustomWriter(writer io.Writer) *SpinnerPrinter {
+	s.Writer = writer
+	return &s
+}
+
 // UpdateText updates the message of the active SpinnerPrinter.
 // Can be used live.
 func (s *SpinnerPrinter) UpdateText(text string) {
 	s.Text = text
 	if !RawOutput {
-		clearLine()
-		Printo(s.Style.Sprint(s.currentSequence) + " " + s.MessageStyle.Sprint(s.Text))
+		fClearLine(s.Writer)
+		Fprinto(s.Writer, s.Style.Sprint(s.currentSequence)+" "+s.MessageStyle.Sprint(s.Text))
 	}
 	if RawOutput {
-		Println(s.Text)
+		Fprintln(s.Writer, s.Text)
 	}
 }
 
@@ -123,7 +133,7 @@ func (s SpinnerPrinter) Start(text ...interface{}) (*SpinnerPrinter, error) {
 	}
 
 	if RawOutput {
-		Println(s.Text)
+		Fprintln(s.Writer, s.Text)
 	}
 
 	go func() {
@@ -137,7 +147,7 @@ func (s SpinnerPrinter) Start(text ...interface{}) (*SpinnerPrinter, error) {
 				if s.ShowTimer {
 					timer = " (" + time.Since(s.startedAt).Round(s.TimerRoundingFactor).String() + ")"
 				}
-				Printo(s.Style.Sprint(seq) + " " + s.MessageStyle.Sprint(s.Text) + s.TimerStyle.Sprint(timer))
+				Fprinto(s.Writer, s.Style.Sprint(seq)+" "+s.MessageStyle.Sprint(s.Text)+s.TimerStyle.Sprint(timer))
 				s.currentSequence = seq
 				time.Sleep(s.Delay)
 			}
@@ -151,10 +161,10 @@ func (s SpinnerPrinter) Start(text ...interface{}) (*SpinnerPrinter, error) {
 func (s *SpinnerPrinter) Stop() error {
 	s.IsActive = false
 	if s.RemoveWhenDone {
-		clearLine()
-		Printo()
+		fClearLine(s.Writer)
+		Fprinto(s.Writer)
 	} else {
-		Println()
+		Fprintln(s.Writer)
 	}
 	return nil
 }
@@ -187,8 +197,8 @@ func (s *SpinnerPrinter) Success(message ...interface{}) {
 	if len(message) == 0 {
 		message = []interface{}{s.Text}
 	}
-	clearLine()
-	Printo(s.SuccessPrinter.Sprint(message...))
+	fClearLine(s.Writer)
+	Fprinto(s.Writer, s.SuccessPrinter.Sprint(message...))
 	_ = s.Stop()
 }
 
@@ -202,8 +212,8 @@ func (s *SpinnerPrinter) Fail(message ...interface{}) {
 	if len(message) == 0 {
 		message = []interface{}{s.Text}
 	}
-	clearLine()
-	Printo(s.FailPrinter.Sprint(message...))
+	fClearLine(s.Writer)
+	Fprinto(s.Writer, s.FailPrinter.Sprint(message...))
 	_ = s.Stop()
 }
 
@@ -217,7 +227,7 @@ func (s *SpinnerPrinter) Warning(message ...interface{}) {
 	if len(message) == 0 {
 		message = []interface{}{s.Text}
 	}
-	clearLine()
-	Printo(s.WarningPrinter.Sprint(message...))
+	fClearLine(s.Writer)
+	Fprinto(s.Writer, s.WarningPrinter.Sprint(message...))
 	_ = s.Stop()
 }
