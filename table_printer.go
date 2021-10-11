@@ -152,8 +152,6 @@ func (p TablePrinter) createColumnString(data string, maxColumnWidth int) string
 	switch p.Alignment {
 	case RightAlignment:
 		return strings.Repeat(" ", maxColumnWidth-columnLength) + data
-	case LeftAlignment:
-		fallthrough
 	default:
 		return data + strings.Repeat(" ", maxColumnWidth-columnLength)
 	}
