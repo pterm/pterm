@@ -16,12 +16,14 @@ func TestTablePrinter_NilPrint(t *testing.T) {
 
 func TestTablePrinter_Render(t *testing.T) {
 	proxyToDevNull()
-	pterm.DefaultTable.WithHasHeader().WithData(pterm.TableData{
+	d := pterm.TableData{
 		{"Firstname", "Lastname", "Email"},
 		{"Paul", "Dean", "nisi.dictum.augue@velitAliquam.co.uk"},
 		{"Callie", "Mckay", "egestas.nunc.sed@est.com"},
 		{"Libby", "Camacho", "aliquet.lobortis@semper.com"},
-	}).Render()
+	}
+	pterm.DefaultTable.WithHasHeader().WithData(d).Render()
+	pterm.DefaultTable.WithHasHeader().WithAlignment(pterm.RightAlignment).WithData(d).Render()
 }
 
 func TestTablePrinter_WithCSVReader(t *testing.T) {
