@@ -6,6 +6,7 @@
 
 ### Bug Fixes
 - progressbar method name
+- **header:** fixed length calculation for Chinese strings
 
 
 <a name="v0.12.31"></a>
