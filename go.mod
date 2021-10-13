@@ -7,5 +7,6 @@ require (
 	github.com/atomicgo/cursor v0.0.1
 	github.com/gookit/color v1.4.2
 	github.com/mattn/go-runewidth v0.0.13
-	golang.org/x/term v0.0.0-20210615171337-6886f2dfbf5b
+	golang.org/x/sys v0.0.0-20211013075003-97ac67df715c // indirect
+	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211
 )
