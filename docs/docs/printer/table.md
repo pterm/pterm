@@ -39,6 +39,8 @@ pterm.DefaultTable.WithHasHeader().WithData(pterm.TableData{{"Hello", "World"}})
 |[SeparatorStyle](https://pkg.go.dev/github.com/pterm/pterm#TablePrinter.WithSeparatorStyle)|[*Style](https://pkg.go.dev/github.com/pterm/pterm#Style)|
 |[Style](https://pkg.go.dev/github.com/pterm/pterm#TablePrinter.WithStyle)|[*Style](https://pkg.go.dev/github.com/pterm/pterm#Style)|
 |[Boxed](https://pkg.go.dev/github.com/pterm/pterm#TablePrinter.WithBoxed)|...bool|
+|[LeftAlignment](https://pkg.go.dev/github.com/pterm/pterm#TablePrinter.WithLeftAlignment)|...bool|
+|[RightAlignment](https://pkg.go.dev/github.com/pterm/pterm#TablePrinter.WithRightAlignment)|...bool|
 
 ### Output functions
 
