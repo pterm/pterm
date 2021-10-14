@@ -8,21 +8,14 @@ import (
 	"github.com/pterm/pterm/internal"
 )
 
-// TableAlignment determines the alignment of data within a table.
-type TableAlignment int
-
-const (
-	LeftAlignment TableAlignment = iota
-	RightAlignment
-)
-
 // DefaultTable contains standards, which can be used to print a TablePrinter.
 var DefaultTable = TablePrinter{
 	Style:          &ThemeDefault.TableStyle,
 	HeaderStyle:    &ThemeDefault.TableHeaderStyle,
 	Separator:      " | ",
 	SeparatorStyle: &ThemeDefault.TableSeparatorStyle,
-	Alignment:      LeftAlignment,
+	LeftAlignment:  true,
+	RightAlignment: false,
 }
 
 // TableData is the type that contains the data of a TablePrinter.
@@ -37,7 +30,8 @@ type TablePrinter struct {
 	SeparatorStyle *Style
 	Data           TableData
 	Boxed          bool
-	Alignment      TableAlignment
+	LeftAlignment  bool
+	RightAlignment bool
 }
 
 // WithStyle returns a new TablePrinter with a specific Style.
@@ -90,9 +84,19 @@ func (p TablePrinter) WithBoxed(b ...bool) *TablePrinter {
 	return &p
 }
 
-// WithAlignment returns a new TablePrinter with specific alignment.
-func (p TablePrinter) WithAlignment(alignment TableAlignment) *TablePrinter {
-	p.Alignment = alignment
+// WithLeftAlignment returns a new TablePrinter with left alignment.
+func (p TablePrinter) WithLeftAlignment(b ...bool) *TablePrinter {
+	b2 := internal.WithBoolean(b)
+	p.LeftAlignment = b2
+	p.RightAlignment = false
+	return &p
+}
+
+// WithRightAlignment returns a new TablePrinter with right alignment.
+func (p TablePrinter) WithRightAlignment(b ...bool) *TablePrinter {
+	b2 := internal.WithBoolean(b)
+	p.LeftAlignment = false
+	p.RightAlignment = b2
 	return &p
 }
 
@@ -149,12 +153,13 @@ func (p TablePrinter) Srender() (string, error) {
 
 func (p TablePrinter) createColumnString(data string, maxColumnWidth int) string {
 	columnLength := utf8.RuneCountInString(RemoveColorFromString(data))
-	switch p.Alignment {
-	case RightAlignment:
+	if p.RightAlignment {
 		return strings.Repeat(" ", maxColumnWidth-columnLength) + data
-	default:
+	}
+	if p.LeftAlignment {
 		return data + strings.Repeat(" ", maxColumnWidth-columnLength)
 	}
+	return data + strings.Repeat(" ", maxColumnWidth-columnLength)
 }
 
 // Render prints the TablePrinter to the terminal.

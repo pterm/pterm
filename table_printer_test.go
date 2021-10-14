@@ -23,7 +23,8 @@ func TestTablePrinter_Render(t *testing.T) {
 		{"Libby", "Camacho", "aliquet.lobortis@semper.com"},
 	}
 	pterm.DefaultTable.WithHasHeader().WithData(d).Render()
-	pterm.DefaultTable.WithHasHeader().WithAlignment(pterm.RightAlignment).WithData(d).Render()
+	pterm.DefaultTable.WithHasHeader().WithLeftAlignment().WithData(d).Render()
+	pterm.DefaultTable.WithHasHeader().WithRightAlignment().WithData(d).Render()
 }
 
 func TestTablePrinter_WithCSVReader(t *testing.T) {
@@ -92,10 +93,18 @@ func TestTablePrinter_WithStyle(t *testing.T) {
 	testza.AssertEqual(t, s, p2.Style)
 }
 
-func TestTablePrinter_WithAlignment(t *testing.T) {
-	s := pterm.RightAlignment
+func TestTablePrinter_WithLeftAlignment(t *testing.T) {
+	s := true
 	p := pterm.TablePrinter{}
-	p2 := p.WithAlignment(pterm.RightAlignment)
+	p2 := p.WithLeftAlignment(s)
 
-	testza.AssertEqual(t, s, p2.Alignment)
+	testza.AssertEqual(t, s, p2.LeftAlignment)
+}
+
+func TestTablePrinter_WithRightAlignment(t *testing.T) {
+	s := true
+	p := pterm.TablePrinter{}
+	p2 := p.WithRightAlignment(s)
+
+	testza.AssertEqual(t, s, p2.RightAlignment)
 }
