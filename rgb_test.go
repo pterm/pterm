@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/MarvinJWendt/testza"
+
 	"github.com/pterm/pterm"
 )
 
@@ -273,6 +274,32 @@ func TestRGB_PrintIfError_WithoutError(t *testing.T) {
 		t.Run("PrintIfError_WithoutError", func(t *testing.T) {
 			result := captureStdout(func(w io.Writer) {
 				rgb.PrintOnError(nil)
+			})
+			testza.AssertZero(t, result)
+		})
+	}
+}
+
+func TestRGB_PrintOnErrorf(t *testing.T) {
+	RGBs := []pterm.RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
+
+	for _, rgb := range RGBs {
+		t.Run("PrintOnErrorf", func(t *testing.T) {
+			result := captureStdout(func(w io.Writer) {
+				rgb.PrintOnErrorf("wrapping error : %w", errors.New("hello world"))
+			})
+			testza.AssertContains(t, result, "hello world")
+		})
+	}
+}
+
+func TestRGB_PrintIfError_WithoutErrorf(t *testing.T) {
+	RGBs := []pterm.RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
+
+	for _, rgb := range RGBs {
+		t.Run("PrintIfErrorf_WithoutError", func(t *testing.T) {
+			result := captureStdout(func(w io.Writer) {
+				rgb.PrintOnErrorf("", nil)
 			})
 			testza.AssertZero(t, result)
 		})

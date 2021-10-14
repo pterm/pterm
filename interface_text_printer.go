@@ -40,4 +40,9 @@ type TextPrinter interface {
 	// If every error is nil, nothing will be printed.
 	// This can be used for simple error checking.
 	PrintOnError(a ...interface{}) *TextPrinter
+
+	// PrintOnErrorf wraps every error which is not nil and prints it.
+	// If every error is nil, nothing will be printed.
+	// This can be used for simple error checking.
+	PrintOnErrorf(format string, a ...interface{}) *TextPrinter
 }
