@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/MarvinJWendt/testza"
+
 	"github.com/pterm/pterm"
 )
 
@@ -78,6 +79,20 @@ func TestCenterPrinterPrintMethods(t *testing.T) {
 	t.Run("PrintIfError_WithoutError", func(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			p.PrintOnError(nil)
+		})
+		testza.AssertZero(t, result)
+	})
+
+	t.Run("PrintOnErrorf", func(t *testing.T) {
+		result := captureStdout(func(w io.Writer) {
+			p.PrintOnErrorf("wrapping error : %w", errors.New("hello world"))
+		})
+		testza.AssertContains(t, result, "hello world")
+	})
+
+	t.Run("PrintIfError_WithoutErrorf", func(t *testing.T) {
+		result := captureStdout(func(w io.Writer) {
+			p.PrintOnErrorf("", nil)
 		})
 		testza.AssertZero(t, result)
 	})
