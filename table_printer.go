@@ -156,9 +156,6 @@ func (p TablePrinter) createColumnString(data string, maxColumnWidth int) string
 	if p.RightAlignment {
 		return strings.Repeat(" ", maxColumnWidth-columnLength) + data
 	}
-	if p.LeftAlignment {
-		return data + strings.Repeat(" ", maxColumnWidth-columnLength)
-	}
 	return data + strings.Repeat(" ", maxColumnWidth-columnLength)
 }
 
