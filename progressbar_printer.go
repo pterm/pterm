@@ -154,6 +154,9 @@ func (p *ProgressbarPrinter) updateProgress() *ProgressbarPrinter{
 	if p.BarStyle == nil {
 		p.BarStyle = NewStyle()
 	}
+	if p.Total == 0 {
+		return nil
+	}
 
 	var before string
 	var after string
