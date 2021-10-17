@@ -3,6 +3,7 @@ package pterm
 import (
 	"strings"
 
+	"github.com/mattn/go-runewidth"
 	"github.com/pterm/pterm/internal"
 )
 
@@ -69,7 +70,7 @@ func (p HeaderPrinter) Sprint(a ...interface{}) string {
 	var blankLine string
 
 	longestLine := internal.ReturnLongestLine(text, "\n")
-	longestLineLen := len(RemoveColorFromString(longestLine)) + p.Margin*2
+	longestLineLen := runewidth.StringWidth(RemoveColorFromString(longestLine)) + p.Margin*2
 
 	if p.FullWidth {
 		text = splitText(text, GetTerminalWidth()-p.Margin*2)
@@ -88,7 +89,7 @@ func (p HeaderPrinter) Sprint(a ...interface{}) string {
 	var ret string
 
 	if p.FullWidth {
-		longestLineLen = len(RemoveColorFromString(internal.ReturnLongestLine(text, "\n")))
+		longestLineLen = runewidth.StringWidth(RemoveColorFromString(internal.ReturnLongestLine(text, "\n")))
 		marginString = strings.Repeat(" ", (GetTerminalWidth()-longestLineLen)/2)
 	} else {
 		marginString = strings.Repeat(" ", p.Margin)
@@ -98,8 +99,8 @@ func (p HeaderPrinter) Sprint(a ...interface{}) string {
 	for _, line := range strings.Split(text, "\n") {
 		line = strings.ReplaceAll(line, "\n", "")
 		line = marginString + line + marginString
-		if len(line) < len(blankLine) {
-			line += strings.Repeat(" ", len(blankLine)-len(line))
+		if runewidth.StringWidth(line) < runewidth.StringWidth(blankLine) {
+			line += strings.Repeat(" ", runewidth.StringWidth(blankLine)-runewidth.StringWidth(line))
 		}
 		ret += p.BackgroundStyle.Sprint(p.TextStyle.Sprint(line)) + "\n"
 	}
@@ -112,7 +113,7 @@ func splitText(text string, width int) string {
 	var lines []string
 	linesTmp := strings.Split(text, "\n")
 	for _, line := range linesTmp {
-		if len(RemoveColorFromString(line)) > width {
+		if runewidth.StringWidth(RemoveColorFromString(line)) > width {
 			extraLines := []string{""}
 			extraLinesCounter := 0
 			for i, letter := range line {

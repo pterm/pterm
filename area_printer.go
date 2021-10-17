@@ -99,7 +99,7 @@ func (p *AreaPrinter) Start(text ...interface{}) (*AreaPrinter, error) {
 func (p *AreaPrinter) Stop() error {
 	p.isActive = false
 	if p.RemoveWhenDone {
-		p.area.Clear()
+		p.Clear()
 	}
 	return nil
 }
@@ -120,4 +120,11 @@ func (p *AreaPrinter) GenericStop() (*LivePrinter, error) {
 	_ = p.Stop()
 	lp := LivePrinter(p)
 	return &lp, nil
+}
+
+// Wrapper function that clears the content of the Area.
+// Moves the cursor to the bottom of the terminal, clears n lines upwards from
+// the current position and moves the cursor again.
+func (p *AreaPrinter) Clear() {
+	p.area.Clear()
 }

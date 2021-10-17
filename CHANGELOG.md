@@ -1,6 +1,16 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Features
+- added `AreaPrinter.Clear()`
+
+### Bug Fixes
+- progressbar method name
+- **header:** fixed length calculation for Chinese strings
+
+### Code Refactoring
+- change bitSize size
+
 
 <a name="v0.12.31"></a>
 ## [v0.12.31] - 2021-09-21
