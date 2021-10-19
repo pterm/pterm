@@ -269,3 +269,21 @@ func TestPrintIfError_WithoutError(t *testing.T) {
 		testza.AssertZero(t, result)
 	})
 }
+
+func TestPrintOnErrorf(t *testing.T) {
+	t.Run("PrintOnErrorf", func(t *testing.T) {
+		result := captureStdout(func(w io.Writer) {
+			pterm.PrintOnErrorf("wrapping error : %w", errors.New("hello world"))
+		})
+		testza.AssertContains(t, result, "hello world")
+	})
+}
+
+func TestPrintIfErrorf_WithoutError(t *testing.T) {
+	t.Run("PrintIfErrorf_WithoutError", func(t *testing.T) {
+		result := captureStdout(func(w io.Writer) {
+			pterm.PrintOnErrorf("", nil)
+		})
+		testza.AssertZero(t, result)
+	})
+}
