@@ -108,6 +108,19 @@ func PrintOnError(a ...interface{}) {
 	}
 }
 
+// PrintOnErrorf wraps every error which is not nil and prints it.
+// If every error is nil, nothing will be printed.
+// This can be used for simple error checking.
+func PrintOnErrorf(format string, a ...interface{}) {
+	for _, arg := range a {
+		if err, ok := arg.(error); ok {
+			if err != nil {
+				Println(fmt.Errorf(format, err))
+			}
+		}
+	}
+}
+
 // Fprint formats using the default formats for its operands and writes to w.
 // Spaces are added between operands when neither is a string.
 // It returns the number of bytes written and any write error encountered.

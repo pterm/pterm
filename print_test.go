@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/MarvinJWendt/testza"
+
 	"github.com/pterm/pterm"
 	"github.com/pterm/pterm/internal"
 )
@@ -264,6 +265,24 @@ func TestPrintIfError_WithoutError(t *testing.T) {
 	t.Run("PrintIfError_WithoutError", func(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			pterm.PrintOnError(nil)
+		})
+		testza.AssertZero(t, result)
+	})
+}
+
+func TestPrintOnErrorf(t *testing.T) {
+	t.Run("PrintOnErrorf", func(t *testing.T) {
+		result := captureStdout(func(w io.Writer) {
+			pterm.PrintOnErrorf("wrapping error : %w", errors.New("hello world"))
+		})
+		testza.AssertContains(t, result, "hello world")
+	})
+}
+
+func TestPrintIfErrorf_WithoutError(t *testing.T) {
+	t.Run("PrintIfErrorf_WithoutError", func(t *testing.T) {
+		result := captureStdout(func(w io.Writer) {
+			pterm.PrintOnErrorf("", nil)
 		})
 		testza.AssertZero(t, result)
 	})

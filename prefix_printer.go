@@ -301,6 +301,22 @@ func (p *PrefixPrinter) PrintOnError(a ...interface{}) *TextPrinter {
 	return &tp
 }
 
+// PrintOnErrorf wraps every error which is not nil and prints it.
+// If every error is nil, nothing will be printed.
+// This can be used for simple error checking.
+func (p *PrefixPrinter) PrintOnErrorf(format string, a ...interface{}) *TextPrinter {
+	for _, arg := range a {
+		if err, ok := arg.(error); ok {
+			if err != nil {
+				p.Println(fmt.Errorf(format, err))
+			}
+		}
+	}
+
+	tp := TextPrinter(p)
+	return &tp
+}
+
 // GetFormattedPrefix returns the Prefix as a styled text string.
 func (p PrefixPrinter) GetFormattedPrefix() string {
 	return p.Prefix.Style.Sprint(" " + p.Prefix.Text + " ")
