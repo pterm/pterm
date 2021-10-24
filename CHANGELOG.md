@@ -3,6 +3,14 @@
 
 ### Features
 - add `PrintOnErrorf` for every `TextPrinter` ([#279](https://github.com/pterm/pterm/issues/279))
+- **coverage:** add unit test
+- **table:** increase test coverage
+- **table:** revamp to follow practice
+- **table:** add support for right data alignment
+
+### Bug Fixes
+- **idea:** revert unwanted config changes
+- **linter:** do linter recommendation to delete fallthrough
 
 
 <a name="v0.12.32"></a>

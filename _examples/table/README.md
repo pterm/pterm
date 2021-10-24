@@ -16,6 +16,16 @@ func main() {
 		{"Callie", "Mckay", "egestas.nunc.sed@est.com"},
 		{"Libby", "Camacho", "aliquet.lobortis@semper.com"},
 	}).Render()
+
+	pterm.Println() // Blank line
+        
+	// Create a table with right alignment.
+	pterm.DefaultTable.WithHasHeader().WithData(pterm.TableData{
+		{"Firstname", "Lastname", "Email"},
+		{"Paul", "Dean", "nisi.dictum.augue@velitAliquam.co.uk"},
+		{"Callie", "Mckay", "egestas.nunc.sed@est.com"},
+		{"Libby", "Camacho", "aliquet.lobortis@semper.com"},
+	}).WithRightAlignment().Render()
 }
 
 ```
