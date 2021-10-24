@@ -465,7 +465,7 @@ func installingPseudoList() {
 
 	p, _ := pterm.DefaultProgressbar.WithTotal(len(pseudoProgramList)).WithTitle("Installing stuff").Start()
 	for i := 0; i < p.Total; i++ {
-		p.Title = "Installing " + pseudoProgramList[i]
+		p.UpdateTitle("Installing " + pseudoProgramList[i]
 		if pseudoProgramList[i] == "pseudo-minecraft" {
 			pterm.Warning.Println("Could not install pseudo-minecraft\nThe company policy forbids games.")
 		} else {
@@ -635,7 +635,7 @@ func installingPseudoList() {
 
 	p, _ := pterm.DefaultProgressbar.WithTotal(len(pseudoProgramList)).WithTitle("Installing stuff").Start()
 	for i := 0; i < p.Total; i++ {
-		p.Title = "Installing " + pseudoProgramList[i]
+		p.UpdateTitle("Installing " + pseudoProgramList[i])
 		if pseudoProgramList[i] == "pseudo-minecraft" {
 			pterm.Warning.Println("Could not install pseudo-minecraft\nThe company policy forbids games.")
 		} else {
@@ -836,7 +836,7 @@ func installingPseudoList() {
 
 	p, _ := pterm.DefaultProgressbar.WithTotal(len(pseudoProgramList)).WithTitle("Installing stuff").Start()
 	for i := 0; i < p.Total; i++ {
-		p.Title = "Installing " + pseudoProgramList[i]
+		p.UpdateTitle("Installing " + pseudoProgramList[i])
 		if pseudoProgramList[i] == "pseudo-minecraft" {
 			pterm.Warning.Println("Could not install pseudo-minecraft\nThe company policy forbids games.")
 		} else {
@@ -1344,7 +1344,7 @@ func main() {
 	p, _ := pterm.DefaultProgressbar.WithTotal(len(fakeInstallList)).WithTitle("Downloading stuff").Start()
 
 	for i := 0; i < p.Total; i++ {
-		p.Title = "Downloading " + fakeInstallList[i]              // Update the title of the progressbar.
+		p.UpdateTitle("Downloading " + fakeInstallList[i])         // Update the title of the progressbar.
 		pterm.Success.Println("Downloading " + fakeInstallList[i]) // If a progressbar is running, each print will be printed above the progressbar.
 		p.Increment()                                              // Increment the progressbar by one. Use Add(x int) to increment by a custom amount.
 		time.Sleep(time.Millisecond * 350)                         // Sleep 350 milliseconds.
