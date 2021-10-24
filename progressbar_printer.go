@@ -140,14 +140,14 @@ func (p *ProgressbarPrinter) Increment() *ProgressbarPrinter {
 }
 
 // This method changed the title and re-renders the progressbar
-func (p *ProgressbarPrinter) UpdateTitle(title string) *ProgressbarPrinter{
+func (p *ProgressbarPrinter) UpdateTitle(title string) *ProgressbarPrinter {
 	p.Title = title
 	p.updateProgress()
 	return p
 }
 
 // This is the update logic, renders the progressbar
-func (p *ProgressbarPrinter) updateProgress() *ProgressbarPrinter{
+func (p *ProgressbarPrinter) updateProgress() *ProgressbarPrinter {
 	if p.TitleStyle == nil {
 		p.TitleStyle = NewStyle()
 	}
@@ -269,4 +269,3 @@ func (p *ProgressbarPrinter) parseElapsedTime() string {
 	s := p.GetElapsedTime().Round(p.ElapsedTimeRoundingFactor).String()
 	return s
 }
-

@@ -4,6 +4,7 @@
 ### Features
 - add `PrintOnErrorf` for every `TextPrinter` ([#279](https://github.com/pterm/pterm/issues/279))
 - **coverage:** add unit test
+- **progressbar:** made updating the progressbar title easier. ([#267](https://github.com/pterm/pterm/issues/267))
 - **table:** increase test coverage
 - **table:** revamp to follow practice
 - **table:** add support for right data alignment

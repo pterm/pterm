@@ -465,7 +465,7 @@ func installingPseudoList() {
 
 	p, _ := pterm.DefaultProgressbar.WithTotal(len(pseudoProgramList)).WithTitle("Installing stuff").Start()
 	for i := 0; i < p.Total; i++ {
-		p.UpdateTitle("Installing " + pseudoProgramList[i]
+		p.UpdateTitle("Installing " + pseudoProgramList[i])
 		if pseudoProgramList[i] == "pseudo-minecraft" {
 			pterm.Warning.Println("Could not install pseudo-minecraft\nThe company policy forbids games.")
 		} else {

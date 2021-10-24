@@ -176,7 +176,7 @@ func TestProgressbarPrinter_WithTotal(t *testing.T) {
 	testza.AssertEqual(t, 1337, p2.Total)
 }
 
-func TestProgressbarPrinter_UpdateTitle(t *testing.T){
+func TestProgressbarPrinter_UpdateTitle(t *testing.T) {
 	p := pterm.ProgressbarPrinter{}
 	p2 := p.WithTitle("test")
 	p2.UpdateTitle("test2")
