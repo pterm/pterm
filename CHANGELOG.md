@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+
+<a name="v0.12.33"></a>
+## [v0.12.33] - 2021-10-24
 ### Features
 - add `PrintOnErrorf` for every `TextPrinter` ([#279](https://github.com/pterm/pterm/issues/279))
 - **coverage:** add unit test
@@ -922,7 +925,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.32...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.33...HEAD
+[v0.12.33]: https://github.com/pterm/pterm/compare/v0.12.32...v0.12.33
 [v0.12.32]: https://github.com/pterm/pterm/compare/v0.12.31...v0.12.32
 [v0.12.31]: https://github.com/pterm/pterm/compare/v0.12.30...v0.12.31
 [v0.12.30]: https://github.com/pterm/pterm/compare/v0.12.29...v0.12.30
