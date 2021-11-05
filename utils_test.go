@@ -190,11 +190,13 @@ func testDoesNotOutput(t *testing.T, logic func(w io.Writer)) {
 
 var outBuf bytes.Buffer
 
+// setupStdoutCapture sets up a fake stdout capture.
 func setupStdoutCapture() {
 	outBuf.Reset()
 	pterm.SetDefaultOutput(&outBuf)
 }
 
+// teardownStdoutCapture restores the real stdout.
 func teardownStdoutCapture() {
 	pterm.SetDefaultOutput(os.Stdout)
 }
