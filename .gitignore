@@ -16,3 +16,6 @@ vendor/
 
 # This is where we test stuff
 /experimenting/
+
+/.history
+/.vscode
