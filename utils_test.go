@@ -1,18 +1,24 @@
 package pterm_test
 
 import (
+	"bytes"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"testing"
 
 	"github.com/MarvinJWendt/testza"
-	"github.com/gookit/color"
 	"github.com/pterm/pterm"
 )
 
 var printables = []interface{}{"Hello, World!", 1337, true, false, -1337, 'c', 1.5, "\\", "%s"}
+
+func TestMain(m *testing.M) {
+	setupStdoutCapture()
+	exitVal := m.Run()
+	teardownStdoutCapture()
+	os.Exit(exitVal)
+}
 
 // testPrintContains can be used to test Print methods.
 func testPrintContains(t *testing.T, logic func(w io.Writer, a interface{})) {
@@ -182,22 +188,22 @@ func testDoesNotOutput(t *testing.T, logic func(w io.Writer)) {
 	pterm.EnableStyling()
 }
 
-// captureStdout captures everything written to the terminal and returns it as a string.
+var outBuf bytes.Buffer
+
+func setupStdoutCapture() {
+	outBuf.Reset()
+	pterm.SetDefaultOutput(&outBuf)
+}
+
+func teardownStdoutCapture() {
+	pterm.SetDefaultOutput(os.Stdout)
+}
+
+// captureStdout simulates capturing of os.stdout with a buffer and returns what was writted to the screen
 func captureStdout(f func(w io.Writer)) string {
-	originalStdout := os.Stdout
-	r, w, _ := os.Pipe()
-	os.Stdout = w
-	color.SetOutput(w)
-
-	f(w)
-
-	_ = w.Close()
-	out, _ := ioutil.ReadAll(r)
-	os.Stdout = originalStdout
-	color.SetOutput(w)
-	_ = r.Close()
-
-	return string(out)
+	setupStdoutCapture()
+	f(&outBuf)
+	return outBuf.String()
 }
 
 func proxyToDevNull() {
