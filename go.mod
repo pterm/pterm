@@ -9,3 +9,5 @@ require (
 	github.com/mattn/go-runewidth v0.0.13
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211
 )
+
+replace github.com/MarvinJWendt/testza => /home/dev/workspace/go-testza
