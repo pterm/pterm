@@ -71,6 +71,7 @@ func TestSectionPrinterPrintMethods(t *testing.T) {
 			p.PrintOnError(errors.New("hello world"))
 		})
 		testza.AssertContains(t, result, "hello world")
+		testza.SnapshotCreateOrValidate(t, t.Name(), result)
 	})
 
 	t.Run("PrintIfError_WithoutError", func(t *testing.T) {
@@ -85,6 +86,7 @@ func TestSectionPrinterPrintMethods(t *testing.T) {
 			p.PrintOnErrorf("wrapping error : %w", errors.New("hello world"))
 		})
 		testza.AssertContains(t, result, "hello world")
+		testza.SnapshotCreateOrValidate(t, t.Name(), result)
 	})
 
 	t.Run("PrintIfError_WithoutErrorf", func(t *testing.T) {

@@ -66,6 +66,7 @@ func TestSpinnerPrinter_UpdateText(t *testing.T) {
 			p.UpdateText("A short message")
 		})
 		testza.AssertContains(t, out, "A short message")
+		testza.SnapshotCreateOrValidate(t, t.Name(), out)
 	})
 }
 

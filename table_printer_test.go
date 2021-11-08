@@ -23,15 +23,24 @@ func TestTablePrinter_Render(t *testing.T) {
 		{"Libby", "Camacho", "aliquet.lobortis@semper.com"},
 	}
 	pterm.DefaultTable.WithHasHeader().WithData(d).Render()
-	pterm.DefaultTable.WithHasHeader().WithLeftAlignment().WithData(d).Render()
-	pterm.DefaultTable.WithHasHeader().WithRightAlignment().WithData(d).Render()
+	// WithLeftAlignment
+	printer := pterm.DefaultTable.WithHasHeader().WithLeftAlignment().WithData(d)
+	printer.Render()
+	content, _ := printer.Srender()
+	testza.SnapshotCreateOrValidate(t, t.Name()+"1", content)
+	// WithRightAlignment
+	printer = pterm.DefaultTable.WithHasHeader().WithRightAlignment().WithData(d)
+	printer.Render()
+	content, _ = printer.Srender()
+	testza.SnapshotCreateOrValidate(t, t.Name()+"2", content)
 }
 
 func TestTablePrinter_WithCSVReader(t *testing.T) {
 	r := csv.NewReader(os.Stdin)
 	p := pterm.TablePrinter{}
 	p2 := p.WithCSVReader(r)
-	p2.Srender()
+	content, _ := p2.Srender()
+	testza.SnapshotCreateOrValidate(t, t.Name(), content)
 }
 
 func TestTablePrinter_WithBoxed(t *testing.T) {

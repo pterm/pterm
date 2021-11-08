@@ -92,6 +92,7 @@ func TestHeaderPrinterPrintMethods(t *testing.T) {
 			p.PrintOnErrorf("wrapping error : %w", errors.New("hello world"))
 		})
 		testza.AssertContains(t, result, "hello world")
+		testza.SnapshotCreateOrValidate(t, t.Name(), result)
 	})
 
 	t.Run("PrintIfError_WithoutErrorf", func(t *testing.T) {
@@ -99,6 +100,7 @@ func TestHeaderPrinterPrintMethods(t *testing.T) {
 			p.PrintOnErrorf("", nil)
 		})
 		testza.AssertZero(t, result)
+		testza.SnapshotCreateOrValidate(t, t.Name(), result)
 	})
 }
 
@@ -122,6 +124,7 @@ func TestHeaderPrinter_WithFullWidthToLongForTerminal(t *testing.T) {
 	p2 := p.WithFullWidth().Sprint("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 
 	testza.AssertContains(t, p2, "a")
+	testza.SnapshotCreateOrValidate(t, t.Name(), p2)
 }
 
 func TestHeaderPrinter_ToLongForTerminal(t *testing.T) {
@@ -129,6 +132,7 @@ func TestHeaderPrinter_ToLongForTerminal(t *testing.T) {
 	p2 := p.Sprint("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 
 	testza.AssertContains(t, p2, "a")
+	testza.SnapshotCreateOrValidate(t, t.Name(), p2)
 }
 
 func TestHeaderPrinter_WithMargin(t *testing.T) {

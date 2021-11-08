@@ -38,7 +38,7 @@ func TestBarChartPrinterNilStylePrint(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	_, content := printer.Srender()
+	content, _ := printer.Srender()
 	testza.SnapshotCreateOrValidate(t, t.Name(), content)
 }
 
@@ -64,7 +64,7 @@ func TestBarChartPrinter_RenderExample(t *testing.T) {
 
 	printer := pterm.DefaultBarChart.WithBars(bars)
 	printer.Render()
-	_, content := printer.Srender()
+	content, _ := printer.Srender()
 	testza.SnapshotCreateOrValidate(t, t.Name(), content)
 }
 
@@ -91,7 +91,7 @@ func TestBarChartPrinter_RenderExampleRawOutput(t *testing.T) {
 
 	printer := pterm.DefaultBarChart.WithBars(bars)
 	printer.Render()
-	_, content := printer.Srender()
+	content, _ := printer.Srender()
 	testza.SnapshotCreateOrValidate(t, t.Name(), content)
 	pterm.EnableStyling()
 }
@@ -116,7 +116,7 @@ func TestBarChartPrinter_RenderMultipleLineLabel(t *testing.T) {
 	})
 	
 	printer.Render()
-	_, content := printer.Srender()
+	content, _ := printer.Srender()
 	testza.SnapshotCreateOrValidate(t, t.Name(), content)
 }
 
@@ -134,7 +134,7 @@ func TestBarChartPrinter_RenderNegativeBarValues(t *testing.T) {
 		},
 	})
 	printer.Render()
-	_, content := printer.Srender()
+	content, _ := printer.Srender()
 	testza.SnapshotCreateOrValidate(t, t.Name(), content)
 }
 
@@ -152,7 +152,7 @@ func TestBarChartPrinter_RenderZeroBarValuesHorizontal(t *testing.T) {
 		},
 	})
 	printer.Render()
-	_, content := printer.Srender()
+	content, _ := printer.Srender()
 	testza.SnapshotCreateOrValidate(t, t.Name(), content)
 }
 
@@ -170,7 +170,7 @@ func TestBarChartPrinter_RenderZeroBarValues(t *testing.T) {
 		},
 	})
 	printer.Render()
-	_, content := printer.Srender()
+	content, _ := printer.Srender()
 	testza.SnapshotCreateOrValidate(t, t.Name(), content)
 }
 
@@ -188,7 +188,7 @@ func TestBarChartPrinter_RenderLowBarValues(t *testing.T) {
 		},
 	})
 	printer.Render()
-	_, content := printer.Srender()
+	content, _ := printer.Srender()
 	testza.SnapshotCreateOrValidate(t, t.Name(), content)
 }
 
@@ -206,7 +206,7 @@ func TestBarChartPrinter_Render(t *testing.T) {
 		},
 	})
 	printer.Render()
-	_, content := printer.Srender()
+	content, _ := printer.Srender()
 	testza.SnapshotCreateOrValidate(t, t.Name(), content)
 }
 
@@ -224,7 +224,7 @@ func TestBarChartPrinter_RenderHorizonzal(t *testing.T) {
 		},
 	})
 	printer.Render()
-	_, content := printer.Srender()
+	content, _ := printer.Srender()
 	testza.SnapshotCreateOrValidate(t, t.Name(), content)
 }
 

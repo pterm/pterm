@@ -10,11 +10,14 @@ import (
 func TestTreePrinterNilPrint(t *testing.T) {
 	proxyToDevNull()
 	pterm.TreePrinter{}.Render()
-	pterm.TreePrinter{}.WithRoot(pterm.NewTreeFromLeveledList(pterm.LeveledList{pterm.LeveledListItem{Text: "Hello, World!", Level: 0}})).Render()
+	printer := pterm.TreePrinter{}.WithRoot(pterm.NewTreeFromLeveledList(pterm.LeveledList{pterm.LeveledListItem{Text: "Hello, World!", Level: 0}}))
+	printer.Render()
+	content, _ := printer.Srender()
+	testza.SnapshotCreateOrValidate(t, t.Name(), content)
 }
 
 func TestTreePrinter_Render(t *testing.T) {
-	pterm.DefaultTree.WithRoot(pterm.NewTreeFromLeveledList([]pterm.LeveledListItem{
+	printer := pterm.DefaultTree.WithRoot(pterm.NewTreeFromLeveledList([]pterm.LeveledListItem{
 		{Level: 0, Text: "Hello, World!"},
 		{Level: 0, Text: "0.0"},
 		{Level: 1, Text: "0.1"},
@@ -25,7 +28,10 @@ func TestTreePrinter_Render(t *testing.T) {
 		{Level: 1, Text: "2.2"},
 		{Level: 2, Text: "2.2.1"},
 		{Level: 1, Text: "2.3"},
-	})).Render()
+	}))
+	printer.Render()
+	content, _ := printer.Srender()
+	testza.SnapshotCreateOrValidate(t, t.Name(), content)
 }
 
 func TestTreePrinter_NewTreeFromLeveledList(t *testing.T) {
