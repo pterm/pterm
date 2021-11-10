@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Test
+- removed `AreaPrinter` test output
+
 
 <a name="v0.12.33"></a>
 ## [v0.12.33] - 2021-10-24
