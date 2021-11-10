@@ -3,6 +3,7 @@
 
 ### Test
 - removed `AreaPrinter` test output
+- **table:** changed mock reader from `os.Stdin` to `outBuf`
 
 
 <a name="v0.12.33"></a>
