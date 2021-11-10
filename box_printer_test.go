@@ -83,7 +83,6 @@ func TestBoxPrinterPrintMethods(t *testing.T) {
 			p.PrintOnError(errors.New("hello world"))
 		})
 		testza.AssertContains(t, result, "hello world")
-		testza.SnapshotCreateOrValidate(t, t.Name(), result)
 	})
 
 	t.Run("PrintIfError_WithoutError", func(t *testing.T) {
@@ -98,7 +97,6 @@ func TestBoxPrinterPrintMethods(t *testing.T) {
 			p.PrintOnErrorf("wrapping error : %w", errors.New("hello world"))
 		})
 		testza.AssertContains(t, result, "hello world")
-		testza.SnapshotCreateOrValidate(t, t.Name(), result)
 	})
 
 	t.Run("PrintIfError_WithoutErrorf", func(t *testing.T) {
@@ -194,7 +192,6 @@ func TestBoxPrinter_WithTitleWithTitleBottomLeft(t *testing.T) {
 	p2 := p.WithTitleBottomLeft().WithTitle("a").Sprint("Lorem Ipsum")
 
 	testza.AssertContains(t, p2, "Lorem Ipsum")
-	testza.SnapshotCreateOrValidate(t, t.Name(), p2)
 }
 
 func TestBoxPrinter_WithTitleWithTitleTopLeft(t *testing.T) {
@@ -202,7 +199,6 @@ func TestBoxPrinter_WithTitleWithTitleTopLeft(t *testing.T) {
 	p2 := p.WithTitleTopLeft().WithTitle("a").Sprint("Lorem Ipsum")
 
 	testza.AssertContains(t, p2, "Lorem Ipsum")
-	testza.SnapshotCreateOrValidate(t, t.Name(), p2)
 }
 
 func TestBoxPrinter_WithTitleWithTitleBottomRight(t *testing.T) {
@@ -210,7 +206,6 @@ func TestBoxPrinter_WithTitleWithTitleBottomRight(t *testing.T) {
 	p2 := p.WithTitleBottomRight().WithTitle("a").Sprint("Lorem Ipsum")
 
 	testza.AssertContains(t, p2, "Lorem Ipsum")
-	testza.SnapshotCreateOrValidate(t, t.Name(), p2)
 }
 
 func TestBoxPrinter_WithTitleWithTitleTopRight(t *testing.T) {
@@ -218,7 +213,6 @@ func TestBoxPrinter_WithTitleWithTitleTopRight(t *testing.T) {
 	p2 := p.WithTitleTopRight().WithTitle("a").Sprint("Lorem Ipsum")
 
 	testza.AssertContains(t, p2, "Lorem Ipsum")
-	testza.SnapshotCreateOrValidate(t, t.Name(), p2)
 }
 
 func TestBoxPrinter_WithTitleWithTitleTopCenter(t *testing.T) {
@@ -226,7 +220,6 @@ func TestBoxPrinter_WithTitleWithTitleTopCenter(t *testing.T) {
 	p2 := p.WithTitleTopCenter().WithTitle("a").Sprint("Lorem Ipsum")
 
 	testza.AssertContains(t, p2, "Lorem Ipsum")
-	testza.SnapshotCreateOrValidate(t, t.Name(), p2)
 }
 
 func TestBoxPrinter_WithTitleWithTitleBottomCenter(t *testing.T) {
@@ -234,7 +227,6 @@ func TestBoxPrinter_WithTitleWithTitleBottomCenter(t *testing.T) {
 	p2 := p.WithTitleBottomCenter().WithTitle("a").Sprint("Lorem Ipsum")
 
 	testza.AssertContains(t, p2, "Lorem Ipsum")
-	testza.SnapshotCreateOrValidate(t, t.Name(), p2)
 }
 
 func TestBoxPrinter_WithBoxStyle(t *testing.T) {

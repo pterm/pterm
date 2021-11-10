@@ -150,5 +150,4 @@ func TestCenterPrinter_SprintLineLongerThanTerminalWithCenterEachLineSeparately(
 	p2 := p.WithCenterEachLineSeparately().Sprint("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 
 	testza.AssertContains(t, p2, "a")
-	testza.SnapshotCreateOrValidate(t, t.Name(), p2)
 }

@@ -1,7 +1,6 @@
 package pterm_test
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/MarvinJWendt/testza"
@@ -47,11 +46,9 @@ func TestAreaPrinter_CenterFullscreen(t *testing.T) {
 func TestAreaPrinter_GetContent(t *testing.T) {
 	a, _ := pterm.DefaultArea.Start()
 
-	for i, printable := range printables {
+	for _, printable := range printables {
 		a.Update(printable)
-		content := a.GetContent()
-		testza.AssertEqual(t, content, pterm.Sprint(printable))
-		testza.SnapshotCreateOrValidate(t, fmt.Sprint(t.Name(), i), content)
+		testza.AssertEqual(t, a.GetContent(), pterm.Sprint(printable))
 	}
 
 	a.Stop()

@@ -209,7 +209,14 @@ func teardownStdoutCapture() {
 func captureStdout(f func(w io.Writer)) string {
 	setupStdoutCapture()
 	f(&outBuf)
-	return outBuf.String()
+	return readStdout()
+}
+
+// readStdout reads the current stdout buffor. Assumes setupStdoutCapture() has been called before.
+func readStdout() string {
+	content := outBuf.String()
+	outBuf.Reset()
+	return content
 }
 
 func proxyToDevNull() {

@@ -258,7 +258,6 @@ func TestPrintOnError(t *testing.T) {
 			pterm.PrintOnError(errors.New("hello world"))
 		})
 		testza.AssertContains(t, result, "hello world")
-		testza.SnapshotCreateOrValidate(t, t.Name(), result)
 	})
 }
 
@@ -277,7 +276,6 @@ func TestPrintOnErrorf(t *testing.T) {
 			pterm.PrintOnErrorf("wrapping error : %w", errors.New("hello world"))
 		})
 		testza.AssertContains(t, result, "hello world")
-		testza.SnapshotCreateOrValidate(t, t.Name(), result)
 	})
 }
 
