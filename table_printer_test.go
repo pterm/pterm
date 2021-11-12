@@ -2,7 +2,6 @@ package pterm_test
 
 import (
 	"encoding/csv"
-	"os"
 	"testing"
 
 	"github.com/MarvinJWendt/testza"
@@ -36,7 +35,7 @@ func TestTablePrinter_Render(t *testing.T) {
 }
 
 func TestTablePrinter_WithCSVReader(t *testing.T) {
-	r := csv.NewReader(os.Stdin)
+	r := csv.NewReader(&outBuf)
 	p := pterm.TablePrinter{}
 	p2 := p.WithCSVReader(r)
 	content, _ := p2.Srender()
