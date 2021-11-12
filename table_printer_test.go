@@ -38,7 +38,7 @@ func TestTablePrinter_WithCSVReader(t *testing.T) {
 	r := csv.NewReader(&outBuf)
 	p := pterm.TablePrinter{}
 	p.WithCSVReader(r)
-	// TODO enable the snapshot once CI == local dev
+	// #296 enable the snapshot once CI == local dev
 	// content, _ := p2.Srender()
 	// testza.SnapshotCreateOrValidate(t, t.Name(), content)
 }

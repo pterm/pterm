@@ -38,7 +38,7 @@ func TestBarChartPrinterNilStylePrint(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	// TODO enable the snapshot once CI == local dev
+	// #296 enable the snapshot once CI == local dev
 	// content, _ := printer.Srender()
 	// testza.SnapshotCreateOrValidate(t, t.Name(), content)
 }
@@ -65,7 +65,7 @@ func TestBarChartPrinter_RenderExample(t *testing.T) {
 
 	printer := pterm.DefaultBarChart.WithBars(bars)
 	printer.Render()
-	// TODO enable the snapshot once CI == local dev
+	// #296 enable the snapshot once CI == local dev
 	// content, _ := printer.Srender()
 	// testza.SnapshotCreateOrValidate(t, t.Name(), content)
 }
@@ -190,7 +190,7 @@ func TestBarChartPrinter_RenderLowBarValues(t *testing.T) {
 		},
 	})
 	printer.Render()
-	// TODO enable the snapshot once CI == local dev
+	// #296 enable the snapshot once CI == local dev
 	// content, _ := printer.Srender()
 	// testza.SnapshotCreateOrValidate(t, t.Name(), content)
 }
@@ -209,7 +209,7 @@ func TestBarChartPrinter_Render(t *testing.T) {
 		},
 	})
 	printer.Render()
-	// TODO enable the snapshot once CI == local dev
+	// #296 enable the snapshot once CI == local dev
 	// content, _ := printer.Srender()
 	// testza.SnapshotCreateOrValidate(t, t.Name(), content)
 }
@@ -228,7 +228,7 @@ func TestBarChartPrinter_RenderHorizonzal(t *testing.T) {
 		},
 	})
 	printer.Render()
-	// TODO enable the snapshot once CI == local dev
+	// #296 enable the snapshot once CI == local dev
 	// content, _ := printer.Srender()
 	// testza.SnapshotCreateOrValidate(t, t.Name(), content)
 }
