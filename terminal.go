@@ -16,14 +16,14 @@ var FallbackTerminalHeight = 10
 
 // GetTerminalWidth returns the terminal width of the active terminal.
 func GetTerminalWidth() int {
-	width, _, _ := GetTerminalSize()
-	return width
+	// TODO debug only
+	return 80
 }
 
 // GetTerminalHeight returns the terminal height of the active terminal.
 func GetTerminalHeight() int {
-	_, height, _ := GetTerminalSize()
-	return height
+	// TODO debug only
+	return 80
 }
 
 // GetTerminalSize returns the width and the height of the active terminal.

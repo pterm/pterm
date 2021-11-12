@@ -13,6 +13,7 @@ import (
 
 var printables = []interface{}{"Hello, World!", 1337, true, false, -1337, 'c', 1.5, "\\", "%s"}
 
+// TestMain is the entrypoint triggered by `go test`
 func TestMain(m *testing.M) {
 	setupStdoutCapture()
 	exitVal := m.Run()
