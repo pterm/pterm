@@ -33,16 +33,16 @@ bars := pterm.Bars{
 		},
 	}
 
-	_ = pterm.NewDefaultBarChart().WithBars(bars).Render()
+	_ = pterm.DefaultBarChart.WithBars(bars).Render()
 ```
 
 ### Options
 
 > To make a copy with modified options you can use:
-> `pterm.NewDefaultBarChart().WithOptionName(option)`
+> `pterm.DefaultBarChart.WithOptionName(option)`
 >
 > To change multiple options at once, you can chain the functions:
-> `pterm.NewDefaultBarChart().WithOptionName(option).WithOptionName2(option2)...`
+> `pterm.DefaultBarChart.WithOptionName(option).WithOptionName2(option2)...`
 
 > [!TIP]
 > Click the options and types to show the documentation on _pkg.go.dev_
