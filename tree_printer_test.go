@@ -2,6 +2,7 @@ package pterm_test
 
 import (
 	"io"
+	"runtime"
 	"testing"
 
 	"github.com/MarvinJWendt/testza"
@@ -14,7 +15,8 @@ func TestTreePrinterNilPrint(t *testing.T) {
 	content := captureStdout(func(w io.Writer) {
 		printer.Render()
 	})
-	testza.SnapshotCreateOrValidate(t, t.Name(), content)
+	// this test has an OS-dependant output and needs separate snapshots
+	testza.SnapshotCreateOrValidate(t, t.Name()+"_"+runtime.GOOS, content)
 }
 
 func TestTreePrinter_Render(t *testing.T) {
@@ -33,7 +35,8 @@ func TestTreePrinter_Render(t *testing.T) {
 	content := captureStdout(func(w io.Writer) {
 		printer.Render()
 	})
-	testza.SnapshotCreateOrValidate(t, t.Name(), content)
+	// this test has an OS-dependant output and needs separate snapshots
+	testza.SnapshotCreateOrValidate(t, t.Name()+"_"+runtime.GOOS, content)
 }
 
 func TestTreePrinter_NewTreeFromLeveledList(t *testing.T) {
