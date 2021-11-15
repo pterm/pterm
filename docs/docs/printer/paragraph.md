@@ -15,16 +15,16 @@ Replace all of the following strings with the current printer.
 ### Basic usage
 
 ```go
-pterm.DefaultParagraph.Println("Hello, World!")
+pterm.NewDefaultParagraph().Println("Hello, World!")
 ```
 
 ### Options
 
 > To make a copy with modified options you can use:
-> `pterm.DefaultParagraph.WithOptionName(option)`
+> `pterm.NewDefaultParagraph().WithOptionName(option)`
 >
 > To change multiple options at once, you can chain the functions:
-> `pterm.DefaultParagraph.WithOptionName(option).WithOptionName2(option2)...`
+> `pterm.NewDefaultParagraph().WithOptionName(option).WithOptionName2(option2)...`
 
 > [!TIP]
 > Click the options and types to show the documentation on _pkg.go.dev_

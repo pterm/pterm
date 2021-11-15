@@ -26,6 +26,7 @@ type BarChartPrinter struct {
 	HorizontalBarCharacter string
 }
 
+// NewDefaultBarChart returns a BarChartPrinter with default values.
 func NewDefaultBarChart() BarChartPrinter {
 	return BarChartPrinter{
 		Horizontal:             false,

@@ -8,6 +8,16 @@ import (
 	"github.com/pterm/pterm"
 )
 
+func TestNewDefaultBarChart(t *testing.T) {
+	testza.AssertEqual(t, pterm.NewDefaultBarChart(), pterm.BarChartPrinter{
+		Horizontal:             false,
+		VerticalBarCharacter:   "██",
+		HorizontalBarCharacter: "█",
+		Height:                 pterm.GetTerminalHeight() * 2 / 3,
+		Width:                  pterm.GetTerminalWidth() * 2 / 3,
+	})
+}
+
 func TestBarChartPrinterNilPrint(t *testing.T) {
 	proxyToDevNull()
 	p := pterm.BarChartPrinter{}

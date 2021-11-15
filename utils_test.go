@@ -12,9 +12,11 @@ import (
 )
 
 var printables = []interface{}{"Hello, World!", 1337, true, false, -1337, 'c', 1.5, "\\", "%s"}
+var terminalWidth = 80
+var terminalHeight = 60
 
 func TestMain(m *testing.M) {
-	pterm.SetForcedTerminalSize(80, 60)
+	pterm.SetForcedTerminalSize(terminalWidth, terminalHeight)
 	setupStdoutCapture()
 	exitVal := m.Run()
 	teardownStdoutCapture()

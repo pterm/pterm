@@ -5,9 +5,12 @@ import (
 	"strings"
 )
 
-// DefaultParagraph contains the default values for a ParagraphPrinter.
-var DefaultParagraph = ParagraphPrinter{
-	MaxWidth: GetTerminalWidth(),
+//
+// NewDefaultParagraph returns a ParagraphPrinter with default values.
+func NewDefaultParagraph() ParagraphPrinter {
+	return ParagraphPrinter{
+		MaxWidth: GetTerminalWidth(),
+	}
 }
 
 // ParagraphPrinter can print paragraphs to a fixed line width.
