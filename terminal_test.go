@@ -26,7 +26,7 @@ func TestGetTerminalSizeAutodetect(t *testing.T) {
 	expectedW, expectedH, _ := term.GetSize(int(os.Stdout.Fd()))
 	// CI goes to fallback values
 	if expectedW < 0 {
-		expectedW = pterm.FallbackTerminalHeight
+		expectedW = pterm.FallbackTerminalWidth
 		expectedH = pterm.FallbackTerminalHeight
 	}
 	w, h, _ := pterm.GetTerminalSize()
