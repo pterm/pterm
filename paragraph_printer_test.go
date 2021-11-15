@@ -16,7 +16,7 @@ func TestParagraphPrinterNilPrint(t *testing.T) {
 }
 
 func TestParagraphPrinterPrintMethods(t *testing.T) {
-	p := pterm.NewDefaultParagraph()
+	p := pterm.DefaultParagraph
 
 	t.Run("Print", func(t *testing.T) {
 		testPrintContains(t, func(w io.Writer, a interface{}) {

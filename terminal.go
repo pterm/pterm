@@ -60,4 +60,5 @@ func GetTerminalSize() (width, height int, err error) {
 func SetForcedTerminalSize(width int, height int) {
 	forcedTerminalWidth = width
 	forcedTerminalHeight = height
+	RecalculateTerminalSize()
 }

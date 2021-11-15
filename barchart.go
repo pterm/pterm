@@ -26,15 +26,23 @@ type BarChartPrinter struct {
 	HorizontalBarCharacter string
 }
 
-// NewDefaultBarChart returns a BarChartPrinter with default values.
-func NewDefaultBarChart() BarChartPrinter {
-	return BarChartPrinter{
+var (
+	// DefaultBarChart is the default BarChartPrinter.
+	DefaultBarChart = BarChartPrinter{
 		Horizontal:             false,
 		VerticalBarCharacter:   "██",
 		HorizontalBarCharacter: "█",
-		Height:                 GetTerminalHeight() * 2 / 3,
-		Width:                  GetTerminalWidth() * 2 / 3,
+		Height:                 GetDefaultBarChartWidth(),
+		Width:                  GetDefaultBarChartHeight(),
 	}
+)
+
+func GetDefaultBarChartWidth() int {
+	return GetTerminalHeight() * 2 / 3
+}
+
+func GetDefaultBarChartHeight() int {
+	return GetTerminalWidth() * 2 / 3
 }
 
 // WithBars returns a new BarChartPrinter with a specific option.

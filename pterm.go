@@ -57,3 +57,10 @@ func DisableStyling() {
 	RawOutput = true
 	DisableColor()
 }
+
+// RecalculateTerminalSize updates already initialized terminal dimensions. Has to be called after a termina resize to guarantee proper rendering. Applies only to new instances.
+func RecalculateTerminalSize() {
+	DefaultBarChart.Width = GetDefaultBarChartWidth()
+	DefaultBarChart.Height = GetDefaultBarChartHeight()
+	DefaultParagraph.MaxWidth = GetTerminalWidth()
+}
