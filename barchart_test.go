@@ -18,27 +18,24 @@ func TestBarChartPrinterNilPrint(t *testing.T) {
 }
 
 func TestBarChartPrinterNilStylePrint(t *testing.T) {
-	content := captureStdout(func(w io.Writer) {
-		bars := pterm.Bars{
-			pterm.Bar{
-				Label: "Bar 1",
-				Value: 5,
-			},
-			pterm.Bar{
-				Label: "Bar 2",
-				Value: 3,
-			},
-			pterm.Bar{
-				Label: "Longer Label",
-				Value: 7,
-			},
-		}
+	bars := pterm.Bars{
+		pterm.Bar{
+			Label: "Bar 1",
+			Value: 5,
+		},
+		pterm.Bar{
+			Label: "Bar 2",
+			Value: 3,
+		},
+		pterm.Bar{
+			Label: "Longer Label",
+			Value: 7,
+		},
+	}
 
-		printer := pterm.DefaultBarChart.WithBars(bars)
-		err := printer.Render()
-		if err != nil {
-			panic(err)
-		}
+	printer := pterm.DefaultBarChart.WithBars(bars)
+	content := captureStdout(func(w io.Writer) {
+		printer.Render()
 	})
 	testza.SnapshotCreateOrValidate(t, t.Name(), content)
 }
@@ -198,38 +195,38 @@ func TestBarChartPrinter_RenderLowBarValues(t *testing.T) {
 }
 
 func TestBarChartPrinter_Render(t *testing.T) {
+	printer := pterm.DefaultBarChart.WithShowValue().WithBars(pterm.Bars{
+		pterm.Bar{
+			Label: "Test",
+			Value: 1337,
+			Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
+		},
+		pterm.Bar{
+			Label: "Test",
+			Value: 1337,
+			Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
+		},
+	})
 	content := captureStdout(func(w io.Writer) {
-		printer := pterm.DefaultBarChart.WithShowValue().WithBars(pterm.Bars{
-			pterm.Bar{
-				Label: "Test",
-				Value: 1337,
-				Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
-			},
-			pterm.Bar{
-				Label: "Test",
-				Value: 1337,
-				Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
-			},
-		})
 		printer.Render()
 	})
 	testza.SnapshotCreateOrValidate(t, t.Name(), content)
 }
 
 func TestBarChartPrinter_RenderHorizonzal(t *testing.T) {
+	printer := pterm.DefaultBarChart.WithShowValue().WithHorizontal().WithBars(pterm.Bars{
+		pterm.Bar{
+			Label: "Test",
+			Value: 1337,
+			Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
+		},
+		pterm.Bar{
+			Label: "Test",
+			Value: 1337,
+			Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
+		},
+	})
 	content := captureStdout(func(w io.Writer) {
-		printer := pterm.DefaultBarChart.WithShowValue().WithHorizontal().WithBars(pterm.Bars{
-			pterm.Bar{
-				Label: "Test",
-				Value: 1337,
-				Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
-			},
-			pterm.Bar{
-				Label: "Test",
-				Value: 1337,
-				Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
-			},
-		})
 		printer.Render()
 	})
 	testza.SnapshotCreateOrValidate(t, t.Name(), content)
