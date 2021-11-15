@@ -14,20 +14,26 @@ var FallbackTerminalWidth = 80
 // You can override that value if necessary.
 var FallbackTerminalHeight = 10
 
-// forcedTerminalWidth, when set along with forcedTerminalHeight, forces the terminal width value for GetTerminalSize().
+// forcedTerminalWidth, when set along with forcedTerminalHeight, forces the terminal width value.
 var forcedTerminalWidth int = 0
 
-// forcedTerminalHeight, when set along with forcedTerminalWidth, forces the terminal height value for GetTerminalSize().
+// forcedTerminalHeight, when set along with forcedTerminalWidth, forces the terminal height value.
 var forcedTerminalHeight int = 0
 
 // GetTerminalWidth returns the terminal width of the active terminal.
 func GetTerminalWidth() int {
+	if forcedTerminalWidth > 0 {
+		return forcedTerminalWidth
+	}
 	width, _, _ := GetTerminalSize()
 	return width
 }
 
 // GetTerminalHeight returns the terminal height of the active terminal.
 func GetTerminalHeight() int {
+	if forcedTerminalHeight > 0 {
+		return forcedTerminalHeight
+	}
 	_, height, _ := GetTerminalSize()
 	return height
 }

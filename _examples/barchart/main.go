@@ -18,6 +18,6 @@ func main() {
 		},
 	}
 
-	_ = pterm.DefaultBarChart.WithBars(bars).Render()
-	_ = pterm.DefaultBarChart.WithHorizontal().WithBars(bars).Render()
+	_ = pterm.NewDefaultBarChart().WithBars(bars).Render()
+	_ = pterm.NewDefaultBarChart().WithHorizontal().WithBars(bars).Render()
 }
