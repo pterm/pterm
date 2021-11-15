@@ -16,21 +16,33 @@ func TestBigTextPrinterNilPrint(t *testing.T) {
 
 func TestBigTextPrinter_Render(t *testing.T) {
 	printer := pterm.DefaultBigText.WithLetters(pterm.NewLettersFromString("Hello"))
-	testDoesOutput(t, func(w io.Writer) {
+	content := captureStdout(func(w io.Writer) {
 		printer.Render()
 	})
-	content, _ := printer.Srender()
+	testza.AssertNotZero(t, content)
 	testza.SnapshotCreateOrValidate(t, t.Name(), content)
+	// DisableStyling
+	pterm.DisableStyling()
+	content = captureStdout(func(w io.Writer) {
+		printer.Render()
+	})
+	testza.SnapshotCreateOrValidate(t, t.Name()+"NoStyling", content)
+	pterm.EnableStyling()
 }
 
 func TestBigTextPrinter_RenderRawOutput(t *testing.T) {
-	pterm.DisableStyling()
 	printer := pterm.DefaultBigText.WithLetters(pterm.NewLettersFromString("Hello"))
-	testDoesOutput(t, func(w io.Writer) {
+	content := captureStdout(func(w io.Writer) {
 		printer.Render()
 	})
-	content, _ := printer.Srender()
+	testza.AssertNotZero(t, content)
 	testza.SnapshotCreateOrValidate(t, t.Name(), content)
+	// DisableStyling
+	pterm.DisableStyling()
+	content = captureStdout(func(w io.Writer) {
+		printer.Render()
+	})
+	testza.SnapshotCreateOrValidate(t, t.Name()+"NoStyling", content)
 	pterm.EnableStyling()
 }
 

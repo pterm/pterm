@@ -2,6 +2,7 @@ package pterm_test
 
 import (
 	"encoding/csv"
+	"io"
 	"testing"
 
 	"github.com/MarvinJWendt/testza"
@@ -14,7 +15,6 @@ func TestTablePrinter_NilPrint(t *testing.T) {
 }
 
 func TestTablePrinter_Render(t *testing.T) {
-	proxyToDevNull()
 	d := pterm.TableData{
 		{"Firstname", "Lastname", "Email"},
 		{"Paul", "Dean", "nisi.dictum.augue@velitAliquam.co.uk"},
@@ -24,23 +24,25 @@ func TestTablePrinter_Render(t *testing.T) {
 	pterm.DefaultTable.WithHasHeader().WithData(d).Render()
 	// WithLeftAlignment
 	printer := pterm.DefaultTable.WithHasHeader().WithLeftAlignment().WithData(d)
-	printer.Render()
-	content, _ := printer.Srender()
+	content := captureStdout(func(w io.Writer) {
+		printer.Render()
+	})
 	testza.SnapshotCreateOrValidate(t, t.Name()+"1", content)
 	// WithRightAlignment
 	printer = pterm.DefaultTable.WithHasHeader().WithRightAlignment().WithData(d)
-	printer.Render()
-	content, _ = printer.Srender()
+	content = captureStdout(func(w io.Writer) {
+		printer.Render()
+	})
 	testza.SnapshotCreateOrValidate(t, t.Name()+"2", content)
 }
 
 func TestTablePrinter_WithCSVReader(t *testing.T) {
-	r := csv.NewReader(&outBuf)
-	p := pterm.TablePrinter{}
-	p.WithCSVReader(r)
-	// #296 enable the snapshot once CI == local dev
-	// content, _ := p2.Srender()
-	// testza.SnapshotCreateOrValidate(t, t.Name(), content)
+	content := captureStdout(func(w io.Writer) {
+		r := csv.NewReader(&outBuf)
+		p := pterm.TablePrinter{}
+		p.WithCSVReader(r)
+	})
+	testza.SnapshotCreateOrValidate(t, t.Name(), content)
 }
 
 func TestTablePrinter_WithBoxed(t *testing.T) {

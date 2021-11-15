@@ -14,6 +14,7 @@ import (
 var printables = []interface{}{"Hello, World!", 1337, true, false, -1337, 'c', 1.5, "\\", "%s"}
 
 func TestMain(m *testing.M) {
+	pterm.SetForcedTerminalSize(80, 60)
 	setupStdoutCapture()
 	exitVal := m.Run()
 	teardownStdoutCapture()
@@ -27,7 +28,6 @@ func testPrintContains(t *testing.T, logic func(w io.Writer, a interface{})) {
 			s := captureStdout(func(w io.Writer) {
 				logic(w, printable)
 			})
-			testza.SnapshotCreateOrValidate(t, t.Name(), s)
 			testza.AssertContains(t, s, fmt.Sprint(printable))
 		})
 		pterm.DisableStyling()
@@ -35,7 +35,6 @@ func testPrintContains(t *testing.T, logic func(w io.Writer, a interface{})) {
 			s := captureStdout(func(w io.Writer) {
 				logic(w, printable)
 			})
-			testza.SnapshotCreateOrValidate(t, t.Name()+"NoStyle", s)
 			testza.AssertContains(t, s, fmt.Sprint(printable))
 		})
 		pterm.EnableStyling()
@@ -49,7 +48,6 @@ func testPrintfContains(t *testing.T, logic func(w io.Writer, format string, a i
 			s := captureStdout(func(w io.Writer) {
 				logic(w, "Hello, %v!", printable)
 			})
-			testza.SnapshotCreateOrValidate(t, t.Name(), s)
 			testza.AssertContains(t, s, fmt.Sprintf("Hello, %v!", fmt.Sprint(printable)))
 		})
 		pterm.DisableStyling()
@@ -57,7 +55,6 @@ func testPrintfContains(t *testing.T, logic func(w io.Writer, format string, a i
 			s := captureStdout(func(w io.Writer) {
 				logic(w, "Hello, %v!", printable)
 			})
-			testza.SnapshotCreateOrValidate(t, t.Name()+"NoStyle", s)
 			testza.AssertContains(t, s, fmt.Sprintf("Hello, %v!", fmt.Sprint(printable)))
 		})
 		pterm.EnableStyling()

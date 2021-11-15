@@ -1,6 +1,7 @@
 package pterm_test
 
 import (
+	"io"
 	"testing"
 
 	"github.com/MarvinJWendt/testza"
@@ -8,11 +9,11 @@ import (
 )
 
 func TestTreePrinterNilPrint(t *testing.T) {
-	proxyToDevNull()
 	pterm.TreePrinter{}.Render()
 	printer := pterm.TreePrinter{}.WithRoot(pterm.NewTreeFromLeveledList(pterm.LeveledList{pterm.LeveledListItem{Text: "Hello, World!", Level: 0}}))
-	printer.Render()
-	content, _ := printer.Srender()
+	content := captureStdout(func(w io.Writer) {
+		printer.Render()
+	})
 	testza.SnapshotCreateOrValidate(t, t.Name(), content)
 }
 
@@ -29,8 +30,9 @@ func TestTreePrinter_Render(t *testing.T) {
 		{Level: 2, Text: "2.2.1"},
 		{Level: 1, Text: "2.3"},
 	}))
-	printer.Render()
-	content, _ := printer.Srender()
+	content := captureStdout(func(w io.Writer) {
+		printer.Render()
+	})
 	testza.SnapshotCreateOrValidate(t, t.Name(), content)
 }
 
