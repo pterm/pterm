@@ -51,6 +51,23 @@ func TestInterfaceImplementation(t *testing.T) {
 	_ = []pterm.RenderPrinter{pterm.DefaultBarChart, pterm.DefaultBigText, pterm.DefaultBulletList, pterm.DefaultPanel, pterm.DefaultTable, pterm.DefaultTree}
 }
 
+func TestRecalculateTerminalSize(t *testing.T) {
+	// save existing values
+	prevBarChartWidth := pterm.DefaultBarChart.Width
+	prevBarChartHeight := pterm.DefaultBarChart.Height
+	prevParagraphMaxWidth := pterm.DefaultParagraph.MaxWidth
+	w := pterm.GetTerminalWidth()
+	h := pterm.GetTerminalHeight()
+	// double the terminal size
+	pterm.SetForcedTerminalSize(w*2, h*2)
+	// assert the values doubled
+	testza.AssertEqual(t, prevBarChartWidth*2, pterm.DefaultBarChart.Width)
+	testza.AssertEqual(t, prevBarChartHeight*2, pterm.DefaultBarChart.Height)
+	testza.AssertEqual(t, prevParagraphMaxWidth*2, pterm.DefaultParagraph.MaxWidth)
+	// revert the terminal size
+	pterm.SetForcedTerminalSize(w, h)
+}
+
 // Acceptance test
 
 const delay = time.Millisecond
