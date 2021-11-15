@@ -23,10 +23,15 @@ func TestSetForcedTerminalSize(t *testing.T) {
 func TestGetTerminalSizeAutodetect(t *testing.T) {
 	// enable autodetection
 	pterm.SetForcedTerminalSize(0, 0)
-	autoW, autoH, _ := term.GetSize(int(os.Stdout.Fd()))
+	expectedW, expectedH, _ := term.GetSize(int(os.Stdout.Fd()))
+	// CI goes to fallback values
+	if expectedW < 0 {
+		expectedW = pterm.FallbackTerminalHeight
+		expectedH = pterm.FallbackTerminalHeight
+	}
 	w, h, _ := pterm.GetTerminalSize()
-	testza.AssertEqual(t, w, autoW)
-	testza.AssertEqual(t, h, autoH)
+	testza.AssertEqual(t, expectedW, w)
+	testza.AssertEqual(t, expectedH, h)
 	// disable autodetection
 	pterm.SetForcedTerminalSize(terminalWidth, terminalHeight)
 }
