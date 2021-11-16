@@ -32,20 +32,11 @@ var (
 		Horizontal:             false,
 		VerticalBarCharacter:   "██",
 		HorizontalBarCharacter: "█",
-		Height:                 GetDefaultBarChartWidth(),
-		Width:                  GetDefaultBarChartHeight(),
+		// keep in sync with RecalculateTerminalSize()
+		Height: GetTerminalHeight() * 2 / 3,
+		Width:  GetTerminalWidth() * 2 / 3,
 	}
 )
-
-// GetDefaultBarChartWidth calculates the width of DefaultBarChart.
-func GetDefaultBarChartWidth() int {
-	return GetTerminalHeight() * 2 / 3
-}
-
-// GetDefaultBarChartHeight calculates the height of DefaultBarChart.
-func GetDefaultBarChartHeight() int {
-	return GetTerminalWidth() * 2 / 3
-}
 
 // WithBars returns a new BarChartPrinter with a specific option.
 func (p BarChartPrinter) WithBars(bars Bars) *BarChartPrinter {
