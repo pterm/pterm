@@ -81,11 +81,11 @@ func demoSnapshot(t *testing.T, tick *int) {
 }
 
 func TestDemo(t *testing.T) {
+	setupStdoutCapture()
 	tick := 0
 	introScreen()
 	demoSnapshot(t, &tick)
 	clear()
-	demoSnapshot(t, &tick)
 	pseudoApplicationHeader()
 	demoSnapshot(t, &tick)
 	time.Sleep(delay)
