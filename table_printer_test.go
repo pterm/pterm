@@ -3,6 +3,7 @@ package pterm_test
 import (
 	"encoding/csv"
 	"io"
+	"runtime"
 	"testing"
 
 	"github.com/MarvinJWendt/testza"
@@ -27,13 +28,13 @@ func TestTablePrinter_Render(t *testing.T) {
 	content := captureStdout(func(w io.Writer) {
 		printer.Render()
 	})
-	testza.SnapshotCreateOrValidate(t, t.Name()+"1", content)
+	testza.SnapshotCreateOrValidate(t, t.Name()+"_1_"+runtime.GOOS, content)
 	// WithRightAlignment
 	printer = pterm.DefaultTable.WithHasHeader().WithRightAlignment().WithData(d)
 	content = captureStdout(func(w io.Writer) {
 		printer.Render()
 	})
-	testza.SnapshotCreateOrValidate(t, t.Name()+"2", content)
+	testza.SnapshotCreateOrValidate(t, t.Name()+"_2_"+runtime.GOOS, content)
 }
 
 func TestTablePrinter_WithCSVReader(t *testing.T) {
