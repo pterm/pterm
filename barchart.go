@@ -32,8 +32,9 @@ var (
 		Horizontal:             false,
 		VerticalBarCharacter:   "██",
 		HorizontalBarCharacter: "█",
-		Height:                 GetTerminalHeight() * 2 / 3,
-		Width:                  GetTerminalWidth() * 2 / 3,
+		// keep in sync with RecalculateTerminalSize()
+		Height: GetTerminalHeight() * 2 / 3,
+		Width:  GetTerminalWidth() * 2 / 3,
 	}
 )
 

@@ -12,8 +12,11 @@ import (
 )
 
 var printables = []interface{}{"Hello, World!", 1337, true, false, -1337, 'c', 1.5, "\\", "%s"}
+var terminalWidth = 80
+var terminalHeight = 60
 
 func TestMain(m *testing.M) {
+	pterm.SetForcedTerminalSize(terminalWidth, terminalHeight)
 	setupStdoutCapture()
 	exitVal := m.Run()
 	teardownStdoutCapture()
@@ -205,7 +208,14 @@ func teardownStdoutCapture() {
 func captureStdout(f func(w io.Writer)) string {
 	setupStdoutCapture()
 	f(&outBuf)
-	return outBuf.String()
+	return readStdout()
+}
+
+// readStdout reads the current stdout buffor. Assumes setupStdoutCapture() has been called before.
+func readStdout() string {
+	content := outBuf.String()
+	outBuf.Reset()
+	return content
 }
 
 func proxyToDevNull() {

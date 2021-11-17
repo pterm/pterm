@@ -2,6 +2,8 @@ package pterm_test
 
 import (
 	"encoding/csv"
+	"io"
+	"runtime"
 	"testing"
 
 	"github.com/MarvinJWendt/testza"
@@ -14,7 +16,6 @@ func TestTablePrinter_NilPrint(t *testing.T) {
 }
 
 func TestTablePrinter_Render(t *testing.T) {
-	proxyToDevNull()
 	d := pterm.TableData{
 		{"Firstname", "Lastname", "Email"},
 		{"Paul", "Dean", "nisi.dictum.augue@velitAliquam.co.uk"},
@@ -22,15 +23,27 @@ func TestTablePrinter_Render(t *testing.T) {
 		{"Libby", "Camacho", "aliquet.lobortis@semper.com"},
 	}
 	pterm.DefaultTable.WithHasHeader().WithData(d).Render()
-	pterm.DefaultTable.WithHasHeader().WithLeftAlignment().WithData(d).Render()
-	pterm.DefaultTable.WithHasHeader().WithRightAlignment().WithData(d).Render()
+	// WithLeftAlignment
+	printer := pterm.DefaultTable.WithHasHeader().WithLeftAlignment().WithData(d)
+	content := captureStdout(func(w io.Writer) {
+		printer.Render()
+	})
+	testza.SnapshotCreateOrValidate(t, t.Name()+"_1_"+runtime.GOOS, content)
+	// WithRightAlignment
+	printer = pterm.DefaultTable.WithHasHeader().WithRightAlignment().WithData(d)
+	content = captureStdout(func(w io.Writer) {
+		printer.Render()
+	})
+	testza.SnapshotCreateOrValidate(t, t.Name()+"_2_"+runtime.GOOS, content)
 }
 
 func TestTablePrinter_WithCSVReader(t *testing.T) {
-	r := csv.NewReader(&outBuf)
-	p := pterm.TablePrinter{}
-	p2 := p.WithCSVReader(r)
-	p2.Srender()
+	content := captureStdout(func(w io.Writer) {
+		r := csv.NewReader(&outBuf)
+		p := pterm.TablePrinter{}
+		p.WithCSVReader(r)
+	})
+	testza.SnapshotCreateOrValidate(t, t.Name(), content)
 }
 
 func TestTablePrinter_WithBoxed(t *testing.T) {
