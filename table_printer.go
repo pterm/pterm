@@ -10,12 +10,16 @@ import (
 
 // DefaultTable contains standards, which can be used to print a TablePrinter.
 var DefaultTable = TablePrinter{
-	Style:          &ThemeDefault.TableStyle,
-	HeaderStyle:    &ThemeDefault.TableHeaderStyle,
-	Separator:      " | ",
-	SeparatorStyle: &ThemeDefault.TableSeparatorStyle,
-	LeftAlignment:  true,
-	RightAlignment: false,
+	Style:                   &ThemeDefault.TableStyle,
+	HeaderStyle:             &ThemeDefault.TableHeaderStyle,
+	HeaderRowSeparator:      "=",
+	HeaderRowSeparatorStyle: &ThemeDefault.TableSeparatorStyle,
+	Separator:               " | ",
+	SeparatorStyle:          &ThemeDefault.TableSeparatorStyle,
+	RowSeparator:            "-",
+	RowSeparatorStyle:       &ThemeDefault.TableSeparatorStyle,
+	LeftAlignment:           true,
+	RightAlignment:          false,
 }
 
 // TableData is the type that contains the data of a TablePrinter.
@@ -23,15 +27,19 @@ type TableData [][]string
 
 // TablePrinter is able to render tables.
 type TablePrinter struct {
-	Style          *Style
-	HasHeader      bool
-	HeaderStyle    *Style
-	Separator      string
-	SeparatorStyle *Style
-	Data           TableData
-	Boxed          bool
-	LeftAlignment  bool
-	RightAlignment bool
+	Style                   *Style
+	HasHeader               bool
+	HeaderStyle             *Style
+	HeaderRowSeparator      string
+	HeaderRowSeparatorStyle *Style
+	Separator               string
+	SeparatorStyle          *Style
+	RowSeparator            string
+	RowSeparatorStyle       *Style
+	Data                    TableData
+	Boxed                   bool
+	LeftAlignment           bool
+	RightAlignment          bool
 }
 
 // WithStyle returns a new TablePrinter with a specific Style.
@@ -52,6 +60,18 @@ func (p TablePrinter) WithHeaderStyle(style *Style) *TablePrinter {
 	return &p
 }
 
+// WithHeaderRowSeparator returns a new TablePrinter with a specific header HeaderRowSeparator.
+func (p TablePrinter) WithHeaderRowSeparator(separator string) *TablePrinter {
+	p.HeaderRowSeparator = separator
+	return &p
+}
+
+// WithHeaderRowSeparatorStyle returns a new TablePrinter with a specific header HeaderRowSeparatorStyle.
+func (p TablePrinter) WithHeaderRowSeparatorStyle(style *Style) *TablePrinter {
+	p.HeaderRowSeparatorStyle = style
+	return &p
+}
+
 // WithSeparator returns a new TablePrinter with a specific separator.
 func (p TablePrinter) WithSeparator(separator string) *TablePrinter {
 	p.Separator = separator
@@ -61,6 +81,18 @@ func (p TablePrinter) WithSeparator(separator string) *TablePrinter {
 // WithSeparatorStyle returns a new TablePrinter with a specific SeparatorStyle.
 func (p TablePrinter) WithSeparatorStyle(style *Style) *TablePrinter {
 	p.SeparatorStyle = style
+	return &p
+}
+
+// WithRowSeparator returns a new TablePrinter with a specific RowSeparator.
+func (p TablePrinter) WithRowSeparator(separator string) *TablePrinter {
+	p.RowSeparator = separator
+	return &p
+}
+
+// WithRowSeparatorStyle returns a new TablePrinter with a specific RowSeparatorStyle.
+func (p TablePrinter) WithRowSeparatorStyle(style *Style) *TablePrinter {
+	p.RowSeparatorStyle = style
 	return &p
 }
 
@@ -111,6 +143,12 @@ func (p TablePrinter) Srender() (string, error) {
 	if p.HeaderStyle == nil {
 		p.HeaderStyle = NewStyle()
 	}
+	if p.HeaderRowSeparatorStyle == nil {
+		p.HeaderRowSeparatorStyle = NewStyle()
+	}
+	if p.RowSeparatorStyle == nil {
+		p.RowSeparatorStyle = NewStyle()
+	}
 
 	var ret string
 	maxColumnWidth := make(map[int]int)
@@ -125,11 +163,14 @@ func (p TablePrinter) Srender() (string, error) {
 	}
 
 	for ri, row := range p.Data {
+		rowWidth := 0
 		for ci, column := range row {
 			columnString := p.createColumnString(column, maxColumnWidth[ci])
+			rowWidth += utf8.RuneCountInString(RemoveColorFromString(columnString))
 
 			if ci != len(row) && ci != 0 {
 				ret += p.Style.Sprint(p.SeparatorStyle.Sprint(p.Separator))
+				rowWidth += utf8.RuneCountInString(RemoveColorFromString(p.SeparatorStyle.Sprint(p.Separator)))
 			}
 
 			if p.HasHeader && ri == 0 {
@@ -137,6 +178,14 @@ func (p TablePrinter) Srender() (string, error) {
 			} else {
 				ret += p.Style.Sprint(columnString)
 			}
+		}
+
+		if p.HasHeader && ri == 0 {
+			ret += p.createHeaderRowSeparatorString(rowWidth)
+		}
+
+		if ri != len(row) && ri != 0 {
+			ret += p.createRowSeparatorString(rowWidth)
 		}
 
 		ret += "\n"
@@ -157,6 +206,22 @@ func (p TablePrinter) createColumnString(data string, maxColumnWidth int) string
 		return strings.Repeat(" ", maxColumnWidth-columnLength) + data
 	}
 	return data + strings.Repeat(" ", maxColumnWidth-columnLength)
+}
+
+func (p TablePrinter) createHeaderRowSeparatorString(rowWidth int) string {
+	if p.HeaderRowSeparator == "" {
+		return ""
+	}
+
+	return "\n" + p.Style.Sprint(p.HeaderRowSeparatorStyle.Sprint(strings.Repeat(p.HeaderRowSeparator, rowWidth)))
+}
+
+func (p TablePrinter) createRowSeparatorString(rowWidth int) string {
+	if p.RowSeparator == "" {
+		return ""
+	}
+
+	return "\n" + p.Style.Sprint(p.RowSeparatorStyle.Sprint(strings.Repeat(p.RowSeparator, rowWidth)))
 }
 
 // Render prints the TablePrinter to the terminal.

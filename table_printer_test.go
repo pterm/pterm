@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/MarvinJWendt/testza"
+
 	"github.com/pterm/pterm"
 )
 
@@ -95,6 +96,36 @@ func TestTablePrinter_WithSeparatorStyle(t *testing.T) {
 	p2 := p.WithSeparatorStyle(s)
 
 	testza.AssertEqual(t, s, p2.SeparatorStyle)
+}
+
+func TestTablePrinter_WithHeaderRowSeparator(t *testing.T) {
+	p := pterm.TablePrinter{}
+	p2 := p.WithHeaderRowSeparator("-")
+
+	testza.AssertEqual(t, "-", p2.HeaderRowSeparator)
+}
+
+func TestTablePrinter_WithHeaderRowSeparatorStyle(t *testing.T) {
+	s := pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold)
+	p := pterm.TablePrinter{}
+	p2 := p.WithHeaderRowSeparatorStyle(s)
+
+	testza.AssertEqual(t, s, p2.HeaderRowSeparatorStyle)
+}
+
+func TestTablePrinter_WithRowSeparator(t *testing.T) {
+	p := pterm.TablePrinter{}
+	p2 := p.WithRowSeparator("-")
+
+	testza.AssertEqual(t, "-", p2.RowSeparator)
+}
+
+func TestTablePrinter_WithRowSeparatorStyle(t *testing.T) {
+	s := pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold)
+	p := pterm.TablePrinter{}
+	p2 := p.WithRowSeparatorStyle(s)
+
+	testza.AssertEqual(t, s, p2.RowSeparatorStyle)
 }
 
 func TestTablePrinter_WithStyle(t *testing.T) {
