@@ -180,11 +180,11 @@ func (p TablePrinter) Srender() (string, error) {
 			}
 		}
 
-		if p.HasHeader && ri == 0 {
+		if p.HasHeader && ri == 0 && p.HeaderRowSeparator != "" {
 			ret += p.createHeaderRowSeparatorString(rowWidth)
 		}
 
-		if ri != len(row) && ri != 0 {
+		if ri != len(row) && ri != 0 && p.RowSeparator != "" {
 			ret += p.createRowSeparatorString(rowWidth)
 		}
 
@@ -209,18 +209,10 @@ func (p TablePrinter) createColumnString(data string, maxColumnWidth int) string
 }
 
 func (p TablePrinter) createHeaderRowSeparatorString(rowWidth int) string {
-	if p.HeaderRowSeparator == "" {
-		return ""
-	}
-
 	return "\n" + p.Style.Sprint(p.HeaderRowSeparatorStyle.Sprint(strings.Repeat(p.HeaderRowSeparator, rowWidth)))
 }
 
 func (p TablePrinter) createRowSeparatorString(rowWidth int) string {
-	if p.RowSeparator == "" {
-		return ""
-	}
-
 	return "\n" + p.Style.Sprint(p.RowSeparatorStyle.Sprint(strings.Repeat(p.RowSeparator, rowWidth)))
 }
 
