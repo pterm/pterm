@@ -97,9 +97,9 @@ func (p BarChartPrinter) Srender() (string, error) {
 	renderPositiveVerticalBar := func(renderedBarRef *string, bar Bar, chartAbsHeight int, indent string, moveUp bool) {
 		for i := chartAbsHeight; i > 0; i-- {
 			if i > bar.Value {
-				*renderedBarRef += indent + "  " + indent + "\n"
+				*renderedBarRef += indent + "  " + indent + " \n"
 			} else {
-				*renderedBarRef += indent + bar.Style.Sprint(p.VerticalBarCharacter) + indent + "\n"
+				*renderedBarRef += indent + bar.Style.Sprint(p.VerticalBarCharacter) + indent + " \n"
 			}
 		}
 
@@ -108,7 +108,7 @@ func (p BarChartPrinter) Srender() (string, error) {
 		// And we need MOVE UP positive part to top part of chart, technically by adding empty pillars with height == height of bottom part of chart.
 		if moveUp {
 			for i := 0; i < chartAbsHeight; i++ {
-				*renderedBarRef += indent + "  " + indent + "\n"
+				*renderedBarRef += indent + "  " + indent + " \n"
 			}
 		}
 	}
@@ -116,9 +116,9 @@ func (p BarChartPrinter) Srender() (string, error) {
 	renderNegativeVerticalBar := func(renderedBarRef *string, bar Bar, chartAbsHeight int, indent string) {
 		for i := 0; i > -chartAbsHeight; i-- {
 			if i > bar.Value {
-				*renderedBarRef += indent + bar.Style.Sprint(p.VerticalBarCharacter) + indent + "\n"
+				*renderedBarRef += indent + bar.Style.Sprint(p.VerticalBarCharacter) + indent + " \n"
 			} else {
-				*renderedBarRef += indent + "  " + indent + "\n"
+				*renderedBarRef += indent + "  " + indent + " \n"
 			}
 		}
 	}
