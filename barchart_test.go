@@ -40,6 +40,7 @@ func TestBarChartPrinterNilStylePrint(t *testing.T) {
 	testza.SnapshotCreateOrValidate(t, t.Name(), content)
 }
 
+// Test vertical bars with mixed (negative, positive and zero values)
 func TestBarChartPrinter_RenderExample(t *testing.T) {
 	bars := pterm.Bars{
 		pterm.Bar{
@@ -53,8 +54,23 @@ func TestBarChartPrinter_RenderExample(t *testing.T) {
 			Style: pterm.NewStyle(pterm.FgCyan),
 		},
 		pterm.Bar{
-			Label: "Longer Label",
+			Label: "Long Label Example",
 			Value: 7,
+			Style: pterm.NewStyle(pterm.FgCyan),
+		},
+		pterm.Bar{
+			Label: "Zero",
+			Value: 0,
+			Style: pterm.NewStyle(pterm.FgCyan),
+		},
+		pterm.Bar{
+			Label: "Negative Value",
+			Value: -4,
+			Style: pterm.NewStyle(pterm.FgCyan),
+		},
+		pterm.Bar{
+			Label: "NV",
+			Value: -5,
 			Style: pterm.NewStyle(pterm.FgCyan),
 		},
 	}
@@ -80,8 +96,23 @@ func TestBarChartPrinter_RenderExampleRawOutput(t *testing.T) {
 			Style: pterm.NewStyle(pterm.FgCyan),
 		},
 		pterm.Bar{
-			Label: "Longer Label",
+			Label: "Long Label Example",
 			Value: 7,
+			Style: pterm.NewStyle(pterm.FgCyan),
+		},
+		pterm.Bar{
+			Label: "Zero",
+			Value: 0,
+			Style: pterm.NewStyle(pterm.FgCyan),
+		},
+		pterm.Bar{
+			Label: "Negative Value",
+			Value: -4,
+			Style: pterm.NewStyle(pterm.FgCyan),
+		},
+		pterm.Bar{
+			Label: "NV",
+			Value: -5,
 			Style: pterm.NewStyle(pterm.FgCyan),
 		},
 	}
@@ -128,6 +159,30 @@ func TestBarChartPrinter_RenderNegativeBarValues(t *testing.T) {
 		pterm.Bar{
 			Label: "Test",
 			Value: -1337,
+			Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
+		},
+	})
+	content := captureStdout(func(w io.Writer) {
+		printer.Render()
+	})
+	testza.SnapshotCreateOrValidate(t, t.Name(), content)
+}
+
+func TestBarChartPrinter_RenderPositiveBarValues(t *testing.T) {
+	printer := pterm.DefaultBarChart.WithShowValue().WithBars(pterm.Bars{
+		pterm.Bar{
+			Label: "Test",
+			Value: 1000,
+			Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
+		},
+		pterm.Bar{
+			Label: "Test",
+			Value: 1400,
+			Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
+		},
+		pterm.Bar{
+			Label: "Test",
+			Value: 900,
 			Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
 		},
 	})

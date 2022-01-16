@@ -1,1 +1,1 @@
-(string) (len=35) "Bar 1: 5\nBar 2: 3\nLonger Label: 7\n\n"
+(string) (len=75) "Bar 1: 5\nBar 2: 3\nLong Label Example: 7\nZero: 0\nNegative Value: -4\nNV: -5\n\n"
