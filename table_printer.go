@@ -12,11 +12,11 @@ import (
 var DefaultTable = TablePrinter{
 	Style:                   &ThemeDefault.TableStyle,
 	HeaderStyle:             &ThemeDefault.TableHeaderStyle,
-	HeaderRowSeparator:      "=",
+	HeaderRowSeparator:      "",
 	HeaderRowSeparatorStyle: &ThemeDefault.TableSeparatorStyle,
 	Separator:               " | ",
 	SeparatorStyle:          &ThemeDefault.TableSeparatorStyle,
-	RowSeparator:            "-",
+	RowSeparator:            "",
 	RowSeparatorStyle:       &ThemeDefault.TableSeparatorStyle,
 	LeftAlignment:           true,
 	RightAlignment:          false,
