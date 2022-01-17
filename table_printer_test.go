@@ -38,6 +38,34 @@ func TestTablePrinter_Render(t *testing.T) {
 	testza.SnapshotCreateOrValidate(t, t.Name()+"_2_"+runtime.GOOS, content)
 }
 
+func TestTablePrinterWithRowSeparators_Render(t *testing.T) {
+	d := pterm.TableData{
+		{"Firstname", "Lastname", "Email"},
+		{"Paul", "Dean", "nisi.dictum.augue@velitAliquam.co.uk"},
+		{"Callie", "Mckay", "egestas.nunc.sed@est.com"},
+		{"Libby", "Camacho", "aliquet.lobortis@semper.com"},
+	}
+	pterm.DefaultTable.WithHasHeader().WithHeaderRowSeparator("=").WithData(d).Render()
+	// WithHeaderSeparator
+	printer := pterm.DefaultTable.WithHasHeader().WithHeaderRowSeparator("=").WithData(d)
+	content := captureStdout(func(w io.Writer) {
+		printer.Render()
+	})
+	testza.SnapshotCreateOrValidate(t, t.Name()+"_1_"+runtime.GOOS, content)
+	// WithRowSeparator
+	printer = pterm.DefaultTable.WithHasHeader().WithRowSeparator("-").WithData(d)
+	content = captureStdout(func(w io.Writer) {
+		printer.Render()
+	})
+	testza.SnapshotCreateOrValidate(t, t.Name()+"_2_"+runtime.GOOS, content)
+	// WithHeaderRowSeparator & WithRowSeparator
+	printer = pterm.DefaultTable.WithHasHeader().WithHeaderRowSeparator("=").WithRowSeparator("-").WithData(d)
+	content = captureStdout(func(w io.Writer) {
+		printer.Render()
+	})
+	testza.SnapshotCreateOrValidate(t, t.Name()+"_3_"+runtime.GOOS, content)
+}
+
 func TestTablePrinter_WithCSVReader(t *testing.T) {
 	content := captureStdout(func(w io.Writer) {
 		r := csv.NewReader(&outBuf)
