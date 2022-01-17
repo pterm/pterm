@@ -73,6 +73,13 @@ func Print(a ...interface{}) {
 	}
 
 	color.Print(Sprint(ret))
+
+	// Refresh all progressbars in case they were overwritten previously. Reference: #302
+	for _, bar := range ActiveProgressBarPrinters {
+		if bar.IsActive {
+			bar.UpdateTitle(bar.Title)
+		}
+	}
 }
 
 // Println formats using the default formats for its operands and writes to standard output.

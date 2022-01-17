@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Bug Fixes
+- **progressbar:** refresh progressbars on every PTerm print ([#302](https://github.com/pterm/pterm/issues/302))
+
 ### Test
 - removed `AreaPrinter` test output
 - **table:** changed mock reader from `os.Stdin` to `outBuf`
