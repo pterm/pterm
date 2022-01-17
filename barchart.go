@@ -140,12 +140,18 @@ func (p BarChartPrinter) Srender() (string, error) {
 		}
 	}
 
-	renderNegativeHorizontalBar := func(renderedBarRef *string, repeatCount int, bar Bar, chartAbsWidth int) {
+	renderNegativeHorizontalBar := func(renderedBarRef *string, repeatCount int, bar Bar, chartAbsWidth int, printValuesUnderPositiveOnes bool) {
 		for i := -chartAbsWidth; i < 0; i++ {
 			if i < repeatCount {
 				*renderedBarRef += " "
 			} else {
 				*renderedBarRef += bar.Style.Sprint(p.HorizontalBarCharacter)
+			}
+		}
+
+		if printValuesUnderPositiveOnes {
+			for i := 0; i < chartAbsWidth; i++ {
+				*renderedBarRef += " "
 			}
 		}
 	}
@@ -205,16 +211,16 @@ func (p BarChartPrinter) Srender() (string, error) {
 			} else if maxBarValue <= 0 {
 				// As we have only negative values, draw only negative (left) part of the chart:
 				repeatCount := internal.MapRangeToRange(-float32(maxAbsBarValue), 0, -float32(p.Width), 0, float32(bar.Value))
-				renderNegativeHorizontalBar(&panels[0][1].Data, repeatCount, bar, p.Width)
+				renderNegativeHorizontalBar(&panels[0][1].Data, repeatCount, bar, p.Width, false)
 			} else {
 				// We have positive and negative values, so draw both (left+right) parts of the chart:
 				repeatCount := internal.MapRangeToRange(-float32(maxAbsBarValue), float32(maxAbsBarValue), -float32(p.Width)/2, float32(p.Width)/2, float32(bar.Value))
-				if bar.Value > 0 {
+				if bar.Value >= 0 {
 					renderPositiveHorizontalBar(&panels[0][1].Data, repeatCount, bar, p.Width/2, true)
 				}
 
 				if bar.Value < 0 {
-					renderNegativeHorizontalBar(&panels[0][1].Data, repeatCount, bar, p.Width/2)
+					renderNegativeHorizontalBar(&panels[0][1].Data, repeatCount, bar, p.Width/2, true)
 				}
 			}
 
@@ -246,7 +252,7 @@ func (p BarChartPrinter) Srender() (string, error) {
 			} else {
 				// We have positive and negative values, so draw both (top+bottom) parts of the chart:
 				repeatCount := internal.MapRangeToRange(-float32(maxAbsBarValue), float32(maxAbsBarValue), -float32(p.Height)/2, float32(p.Height)/2, float32(bar.Value))
-				if bar.Value > 0 {
+				if bar.Value >= 0 {
 					renderPositiveVerticalBar(&renderedBar, repeatCount, bar, p.Height/2, indent, true) // MOVE UP positive part, because we have both positive and negative parts of chart.
 				}
 
