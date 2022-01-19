@@ -3,7 +3,6 @@ package main
 import (
 	"github.com/pterm/pterm"
 	"reflect"
-	"time"
 )
 
 func main() {
@@ -18,13 +17,20 @@ func main() {
 	v := reflect.ValueOf(pterm.ThemeDefault)
 	typeOfS := v.Type()
 
+	var panelData pterm.Panels
+
 	if typeOfS == reflect.TypeOf(pterm.Theme{}) {
 		for i := 0; i < v.NumField(); i++ {
 			field, ok := v.Field(i).Interface().(pterm.Style)
 			if ok {
-				field.Println(typeOfS.Field(i).Name)
+				field.Print(typeOfS.Field(i).Name)
+				pterm.Print("  ")
+				if i%5 == 0 {
+					pterm.Println()
+				}
 			}
-			time.Sleep(time.Millisecond * 250)
 		}
 	}
+
+	pterm.DefaultPanel.WithPanels(panelData).Render()
 }
