@@ -14,6 +14,9 @@ func main() {
 	// Instead of printing the header you can set it to a variable.
 	// You can then reuse your custom header.
 
+	// Spacer
+	pterm.Println()
+
 	// Making a completely new HeaderPrinter
 	newHeader := pterm.HeaderPrinter{
 		TextStyle:       pterm.NewStyle(pterm.FgBlack),

@@ -9,7 +9,7 @@ func main() {
 	pterm.Info.Println("And here is some text.\nThis text could be anything.\nBasically it's just a placeholder")
 
 	// Print a section with level two.
-	pterm.DefaultSection.WithLevel(2).Println("This is another section!")
+	pterm.DefaultSection.WithLevel(2).Println("This is subsection!")
 	// Print placeholder.
 	pterm.Info.Println("And this is\nmore placeholder text")
 }
