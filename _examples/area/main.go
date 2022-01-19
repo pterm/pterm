@@ -7,7 +7,9 @@ import (
 )
 
 func main() {
-	pterm.Info.Println("The previous text will stay in place, while the area updates.")
+	pterm.Description.Println("The previous text will stay in place, while the area updates.\n" +
+		"You can put any content into the area.\n" +
+		"It can be used to dynamic content as clocks, charts, live feed, stats, etc.")
 	pterm.Print("\n\n") // Add two new lines as spacer.
 
 	area, _ := pterm.DefaultArea.WithCenter().Start() // Start the Area printer, with the Center option.
