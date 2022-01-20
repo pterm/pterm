@@ -120,12 +120,12 @@ func (p BarChartPrinter) Srender() (string, error) {
 		return value
 	}
 	// =================================== VERTICAL BARS RENDERER ======================================================
-	renderPositiveVerticalBar := func(renderedBarRef *string, repeatCount int, bar Bar, chartAbsHeight int, indent string, showValue bool, moveUpBy int) {
+	renderPositiveVerticalBar := func(renderedBarRef *string, repeatCount int, bar Bar, positiveChartPartHeight int, indent string, showValue bool, moveUpBy int) {
 		if showValue {
 			*renderedBarRef += Sprint(indent + strconv.Itoa(bar.Value) + indent + "\n")
 		}
 
-		for i := chartAbsHeight; i > 0; i-- {
+		for i := positiveChartPartHeight; i > 0; i-- {
 			if i > repeatCount {
 				*renderedBarRef += indent + "  " + indent + " \n"
 			} else {
@@ -144,8 +144,8 @@ func (p BarChartPrinter) Srender() (string, error) {
 		}
 	}
 
-	renderNegativeVerticalBar := func(renderedBarRef *string, repeatCount int, bar Bar, chartAbsHeight int, indent string, showValue bool) {
-		for i := 0; i > -chartAbsHeight; i-- {
+	renderNegativeVerticalBar := func(renderedBarRef *string, repeatCount int, bar Bar, negativeChartPartHeight int, indent string, showValue bool) {
+		for i := 0; i > -negativeChartPartHeight; i-- {
 			if i > repeatCount {
 				*renderedBarRef += indent + bar.Style.Sprint(p.VerticalBarCharacter) + indent + " \n"
 			} else {
@@ -159,14 +159,14 @@ func (p BarChartPrinter) Srender() (string, error) {
 	}
 
 	// =================================== HORIZONTAL BARS RENDERER ====================================================
-	renderPositiveHorizontalBar := func(renderedBarRef *string, repeatCount int, bar Bar, chartAbsWidth int, showValue bool, moveRightBy int) {
+	renderPositiveHorizontalBar := func(renderedBarRef *string, repeatCount int, bar Bar, positiveChartPartWidth int, showValue bool, moveRightBy int) {
 		if moveRightBy > 0 {
 			for i := 0; i < moveRightBy; i++ {
 				*renderedBarRef += " "
 			}
 		}
 
-		for i := 0; i <= chartAbsWidth; i++ {
+		for i := 0; i <= positiveChartPartWidth; i++ {
 			if i < repeatCount {
 				*renderedBarRef += bar.Style.Sprint(p.HorizontalBarCharacter)
 			} else {
