@@ -17,7 +17,7 @@ func TestBarChartPrinterNilPrint(t *testing.T) {
 	}
 }
 
-func TestBarChartPrinterNilStylePrint(t *testing.T) {
+func TestBarChartPrinter_NilStylePrint(t *testing.T) {
 	bars := pterm.Bars{
 		pterm.Bar{
 			Label: "Bar 1",
