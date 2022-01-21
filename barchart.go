@@ -166,7 +166,7 @@ func (p BarChartPrinter) Srender() (string, error) {
 			}
 		}
 
-		for i := 0; i <= positiveChartPartWidth; i++ {
+		for i := 0; i < positiveChartPartWidth; i++ {
 			if i < repeatCount {
 				*renderedBarRef += bar.Style.Sprint(p.HorizontalBarCharacter)
 			} else {
@@ -175,6 +175,10 @@ func (p BarChartPrinter) Srender() (string, error) {
 		}
 
 		if showValue {
+			// For positive horizontal bars we add one more space before adding value,
+			// so they will be well aligned with negative values, which have "-" sign before them
+			*renderedBarRef += " "
+
 			*renderedBarRef += " " + strconv.Itoa(bar.Value)
 		}
 	}
@@ -195,29 +199,25 @@ func (p BarChartPrinter) Srender() (string, error) {
 			}
 		}
 
-		/*
-
-		This is in order to achieve this effect:
-		 0
-		-15
-		-19
-		 0
-		-5
-
-		INSTEAD OF THIS:
-
-		0
-		-15
-		-19
-		0
-		-5
-
-		*/
-		if repeatCount == 0 {
-			*renderedBarRef += " "
-		}
-
 		if showValue {
+			/*
+				This is in order to achieve this effect:
+				 0
+				-15
+				 0
+				-19
+
+				INSTEAD OF THIS:
+
+				0
+				-15
+				0
+				-19
+			*/
+			if repeatCount == 0 {
+				*renderedBarRef += " "
+			}
+
 			*renderedBarRef += " " + strconv.Itoa(bar.Value)
 		}
 	}
