@@ -69,7 +69,7 @@ func main() {
 	_ = pterm.DefaultBarChart.WithHorizontal().WithBars(negativeBars).Render()
 	fmt.Println("=====================================================================")
 
-	fmt.Println("Chart example with mixed values (positive and negative bars use by 50% of chart area)")
+	fmt.Println("Chart example with mixed values (note screen space usage in case when ABSOLUTE values of negative and positive parts are differ too much)")
 	_ = pterm.DefaultBarChart.WithBars(mixedBars).Render()
 	_ = pterm.DefaultBarChart.WithHorizontal().WithBars(mixedBars).Render()
 	fmt.Println("=====================================================================")
