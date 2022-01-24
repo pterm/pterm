@@ -94,7 +94,6 @@ func (p BarChartPrinter) getRawOutput() string {
 // Srender renders the BarChart as a string.
 func (p BarChartPrinter) Srender() (string, error) {
 	maxAbsValue := func(value1 int, value2 int) int {
-
 		min := value1
 		max := value2
 
