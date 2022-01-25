@@ -273,7 +273,7 @@ func (p BarChartPrinter) Srender() (string, error) {
 		}
 	}
 
-	maxAbsBarValue = maxAbsValue(minBarValue, maxBarValue)
+	maxAbsBarValue = maxAbsValue(maxBarValue, minBarValue)
 
 	if p.Horizontal {
 		panels := Panels{[]Panel{{}, {}}}
@@ -284,7 +284,7 @@ func (p BarChartPrinter) Srender() (string, error) {
 
 		// If chart will consist of two parts - positive and negative - we should recalculate max bars WIDTH in LEFT and RIGHT parts
 		if minBarValue < 0 && maxBarValue > 0 {
-			rParams.positiveChartPartWidth = internal.MapRangeToRange(-float32(maxAbsBarValue), float32(maxAbsBarValue), -float32(p.Width)/2, float32(p.Width)/2, float32(maxBarValue))
+			rParams.positiveChartPartWidth = abs(internal.MapRangeToRange(-float32(maxAbsBarValue), float32(maxAbsBarValue), -float32(p.Width)/2, float32(p.Width)/2, float32(maxBarValue)))
 			rParams.negativeChartPartWidth = abs(internal.MapRangeToRange(-float32(maxAbsBarValue), float32(maxAbsBarValue), -float32(p.Width)/2, float32(p.Width)/2, float32(minBarValue)))
 		}
 
@@ -331,7 +331,7 @@ func (p BarChartPrinter) Srender() (string, error) {
 
 		// If chart will consist of two parts - positive and negative - we should recalculate max bars height in top and bottom parts
 		if minBarValue < 0 && maxBarValue > 0 {
-			rParams.positiveChartPartHeight = internal.MapRangeToRange(-float32(maxAbsBarValue), float32(maxAbsBarValue), -float32(p.Height)/2, float32(p.Height)/2, float32(maxBarValue))
+			rParams.positiveChartPartHeight = abs(internal.MapRangeToRange(-float32(maxAbsBarValue), float32(maxAbsBarValue), -float32(p.Height)/2, float32(p.Height)/2, float32(maxBarValue)))
 			rParams.negativeChartPartHeight = abs(internal.MapRangeToRange(-float32(maxAbsBarValue), float32(maxAbsBarValue), -float32(p.Height)/2, float32(p.Height)/2, float32(minBarValue)))
 		}
 

@@ -222,12 +222,22 @@ func TestBarChartPrinter_RenderNegativeBarValuesHorizontal(t *testing.T) {
 		},
 		pterm.Bar{
 			Label: "Test",
+			Value: 0,
+			Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
+		},
+		pterm.Bar{
+			Label: "Test",
 			Value: -20,
 			Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
 		},
 		pterm.Bar{
 			Label: "Test",
 			Value: -100,
+			Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
+		},
+		pterm.Bar{
+			Label: "Test",
+			Value: 0,
 			Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
 		},
 		pterm.Bar{
