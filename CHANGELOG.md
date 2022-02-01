@@ -1,6 +1,28 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Features
+- proposal horizontal table header row and row separators fixes
+- proposal horizontal table header row and row separators changes
+- proposal horizontal table header row and row separators changes
+- proposal horizontal table header row and row separators changes
+- proposal horizontal table header row and row separators changes
+- proposal horizontal table header row and row separators changes
+- proposal horizontal table header row and row separators
+- proposal horizontal table header row and row separators changes
+- proposal horizontal table header row and row separators changes
+- proposal horizontal table header row and row separators
+- proposal horizontal table header row and row separators
+- proposal horizontal table header row and row separators
+- proposal horizontal table header row and row separators
+- proposal horizontal table header row and row separators
+- proposal horizontal table header row and row separators
+- proposal horizontal table header row and row separators
+- proposal horizontal table header row and row separators
+
+
+<a name="v0.12.35"></a>
+## [v0.12.35] - 2022-02-01
 ### Code Refactoring
 - fix linting
 - regenerate snapshots
@@ -939,7 +961,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.34...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.35...HEAD
+[v0.12.35]: https://github.com/pterm/pterm/compare/v0.12.34...v0.12.35
 [v0.12.34]: https://github.com/pterm/pterm/compare/v0.12.33...v0.12.34
 [v0.12.33]: https://github.com/pterm/pterm/compare/v0.12.32...v0.12.33
 [v0.12.32]: https://github.com/pterm/pterm/compare/v0.12.31...v0.12.32
