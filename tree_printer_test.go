@@ -12,9 +12,7 @@ import (
 func TestTreePrinterNilPrint(t *testing.T) {
 	pterm.TreePrinter{}.Render()
 	printer := pterm.TreePrinter{}.WithRoot(pterm.NewTreeFromLeveledList(pterm.LeveledList{pterm.LeveledListItem{Text: "Hello, World!", Level: 0}}))
-	content := captureStdout(func(w io.Writer) {
-		printer.Render()
-	})
+	content, _ := printer.Srender()
 	// this test has an OS-dependant output and needs separate snapshots
 	testza.SnapshotCreateOrValidate(t, t.Name()+"_"+runtime.GOOS, content)
 }

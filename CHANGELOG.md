@@ -1,6 +1,13 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Code Refactoring
+- fix linting
+- regenerate snapshots
+
+
+<a name="v0.12.34"></a>
+## [v0.12.34] - 2022-01-16
 ### Bug Fixes
 - **progressbar:** refresh progressbars on every PTerm print ([#302](https://github.com/pterm/pterm/issues/302))
 
@@ -932,7 +939,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.33...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.34...HEAD
+[v0.12.34]: https://github.com/pterm/pterm/compare/v0.12.33...v0.12.34
 [v0.12.33]: https://github.com/pterm/pterm/compare/v0.12.32...v0.12.33
 [v0.12.32]: https://github.com/pterm/pterm/compare/v0.12.31...v0.12.32
 [v0.12.31]: https://github.com/pterm/pterm/compare/v0.12.30...v0.12.31
