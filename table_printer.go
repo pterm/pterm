@@ -184,7 +184,7 @@ func (p TablePrinter) Srender() (string, error) {
 			ret += p.createHeaderRowSeparatorString(rowWidth)
 		}
 
-		if ri != len(row) && ri != 0 && p.RowSeparator != "" {
+		if ri != len(p.Data)-1 && ri != 0 && p.RowSeparator != "" {
 			ret += p.createRowSeparatorString(rowWidth)
 		}
 
