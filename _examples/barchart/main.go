@@ -1,9 +1,11 @@
 package main
 
-import "github.com/pterm/pterm"
+import (
+	"github.com/pterm/pterm"
+)
 
 func main() {
-	bars := pterm.Bars{
+	positiveBars := pterm.Bars{
 		pterm.Bar{
 			Label: "Bar 1",
 			Value: 5,
@@ -18,6 +20,7 @@ func main() {
 		},
 	}
 
-	_ = pterm.DefaultBarChart.WithBars(bars).Render()
-	_ = pterm.DefaultBarChart.WithHorizontal().WithBars(bars).Render()
+	pterm.Info.Println("Chart example with positive only values (bars use 100% of chart area)")
+	_ = pterm.DefaultBarChart.WithBars(positiveBars).Render()
+	_ = pterm.DefaultBarChart.WithHorizontal().WithBars(positiveBars).Render()
 }
