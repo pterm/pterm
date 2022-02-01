@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
@@ -30,7 +29,7 @@ func main() {
 		}
 	}
 
-	putilsTemplateBytes, err := ioutil.ReadFile("./putils/README.template.md")
+	putilsTemplateBytes, err := os.ReadFile("./putils/README.template.md")
 	if err != nil {
 		log.Panic(err)
 	}
@@ -40,11 +39,11 @@ func main() {
 
 	putilsReadme += fmt.Sprintf("```go\n%s\n```\n", strings.Join(goDocOutputFiltered, "\n"))
 
-	ioutil.WriteFile("./putils/README.md", []byte(putilsReadme), 0600)
-	ioutil.WriteFile("./docs/docs/putils.md", []byte(putilsReadme), 0600)
+	os.WriteFile("./putils/README.md", []byte(putilsReadme), 0600)
+	os.WriteFile("./docs/docs/putils.md", []byte(putilsReadme), 0600)
 
 	log.Output(1, "## Generating Examples")
-	files, err := ioutil.ReadDir("./_examples/")
+	files, err := os.ReadDir("./_examples/")
 	if err != nil {
 		log.Panic(err)
 	}
@@ -56,7 +55,7 @@ func main() {
 	}
 
 	for _, f := range files {
-		exampleCode, err := ioutil.ReadFile("./_examples/" + f.Name() + "/main.go")
+		exampleCode, err := os.ReadFile("./_examples/" + f.Name() + "/main.go")
 		if err != nil {
 			log.Panic(err)
 		}
@@ -72,7 +71,7 @@ func main() {
 
 	log.Output(3, "### Appending examples to root README.md")
 
-	readmeContent, err := ioutil.ReadFile("./README.md")
+	readmeContent, err := os.ReadFile("./README.md")
 	if err != nil {
 		log.Panic(err)
 	}
@@ -106,23 +105,23 @@ func main() {
 	newReadmeContent = writeBetween("examples", newReadmeContent, "\n"+readmeExamples+"\n")
 
 	log.Output(4, "### Writing readme")
-	err = ioutil.WriteFile("./README.md", []byte(newReadmeContent), 0600)
+	err = os.WriteFile("./README.md", []byte(newReadmeContent), 0600)
 	if err != nil {
 		log.Panic(err)
 	}
 
 	log.Output(4, "### Writing readme to pterm.sh")
-	err = ioutil.WriteFile("./docs/README.md", []byte(newReadmeContent), 0600)
+	err = os.WriteFile("./docs/README.md", []byte(newReadmeContent), 0600)
 	if err != nil {
 		log.Panic(err)
 	}
 }
 
-func processFile(f os.FileInfo) {
+func processFile(f os.DirEntry) {
 	log.Output(3, "### ['"+f.Name()+"'] Generating animations for example")
 	animationDataPath := "./_examples/" + f.Name() + "/animation_data.json"
 	animationSvgPath := "./_examples/" + f.Name() + "/animation.svg"
-	exampleCode, err := ioutil.ReadFile("./_examples/" + f.Name() + "/main.go")
+	exampleCode, err := os.ReadFile("./_examples/" + f.Name() + "/main.go")
 	if err != nil {
 		log.Panic(err)
 	}
@@ -166,7 +165,7 @@ func processFile(f os.FileInfo) {
 
 	log.Output(4, "#### ['"+f.Name()+"']  Overwriting SVG font")
 
-	svgContent, err := ioutil.ReadFile(animationSvgPath)
+	svgContent, err := os.ReadFile(animationSvgPath)
 	if err != nil {
 		log.Panicf("[%s] %s", f.Name(), err.Error())
 	}
@@ -186,14 +185,14 @@ func processFile(f os.FileInfo) {
 }`, 1))
 
 	os.Remove(animationSvgPath)
-	ioutil.WriteFile(animationSvgPath, svgContent, 0600)
+	os.WriteFile(animationSvgPath, svgContent, 0600)
 
 	log.Output(4, "#### ['"+f.Name()+"']  Generating README.md")
 	readmeString := "# " + f.Name() + "\n\n![Animation](animation.svg)\n\n"
 	readmeString += "```go\n"
 	readmeString += string(exampleCode)
 	readmeString += "\n```\n"
-	err = ioutil.WriteFile("./_examples/"+f.Name()+"/README.md", []byte(readmeString), 0600)
+	err = os.WriteFile("./_examples/"+f.Name()+"/README.md", []byte(readmeString), 0600)
 	if err != nil {
 		log.Panic(err)
 	}
