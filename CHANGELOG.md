@@ -1,6 +1,12 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Code Refactoring
+- **putils:** Improved styling
+
+
+<a name="v0.12.36"></a>
+## [v0.12.36] - 2022-02-01
 ### Features
 - proposal horizontal table header row and row separators fixes
 - proposal horizontal table header row and row separators changes
@@ -961,7 +967,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.35...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.36...HEAD
+[v0.12.36]: https://github.com/pterm/pterm/compare/v0.12.35...v0.12.36
 [v0.12.35]: https://github.com/pterm/pterm/compare/v0.12.34...v0.12.35
 [v0.12.34]: https://github.com/pterm/pterm/compare/v0.12.33...v0.12.34
 [v0.12.33]: https://github.com/pterm/pterm/compare/v0.12.32...v0.12.33
