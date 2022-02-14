@@ -24,7 +24,7 @@ func PrintAverageExecutionTime(count int, f func(i int) error) error {
 
 	averageExecutionTime := total / time.Duration(count)
 
-	pterm.Printfln(pterm.Cyan("Average execution time: %s"), pterm.LightCyan(averageExecutionTime))
+	pterm.Printfln(pterm.Cyan("Average execution time: %s"), pterm.NewStyle(pterm.Bold, pterm.FgLightCyan).Sprint(averageExecutionTime))
 
 	return nil
 }
