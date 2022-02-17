@@ -27,7 +27,8 @@ var (
 		ShowCount:                 true,
 		ShowPercentage:            true,
 		ShowElapsedTime:           true,
-		BarFiller:                 " ",
+		BarFiller:                 "░",
+		MaxWidth:                  80,
 	}
 )
 
@@ -40,6 +41,7 @@ type ProgressbarPrinter struct {
 	LastCharacter             string
 	ElapsedTimeRoundingFactor time.Duration
 	BarFiller                 string
+	MaxWidth                  int
 
 	ShowElapsedTime bool
 	ShowCount       bool
@@ -58,6 +60,14 @@ type ProgressbarPrinter struct {
 // WithTitle sets the name of the ProgressbarPrinter.
 func (p ProgressbarPrinter) WithTitle(name string) *ProgressbarPrinter {
 	p.Title = name
+	return &p
+}
+
+// WithMaxWidth sets the maximum width of the ProgressbarPrinter.
+// If the terminal is smaller than the given width, the terminal width will be used instead.
+// If the width is set to zero, or below, the terminal width will be used.
+func (p ProgressbarPrinter) WithMaxWidth(maxWidth int) *ProgressbarPrinter {
+	p.MaxWidth = maxWidth
 	return &p
 }
 
@@ -133,6 +143,12 @@ func (p ProgressbarPrinter) WithRemoveWhenDone(b ...bool) *ProgressbarPrinter {
 	return &p
 }
 
+// WithBarFiller sets the filler character for the ProgressbarPrinter.
+func (p ProgressbarPrinter) WithBarFiller(char string) *ProgressbarPrinter {
+	p.BarFiller = char
+	return &p
+}
+
 // Increment current value by one.
 func (p *ProgressbarPrinter) Increment() *ProgressbarPrinter {
 	p.Add(1)
@@ -160,8 +176,16 @@ func (p *ProgressbarPrinter) updateProgress() *ProgressbarPrinter {
 
 	var before string
 	var after string
+	var width int
 
-	width := GetTerminalWidth()
+	if p.MaxWidth <= 0 {
+		width = GetTerminalWidth()
+	} else if GetTerminalWidth() < p.MaxWidth {
+		width = GetTerminalWidth()
+	} else {
+		width = p.MaxWidth
+	}
+
 	currentPercentage := int(internal.PercentageRound(float64(int64(p.Total)), float64(int64(p.Current))))
 
 	decoratorCount := Gray("[") + LightWhite(p.Current) + Gray("/") + LightWhite(p.Total) + Gray("]")
@@ -188,10 +212,20 @@ func (p *ProgressbarPrinter) updateProgress() *ProgressbarPrinter {
 	}
 
 	barMaxLength := width - len(RemoveColorFromString(before)) - len(RemoveColorFromString(after)) - 1
-	barCurrentLength := (p.Current * barMaxLength) / p.Total
-	barFiller := strings.Repeat(p.BarFiller, barMaxLength-barCurrentLength)
 
-	bar := p.BarStyle.Sprint(strings.Repeat(p.BarCharacter, barCurrentLength)+p.LastCharacter) + barFiller
+	barCurrentLength := (p.Current * barMaxLength) / p.Total
+	var barFiller string
+	if barMaxLength-barCurrentLength > 0 {
+		barFiller = strings.Repeat(p.BarFiller, barMaxLength-barCurrentLength)
+	}
+
+	var bar string
+	if barCurrentLength > 0 {
+		bar = p.BarStyle.Sprint(strings.Repeat(p.BarCharacter, barCurrentLength)+p.LastCharacter) + barFiller
+	} else {
+		bar = ""
+	}
+
 	if !RawOutput {
 		Printo(before + bar + after)
 	}

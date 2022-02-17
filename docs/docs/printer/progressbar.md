@@ -56,6 +56,8 @@ progressbar.Increment()
 |[Title](https://pkg.go.dev/github.com/pterm/pterm#ProgressbarPrinter.WithTitle)|string|
 |[TitleStyle](https://pkg.go.dev/github.com/pterm/pterm#ProgressbarPrinter.WithTitleStyle)|[*Style](https://pkg.go.dev/github.com/pterm/pterm#Style)|
 |[Total](https://pkg.go.dev/github.com/pterm/pterm#ProgressbarPrinter.WithTotal)|int|
+|[BarFiller](https://pkg.go.dev/github.com/pterm/pterm#ProgressbarPrinter.WithBarFiller)|string|
+|[MaxWidth](https://pkg.go.dev/github.com/pterm/pterm#ProgressbarPrinter.WithMaxWidth)|int|
 
 ### Output functions
 
