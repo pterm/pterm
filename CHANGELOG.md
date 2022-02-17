@@ -1,6 +1,12 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Features
+- **progressbar:** Add option to set the `MaxWidth` of the progressbar
+
+### Test
+- **progressbar:** added 100% test coverage for new features
+
 ### Code Refactoring
 - **putils:** Improved styling
 
