@@ -16,6 +16,18 @@ func TestProgressbarPrinter_Add(t *testing.T) {
 	p.Stop()
 }
 
+func TestProgressbarPrinter_Add_With(t *testing.T) {
+	proxyToDevNull()
+	w := pterm.GetTerminalWidth()
+	h := pterm.GetTerminalHeight()
+	pterm.SetForcedTerminalSize(1, 1)
+	p := pterm.DefaultProgressbar.WithTotal(2000)
+	p.Add(1337)
+	testza.AssertEqual(t, 1337, p.Current)
+	p.Stop()
+	pterm.SetForcedTerminalSize(w, h)
+}
+
 func TestProgressbarPrinter_AddWithNoStyle(t *testing.T) {
 	proxyToDevNull()
 	p := pterm.ProgressbarPrinter{}.WithTotal(2000)
@@ -174,6 +186,20 @@ func TestProgressbarPrinter_WithTotal(t *testing.T) {
 	p2 := p.WithTotal(1337)
 
 	testza.AssertEqual(t, 1337, p2.Total)
+}
+
+func TestProgressbarPrinter_WithMaxWidth(t *testing.T) {
+	p := pterm.ProgressbarPrinter{}
+	p2 := p.WithMaxWidth(1337)
+
+	testza.AssertEqual(t, 1337, p2.MaxWidth)
+}
+
+func TestProgressbarPrinter_WithBarFiller(t *testing.T) {
+	p := pterm.ProgressbarPrinter{}
+	p2 := p.WithBarFiller("-")
+
+	testza.AssertEqual(t, "-", p2.BarFiller)
 }
 
 func TestProgressbarPrinter_UpdateTitle(t *testing.T) {
