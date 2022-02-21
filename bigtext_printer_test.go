@@ -1,11 +1,13 @@
 package pterm_test
 
 import (
+	"fmt"
 	"io"
 	"strings"
 	"testing"
 
 	"github.com/MarvinJWendt/testza"
+
 	"github.com/pterm/pterm"
 )
 
@@ -128,6 +130,6 @@ func TestDefaultLettersMaxHeight(t *testing.T) {
 	chars := pterm.DefaultBigText.BigCharacters
 	for s, l := range chars {
 		h := strings.Count(l, "\n")
-		testza.AssertTrue(t, h <= maxHeight, "'%s' is too high", s)
+		testza.AssertTrue(t, h <= maxHeight, fmt.Sprintf("'%s' is too high", s))
 	}
 }
