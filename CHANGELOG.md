@@ -1,6 +1,12 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Test
+- **bigtext:** fix formatting error in bigtext test
+
+
+<a name="v0.12.37"></a>
+## [v0.12.37] - 2022-02-17
 ### Features
 - **progressbar:** Add option to set the `MaxWidth` of the progressbar
 
@@ -973,7 +979,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.36...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.37...HEAD
+[v0.12.37]: https://github.com/pterm/pterm/compare/v0.12.36...v0.12.37
 [v0.12.36]: https://github.com/pterm/pterm/compare/v0.12.35...v0.12.36
 [v0.12.35]: https://github.com/pterm/pterm/compare/v0.12.34...v0.12.35
 [v0.12.34]: https://github.com/pterm/pterm/compare/v0.12.33...v0.12.34
