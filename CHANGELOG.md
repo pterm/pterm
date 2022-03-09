@@ -1,6 +1,10 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Features
+- added `NewLettersFromStringWithRGB`
+- added `NewLettersFromStringWithRGB`
+
 ### Test
 - **bigtext:** fix formatting error in bigtext test
 
