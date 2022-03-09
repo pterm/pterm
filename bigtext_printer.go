@@ -32,7 +32,7 @@ func NewLettersFromStringWithStyle(text string, style *Style) Letters {
 	return l
 }
 
-// NewLettersFromStringWithRGB creates a Letters object from a string and applies an RGB color to it.
+// NewLettersFromStringWithRGB creates a Letters object from a string and applies an RGB color to it (overwrites style).
 func NewLettersFromStringWithRGB(text string, rgb RGB) Letters {
 	s := strings.Split(text, "")
 	l := Letters{}
@@ -61,7 +61,7 @@ func (l Letter) WithStyle(style *Style) *Letter {
 	return &l
 }
 
-// WithRGB returns a new Letter with a specific RGB color.
+// WithRGB returns a new Letter with a specific RGB color (overwrites style).
 func (l Letter) WithRGB(rgb RGB) *Letter {
 	l.RGB = rgb
 	return &l
