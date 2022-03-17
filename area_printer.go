@@ -2,7 +2,6 @@ package pterm
 
 import (
 	"io"
-	"os"
 	"strings"
 
 	"github.com/atomicgo/cursor"
@@ -10,15 +9,17 @@ import (
 	"github.com/pterm/pterm/internal"
 )
 
-// DefaultArea is the default area printer.
-var DefaultArea = AreaPrinter{
-	Writer: os.Stdout,
+type Writer interface {
+	io.Writer
+	Fd() uintptr
 }
+
+// DefaultArea is the default area printer.
+var DefaultArea = AreaPrinter{}
 
 // AreaPrinter prints an area which can be updated easily.
 // use this printer for live output like charts, algorithm visualizations, simulations and even games.
 type AreaPrinter struct {
-	Writer         io.Writer
 	RemoveWhenDone bool
 	Fullscreen     bool
 	Center         bool
@@ -49,12 +50,6 @@ func (p AreaPrinter) WithFullscreen(b ...bool) *AreaPrinter {
 // WithCenter centers the AreaPrinter content to the terminal.
 func (p AreaPrinter) WithCenter(b ...bool) *AreaPrinter {
 	p.Center = internal.WithBoolean(b)
-	return &p
-}
-
-// WithCustomWriter sets the custom Writer.
-func (p AreaPrinter) WithCustomWriter(writer io.Writer) *AreaPrinter {
-	p.Writer = writer
 	return &p
 }
 

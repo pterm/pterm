@@ -1,21 +1,33 @@
 package pterm
 
-import "fmt"
+import (
+	"fmt"
+	"io"
+	"os"
+)
 
 var (
 	// DefaultBasicText returns a default BasicTextPrinter, which can be used to print text as is.
 	// No default style is present for BasicTextPrinter.
-	DefaultBasicText = BasicTextPrinter{}
+	DefaultBasicText = BasicTextPrinter{
+		Writer: os.Stdout,
+	}
 )
 
 // BasicTextPrinter is the printer used to print the input as-is or as specified by user formatting.
 type BasicTextPrinter struct {
-	Style *Style
+	Style  *Style
+	Writer io.Writer
 }
 
 // WithStyle adds a style to the printer.
 func (p BasicTextPrinter) WithStyle(style *Style) *BasicTextPrinter {
 	p.Style = style
+	return &p
+}
+
+func (p BasicTextPrinter) WithCustomWriter(writer io.Writer) *BasicTextPrinter {
+	p.Writer = writer
 	return &p
 }
 
@@ -46,37 +58,37 @@ func (p BasicTextPrinter) Sprintfln(format string, a ...interface{}) string {
 	return p.Sprintf(format, a...) + "\n"
 }
 
-// Print formats using the default formats for its operands and writes to standard output.
+// Print formats using the default formats for its operands and writes to provided writer.
 // Spaces are added between operands when neither is a string.
 // It returns the number of bytes written and any write error encountered.
 func (p *BasicTextPrinter) Print(a ...interface{}) *TextPrinter {
-	Print(p.Sprint(a...))
+	Fprint(p.Writer, p.Sprint(a...))
 	tp := TextPrinter(p)
 	return &tp
 }
 
-// Println formats using the default formats for its operands and writes to standard output.
+// Println formats using the default formats for its operands and writes to provided writer.
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
 func (p *BasicTextPrinter) Println(a ...interface{}) *TextPrinter {
-	Print(p.Sprintln(a...))
+	Fprint(p.Writer, p.Sprintln(a...))
 	tp := TextPrinter(p)
 	return &tp
 }
 
-// Printf formats according to a format specifier and writes to standard output.
+// Printf formats according to a format specifier and writes to provided writer.
 // It returns the number of bytes written and any write error encountered.
 func (p *BasicTextPrinter) Printf(format string, a ...interface{}) *TextPrinter {
-	Print(p.Sprintf(format, a...))
+	Fprint(p.Writer, p.Sprintf(format, a...))
 	tp := TextPrinter(p)
 	return &tp
 }
 
-// Printfln formats according to a format specifier and writes to standard output.
+// Printfln formats according to a format specifier and writes to provided writer.
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
 func (p *BasicTextPrinter) Printfln(format string, a ...interface{}) *TextPrinter {
-	Print(p.Sprintfln(format, a...))
+	Fprint(p.Writer, p.Sprintfln(format, a...))
 	tp := TextPrinter(p)
 	return &tp
 }
