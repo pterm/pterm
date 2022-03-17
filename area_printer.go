@@ -1,18 +1,12 @@
 package pterm
 
 import (
-	"io"
 	"strings"
 
 	"github.com/atomicgo/cursor"
 
 	"github.com/pterm/pterm/internal"
 )
-
-type Writer interface {
-	io.Writer
-	Fd() uintptr
-}
 
 // DefaultArea is the default area printer.
 var DefaultArea = AreaPrinter{}
