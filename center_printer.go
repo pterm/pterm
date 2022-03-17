@@ -3,7 +3,6 @@ package pterm
 import (
 	"fmt"
 	"io"
-	"os"
 	"strings"
 
 	"github.com/mattn/go-runewidth"
@@ -14,7 +13,6 @@ import (
 // DefaultCenter is the default CenterPrinter.
 var DefaultCenter = CenterPrinter{
 	CenterEachLineSeparately: false,
-	Writer:                   os.Stdout,
 }
 
 // CenterPrinter prints centered text.

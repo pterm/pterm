@@ -3,7 +3,6 @@ package pterm
 import (
 	"encoding/csv"
 	"io"
-	"os"
 	"strings"
 	"unicode/utf8"
 
@@ -22,7 +21,6 @@ var DefaultTable = TablePrinter{
 	RowSeparatorStyle:       &ThemeDefault.TableSeparatorStyle,
 	LeftAlignment:           true,
 	RightAlignment:          false,
-	Writer:                  os.Stdout,
 }
 
 // TableData is the type that contains the data of a TablePrinter.

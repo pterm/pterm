@@ -3,7 +3,6 @@ package pterm
 import (
 	"fmt"
 	"io"
-	"os"
 	"runtime"
 	"strings"
 
@@ -23,7 +22,6 @@ var (
 			Style: &ThemeDefault.InfoPrefixStyle,
 			Text:  "INFO",
 		},
-		Writer: os.Stdout,
 	}
 
 	// Warning returns a PrefixPrinter, which can be used to print text with a "warning" Prefix.
@@ -33,7 +31,6 @@ var (
 			Style: &ThemeDefault.WarningPrefixStyle,
 			Text:  "WARNING",
 		},
-		Writer: os.Stdout,
 	}
 
 	// Success returns a PrefixPrinter, which can be used to print text with a "success" Prefix.
@@ -43,7 +40,6 @@ var (
 			Style: &ThemeDefault.SuccessPrefixStyle,
 			Text:  "SUCCESS",
 		},
-		Writer: os.Stdout,
 	}
 
 	// Error returns a PrefixPrinter, which can be used to print text with an "error" Prefix.
@@ -53,7 +49,6 @@ var (
 			Style: &ThemeDefault.ErrorPrefixStyle,
 			Text:  " ERROR ",
 		},
-		Writer: os.Stdout,
 	}
 
 	// Fatal returns a PrefixPrinter, which can be used to print text with an "fatal" Prefix.
@@ -64,8 +59,7 @@ var (
 			Style: &ThemeDefault.FatalPrefixStyle,
 			Text:  " FATAL ",
 		},
-		Fatal:  true,
-		Writer: os.Stdout,
+		Fatal: true,
 	}
 
 	// Debug Prints debug messages. By default it will only print if PrintDebugMessages is true.
@@ -76,7 +70,6 @@ var (
 			Text:  " DEBUG ",
 			Style: &ThemeDefault.DebugPrefixStyle,
 		},
-		Writer:   os.Stdout,
 		Debugger: true,
 	}
 
@@ -87,7 +80,6 @@ var (
 			Style: &ThemeDefault.DescriptionPrefixStyle,
 			Text:  "Description",
 		},
-		Writer: os.Stdout,
 	}
 )
 

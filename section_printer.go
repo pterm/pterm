@@ -3,7 +3,6 @@ package pterm
 import (
 	"fmt"
 	"io"
-	"os"
 	"strings"
 )
 
@@ -14,7 +13,6 @@ var DefaultSection = SectionPrinter{
 	TopPadding:      1,
 	BottomPadding:   1,
 	IndentCharacter: "#",
-	Writer:          os.Stdout,
 }
 
 // SectionPrinter prints a new section title.

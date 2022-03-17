@@ -3,7 +3,6 @@ package pterm
 import (
 	"fmt"
 	"io"
-	"os"
 	"strings"
 
 	"github.com/mattn/go-runewidth"
@@ -50,7 +49,6 @@ var DefaultBox = BoxPrinter{
 	TopPadding:              0,
 	BottomPadding:           0,
 	TitleTopLeft:            true,
-	Writer:                  os.Stdout,
 }
 
 // WithTitle returns a new box with a specific Title.

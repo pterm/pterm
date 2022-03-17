@@ -3,14 +3,12 @@ package pterm
 import (
 	"fmt"
 	"io"
-	"os"
 	"strings"
 )
 
 // DefaultParagraph contains the default values for a ParagraphPrinter.
 var DefaultParagraph = ParagraphPrinter{
 	MaxWidth: GetTerminalWidth(),
-	Writer:   os.Stdout,
 }
 
 // ParagraphPrinter can print paragraphs to a fixed line width.

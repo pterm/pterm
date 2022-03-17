@@ -2,7 +2,6 @@ package pterm
 
 import (
 	"io"
-	"os"
 	"strings"
 
 	"github.com/pterm/pterm/internal"
@@ -75,7 +74,6 @@ var DefaultBulletList = BulletListPrinter{
 	Bullet:      "•",
 	TextStyle:   &ThemeDefault.BulletListTextStyle,
 	BulletStyle: &ThemeDefault.BulletListBulletStyle,
-	Writer:      os.Stdout,
 }
 
 // BulletListPrinter is able to render a list.

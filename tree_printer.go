@@ -2,7 +2,6 @@ package pterm
 
 import (
 	"io"
-	"os"
 	"strings"
 )
 
@@ -32,7 +31,6 @@ var DefaultTree = TreePrinter{
 	VerticalString:       "│",
 	RightDownLeftString:  "┬",
 	Indent:               2,
-	Writer:               os.Stdout,
 }
 
 // TreePrinter is able to render a list.

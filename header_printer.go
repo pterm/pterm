@@ -3,7 +3,6 @@ package pterm
 import (
 	"fmt"
 	"io"
-	"os"
 	"strings"
 
 	"github.com/mattn/go-runewidth"
@@ -18,7 +17,6 @@ var (
 		TextStyle:       &ThemeDefault.HeaderTextStyle,
 		BackgroundStyle: &ThemeDefault.HeaderBackgroundStyle,
 		Margin:          5,
-		Writer:          os.Stdout,
 	}
 )
 

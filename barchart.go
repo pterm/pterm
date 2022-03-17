@@ -2,7 +2,6 @@ package pterm
 
 import (
 	"io"
-	"os"
 	"strconv"
 	"strings"
 
@@ -32,7 +31,6 @@ type BarChartPrinter struct {
 var (
 	// DefaultBarChart is the default BarChartPrinter.
 	DefaultBarChart = BarChartPrinter{
-		Writer:                 os.Stdout,
 		Horizontal:             false,
 		VerticalBarCharacter:   "██",
 		HorizontalBarCharacter: "█",

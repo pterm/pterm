@@ -2,7 +2,6 @@ package pterm
 
 import (
 	"io"
-	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -31,7 +30,6 @@ var (
 		ShowElapsedTime:           true,
 		BarFiller:                 "░",
 		MaxWidth:                  80,
-		Writer:                    os.Stdout,
 	}
 )
 

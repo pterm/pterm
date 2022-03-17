@@ -45,41 +45,7 @@ func Sprinto(a ...interface{}) string {
 // Spaces are added between operands when neither is a string.
 // It returns the number of bytes written and any write error encountered.
 func Print(a ...interface{}) {
-	if !Output {
-		return
-	}
-
-	var ret string
-	var printed bool
-
-	for _, bar := range ActiveProgressBarPrinters {
-		if bar.IsActive {
-			ret += sClearLine()
-			ret += Sprinto(a...)
-			printed = true
-		}
-	}
-
-	for _, spinner := range activeSpinnerPrinters {
-		if spinner.IsActive {
-			ret += sClearLine()
-			ret += Sprinto(a...)
-			printed = true
-		}
-	}
-
-	if !printed {
-		ret = color.Sprint(Sprint(a...))
-	}
-
-	color.Print(Sprint(ret))
-
-	// Refresh all progressbars in case they were overwritten previously. Reference: #302
-	for _, bar := range ActiveProgressBarPrinters {
-		if bar.IsActive {
-			bar.UpdateTitle(bar.Title)
-		}
-	}
+	Fprint(nil, a...)
 }
 
 // Println formats using the default formats for its operands and writes to standard output.
@@ -136,7 +102,41 @@ func Fprint(writer io.Writer, a ...interface{}) {
 		return
 	}
 
-	color.Fprint(writer, Sprint(a...))
+	var ret string
+	var printed bool
+
+	for _, bar := range ActiveProgressBarPrinters {
+		if bar.IsActive && bar.Writer == writer {
+			ret += sClearLine()
+			ret += Sprinto(a...)
+			printed = true
+		}
+	}
+
+	for _, spinner := range activeSpinnerPrinters {
+		if spinner.IsActive && spinner.Writer == writer {
+			ret += sClearLine()
+			ret += Sprinto(a...)
+			printed = true
+		}
+	}
+
+	if !printed {
+		ret = color.Sprint(Sprint(a...))
+	}
+
+	if writer != nil {
+		color.Fprint(writer, Sprint(ret))
+	} else {
+		color.Print(Sprint(ret))
+	}
+
+	// Refresh all progressbars in case they were overwritten previously. Reference: #302
+	for _, bar := range ActiveProgressBarPrinters {
+		if bar.IsActive {
+			bar.UpdateTitle(bar.Title)
+		}
+	}
 }
 
 // Fprintln formats using the default formats for its operands and writes to w.
@@ -162,16 +162,19 @@ func Printo(a ...interface{}) {
 
 // Fprinto prints Printo to a custom writer.
 func Fprinto(w io.Writer, a ...interface{}) {
-	Fprint(w, "\r", Sprint(a...))
+	if !Output {
+		return
+	}
+	if w != nil {
+		color.Fprint(w, "\r", Sprint(a...))
+	} else {
+		color.Print("\r", Sprint(a...))
+	}
 }
 
 // RemoveColorFromString removes color codes from a string.
 func RemoveColorFromString(a ...interface{}) string {
 	return color.ClearCode(Sprint(a...))
-}
-
-func clearLine() {
-	Printo(strings.Repeat(" ", GetTerminalWidth()))
 }
 
 func fClearLine(writer io.Writer) {

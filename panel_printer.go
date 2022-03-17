@@ -2,7 +2,6 @@ package pterm
 
 import (
 	"io"
-	"os"
 	"strings"
 
 	"github.com/mattn/go-runewidth"
@@ -21,7 +20,6 @@ type Panels [][]Panel
 // DefaultPanel is the default PanelPrinter.
 var DefaultPanel = PanelPrinter{
 	Padding: 1,
-	Writer:  os.Stdout,
 }
 
 // PanelPrinter prints content in boxes.

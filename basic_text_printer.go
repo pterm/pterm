@@ -3,15 +3,12 @@ package pterm
 import (
 	"fmt"
 	"io"
-	"os"
 )
 
 var (
 	// DefaultBasicText returns a default BasicTextPrinter, which can be used to print text as is.
 	// No default style is present for BasicTextPrinter.
-	DefaultBasicText = BasicTextPrinter{
-		Writer: os.Stdout,
-	}
+	DefaultBasicText = BasicTextPrinter{}
 )
 
 // BasicTextPrinter is the printer used to print the input as-is or as specified by user formatting.
