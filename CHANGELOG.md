@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+
+<a name="v0.12.38"></a>
+## [v0.12.38] - 2022-03-09
 ### Features
 - added `NewLettersFromStringWithRGB`
 - added `NewLettersFromStringWithRGB`
@@ -983,7 +986,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.37...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.38...HEAD
+[v0.12.38]: https://github.com/pterm/pterm/compare/v0.12.37...v0.12.38
 [v0.12.37]: https://github.com/pterm/pterm/compare/v0.12.36...v0.12.37
 [v0.12.36]: https://github.com/pterm/pterm/compare/v0.12.35...v0.12.36
 [v0.12.35]: https://github.com/pterm/pterm/compare/v0.12.34...v0.12.35
