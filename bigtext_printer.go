@@ -32,15 +32,38 @@ func NewLettersFromStringWithStyle(text string, style *Style) Letters {
 	return l
 }
 
+// NewLettersFromStringWithRGB creates a Letters object from a string and applies an RGB color to it (overwrites style).
+func NewLettersFromStringWithRGB(text string, rgb RGB) Letters {
+	s := strings.Split(text, "")
+	l := Letters{}
+
+	for _, s2 := range s {
+		l = append(l, Letter{
+			String: s2,
+			Style:  &Style{},
+			RGB:    rgb,
+		})
+	}
+
+	return l
+}
+
 // Letter is an object, which holds a string and a specific Style for it.
 type Letter struct {
 	String string
 	Style  *Style
+	RGB    RGB
 }
 
 // WithStyle returns a new Letter with a specific Style.
 func (l Letter) WithStyle(style *Style) *Letter {
 	l.Style = style
+	return &l
+}
+
+// WithRGB returns a new Letter with a specific RGB color (overwrites style).
+func (l Letter) WithRGB(rgb RGB) *Letter {
+	l.RGB = rgb
 	return &l
 }
 
@@ -91,6 +114,7 @@ func (p BigTextPrinter) Srender() (string, error) {
 			bigLetters = append(bigLetters, Letter{
 				String: val,
 				Style:  l.Style,
+				RGB:    l.RGB,
 			})
 		}
 	}
@@ -116,7 +140,12 @@ func (p BigTextPrinter) Srender() (string, error) {
 			if letterLineLength < maxLetterWidth {
 				letterLine += strings.Repeat(" ", maxLetterWidth-letterLineLength)
 			}
-			ret += letter.Style.Sprint(letterLine)
+
+			if letter.RGB != (RGB{}) {
+				ret += letter.RGB.Sprint(letterLine)
+			} else {
+				ret += letter.Style.Sprint(letterLine)
+			}
 		}
 		ret += "\n"
 	}
