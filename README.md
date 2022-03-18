@@ -27,7 +27,7 @@
 
 <br/>
 
-<a href="https://github.com/dops-cli/dops/releases" style="text-decoration: none">
+<a href="https://github.com/pterm/pterm/releases" style="text-decoration: none">
 <img src="https://img.shields.io/badge/platform-windows%20%7C%20macos%20%7C%20linux-informational?style=for-the-badge" alt="Downloads">
 </a>
 
@@ -40,6 +40,9 @@
 <a href="https://codecov.io/gh/pterm/pterm" style="text-decoration: none">
 <!-- unittestcount:start --><img src="https://img.shields.io/badge/Unit_Tests-28753-magenta?style=flat-square" alt="Forks"><!-- unittestcount:end -->
 </a>
+	
+<br/>
+<br/>
 
 <a href="https://github.com/pterm/pterm/tree/master/_examples/demo" style="text-decoration: none">
 <img src="https://raw.githubusercontent.com/pterm/pterm/master/_examples/demo/animation.svg" alt="PTerm">
