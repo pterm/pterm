@@ -1,7 +1,11 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Features
+- use fallback color in `BigTextPrinter` when `RGB` is not supported
+
 ### Test
+- fix `BigTextPrinter` test
 - removed `testdata`
 - removed snapshot testing
 
