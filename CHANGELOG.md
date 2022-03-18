@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+
+<a name="v0.12.39"></a>
+## [v0.12.39] - 2022-03-18
 ### Features
 - use fallback color in `BigTextPrinter` when `RGB` is not supported
 
@@ -994,7 +997,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.38...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.39...HEAD
+[v0.12.39]: https://github.com/pterm/pterm/compare/v0.12.38...v0.12.39
 [v0.12.38]: https://github.com/pterm/pterm/compare/v0.12.37...v0.12.38
 [v0.12.37]: https://github.com/pterm/pterm/compare/v0.12.36...v0.12.37
 [v0.12.36]: https://github.com/pterm/pterm/compare/v0.12.35...v0.12.36
