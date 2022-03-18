@@ -1,6 +1,7 @@
 package pterm
 
 import (
+	"github.com/gookit/color"
 	"strings"
 
 	"github.com/mattn/go-runewidth"
@@ -141,7 +142,7 @@ func (p BigTextPrinter) Srender() (string, error) {
 				letterLine += strings.Repeat(" ", maxLetterWidth-letterLineLength)
 			}
 
-			if letter.RGB != (RGB{}) {
+			if letter.RGB != (RGB{}) && (color.IsSupportRGBColor() || internal.RunsInCi()) {
 				ret += letter.RGB.Sprint(letterLine)
 			} else {
 				ret += letter.Style.Sprint(letterLine)
