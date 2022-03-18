@@ -1,6 +1,10 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Test
+- removed `testdata`
+- removed snapshot testing
+
 
 <a name="v0.12.38"></a>
 ## [v0.12.38] - 2022-03-09
