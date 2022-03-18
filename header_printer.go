@@ -55,8 +55,8 @@ func (p HeaderPrinter) WithFullWidth(b ...bool) *HeaderPrinter {
 	return &p
 }
 
-// WithCustomWriter sets the custom Writer.
-func (p HeaderPrinter) WithCustomWriter(writer io.Writer) *HeaderPrinter {
+// WithWriter sets the custom Writer.
+func (p HeaderPrinter) WithWriter(writer io.Writer) *HeaderPrinter {
 	p.Writer = writer
 	return &p
 }

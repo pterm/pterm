@@ -213,8 +213,8 @@ func (p BoxPrinter) WithLeftPadding(padding int) *BoxPrinter {
 	return &p
 }
 
-// WithCustomWriter sets the custom Writer.
-func (p BoxPrinter) WithCustomWriter(writer io.Writer) *BoxPrinter {
+// WithWriter sets the custom Writer.
+func (p BoxPrinter) WithWriter(writer io.Writer) *BoxPrinter {
 	p.Writer = writer
 	return &p
 }

@@ -28,8 +28,8 @@ func (p CenterPrinter) WithCenterEachLineSeparately(b ...bool) *CenterPrinter {
 	return &p
 }
 
-// WithCustomWriter sets the custom Writer.
-func (p CenterPrinter) WithCustomWriter(writer io.Writer) *CenterPrinter {
+// WithWriter sets the custom Writer.
+func (p CenterPrinter) WithWriter(writer io.Writer) *CenterPrinter {
 	p.Writer = writer
 	return &p
 }

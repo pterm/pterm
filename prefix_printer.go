@@ -146,8 +146,8 @@ func (p PrefixPrinter) WithLineNumberOffset(offset int) *PrefixPrinter {
 	return &p
 }
 
-// WithCustomWriter sets the custom Writer.
-func (p PrefixPrinter) WithCustomWriter(writer io.Writer) *PrefixPrinter {
+// WithWriter sets the custom Writer.
+func (p PrefixPrinter) WithWriter(writer io.Writer) *PrefixPrinter {
 	p.Writer = writer
 	return &p
 }

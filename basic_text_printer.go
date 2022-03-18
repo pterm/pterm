@@ -23,7 +23,7 @@ func (p BasicTextPrinter) WithStyle(style *Style) *BasicTextPrinter {
 	return &p
 }
 
-func (p BasicTextPrinter) WithCustomWriter(writer io.Writer) *BasicTextPrinter {
+func (p BasicTextPrinter) WithWriter(writer io.Writer) *BasicTextPrinter {
 	p.Writer = writer
 	return &p
 }

@@ -1,6 +1,6 @@
 # BigTextPrinter
 
-<!-- 
+<!--
 Replace all of the following strings with the current printer.
         bigtext BigText BigTextPrinter DefaultBigText
 -->
@@ -28,12 +28,14 @@ pterm.DefaultBigText.WithLetters(pterm.NewLettersFromString("Hello")).Render()
 > [!TIP]
 > Click the options and types to show the documentation on _pkg.go.dev_
 
-|Option|Type|
-|------|----|
-|[Letters](https://pkg.go.dev/github.com/pterm/pterm#BigTextPrinter.WithLetters)|[Letters](https://pkg.go.dev/github.com/pterm/pterm#Letters)|
-|[BigCharacters](https://pkg.go.dev/github.com/pterm/pterm#BigTextPrinter.WithBigCharacters)|map[string]string|
+| Option                                                                                      | Type                                                         |
+| ------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| [Letters](https://pkg.go.dev/github.com/pterm/pterm#BigTextPrinter.WithLetters)             | [Letters](https://pkg.go.dev/github.com/pterm/pterm#Letters) |
+| [BigCharacters](https://pkg.go.dev/github.com/pterm/pterm#BigTextPrinter.WithBigCharacters) | map[string]string                                            |
+| [Writer](https://pkg.go.dev/github.com/pterm/pterm#BigTextPrinter.WithWriter)               | io.Writer                                                    |
 
 ### Output functions
+
 <!-- Remove comment of the correct interface -->
 
 <!--
@@ -51,10 +53,10 @@ pterm.DefaultBigText.WithLetters(pterm.NewLettersFromString("Hello")).Render()
 
 > This printer implements the interface [`RenderablePrinter`](https://github.com/pterm/pterm/blob/master/interface_renderable_printer.go)
 
-|Function|Description|
-|------|---------|
-|Render()|Prints to Terminal|
-|Srender()|Returns a string|
+| Function  | Description        |
+| --------- | ------------------ |
+| Render()  | Prints to Terminal |
+| Srender() | Returns a string   |
 
 <!--
 > This printer implements the interface [`LivePrinter`](https://github.com/pterm/pterm/blob/master/interface_live_printer.go)
@@ -72,4 +74,5 @@ pterm.DefaultBigText.WithLetters(pterm.NewLettersFromString("Hello")).Render()
 -->
 
 ## Related
+
 - [Override default printers](docs/customizing/override-default-printer.md)

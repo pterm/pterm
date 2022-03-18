@@ -134,8 +134,8 @@ func (p TablePrinter) WithRightAlignment(b ...bool) *TablePrinter {
 	return &p
 }
 
-// WithCustomWriter sets the Writer.
-func (p TablePrinter) WithCustomWriter(writer io.Writer) *TablePrinter {
+// WithWriter sets the Writer.
+func (p TablePrinter) WithWriter(writer io.Writer) *TablePrinter {
 	p.Writer = writer
 	return &p
 }

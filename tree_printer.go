@@ -99,8 +99,8 @@ func (p TreePrinter) WithIndent(indent int) *TreePrinter {
 	return &p
 }
 
-// WithCustomWriter sets the Writer.
-func (p TreePrinter) WithCustomWriter(writer io.Writer) *TreePrinter {
+// WithWriter sets the Writer.
+func (p TreePrinter) WithWriter(writer io.Writer) *TreePrinter {
 	p.Writer = writer
 	return &p
 }

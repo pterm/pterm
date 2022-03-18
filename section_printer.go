@@ -56,8 +56,8 @@ func (p SectionPrinter) WithBottomPadding(padding int) *SectionPrinter {
 	return &p
 }
 
-// WithCustomWriter sets the custom Writer.
-func (p SectionPrinter) WithCustomWriter(writer io.Writer) *SectionPrinter {
+// WithWriter sets the custom Writer.
+func (p SectionPrinter) WithWriter(writer io.Writer) *SectionPrinter {
 	p.Writer = writer
 	return &p
 }

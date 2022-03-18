@@ -83,8 +83,8 @@ func (p BarChartPrinter) WithShowValue(b ...bool) *BarChartPrinter {
 	return &p
 }
 
-// WithCustomWriter sets the custom Writer.
-func (p BarChartPrinter) WithCustomWriter(writer io.Writer) *BarChartPrinter {
+// WithWriter sets the custom Writer.
+func (p BarChartPrinter) WithWriter(writer io.Writer) *BarChartPrinter {
 	p.Writer = writer
 	return &p
 }

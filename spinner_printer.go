@@ -1,7 +1,6 @@
 package pterm
 
 import (
-	"io"
 	"time"
 
 	"github.com/pterm/pterm/internal"
@@ -39,7 +38,6 @@ type SpinnerPrinter struct {
 	ShowTimer           bool
 	TimerRoundingFactor time.Duration
 	TimerStyle          *Style
-	Writer              io.Writer
 
 	IsActive bool
 
@@ -101,22 +99,16 @@ func (s SpinnerPrinter) WithTimerStyle(style *Style) *SpinnerPrinter {
 	return &s
 }
 
-// WithCustomWriter sets the Writer.
-func (s SpinnerPrinter) WithCustomWriter(writer io.Writer) *SpinnerPrinter {
-	s.Writer = writer
-	return &s
-}
-
 // UpdateText updates the message of the active SpinnerPrinter.
 // Can be used live.
 func (s *SpinnerPrinter) UpdateText(text string) {
 	s.Text = text
 	if !RawOutput {
-		fClearLine(s.Writer)
-		Fprinto(s.Writer, s.Style.Sprint(s.currentSequence)+" "+s.MessageStyle.Sprint(s.Text))
+		fClearLine(nil)
+		Fprinto(nil, s.Style.Sprint(s.currentSequence)+" "+s.MessageStyle.Sprint(s.Text))
 	}
 	if RawOutput {
-		Fprintln(s.Writer, s.Text)
+		Fprintln(nil, s.Text)
 	}
 }
 
@@ -131,7 +123,7 @@ func (s SpinnerPrinter) Start(text ...interface{}) (*SpinnerPrinter, error) {
 	}
 
 	if RawOutput {
-		Fprintln(s.Writer, s.Text)
+		Fprintln(nil, s.Text)
 	}
 
 	go func() {
@@ -145,7 +137,7 @@ func (s SpinnerPrinter) Start(text ...interface{}) (*SpinnerPrinter, error) {
 				if s.ShowTimer {
 					timer = " (" + time.Since(s.startedAt).Round(s.TimerRoundingFactor).String() + ")"
 				}
-				Fprinto(s.Writer, s.Style.Sprint(seq)+" "+s.MessageStyle.Sprint(s.Text)+s.TimerStyle.Sprint(timer))
+				Fprinto(nil, s.Style.Sprint(seq)+" "+s.MessageStyle.Sprint(s.Text)+s.TimerStyle.Sprint(timer))
 				s.currentSequence = seq
 				time.Sleep(s.Delay)
 			}
@@ -159,10 +151,10 @@ func (s SpinnerPrinter) Start(text ...interface{}) (*SpinnerPrinter, error) {
 func (s *SpinnerPrinter) Stop() error {
 	s.IsActive = false
 	if s.RemoveWhenDone {
-		fClearLine(s.Writer)
-		Fprinto(s.Writer)
+		fClearLine(nil)
+		Fprinto(nil)
 	} else {
-		Fprintln(s.Writer)
+		Fprintln(nil)
 	}
 	return nil
 }
@@ -195,8 +187,8 @@ func (s *SpinnerPrinter) Success(message ...interface{}) {
 	if len(message) == 0 {
 		message = []interface{}{s.Text}
 	}
-	fClearLine(s.Writer)
-	Fprinto(s.Writer, s.SuccessPrinter.Sprint(message...))
+	fClearLine(nil)
+	Fprinto(nil, s.SuccessPrinter.Sprint(message...))
 	_ = s.Stop()
 }
 
@@ -210,8 +202,8 @@ func (s *SpinnerPrinter) Fail(message ...interface{}) {
 	if len(message) == 0 {
 		message = []interface{}{s.Text}
 	}
-	fClearLine(s.Writer)
-	Fprinto(s.Writer, s.FailPrinter.Sprint(message...))
+	fClearLine(nil)
+	Fprinto(nil, s.FailPrinter.Sprint(message...))
 	_ = s.Stop()
 }
 
@@ -225,7 +217,7 @@ func (s *SpinnerPrinter) Warning(message ...interface{}) {
 	if len(message) == 0 {
 		message = []interface{}{s.Text}
 	}
-	fClearLine(s.Writer)
-	Fprinto(s.Writer, s.WarningPrinter.Sprint(message...))
+	fClearLine(nil)
+	Fprinto(nil, s.WarningPrinter.Sprint(message...))
 	_ = s.Stop()
 }

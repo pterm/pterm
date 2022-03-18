@@ -106,7 +106,7 @@ func Fprint(writer io.Writer, a ...interface{}) {
 	var printed bool
 
 	for _, bar := range ActiveProgressBarPrinters {
-		if bar.IsActive && bar.Writer == writer {
+		if bar.IsActive {
 			ret += sClearLine()
 			ret += Sprinto(a...)
 			printed = true
@@ -114,7 +114,7 @@ func Fprint(writer io.Writer, a ...interface{}) {
 	}
 
 	for _, spinner := range activeSpinnerPrinters {
-		if spinner.IsActive && spinner.Writer == writer {
+		if spinner.IsActive {
 			ret += sClearLine()
 			ret += Sprinto(a...)
 			printed = true

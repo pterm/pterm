@@ -109,8 +109,8 @@ func (l BulletListPrinter) WithBulletStyle(style *Style) *BulletListPrinter {
 	return &l
 }
 
-// WithCustomWriter sets the custom Writer.
-func (l BulletListPrinter) WithCustomWriter(writer io.Writer) *BulletListPrinter {
+// WithWriter sets the custom Writer.
+func (l BulletListPrinter) WithWriter(writer io.Writer) *BulletListPrinter {
 	l.Writer = writer
 	return &l
 }

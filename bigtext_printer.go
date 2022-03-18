@@ -101,8 +101,8 @@ func (p BigTextPrinter) WithLetters(letters ...Letters) *BigTextPrinter {
 	return &p
 }
 
-// WithCustomWriter sets the custom Writer.
-func (p BigTextPrinter) WithCustomWriter(writer io.Writer) *BigTextPrinter {
+// WithWriter sets the custom Writer.
+func (p BigTextPrinter) WithWriter(writer io.Writer) *BigTextPrinter {
 	p.Writer = writer
 	return &p
 }

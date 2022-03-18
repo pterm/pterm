@@ -25,8 +25,8 @@ func (p ParagraphPrinter) WithMaxWidth(width int) *ParagraphPrinter {
 	return &p
 }
 
-// WithCustomWriter sets the custom Writer.
-func (p ParagraphPrinter) WithCustomWriter(writer io.Writer) *ParagraphPrinter {
+// WithWriter sets the custom Writer.
+func (p ParagraphPrinter) WithWriter(writer io.Writer) *ParagraphPrinter {
 	p.Writer = writer
 	return &p
 }

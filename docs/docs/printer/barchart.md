@@ -1,6 +1,6 @@
 # BarChartPrinter
 
-<!-- 
+<!--
 Replace all of the following strings with the current printer.
      barchart BarChart BarChartPrinter DefaultBarChart
 -->
@@ -8,7 +8,6 @@ Replace all of the following strings with the current printer.
 ![BarChartPrinter Example](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/animation.svg)
 
 <p align="center"><a href="https://github.com/pterm/pterm/blob/master/_examples/barchart/main.go" target="_blank">(Show source of demo)</a></p>
-
 
 ## Usage
 
@@ -47,17 +46,19 @@ bars := pterm.Bars{
 > [!TIP]
 > Click the options and types to show the documentation on _pkg.go.dev_
 
-|Option|Type|
-|------|----|
-|[Bars](https://pkg.go.dev/github.com/pterm/pterm#BarChartPrinter.Bars)|[Bars](https://pkg.go.dev/github.com/pterm/pterm#Bars)|
-|[Horizontal](https://pkg.go.dev/github.com/pterm/pterm#BarChartPrinter.Horizontal)|bool|
-|[ShowValue](https://pkg.go.dev/github.com/pterm/pterm#BarChartPrinter.ShowValue)|bool|
-|[Height](https://pkg.go.dev/github.com/pterm/pterm#BarChartPrinter.Height)|int|
-|[Width](https://pkg.go.dev/github.com/pterm/pterm#BarChartPrinter.Width)|int|
-|[VerticalBarCharacter](https://pkg.go.dev/github.com/pterm/pterm#BarChartPrinter.VerticalBarCharacter)|string|
-|[HorizontalBarCharacter](https://pkg.go.dev/github.com/pterm/pterm#BarChartPrinter.HorizontalBarCharacter)|string|
+| Option                                                                                                     | Type                                                   |
+| ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| [Bars](https://pkg.go.dev/github.com/pterm/pterm#BarChartPrinter.Bars)                                     | [Bars](https://pkg.go.dev/github.com/pterm/pterm#Bars) |
+| [Horizontal](https://pkg.go.dev/github.com/pterm/pterm#BarChartPrinter.Horizontal)                         | bool                                                   |
+| [ShowValue](https://pkg.go.dev/github.com/pterm/pterm#BarChartPrinter.ShowValue)                           | bool                                                   |
+| [Height](https://pkg.go.dev/github.com/pterm/pterm#BarChartPrinter.Height)                                 | int                                                    |
+| [Width](https://pkg.go.dev/github.com/pterm/pterm#BarChartPrinter.Width)                                   | int                                                    |
+| [VerticalBarCharacter](https://pkg.go.dev/github.com/pterm/pterm#BarChartPrinter.VerticalBarCharacter)     | string                                                 |
+| [HorizontalBarCharacter](https://pkg.go.dev/github.com/pterm/pterm#BarChartPrinter.HorizontalBarCharacter) | string                                                 |
+| [Writer](https://pkg.go.dev/github.com/pterm/pterm#BarChartPrinter.WithWriter)                             | io.Writer                                              |
 
 ### Output functions
+
 <!-- Remove comment of the correct interface -->
 
 <!--
@@ -75,10 +76,10 @@ bars := pterm.Bars{
 
 > This printer implements the interface [`RenderablePrinter`](https://github.com/pterm/pterm/blob/master/interface_renderable_printer.go)
 
-|Function|Description|
-|------|---------|
-|Render()|Prints to Terminal|
-|Srender()|Returns a string|
+| Function  | Description        |
+| --------- | ------------------ |
+| Render()  | Prints to Terminal |
+| Srender() | Returns a string   |
 
 <!--
 > This printer implements the interface [`LivePrinter`](https://github.com/pterm/pterm/blob/master/interface_live_printer.go)
@@ -96,4 +97,5 @@ bars := pterm.Bars{
 -->
 
 ## Related
+
 - [Override default printers](docs/customizing/override-default-printer.md)

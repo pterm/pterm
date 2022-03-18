@@ -69,8 +69,8 @@ func (p PanelPrinter) WithBoxPrinter(boxPrinter BoxPrinter) *PanelPrinter {
 	return &p
 }
 
-// WithCustomWriter sets the custom Writer.
-func (p PanelPrinter) WithCustomWriter(writer io.Writer) *PanelPrinter {
+// WithWriter sets the custom Writer.
+func (p PanelPrinter) WithWriter(writer io.Writer) *PanelPrinter {
 	p.Writer = writer
 	return &p
 }
