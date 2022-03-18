@@ -1,8 +1,6 @@
 package pterm_test
 
 import (
-	"io"
-	"runtime"
 	"testing"
 
 	"github.com/MarvinJWendt/testza"
@@ -12,13 +10,14 @@ import (
 func TestTreePrinterNilPrint(t *testing.T) {
 	pterm.TreePrinter{}.Render()
 	printer := pterm.TreePrinter{}.WithRoot(pterm.NewTreeFromLeveledList(pterm.LeveledList{pterm.LeveledListItem{Text: "Hello, World!", Level: 0}}))
-	content, _ := printer.Srender()
-	// this test has an OS-dependant output and needs separate snapshots
-	testza.SnapshotCreateOrValidate(t, t.Name()+"_"+runtime.GOOS, content)
+	content, err := printer.Srender()
+
+	testza.AssertNoError(t, err)
+	testza.AssertNotNil(t, content)
 }
 
 func TestTreePrinter_Render(t *testing.T) {
-	printer := pterm.DefaultTree.WithRoot(pterm.NewTreeFromLeveledList([]pterm.LeveledListItem{
+	pterm.DefaultTree.WithRoot(pterm.NewTreeFromLeveledList([]pterm.LeveledListItem{
 		{Level: 0, Text: "Hello, World!"},
 		{Level: 0, Text: "0.0"},
 		{Level: 1, Text: "0.1"},
@@ -29,12 +28,7 @@ func TestTreePrinter_Render(t *testing.T) {
 		{Level: 1, Text: "2.2"},
 		{Level: 2, Text: "2.2.1"},
 		{Level: 1, Text: "2.3"},
-	}))
-	content := captureStdout(func(w io.Writer) {
-		printer.Render()
-	})
-	// this test has an OS-dependant output and needs separate snapshots
-	testza.SnapshotCreateOrValidate(t, t.Name()+"_"+runtime.GOOS, content)
+	})).Render()
 }
 
 func TestTreePrinter_NewTreeFromLeveledList(t *testing.T) {

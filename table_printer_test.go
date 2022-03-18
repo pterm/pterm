@@ -3,7 +3,6 @@ package pterm_test
 import (
 	"encoding/csv"
 	"io"
-	"runtime"
 	"testing"
 
 	"github.com/MarvinJWendt/testza"
@@ -26,16 +25,16 @@ func TestTablePrinter_Render(t *testing.T) {
 	pterm.DefaultTable.WithHasHeader().WithData(d).Render()
 	// WithLeftAlignment
 	printer := pterm.DefaultTable.WithHasHeader().WithLeftAlignment().WithData(d)
-	content := captureStdout(func(w io.Writer) {
-		printer.Render()
-	})
-	testza.SnapshotCreateOrValidate(t, t.Name()+"_1_"+runtime.GOOS, content)
+	content, err := printer.Srender()
+
+	testza.AssertNoError(t, err)
+	testza.AssertNotNil(t, content)
 	// WithRightAlignment
 	printer = pterm.DefaultTable.WithHasHeader().WithRightAlignment().WithData(d)
-	content = captureStdout(func(w io.Writer) {
-		printer.Render()
-	})
-	testza.SnapshotCreateOrValidate(t, t.Name()+"_2_"+runtime.GOOS, content)
+	content, err = printer.Srender()
+
+	testza.AssertNoError(t, err)
+	testza.AssertNotNil(t, content)
 }
 
 func TestTablePrinterWithRowSeparators_Render(t *testing.T) {
@@ -48,22 +47,19 @@ func TestTablePrinterWithRowSeparators_Render(t *testing.T) {
 	pterm.DefaultTable.WithHasHeader().WithHeaderRowSeparator("=").WithData(d).Render()
 	// WithHeaderSeparator
 	printer := pterm.DefaultTable.WithHasHeader().WithHeaderRowSeparator("=").WithData(d)
-	content := captureStdout(func(w io.Writer) {
-		printer.Render()
-	})
-	testza.SnapshotCreateOrValidate(t, t.Name()+"_1_"+runtime.GOOS, content)
+	content, err := printer.Srender()
+	testza.AssertNoError(t, err)
+	testza.AssertNotNil(t, content)
 	// WithRowSeparator
 	printer = pterm.DefaultTable.WithHasHeader().WithRowSeparator("-").WithData(d)
-	content = captureStdout(func(w io.Writer) {
-		printer.Render()
-	})
-	testza.SnapshotCreateOrValidate(t, t.Name()+"_2_"+runtime.GOOS, content)
+	content, err = printer.Srender()
+	testza.AssertNoError(t, err)
+	testza.AssertNotNil(t, content)
 	// WithHeaderRowSeparator & WithRowSeparator
 	printer = pterm.DefaultTable.WithHasHeader().WithHeaderRowSeparator("=").WithRowSeparator("-").WithData(d)
-	content = captureStdout(func(w io.Writer) {
-		printer.Render()
-	})
-	testza.SnapshotCreateOrValidate(t, t.Name()+"_3_"+runtime.GOOS, content)
+	content, err = printer.Srender()
+	testza.AssertNoError(t, err)
+	testza.AssertNotNil(t, content)
 }
 
 func TestTablePrinter_WithCSVReader(t *testing.T) {
@@ -72,7 +68,7 @@ func TestTablePrinter_WithCSVReader(t *testing.T) {
 		p := pterm.TablePrinter{}
 		p.WithCSVReader(r)
 	})
-	testza.SnapshotCreateOrValidate(t, t.Name(), content)
+	testza.AssertNotNil(t, content)
 }
 
 func TestTablePrinter_WithBoxed(t *testing.T) {
