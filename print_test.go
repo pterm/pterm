@@ -161,7 +161,19 @@ func TestFprint(t *testing.T) {
 		pterm.Output = true
 		for _, randomString := range internal.RandomStrings {
 			out := captureStdout(func(w io.Writer) {
+				// set default to null to confirm that its correctly using the provided writer
+				pterm.SetDefaultOutput(nil)
 				pterm.Fprint(w, randomString)
+			})
+			testza.AssertEqual(t, randomString, out)
+		}
+	})
+
+	t.Run("confirm defaults to default output when no writer provided", func(t *testing.T) {
+		pterm.Output = true
+		for _, randomString := range internal.RandomStrings {
+			out := captureStdout(func(w io.Writer) {
+				pterm.Fprint(nil, randomString)
 			})
 			testza.AssertEqual(t, randomString, out)
 		}
@@ -184,7 +196,19 @@ func TestFprintln(t *testing.T) {
 		pterm.Output = true
 		for _, randomString := range internal.RandomStrings {
 			out := captureStdout(func(w io.Writer) {
+				// set default to null to confirm that its correctly using the provided writer
+				pterm.SetDefaultOutput(nil)
 				pterm.Fprintln(w, randomString)
+			})
+			testza.AssertEqual(t, randomString+"\n", out)
+		}
+	})
+
+	t.Run("confirm defaults to default output when no writer provided", func(t *testing.T) {
+		pterm.Output = true
+		for _, randomString := range internal.RandomStrings {
+			out := captureStdout(func(w io.Writer) {
+				pterm.Fprintln(nil, randomString)
 			})
 			testza.AssertEqual(t, randomString+"\n", out)
 		}
@@ -230,7 +254,19 @@ func TestFprinto(t *testing.T) {
 		pterm.Output = true
 		for _, randomString := range internal.RandomStrings {
 			out := captureStdout(func(w io.Writer) {
+				// set default to null to confirm that its correctly using the provided writer
+				pterm.SetDefaultOutput(nil)
 				pterm.Fprinto(w, randomString)
+			})
+			testza.AssertEqual(t, "\r"+randomString, out)
+		}
+	})
+
+	t.Run("confirm defaults to default output when no writer provided", func(t *testing.T) {
+		pterm.Output = true
+		for _, randomString := range internal.RandomStrings {
+			out := captureStdout(func(w io.Writer) {
+				pterm.Fprinto(nil, randomString)
 			})
 			testza.AssertEqual(t, "\r"+randomString, out)
 		}
