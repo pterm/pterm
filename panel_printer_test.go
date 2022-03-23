@@ -2,6 +2,7 @@ package pterm_test
 
 import (
 	"io"
+	"os"
 	"testing"
 
 	"github.com/MarvinJWendt/testza"
@@ -149,4 +150,13 @@ func TestPanelPrinter_WithBoxPrinter(t *testing.T) {
 
 	testza.AssertEqual(t, pterm.DefaultBox, p2.BoxPrinter)
 	testza.AssertZero(t, p.BoxPrinter)
+}
+
+func TestPanelPrinter_WithWriter(t *testing.T) {
+	p := pterm.PanelPrinter{}
+	s := os.Stderr
+	p2 := p.WithWriter(s)
+
+	testza.AssertEqual(t, s, p2.Writer)
+	testza.AssertZero(t, p.Writer)
 }

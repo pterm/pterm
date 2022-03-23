@@ -1,6 +1,7 @@
 package pterm_test
 
 import (
+	"os"
 	"testing"
 
 	"github.com/MarvinJWendt/testza"
@@ -195,4 +196,13 @@ func TestTreePrinter_WithIndentInvalid(t *testing.T) {
 
 	testza.AssertEqual(t, 1, p2.Indent)
 	testza.AssertZero(t, p.Indent)
+}
+
+func TestTreePrinter_WithWriter(t *testing.T) {
+	p := pterm.TreePrinter{}
+	s := os.Stderr
+	p2 := p.WithWriter(s)
+
+	testza.AssertEqual(t, s, p2.Writer)
+	testza.AssertZero(t, p.Writer)
 }

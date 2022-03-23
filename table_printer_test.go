@@ -3,6 +3,7 @@ package pterm_test
 import (
 	"encoding/csv"
 	"io"
+	"os"
 	"testing"
 
 	"github.com/MarvinJWendt/testza"
@@ -174,4 +175,13 @@ func TestTablePrinter_WithRightAlignment(t *testing.T) {
 	p2 := p.WithRightAlignment(s)
 
 	testza.AssertEqual(t, s, p2.RightAlignment)
+}
+
+func TestTablePrinter_WithWriter(t *testing.T) {
+	p := pterm.TablePrinter{}
+	s := os.Stderr
+	p2 := p.WithWriter(s)
+
+	testza.AssertEqual(t, s, p2.Writer)
+	testza.AssertZero(t, p.Writer)
 }

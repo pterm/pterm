@@ -3,6 +3,7 @@ package pterm_test
 import (
 	"fmt"
 	"io"
+	"os"
 	"testing"
 
 	"github.com/MarvinJWendt/testza"
@@ -152,4 +153,13 @@ func TestNewBulletListFromString(t *testing.T) {
 	p2 := pterm.NewBulletListFromString(s, " ")
 
 	testza.AssertEqual(t, p, p2)
+}
+
+func TestBulletListPrinter_WithWriter(t *testing.T) {
+	p := pterm.BulletListPrinter{}
+	s := os.Stderr
+	p2 := p.WithWriter(s)
+
+	testza.AssertEqual(t, s, p2.Writer)
+	testza.AssertZero(t, p.Writer)
 }
