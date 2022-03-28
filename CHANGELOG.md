@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Features
+- added a custom writer for all printers
+
 
 <a name="v0.12.39"></a>
 ## [v0.12.39] - 2022-03-18
