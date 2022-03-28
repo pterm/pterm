@@ -268,10 +268,10 @@ func (p *ProgressbarPrinter) Stop() (*ProgressbarPrinter, error) {
 	}
 	p.IsActive = false
 	if p.RemoveWhenDone {
-		clearLine()
-		Printo()
+		fClearLine(nil)
+		Fprinto(nil)
 	} else {
-		Println()
+		Fprintln(nil)
 	}
 	return p, nil
 }

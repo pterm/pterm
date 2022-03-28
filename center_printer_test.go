@@ -3,6 +3,7 @@ package pterm_test
 import (
 	"errors"
 	"io"
+	"os"
 	"testing"
 
 	"github.com/MarvinJWendt/testza"
@@ -150,4 +151,13 @@ func TestCenterPrinter_SprintLineLongerThanTerminalWithCenterEachLineSeparately(
 	p2 := p.WithCenterEachLineSeparately().Sprint("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 
 	testza.AssertContains(t, p2, "a")
+}
+
+func TestCenterPrinter_WithWriter(t *testing.T) {
+	p := pterm.CenterPrinter{}
+	s := os.Stderr
+	p2 := p.WithWriter(s)
+
+	testza.AssertEqual(t, s, p2.Writer)
+	testza.AssertZero(t, p.Writer)
 }

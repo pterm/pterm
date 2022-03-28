@@ -3,6 +3,7 @@ package pterm_test
 import (
 	"errors"
 	"io"
+	"os"
 	"testing"
 
 	"github.com/MarvinJWendt/testza"
@@ -110,4 +111,13 @@ func TestParagraphPrinter_WithMaxWidth(t *testing.T) {
 	p2 := p.WithMaxWidth(1337)
 
 	testza.AssertEqual(t, 1337, p2.MaxWidth)
+}
+
+func TestParagraphPrinter_WithWriter(t *testing.T) {
+	p := pterm.ParagraphPrinter{}
+	s := os.Stderr
+	p2 := p.WithWriter(s)
+
+	testza.AssertEqual(t, s, p2.Writer)
+	testza.AssertZero(t, p.Writer)
 }

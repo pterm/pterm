@@ -2,6 +2,7 @@ package pterm
 
 import (
 	"encoding/csv"
+	"io"
 	"strings"
 	"unicode/utf8"
 
@@ -40,6 +41,7 @@ type TablePrinter struct {
 	Boxed                   bool
 	LeftAlignment           bool
 	RightAlignment          bool
+	Writer                  io.Writer
 }
 
 // WithStyle returns a new TablePrinter with a specific Style.
@@ -132,6 +134,12 @@ func (p TablePrinter) WithRightAlignment(b ...bool) *TablePrinter {
 	return &p
 }
 
+// WithWriter sets the Writer.
+func (p TablePrinter) WithWriter(writer io.Writer) *TablePrinter {
+	p.Writer = writer
+	return &p
+}
+
 // Srender renders the TablePrinter as a string.
 func (p TablePrinter) Srender() (string, error) {
 	if p.Style == nil {
@@ -219,7 +227,7 @@ func (p TablePrinter) createRowSeparatorString(rowWidth int) string {
 // Render prints the TablePrinter to the terminal.
 func (p TablePrinter) Render() error {
 	s, _ := p.Srender()
-	Println(s)
+	Fprintln(p.Writer, s)
 
 	return nil
 }

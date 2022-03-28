@@ -1,6 +1,7 @@
 package pterm
 
 import (
+	"io"
 	"strings"
 )
 
@@ -43,6 +44,7 @@ type TreePrinter struct {
 	VerticalString       string
 	RightDownLeftString  string
 	Indent               int
+	Writer               io.Writer
 }
 
 // WithTreeStyle returns a new list with a specific tree style.
@@ -97,10 +99,16 @@ func (p TreePrinter) WithIndent(indent int) *TreePrinter {
 	return &p
 }
 
+// WithWriter sets the Writer.
+func (p TreePrinter) WithWriter(writer io.Writer) *TreePrinter {
+	p.Writer = writer
+	return &p
+}
+
 // Render prints the list to the terminal.
 func (p TreePrinter) Render() error {
 	s, _ := p.Srender()
-	Println(s)
+	Fprintln(p.Writer, s)
 
 	return nil
 }

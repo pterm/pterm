@@ -104,11 +104,11 @@ func (s SpinnerPrinter) WithTimerStyle(style *Style) *SpinnerPrinter {
 func (s *SpinnerPrinter) UpdateText(text string) {
 	s.Text = text
 	if !RawOutput {
-		clearLine()
-		Printo(s.Style.Sprint(s.currentSequence) + " " + s.MessageStyle.Sprint(s.Text))
+		fClearLine(nil)
+		Fprinto(nil, s.Style.Sprint(s.currentSequence)+" "+s.MessageStyle.Sprint(s.Text))
 	}
 	if RawOutput {
-		Println(s.Text)
+		Fprintln(nil, s.Text)
 	}
 }
 
@@ -123,7 +123,7 @@ func (s SpinnerPrinter) Start(text ...interface{}) (*SpinnerPrinter, error) {
 	}
 
 	if RawOutput {
-		Println(s.Text)
+		Fprintln(nil, s.Text)
 	}
 
 	go func() {
@@ -137,7 +137,7 @@ func (s SpinnerPrinter) Start(text ...interface{}) (*SpinnerPrinter, error) {
 				if s.ShowTimer {
 					timer = " (" + time.Since(s.startedAt).Round(s.TimerRoundingFactor).String() + ")"
 				}
-				Printo(s.Style.Sprint(seq) + " " + s.MessageStyle.Sprint(s.Text) + s.TimerStyle.Sprint(timer))
+				Fprinto(nil, s.Style.Sprint(seq)+" "+s.MessageStyle.Sprint(s.Text)+s.TimerStyle.Sprint(timer))
 				s.currentSequence = seq
 				time.Sleep(s.Delay)
 			}
@@ -151,10 +151,10 @@ func (s SpinnerPrinter) Start(text ...interface{}) (*SpinnerPrinter, error) {
 func (s *SpinnerPrinter) Stop() error {
 	s.IsActive = false
 	if s.RemoveWhenDone {
-		clearLine()
-		Printo()
+		fClearLine(nil)
+		Fprinto(nil)
 	} else {
-		Println()
+		Fprintln(nil)
 	}
 	return nil
 }
@@ -187,8 +187,8 @@ func (s *SpinnerPrinter) Success(message ...interface{}) {
 	if len(message) == 0 {
 		message = []interface{}{s.Text}
 	}
-	clearLine()
-	Printo(s.SuccessPrinter.Sprint(message...))
+	fClearLine(nil)
+	Fprinto(nil, s.SuccessPrinter.Sprint(message...))
 	_ = s.Stop()
 }
 
@@ -202,8 +202,8 @@ func (s *SpinnerPrinter) Fail(message ...interface{}) {
 	if len(message) == 0 {
 		message = []interface{}{s.Text}
 	}
-	clearLine()
-	Printo(s.FailPrinter.Sprint(message...))
+	fClearLine(nil)
+	Fprinto(nil, s.FailPrinter.Sprint(message...))
 	_ = s.Stop()
 }
 
@@ -217,7 +217,7 @@ func (s *SpinnerPrinter) Warning(message ...interface{}) {
 	if len(message) == 0 {
 		message = []interface{}{s.Text}
 	}
-	clearLine()
-	Printo(s.WarningPrinter.Sprint(message...))
+	fClearLine(nil)
+	Fprinto(nil, s.WarningPrinter.Sprint(message...))
 	_ = s.Stop()
 }

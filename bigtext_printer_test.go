@@ -2,6 +2,7 @@ package pterm_test
 
 import (
 	"fmt"
+	"os"
 	"strings"
 	"testing"
 
@@ -153,4 +154,13 @@ func TestDefaultLettersMaxHeight(t *testing.T) {
 		h := strings.Count(l, "\n")
 		testza.AssertTrue(t, h <= maxHeight, fmt.Sprintf("'%s' is too high", s))
 	}
+}
+
+func TestBigTextPrinter_WithWriter(t *testing.T) {
+	p := pterm.BigTextPrinter{}
+	s := os.Stderr
+	p2 := p.WithWriter(s)
+
+	testza.AssertEqual(t, s, p2.Writer)
+	testza.AssertZero(t, p.Writer)
 }

@@ -2,6 +2,7 @@ package pterm
 
 import (
 	"fmt"
+	"io"
 	"strings"
 
 	"github.com/mattn/go-runewidth"
@@ -27,6 +28,7 @@ type HeaderPrinter struct {
 	BackgroundStyle *Style
 	Margin          int
 	FullWidth       bool
+	Writer          io.Writer
 }
 
 // WithTextStyle returns a new HeaderPrinter with changed
@@ -50,6 +52,12 @@ func (p HeaderPrinter) WithMargin(margin int) *HeaderPrinter {
 // WithFullWidth enables full width on a HeaderPrinter.
 func (p HeaderPrinter) WithFullWidth(b ...bool) *HeaderPrinter {
 	p.FullWidth = internal.WithBoolean(b)
+	return &p
+}
+
+// WithWriter sets the custom Writer.
+func (p HeaderPrinter) WithWriter(writer io.Writer) *HeaderPrinter {
+	p.Writer = writer
 	return &p
 }
 
@@ -164,7 +172,7 @@ func (p HeaderPrinter) Sprintfln(format string, a ...interface{}) string {
 // Spaces are added between operands when neither is a string.
 // It returns the number of bytes written and any write error encountered.
 func (p *HeaderPrinter) Print(a ...interface{}) *TextPrinter {
-	Print(p.Sprint(a...))
+	Fprint(p.Writer, p.Sprint(a...))
 	tp := TextPrinter(p)
 	return &tp
 }
@@ -173,7 +181,7 @@ func (p *HeaderPrinter) Print(a ...interface{}) *TextPrinter {
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
 func (p *HeaderPrinter) Println(a ...interface{}) *TextPrinter {
-	Print(p.Sprintln(a...))
+	Fprint(p.Writer, p.Sprintln(a...))
 	tp := TextPrinter(p)
 	return &tp
 }
@@ -181,7 +189,7 @@ func (p *HeaderPrinter) Println(a ...interface{}) *TextPrinter {
 // Printf formats according to a format specifier and writes to standard output.
 // It returns the number of bytes written and any write error encountered.
 func (p *HeaderPrinter) Printf(format string, a ...interface{}) *TextPrinter {
-	Print(p.Sprintf(format, a...))
+	Fprint(p.Writer, p.Sprintf(format, a...))
 	tp := TextPrinter(p)
 	return &tp
 }
@@ -190,7 +198,7 @@ func (p *HeaderPrinter) Printf(format string, a ...interface{}) *TextPrinter {
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
 func (p *HeaderPrinter) Printfln(format string, a ...interface{}) *TextPrinter {
-	Print(p.Sprintfln(format, a...))
+	Fprint(p.Writer, p.Sprintfln(format, a...))
 	tp := TextPrinter(p)
 	return &tp
 }

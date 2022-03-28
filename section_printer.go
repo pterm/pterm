@@ -2,6 +2,7 @@ package pterm
 
 import (
 	"fmt"
+	"io"
 	"strings"
 )
 
@@ -22,6 +23,7 @@ type SectionPrinter struct {
 	IndentCharacter string
 	TopPadding      int
 	BottomPadding   int
+	Writer          io.Writer
 }
 
 // WithStyle returns a new SectionPrinter with a specific style.
@@ -51,6 +53,12 @@ func (p SectionPrinter) WithTopPadding(padding int) *SectionPrinter {
 // WithBottomPadding returns a new SectionPrinter with a specific top padding.
 func (p SectionPrinter) WithBottomPadding(padding int) *SectionPrinter {
 	p.BottomPadding = padding
+	return &p
+}
+
+// WithWriter sets the custom Writer.
+func (p SectionPrinter) WithWriter(writer io.Writer) *SectionPrinter {
+	p.Writer = writer
 	return &p
 }
 
@@ -102,7 +110,7 @@ func (p SectionPrinter) Sprintfln(format string, a ...interface{}) string {
 // Spaces are added between operands when neither is a string.
 // It returns the number of bytes written and any write error encountered.
 func (p *SectionPrinter) Print(a ...interface{}) *TextPrinter {
-	Print(p.Sprint(a...))
+	Fprint(p.Writer, p.Sprint(a...))
 	tp := TextPrinter(p)
 	return &tp
 }
@@ -111,7 +119,7 @@ func (p *SectionPrinter) Print(a ...interface{}) *TextPrinter {
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
 func (p *SectionPrinter) Println(a ...interface{}) *TextPrinter {
-	Print(p.Sprintln(a...))
+	Fprint(p.Writer, p.Sprintln(a...))
 	tp := TextPrinter(p)
 	return &tp
 }
@@ -119,7 +127,7 @@ func (p *SectionPrinter) Println(a ...interface{}) *TextPrinter {
 // Printf formats according to a format specifier and writes to standard output.
 // It returns the number of bytes written and any write error encountered.
 func (p *SectionPrinter) Printf(format string, a ...interface{}) *TextPrinter {
-	Print(p.Sprintf(format, a...))
+	Fprint(p.Writer, p.Sprintf(format, a...))
 	tp := TextPrinter(p)
 	return &tp
 }
@@ -128,7 +136,7 @@ func (p *SectionPrinter) Printf(format string, a ...interface{}) *TextPrinter {
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
 func (p *SectionPrinter) Printfln(format string, a ...interface{}) *TextPrinter {
-	Print(p.Sprintfln(format, a...))
+	Fprint(p.Writer, p.Sprintfln(format, a...))
 	tp := TextPrinter(p)
 	return &tp
 }

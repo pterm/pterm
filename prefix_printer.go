@@ -2,6 +2,7 @@ package pterm
 
 import (
 	"fmt"
+	"io"
 	"runtime"
 	"strings"
 
@@ -90,6 +91,7 @@ type PrefixPrinter struct {
 	Fatal            bool
 	ShowLineNumber   bool
 	LineNumberOffset int
+	Writer           io.Writer
 	// If Debugger is true, the printer will only print if PrintDebugMessages is set to true.
 	// You can change PrintDebugMessages with EnableDebugMessages and DisableDebugMessages, or by setting the variable itself.
 	Debugger bool
@@ -141,6 +143,12 @@ func (p PrefixPrinter) WithDebugger(b ...bool) *PrefixPrinter {
 // The printed line number will then be the line number where your wrapper function is called.
 func (p PrefixPrinter) WithLineNumberOffset(offset int) *PrefixPrinter {
 	p.LineNumberOffset = offset
+	return &p
+}
+
+// WithWriter sets the custom Writer.
+func (p PrefixPrinter) WithWriter(writer io.Writer) *PrefixPrinter {
+	p.Writer = writer
 	return &p
 }
 
@@ -240,7 +248,7 @@ func (p *PrefixPrinter) Print(a ...interface{}) *TextPrinter {
 	if p.Debugger && !PrintDebugMessages {
 		return &tp
 	}
-	Print(p.Sprint(a...))
+	Fprint(p.Writer, p.Sprint(a...))
 	checkFatal(p)
 	return &tp
 }
@@ -253,7 +261,7 @@ func (p *PrefixPrinter) Println(a ...interface{}) *TextPrinter {
 	if p.Debugger && !PrintDebugMessages {
 		return &tp
 	}
-	Print(p.Sprintln(a...))
+	Fprint(p.Writer, p.Sprintln(a...))
 	checkFatal(p)
 	return &tp
 }
@@ -265,7 +273,7 @@ func (p *PrefixPrinter) Printf(format string, a ...interface{}) *TextPrinter {
 	if p.Debugger && !PrintDebugMessages {
 		return &tp
 	}
-	Print(p.Sprintf(format, a...))
+	Fprint(p.Writer, p.Sprintf(format, a...))
 	checkFatal(p)
 	return &tp
 }
@@ -278,7 +286,7 @@ func (p *PrefixPrinter) Printfln(format string, a ...interface{}) *TextPrinter {
 	if p.Debugger && !PrintDebugMessages {
 		return &tp
 	}
-	Print(p.Sprintfln(format, a...))
+	Fprint(p.Writer, p.Sprintfln(format, a...))
 	checkFatal(p)
 	return &tp
 }

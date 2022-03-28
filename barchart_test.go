@@ -1,6 +1,7 @@
 package pterm_test
 
 import (
+	"os"
 	"testing"
 
 	"github.com/MarvinJWendt/testza"
@@ -436,4 +437,13 @@ func TestBarChartPrinter_WithWidth(t *testing.T) {
 
 	testza.AssertEqual(t, s, p2.Width)
 	testza.AssertZero(t, p.Width)
+}
+
+func TestBarChartPrinter_WithWriter(t *testing.T) {
+	p := pterm.BarChartPrinter{}
+	s := os.Stderr
+	p2 := p.WithWriter(s)
+
+	testza.AssertEqual(t, s, p2.Writer)
+	testza.AssertZero(t, p.Writer)
 }

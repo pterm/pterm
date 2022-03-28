@@ -3,6 +3,7 @@ package pterm_test
 import (
 	"errors"
 	"io"
+	"os"
 	"testing"
 
 	"github.com/MarvinJWendt/testza"
@@ -134,4 +135,13 @@ func TestSectionPrinter_WithIndentCharacter(t *testing.T) {
 
 	testza.AssertEqual(t, "#", p2.IndentCharacter)
 	testza.AssertZero(t, p.IndentCharacter)
+}
+
+func TestSectionPrinter_WithWriter(t *testing.T) {
+	p := pterm.SectionPrinter{}
+	s := os.Stderr
+	p2 := p.WithWriter(s)
+
+	testza.AssertEqual(t, s, p2.Writer)
+	testza.AssertZero(t, p.Writer)
 }

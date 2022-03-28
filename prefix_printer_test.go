@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"os"
 	"testing"
 
 	"github.com/MarvinJWendt/testza"
@@ -409,6 +410,18 @@ func TestPrefixPrinter_WithLineNumberOffset(t *testing.T) {
 			p2 := p.WithLineNumberOffset(1337)
 
 			testza.AssertEqual(t, 1337, p2.LineNumberOffset)
+		})
+	}
+}
+
+func TestPrefixPrinter_WithWriter(t *testing.T) {
+	for _, p := range prefixPrinters {
+		t.Run("", func(t *testing.T) {
+			s := os.Stderr
+			p2 := p.WithWriter(s)
+
+			testza.AssertEqual(t, s, p2.Writer)
+			testza.AssertZero(t, p.Writer)
 		})
 	}
 }

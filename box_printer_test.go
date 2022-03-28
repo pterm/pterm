@@ -3,6 +3,7 @@ package pterm_test
 import (
 	"errors"
 	"io"
+	"os"
 	"testing"
 
 	"github.com/MarvinJWendt/testza"
@@ -333,4 +334,13 @@ func TestBoxPrinter_WithHorizontalString(t *testing.T) {
 
 	testza.AssertEqual(t, "-", p2.HorizontalString)
 	testza.AssertZero(t, p.HorizontalString)
+}
+
+func TestBoxPrinter_WithWriter(t *testing.T) {
+	p := pterm.BoxPrinter{}
+	s := os.Stderr
+	p2 := p.WithWriter(s)
+
+	testza.AssertEqual(t, s, p2.Writer)
+	testza.AssertZero(t, p.Writer)
 }

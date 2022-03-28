@@ -3,6 +3,7 @@ package pterm_test
 import (
 	"errors"
 	"io"
+	"os"
 	"testing"
 
 	"github.com/MarvinJWendt/testza"
@@ -144,4 +145,13 @@ func TestHeaderPrinter_WithTextStyle(t *testing.T) {
 	p2 := p.WithTextStyle(s)
 
 	testza.AssertEqual(t, s, p2.TextStyle)
+}
+
+func TestHeaderPrinter_WithWriter(t *testing.T) {
+	p := pterm.HeaderPrinter{}
+	s := os.Stderr
+	p2 := p.WithWriter(s)
+
+	testza.AssertEqual(t, s, p2.Writer)
+	testza.AssertZero(t, p.Writer)
 }
