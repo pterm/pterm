@@ -2,6 +2,7 @@ package pterm_test
 
 import (
 	"io"
+	"os"
 	"testing"
 	"time"
 
@@ -207,6 +208,15 @@ func TestSpinnerPrinter_DifferentVariations(t *testing.T) {
 			s.Stop()
 		})
 	}
+}
+
+func TestSpinnerPrinter_WithWriter(t *testing.T) {
+	p := pterm.SpinnerPrinter{}
+	s := os.Stderr
+	p2 := p.WithWriter(s)
+
+	testza.AssertEqual(t, s, p2.Writer)
+	testza.AssertZero(t, p.Writer)
 }
 
 // func TestClearActiveSpinners(t *testing.T) {

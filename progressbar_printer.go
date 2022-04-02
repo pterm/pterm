@@ -1,6 +1,7 @@
 package pterm
 
 import (
+	"io"
 	"strconv"
 	"strings"
 	"time"
@@ -55,6 +56,8 @@ type ProgressbarPrinter struct {
 	IsActive bool
 
 	startedAt time.Time
+
+	Writer io.Writer
 }
 
 // WithTitle sets the name of the ProgressbarPrinter.
@@ -146,6 +149,12 @@ func (p ProgressbarPrinter) WithRemoveWhenDone(b ...bool) *ProgressbarPrinter {
 // WithBarFiller sets the filler character for the ProgressbarPrinter.
 func (p ProgressbarPrinter) WithBarFiller(char string) *ProgressbarPrinter {
 	p.BarFiller = char
+	return &p
+}
+
+// WithWriter sets the custom Writer.
+func (p ProgressbarPrinter) WithWriter(writer io.Writer) *ProgressbarPrinter {
+	p.Writer = writer
 	return &p
 }
 

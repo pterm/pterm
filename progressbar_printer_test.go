@@ -1,6 +1,7 @@
 package pterm_test
 
 import (
+	"os"
 	"testing"
 	"time"
 
@@ -208,4 +209,13 @@ func TestProgressbarPrinter_UpdateTitle(t *testing.T) {
 	p2.UpdateTitle("test2")
 
 	testza.AssertEqual(t, "test2", p2.Title)
+}
+
+func TestProgressbarPrinter_WithWriter(t *testing.T) {
+	p := pterm.ProgressbarPrinter{}
+	s := os.Stderr
+	p2 := p.WithWriter(s)
+
+	testza.AssertEqual(t, s, p2.Writer)
+	testza.AssertZero(t, p.Writer)
 }

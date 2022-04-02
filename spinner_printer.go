@@ -1,6 +1,7 @@
 package pterm
 
 import (
+	"io"
 	"time"
 
 	"github.com/pterm/pterm/internal"
@@ -43,6 +44,8 @@ type SpinnerPrinter struct {
 
 	startedAt       time.Time
 	currentSequence string
+
+	Writer io.Writer
 }
 
 // WithText adds a text to the SpinnerPrinter.
@@ -97,6 +100,12 @@ func (s SpinnerPrinter) WithTimerRoundingFactor(factor time.Duration) *SpinnerPr
 func (s SpinnerPrinter) WithTimerStyle(style *Style) *SpinnerPrinter {
 	s.TimerStyle = style
 	return &s
+}
+
+// WithWriter sets the custom Writer.
+func (p SpinnerPrinter) WithWriter(writer io.Writer) *SpinnerPrinter {
+	p.Writer = writer
+	return &p
 }
 
 // UpdateText updates the message of the active SpinnerPrinter.
