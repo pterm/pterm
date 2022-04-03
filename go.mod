@@ -3,7 +3,7 @@ module github.com/pterm/pterm
 go 1.15
 
 require (
-	github.com/MarvinJWendt/testza v0.3.0
+	github.com/MarvinJWendt/testza v0.3.2
 	github.com/atomicgo/cursor v0.0.1
 	github.com/gookit/color v1.5.0
 	github.com/klauspost/cpuid/v2 v2.0.12 // indirect
