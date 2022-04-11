@@ -226,11 +226,11 @@ func TestSpinnerPrinter_OutputToWriters(t *testing.T) {
 	}{
 		"ExpectWarningMessageToBeWrittenToStderr": {
 			action:                func(sp *pterm.SpinnerPrinter) { sp.Warning("A warning") },
-			expectOutputToContain: pterm.Warning.Sprint("A warning"),
+			expectOutputToContain: "A warning",
 		},
 		"ExpectFailMessageToBeWrittenToStderr": {
 			action:                func(sp *pterm.SpinnerPrinter) { sp.Fail("An error") },
-			expectOutputToContain: pterm.Error.Sprint("An error"),
+			expectOutputToContain: "An error",
 		},
 		"ExpectUpdatedTextToBeWrittenToStderr": {
 			action: func(sp *pterm.SpinnerPrinter) {
