@@ -4,8 +4,8 @@ github.com/MarvinJWendt/testza v0.2.8/go.mod h1:nwIcjmr0Zz+Rcwfh3/4UhBp7ePKVhuBE
 github.com/MarvinJWendt/testza v0.2.10/go.mod h1:pd+VWsoGUiFtq+hRKSU1Bktnn+DMCSrDrXDpX2bG66k=
 github.com/MarvinJWendt/testza v0.2.12/go.mod h1:JOIegYyV7rX+7VZ9r77L/eH6CfJHHzXjB69adAhzZkI=
 github.com/MarvinJWendt/testza v0.3.0/go.mod h1:eFcL4I0idjtIx8P9C6KkAuLgATNKpX4/2oUqKc6bF2c=
-github.com/MarvinJWendt/testza v0.3.5 h1:g9krITRRlIsF1eO9sUKXtiTw670gZIIk6T08Keeo1nM=
-github.com/MarvinJWendt/testza v0.3.5/go.mod h1:ExbTpWmA1z2E9HSskvrNcwApoX4F9bID692s10nuHRY=
+github.com/MarvinJWendt/testza v0.4.1 h1:bqidLqFVtySvyq7D+xIfFKefl+AfJtDpivXC9fx3hm4=
+github.com/MarvinJWendt/testza v0.4.1/go.mod h1:mSdhXiKH8sg/gQehJ63bINcCKp7RtYewEjXsvsVUPbE=
 github.com/atomicgo/cursor v0.0.1 h1:xdogsqa6YYlLfM+GyClC/Lchf7aiMerFiZQn7soTOoU=
 github.com/atomicgo/cursor v0.0.1/go.mod h1:cBON2QmmrysudxNBFthvMtN32r3jxVRIvzkUiF/RuIk=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
