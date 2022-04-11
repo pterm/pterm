@@ -236,7 +236,7 @@ func (p *ProgressbarPrinter) updateProgress() *ProgressbarPrinter {
 	}
 
 	if !RawOutput {
-		Printo(before + bar + after)
+		Fprinto(p.Writer, before+bar+after)
 	}
 	return p
 }
@@ -259,7 +259,7 @@ func (p *ProgressbarPrinter) Add(count int) *ProgressbarPrinter {
 // Start the ProgressbarPrinter.
 func (p ProgressbarPrinter) Start() (*ProgressbarPrinter, error) {
 	if RawOutput && p.ShowTitle {
-		Println(p.Title)
+		Fprintln(p.Writer, p.Title)
 	}
 	p.IsActive = true
 	ActiveProgressBarPrinters = append(ActiveProgressBarPrinters, &p)
@@ -277,10 +277,10 @@ func (p *ProgressbarPrinter) Stop() (*ProgressbarPrinter, error) {
 	}
 	p.IsActive = false
 	if p.RemoveWhenDone {
-		fClearLine(nil)
-		Fprinto(nil)
+		fClearLine(p.Writer)
+		Fprinto(p.Writer)
 	} else {
-		Fprintln(nil)
+		Fprintln(p.Writer)
 	}
 	return p, nil
 }
