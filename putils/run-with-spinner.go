@@ -10,7 +10,10 @@ func RunWithSpinner(spinner *pterm.SpinnerPrinter, f func(spinner *pterm.Spinner
 	}
 
 	err = f(s)
-	s.Stop()
+
+	if s.IsActive {
+		s.Stop()
+	}
 
 	return err
 }
