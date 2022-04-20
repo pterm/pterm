@@ -124,7 +124,7 @@ func Fprint(writer io.Writer, a ...interface{}) {
 	if !printed {
 		ret = color.Sprint(Sprint(a...))
 	}
-	
+
 	if writer != nil {
 		color.Fprint(writer, Sprint(ret))
 	} else {

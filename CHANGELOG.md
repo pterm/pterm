@@ -2,6 +2,9 @@
 ## [Unreleased]
 
 
+<a name="v0.12.41"></a>
+## [v0.12.41] - 2022-04-12
+
 <a name="v0.12.40"></a>
 ## [v0.12.40] - 2022-03-28
 ### Features
@@ -1003,7 +1006,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.40...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.41...HEAD
+[v0.12.41]: https://github.com/pterm/pterm/compare/v0.12.40...v0.12.41
 [v0.12.40]: https://github.com/pterm/pterm/compare/v0.12.39...v0.12.40
 [v0.12.39]: https://github.com/pterm/pterm/compare/v0.12.38...v0.12.39
 [v0.12.38]: https://github.com/pterm/pterm/compare/v0.12.37...v0.12.38
