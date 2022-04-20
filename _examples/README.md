@@ -77,6 +77,134 @@ func main() {
 
 </details>
 
+### barchart/demo
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/demo/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	positiveBars := pterm.Bars{
+		pterm.Bar{
+			Label: "Bar 1",
+			Value: 5,
+		},
+		pterm.Bar{
+			Label: "Bar 2",
+			Value: 3,
+		},
+		pterm.Bar{
+			Label: "Longer Label",
+			Value: 7,
+		},
+	}
+
+	pterm.Info.Println("Chart example with positive only values (bars use 100% of chart area)")
+	_ = pterm.DefaultBarChart.WithBars(positiveBars).Render()
+	_ = pterm.DefaultBarChart.WithHorizontal().WithBars(positiveBars).Render()
+}
+
+```
+
+</details>
+
+### barchart/mixed-values
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/mixed-values/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	mixedBars := pterm.Bars{
+		pterm.Bar{
+			Label: "Bar 1",
+			Value: 2,
+		},
+		pterm.Bar{
+			Label: "Bar 2",
+			Value: -3,
+		},
+		pterm.Bar{
+			Label: "Bar 3",
+			Value: -2,
+		},
+		pterm.Bar{
+			Label: "Bar 4",
+			Value: 5,
+		},
+		pterm.Bar{
+			Label: "Longer Label",
+			Value: 7,
+		},
+	}
+
+	pterm.DefaultSection.Println("Chart example with mixed values (note screen space usage in case when ABSOLUTE values of negative and positive parts are differ too much)")
+	_ = pterm.DefaultBarChart.WithBars(mixedBars).WithShowValue().Render()
+	_ = pterm.DefaultBarChart.WithHorizontal().WithBars(mixedBars).WithShowValue().Render()
+}
+
+```
+
+</details>
+
+### barchart/demo
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/demo/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	positiveBars := pterm.Bars{
+		pterm.Bar{
+			Label: "Bar 1",
+			Value: 5,
+		},
+		pterm.Bar{
+			Label: "Bar 2",
+			Value: 3,
+		},
+		pterm.Bar{
+			Label: "Longer Label",
+			Value: 7,
+		},
+	}
+
+	pterm.Info.Println("Chart example with positive only values (bars use 100% of chart area)")
+	_ = pterm.DefaultBarChart.WithBars(positiveBars).Render()
+	_ = pterm.DefaultBarChart.WithHorizontal().WithBars(positiveBars).Render()
+}
+
+```
+
+</details>
+
 ### barchart/mixed-values
 
 ![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/mixed-values/animation.svg)
@@ -286,6 +414,34 @@ func main() {
 
 </details>
 
+### bulletlist/customized
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/bulletlist/customized/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	// Print a customized list with different styles and levels.
+	pterm.DefaultBulletList.WithItems([]pterm.BulletListItem{
+		{Level: 0, Text: "Blue", TextStyle: pterm.NewStyle(pterm.FgBlue), BulletStyle: pterm.NewStyle(pterm.FgRed)},
+		{Level: 1, Text: "Green", TextStyle: pterm.NewStyle(pterm.FgGreen), Bullet: "-", BulletStyle: pterm.NewStyle(pterm.FgLightWhite)},
+		{Level: 2, Text: "Cyan", TextStyle: pterm.NewStyle(pterm.FgCyan), Bullet: ">", BulletStyle: pterm.NewStyle(pterm.FgYellow)},
+	}).Render()
+}
+
+```
+
+</details>
+
 ### bulletlist/demo
 
 ![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/bulletlist/demo/animation.svg)
@@ -340,6 +496,2367 @@ func main() {
 	pterm.DefaultCenter.Println(s) // Print BigLetters with the default CenterPrinter
 
 	pterm.DefaultCenter.WithCenterEachLineSeparately().Println("This text is centered!\nBut each line is\ncentered\nseparately")
+}
+
+```
+
+</details>
+
+### coloring/demo
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/demo/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	// Print different colored words.
+	pterm.Println(pterm.Red("Hello, ") + pterm.Green("World") + pterm.Cyan("!"))
+	pterm.Println(pterm.Red("Even " + pterm.Cyan("nested ") + pterm.Green("colors ") + "are supported!"))
+
+	// Print strings with set color.
+	pterm.FgBlack.Println("FgBlack")
+	pterm.FgRed.Println("FgRed")
+	pterm.FgGreen.Println("FgGreen")
+	pterm.FgYellow.Println("FgYellow")
+	pterm.FgBlue.Println("FgBlue")
+	pterm.FgMagenta.Println("FgMagenta")
+	pterm.FgCyan.Println("FgCyan")
+	pterm.FgWhite.Println("FgWhite")
+	pterm.Println() // Print one line space.
+	pterm.FgLightRed.Println("FgLightRed")
+	pterm.FgLightGreen.Println("FgLightGreen")
+	pterm.FgLightYellow.Println("FgLightYellow")
+	pterm.FgLightBlue.Println("FgLightBlue")
+	pterm.FgLightMagenta.Println("FgLightMagenta")
+	pterm.FgLightCyan.Println("FgLightCyan")
+	pterm.FgLightWhite.Println("FgLightWhite")
+}
+
+```
+
+</details>
+
+### coloring/demo
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/demo/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	// Print different colored words.
+	pterm.Println(pterm.Red("Hello, ") + pterm.Green("World") + pterm.Cyan("!"))
+	pterm.Println(pterm.Red("Even " + pterm.Cyan("nested ") + pterm.Green("colors ") + "are supported!"))
+
+	// Print strings with set color.
+	pterm.FgBlack.Println("FgBlack")
+	pterm.FgRed.Println("FgRed")
+	pterm.FgGreen.Println("FgGreen")
+	pterm.FgYellow.Println("FgYellow")
+	pterm.FgBlue.Println("FgBlue")
+	pterm.FgMagenta.Println("FgMagenta")
+	pterm.FgCyan.Println("FgCyan")
+	pterm.FgWhite.Println("FgWhite")
+	pterm.Println() // Print one line space.
+	pterm.FgLightRed.Println("FgLightRed")
+	pterm.FgLightGreen.Println("FgLightGreen")
+	pterm.FgLightYellow.Println("FgLightYellow")
+	pterm.FgLightBlue.Println("FgLightBlue")
+	pterm.FgLightMagenta.Println("FgLightMagenta")
+	pterm.FgLightCyan.Println("FgLightCyan")
+	pterm.FgLightWhite.Println("FgLightWhite")
+}
+
+```
+
+</details>
+
+### coloring/disable-color
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/disable-color/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"math/rand"
+	"strconv"
+	"strings"
+	"time"
+
+	"github.com/pterm/pterm"
+)
+
+// Change this to time.Millisecond*200 to speed up the demo.
+// Useful when debugging.
+const second = time.Second
+
+var pseudoProgramList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chrome pseudo-outlook pseudo-explorer "+
+	"pseudo-dops pseudo-git pseudo-vsc pseudo-intellij pseudo-minecraft pseudo-scoop pseudo-chocolatey", " ")
+
+func main() {
+	pterm.DisableColor()
+	introScreen()
+	clear()
+	pseudoApplicationHeader()
+	time.Sleep(second)
+	installingPseudoList()
+	time.Sleep(second * 2)
+	pterm.DefaultSection.WithLevel(2).Println("Program Install Report")
+	installedProgramsSize()
+	time.Sleep(second * 4)
+	pterm.DefaultSection.Println("Tree Printer")
+	installedTree()
+	time.Sleep(second * 4)
+	pterm.DefaultSection.Println("TrueColor Support")
+	fadeText()
+	time.Sleep(second)
+	pterm.DefaultSection.Println("Bullet List Printer")
+	listPrinter()
+}
+
+func installedTree() {
+	leveledList := pterm.LeveledList{
+		pterm.LeveledListItem{Level: 0, Text: "C:"},
+		pterm.LeveledListItem{Level: 1, Text: "Go"},
+		pterm.LeveledListItem{Level: 1, Text: "Windows"},
+		pterm.LeveledListItem{Level: 1, Text: "Programs"},
+	}
+	for _, s := range pseudoProgramList {
+		if s != "pseudo-minecraft" {
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 2, Text: s})
+		}
+		if s == "pseudo-chrome" {
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Tabs"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Extensions"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "Refined GitHub"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "GitHub Dark Theme"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Bookmarks"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "PTerm"})
+		}
+	}
+
+	pterm.DefaultTree.WithRoot(pterm.NewTreeFromLeveledList(leveledList)).Render()
+}
+
+func installingPseudoList() {
+	pterm.DefaultSection.Println("Installing pseudo programs")
+
+	p, _ := pterm.DefaultProgressbar.WithTotal(len(pseudoProgramList)).WithTitle("Installing stuff").Start()
+	for i := 0; i < p.Total; i++ {
+		p.UpdateTitle("Installing " + pseudoProgramList[i])
+		if pseudoProgramList[i] == "pseudo-minecraft" {
+			pterm.Warning.Println("Could not install pseudo-minecraft\nThe company policy forbids games.")
+		} else {
+			pterm.Success.Println("Installing " + pseudoProgramList[i])
+			p.Increment()
+		}
+		time.Sleep(second / 2)
+	}
+	p.Stop()
+}
+
+func listPrinter() {
+	pterm.NewBulletListFromString(`Good bye
+ Have a nice day!`, " ").Render()
+}
+
+func fadeText() {
+	from := pterm.NewRGB(0, 255, 255) // This RGB value is used as the gradients start point.
+	to := pterm.NewRGB(255, 0, 255)   // This RGB value is used as the gradients first point.
+
+	str := "If your terminal has TrueColor support, you can use RGB colors!\nYou can even fade them :)"
+	strs := strings.Split(str, "")
+	var fadeInfo string // String which will be used to print info.
+	// For loop over the range of the string length.
+	for i := 0; i < len(str); i++ {
+		// Append faded letter to info string.
+		fadeInfo += from.Fade(0, float32(len(str)), float32(i), to).Sprint(strs[i])
+	}
+	pterm.Info.Println(fadeInfo)
+}
+
+func installedProgramsSize() {
+	d := pterm.TableData{{"Program Name", "Status", "Size"}}
+	for _, s := range pseudoProgramList {
+		if s != "pseudo-minecraft" {
+			d = append(d, []string{s, pterm.LightGreen("pass"), strconv.Itoa(randomInt(7, 200)) + "mb"})
+		} else {
+			d = append(d, []string{pterm.LightRed(s), pterm.LightRed("fail"), "0mb"})
+		}
+	}
+	pterm.DefaultTable.WithHasHeader().WithData(d).Render()
+}
+
+func pseudoApplicationHeader() *pterm.TextPrinter {
+	return pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
+		"Pseudo Application created with PTerm")
+}
+
+func introScreen() {
+	pterm.DefaultBigText.WithLetters(
+		pterm.NewLettersFromStringWithStyle("P", pterm.NewStyle(pterm.FgLightCyan)),
+		pterm.NewLettersFromStringWithStyle("Term", pterm.NewStyle(pterm.FgLightMagenta))).
+		Render()
+
+	pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
+		"PTDP - PTerm Demo Program")
+
+	pterm.Info.Println("This animation was generated with the latest version of PTerm!" +
+		"\nPTerm works on nearly every terminal and operating system." +
+		"\nIt's super easy to use!" +
+		"\nIf you want, you can customize everything :)" +
+		"\nYou can see the code of this demo in the " + pterm.LightMagenta("./_examples/demo") + " directory." +
+		"\n" +
+		"\nThis demo was updated at: " + pterm.Green(time.Now().Format("02 Jan 2006 - 15:04:05 MST")))
+	pterm.Println()
+	introSpinner, _ := pterm.DefaultSpinner.WithRemoveWhenDone(true).Start("Waiting for 15 seconds...")
+	time.Sleep(second)
+	for i := 14; i > 0; i-- {
+		if i > 1 {
+			introSpinner.UpdateText("Waiting for " + strconv.Itoa(i) + " seconds...")
+		} else {
+			introSpinner.UpdateText("Waiting for " + strconv.Itoa(i) + " second...")
+		}
+		time.Sleep(second)
+	}
+	introSpinner.Stop()
+}
+
+func clear() {
+	print("\033[H\033[2J")
+}
+
+func randomInt(min, max int) int {
+	rand.Seed(time.Now().UnixNano())
+	return rand.Intn(max-min+1) + min
+}
+
+```
+
+</details>
+
+### coloring/demo
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/demo/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	// Print different colored words.
+	pterm.Println(pterm.Red("Hello, ") + pterm.Green("World") + pterm.Cyan("!"))
+	pterm.Println(pterm.Red("Even " + pterm.Cyan("nested ") + pterm.Green("colors ") + "are supported!"))
+
+	// Print strings with set color.
+	pterm.FgBlack.Println("FgBlack")
+	pterm.FgRed.Println("FgRed")
+	pterm.FgGreen.Println("FgGreen")
+	pterm.FgYellow.Println("FgYellow")
+	pterm.FgBlue.Println("FgBlue")
+	pterm.FgMagenta.Println("FgMagenta")
+	pterm.FgCyan.Println("FgCyan")
+	pterm.FgWhite.Println("FgWhite")
+	pterm.Println() // Print one line space.
+	pterm.FgLightRed.Println("FgLightRed")
+	pterm.FgLightGreen.Println("FgLightGreen")
+	pterm.FgLightYellow.Println("FgLightYellow")
+	pterm.FgLightBlue.Println("FgLightBlue")
+	pterm.FgLightMagenta.Println("FgLightMagenta")
+	pterm.FgLightCyan.Println("FgLightCyan")
+	pterm.FgLightWhite.Println("FgLightWhite")
+}
+
+```
+
+</details>
+
+### coloring/disable-color
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/disable-color/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"math/rand"
+	"strconv"
+	"strings"
+	"time"
+
+	"github.com/pterm/pterm"
+)
+
+// Change this to time.Millisecond*200 to speed up the demo.
+// Useful when debugging.
+const second = time.Second
+
+var pseudoProgramList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chrome pseudo-outlook pseudo-explorer "+
+	"pseudo-dops pseudo-git pseudo-vsc pseudo-intellij pseudo-minecraft pseudo-scoop pseudo-chocolatey", " ")
+
+func main() {
+	pterm.DisableColor()
+	introScreen()
+	clear()
+	pseudoApplicationHeader()
+	time.Sleep(second)
+	installingPseudoList()
+	time.Sleep(second * 2)
+	pterm.DefaultSection.WithLevel(2).Println("Program Install Report")
+	installedProgramsSize()
+	time.Sleep(second * 4)
+	pterm.DefaultSection.Println("Tree Printer")
+	installedTree()
+	time.Sleep(second * 4)
+	pterm.DefaultSection.Println("TrueColor Support")
+	fadeText()
+	time.Sleep(second)
+	pterm.DefaultSection.Println("Bullet List Printer")
+	listPrinter()
+}
+
+func installedTree() {
+	leveledList := pterm.LeveledList{
+		pterm.LeveledListItem{Level: 0, Text: "C:"},
+		pterm.LeveledListItem{Level: 1, Text: "Go"},
+		pterm.LeveledListItem{Level: 1, Text: "Windows"},
+		pterm.LeveledListItem{Level: 1, Text: "Programs"},
+	}
+	for _, s := range pseudoProgramList {
+		if s != "pseudo-minecraft" {
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 2, Text: s})
+		}
+		if s == "pseudo-chrome" {
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Tabs"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Extensions"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "Refined GitHub"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "GitHub Dark Theme"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Bookmarks"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "PTerm"})
+		}
+	}
+
+	pterm.DefaultTree.WithRoot(pterm.NewTreeFromLeveledList(leveledList)).Render()
+}
+
+func installingPseudoList() {
+	pterm.DefaultSection.Println("Installing pseudo programs")
+
+	p, _ := pterm.DefaultProgressbar.WithTotal(len(pseudoProgramList)).WithTitle("Installing stuff").Start()
+	for i := 0; i < p.Total; i++ {
+		p.UpdateTitle("Installing " + pseudoProgramList[i])
+		if pseudoProgramList[i] == "pseudo-minecraft" {
+			pterm.Warning.Println("Could not install pseudo-minecraft\nThe company policy forbids games.")
+		} else {
+			pterm.Success.Println("Installing " + pseudoProgramList[i])
+			p.Increment()
+		}
+		time.Sleep(second / 2)
+	}
+	p.Stop()
+}
+
+func listPrinter() {
+	pterm.NewBulletListFromString(`Good bye
+ Have a nice day!`, " ").Render()
+}
+
+func fadeText() {
+	from := pterm.NewRGB(0, 255, 255) // This RGB value is used as the gradients start point.
+	to := pterm.NewRGB(255, 0, 255)   // This RGB value is used as the gradients first point.
+
+	str := "If your terminal has TrueColor support, you can use RGB colors!\nYou can even fade them :)"
+	strs := strings.Split(str, "")
+	var fadeInfo string // String which will be used to print info.
+	// For loop over the range of the string length.
+	for i := 0; i < len(str); i++ {
+		// Append faded letter to info string.
+		fadeInfo += from.Fade(0, float32(len(str)), float32(i), to).Sprint(strs[i])
+	}
+	pterm.Info.Println(fadeInfo)
+}
+
+func installedProgramsSize() {
+	d := pterm.TableData{{"Program Name", "Status", "Size"}}
+	for _, s := range pseudoProgramList {
+		if s != "pseudo-minecraft" {
+			d = append(d, []string{s, pterm.LightGreen("pass"), strconv.Itoa(randomInt(7, 200)) + "mb"})
+		} else {
+			d = append(d, []string{pterm.LightRed(s), pterm.LightRed("fail"), "0mb"})
+		}
+	}
+	pterm.DefaultTable.WithHasHeader().WithData(d).Render()
+}
+
+func pseudoApplicationHeader() *pterm.TextPrinter {
+	return pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
+		"Pseudo Application created with PTerm")
+}
+
+func introScreen() {
+	pterm.DefaultBigText.WithLetters(
+		pterm.NewLettersFromStringWithStyle("P", pterm.NewStyle(pterm.FgLightCyan)),
+		pterm.NewLettersFromStringWithStyle("Term", pterm.NewStyle(pterm.FgLightMagenta))).
+		Render()
+
+	pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
+		"PTDP - PTerm Demo Program")
+
+	pterm.Info.Println("This animation was generated with the latest version of PTerm!" +
+		"\nPTerm works on nearly every terminal and operating system." +
+		"\nIt's super easy to use!" +
+		"\nIf you want, you can customize everything :)" +
+		"\nYou can see the code of this demo in the " + pterm.LightMagenta("./_examples/demo") + " directory." +
+		"\n" +
+		"\nThis demo was updated at: " + pterm.Green(time.Now().Format("02 Jan 2006 - 15:04:05 MST")))
+	pterm.Println()
+	introSpinner, _ := pterm.DefaultSpinner.WithRemoveWhenDone(true).Start("Waiting for 15 seconds...")
+	time.Sleep(second)
+	for i := 14; i > 0; i-- {
+		if i > 1 {
+			introSpinner.UpdateText("Waiting for " + strconv.Itoa(i) + " seconds...")
+		} else {
+			introSpinner.UpdateText("Waiting for " + strconv.Itoa(i) + " second...")
+		}
+		time.Sleep(second)
+	}
+	introSpinner.Stop()
+}
+
+func clear() {
+	print("\033[H\033[2J")
+}
+
+func randomInt(min, max int) int {
+	rand.Seed(time.Now().UnixNano())
+	return rand.Intn(max-min+1) + min
+}
+
+```
+
+</details>
+
+### coloring/disable-output
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/disable-output/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	for i := 0; i < 15; i++ {
+		switch i {
+		case 5:
+			pterm.Info.Println("Disabled Output!")
+			pterm.DisableOutput()
+		case 10:
+			pterm.EnableOutput()
+			pterm.Info.Println("Enabled Output!")
+		}
+
+		pterm.Printf("Printing something... [%d/%d]\n", i, 15)
+	}
+}
+
+```
+
+</details>
+
+### coloring/demo
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/demo/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	// Print different colored words.
+	pterm.Println(pterm.Red("Hello, ") + pterm.Green("World") + pterm.Cyan("!"))
+	pterm.Println(pterm.Red("Even " + pterm.Cyan("nested ") + pterm.Green("colors ") + "are supported!"))
+
+	// Print strings with set color.
+	pterm.FgBlack.Println("FgBlack")
+	pterm.FgRed.Println("FgRed")
+	pterm.FgGreen.Println("FgGreen")
+	pterm.FgYellow.Println("FgYellow")
+	pterm.FgBlue.Println("FgBlue")
+	pterm.FgMagenta.Println("FgMagenta")
+	pterm.FgCyan.Println("FgCyan")
+	pterm.FgWhite.Println("FgWhite")
+	pterm.Println() // Print one line space.
+	pterm.FgLightRed.Println("FgLightRed")
+	pterm.FgLightGreen.Println("FgLightGreen")
+	pterm.FgLightYellow.Println("FgLightYellow")
+	pterm.FgLightBlue.Println("FgLightBlue")
+	pterm.FgLightMagenta.Println("FgLightMagenta")
+	pterm.FgLightCyan.Println("FgLightCyan")
+	pterm.FgLightWhite.Println("FgLightWhite")
+}
+
+```
+
+</details>
+
+### coloring/disable-color
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/disable-color/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"math/rand"
+	"strconv"
+	"strings"
+	"time"
+
+	"github.com/pterm/pterm"
+)
+
+// Change this to time.Millisecond*200 to speed up the demo.
+// Useful when debugging.
+const second = time.Second
+
+var pseudoProgramList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chrome pseudo-outlook pseudo-explorer "+
+	"pseudo-dops pseudo-git pseudo-vsc pseudo-intellij pseudo-minecraft pseudo-scoop pseudo-chocolatey", " ")
+
+func main() {
+	pterm.DisableColor()
+	introScreen()
+	clear()
+	pseudoApplicationHeader()
+	time.Sleep(second)
+	installingPseudoList()
+	time.Sleep(second * 2)
+	pterm.DefaultSection.WithLevel(2).Println("Program Install Report")
+	installedProgramsSize()
+	time.Sleep(second * 4)
+	pterm.DefaultSection.Println("Tree Printer")
+	installedTree()
+	time.Sleep(second * 4)
+	pterm.DefaultSection.Println("TrueColor Support")
+	fadeText()
+	time.Sleep(second)
+	pterm.DefaultSection.Println("Bullet List Printer")
+	listPrinter()
+}
+
+func installedTree() {
+	leveledList := pterm.LeveledList{
+		pterm.LeveledListItem{Level: 0, Text: "C:"},
+		pterm.LeveledListItem{Level: 1, Text: "Go"},
+		pterm.LeveledListItem{Level: 1, Text: "Windows"},
+		pterm.LeveledListItem{Level: 1, Text: "Programs"},
+	}
+	for _, s := range pseudoProgramList {
+		if s != "pseudo-minecraft" {
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 2, Text: s})
+		}
+		if s == "pseudo-chrome" {
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Tabs"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Extensions"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "Refined GitHub"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "GitHub Dark Theme"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Bookmarks"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "PTerm"})
+		}
+	}
+
+	pterm.DefaultTree.WithRoot(pterm.NewTreeFromLeveledList(leveledList)).Render()
+}
+
+func installingPseudoList() {
+	pterm.DefaultSection.Println("Installing pseudo programs")
+
+	p, _ := pterm.DefaultProgressbar.WithTotal(len(pseudoProgramList)).WithTitle("Installing stuff").Start()
+	for i := 0; i < p.Total; i++ {
+		p.UpdateTitle("Installing " + pseudoProgramList[i])
+		if pseudoProgramList[i] == "pseudo-minecraft" {
+			pterm.Warning.Println("Could not install pseudo-minecraft\nThe company policy forbids games.")
+		} else {
+			pterm.Success.Println("Installing " + pseudoProgramList[i])
+			p.Increment()
+		}
+		time.Sleep(second / 2)
+	}
+	p.Stop()
+}
+
+func listPrinter() {
+	pterm.NewBulletListFromString(`Good bye
+ Have a nice day!`, " ").Render()
+}
+
+func fadeText() {
+	from := pterm.NewRGB(0, 255, 255) // This RGB value is used as the gradients start point.
+	to := pterm.NewRGB(255, 0, 255)   // This RGB value is used as the gradients first point.
+
+	str := "If your terminal has TrueColor support, you can use RGB colors!\nYou can even fade them :)"
+	strs := strings.Split(str, "")
+	var fadeInfo string // String which will be used to print info.
+	// For loop over the range of the string length.
+	for i := 0; i < len(str); i++ {
+		// Append faded letter to info string.
+		fadeInfo += from.Fade(0, float32(len(str)), float32(i), to).Sprint(strs[i])
+	}
+	pterm.Info.Println(fadeInfo)
+}
+
+func installedProgramsSize() {
+	d := pterm.TableData{{"Program Name", "Status", "Size"}}
+	for _, s := range pseudoProgramList {
+		if s != "pseudo-minecraft" {
+			d = append(d, []string{s, pterm.LightGreen("pass"), strconv.Itoa(randomInt(7, 200)) + "mb"})
+		} else {
+			d = append(d, []string{pterm.LightRed(s), pterm.LightRed("fail"), "0mb"})
+		}
+	}
+	pterm.DefaultTable.WithHasHeader().WithData(d).Render()
+}
+
+func pseudoApplicationHeader() *pterm.TextPrinter {
+	return pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
+		"Pseudo Application created with PTerm")
+}
+
+func introScreen() {
+	pterm.DefaultBigText.WithLetters(
+		pterm.NewLettersFromStringWithStyle("P", pterm.NewStyle(pterm.FgLightCyan)),
+		pterm.NewLettersFromStringWithStyle("Term", pterm.NewStyle(pterm.FgLightMagenta))).
+		Render()
+
+	pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
+		"PTDP - PTerm Demo Program")
+
+	pterm.Info.Println("This animation was generated with the latest version of PTerm!" +
+		"\nPTerm works on nearly every terminal and operating system." +
+		"\nIt's super easy to use!" +
+		"\nIf you want, you can customize everything :)" +
+		"\nYou can see the code of this demo in the " + pterm.LightMagenta("./_examples/demo") + " directory." +
+		"\n" +
+		"\nThis demo was updated at: " + pterm.Green(time.Now().Format("02 Jan 2006 - 15:04:05 MST")))
+	pterm.Println()
+	introSpinner, _ := pterm.DefaultSpinner.WithRemoveWhenDone(true).Start("Waiting for 15 seconds...")
+	time.Sleep(second)
+	for i := 14; i > 0; i-- {
+		if i > 1 {
+			introSpinner.UpdateText("Waiting for " + strconv.Itoa(i) + " seconds...")
+		} else {
+			introSpinner.UpdateText("Waiting for " + strconv.Itoa(i) + " second...")
+		}
+		time.Sleep(second)
+	}
+	introSpinner.Stop()
+}
+
+func clear() {
+	print("\033[H\033[2J")
+}
+
+func randomInt(min, max int) int {
+	rand.Seed(time.Now().UnixNano())
+	return rand.Intn(max-min+1) + min
+}
+
+```
+
+</details>
+
+### coloring/disable-output
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/disable-output/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	for i := 0; i < 15; i++ {
+		switch i {
+		case 5:
+			pterm.Info.Println("Disabled Output!")
+			pterm.DisableOutput()
+		case 10:
+			pterm.EnableOutput()
+			pterm.Info.Println("Enabled Output!")
+		}
+
+		pterm.Printf("Printing something... [%d/%d]\n", i, 15)
+	}
+}
+
+```
+
+</details>
+
+### coloring/disable-styling
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/disable-styling/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"math/rand"
+	"strconv"
+	"strings"
+	"time"
+
+	"github.com/pterm/pterm"
+)
+
+// Change this to time.Millisecond*200 to speed up the demo.
+// Useful when debugging.
+const second = time.Second
+
+var pseudoProgramList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chrome pseudo-outlook pseudo-explorer "+
+	"pseudo-dops pseudo-git pseudo-vsc pseudo-intellij pseudo-minecraft pseudo-scoop pseudo-chocolatey", " ")
+
+func main() {
+	pterm.DisableStyling()
+	introScreen()
+	clear()
+	pseudoApplicationHeader()
+	time.Sleep(second)
+	installingPseudoList()
+	time.Sleep(second * 2)
+	pterm.DefaultSection.WithLevel(2).Println("Program Install Report")
+	installedProgramsSize()
+	time.Sleep(second * 4)
+	pterm.DefaultSection.Println("Tree Printer")
+	installedTree()
+	time.Sleep(second * 4)
+	pterm.DefaultSection.Println("TrueColor Support")
+	fadeText()
+	time.Sleep(second)
+	pterm.DefaultSection.Println("Bullet List Printer")
+	listPrinter()
+}
+
+func installedTree() {
+	leveledList := pterm.LeveledList{
+		pterm.LeveledListItem{Level: 0, Text: "C:"},
+		pterm.LeveledListItem{Level: 1, Text: "Go"},
+		pterm.LeveledListItem{Level: 1, Text: "Windows"},
+		pterm.LeveledListItem{Level: 1, Text: "Programs"},
+	}
+	for _, s := range pseudoProgramList {
+		if s != "pseudo-minecraft" {
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 2, Text: s})
+		}
+		if s == "pseudo-chrome" {
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Tabs"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Extensions"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "Refined GitHub"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "GitHub Dark Theme"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Bookmarks"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "PTerm"})
+		}
+	}
+
+	pterm.DefaultTree.WithRoot(pterm.NewTreeFromLeveledList(leveledList)).Render()
+}
+
+func installingPseudoList() {
+	pterm.DefaultSection.Println("Installing pseudo programs")
+
+	p, _ := pterm.DefaultProgressbar.WithTotal(len(pseudoProgramList)).WithTitle("Installing stuff").Start()
+	for i := 0; i < p.Total; i++ {
+		p.UpdateTitle("Installing " + pseudoProgramList[i])
+		if pseudoProgramList[i] == "pseudo-minecraft" {
+			pterm.Warning.Println("Could not install pseudo-minecraft\nThe company policy forbids games.")
+		} else {
+			pterm.Success.Println("Installing " + pseudoProgramList[i])
+			p.Increment()
+		}
+		time.Sleep(second / 2)
+	}
+	p.Stop()
+}
+
+func listPrinter() {
+	pterm.NewBulletListFromString(`Good bye
+ Have a nice day!`, " ").Render()
+}
+
+func fadeText() {
+	from := pterm.NewRGB(0, 255, 255) // This RGB value is used as the gradients start point.
+	to := pterm.NewRGB(255, 0, 255)   // This RGB value is used as the gradients first point.
+
+	str := "If your terminal has TrueColor support, you can use RGB colors!\nYou can even fade them :)"
+	strs := strings.Split(str, "")
+	var fadeInfo string // String which will be used to print info.
+	// For loop over the range of the string length.
+	for i := 0; i < len(str); i++ {
+		// Append faded letter to info string.
+		fadeInfo += from.Fade(0, float32(len(str)), float32(i), to).Sprint(strs[i])
+	}
+	pterm.Info.Println(fadeInfo)
+}
+
+func installedProgramsSize() {
+	d := pterm.TableData{{"Program Name", "Status", "Size"}}
+	for _, s := range pseudoProgramList {
+		if s != "pseudo-minecraft" {
+			d = append(d, []string{s, pterm.LightGreen("pass"), strconv.Itoa(randomInt(7, 200)) + "mb"})
+		} else {
+			d = append(d, []string{pterm.LightRed(s), pterm.LightRed("fail"), "0mb"})
+		}
+	}
+	pterm.DefaultTable.WithHasHeader().WithData(d).Render()
+}
+
+func pseudoApplicationHeader() *pterm.TextPrinter {
+	return pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
+		"Pseudo Application created with PTerm")
+}
+
+func introScreen() {
+	pterm.DefaultBigText.WithLetters(
+		pterm.NewLettersFromStringWithStyle("P", pterm.NewStyle(pterm.FgLightCyan)),
+		pterm.NewLettersFromStringWithStyle("Term", pterm.NewStyle(pterm.FgLightMagenta))).
+		Render()
+
+	pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
+		"PTDP - PTerm Demo Program")
+
+	pterm.Info.Println("This animation was generated with the latest version of PTerm!" +
+		"\nPTerm works on nearly every terminal and operating system." +
+		"\nIt's super easy to use!" +
+		"\nIf you want, you can customize everything :)" +
+		"\nYou can see the code of this demo in the " + pterm.LightMagenta("./_examples/demo") + " directory." +
+		"\n" +
+		"\nThis demo was updated at: " + pterm.Green(time.Now().Format("02 Jan 2006 - 15:04:05 MST")))
+	pterm.Println()
+	introSpinner, _ := pterm.DefaultSpinner.WithRemoveWhenDone(true).Start("Waiting for 15 seconds...")
+	time.Sleep(second)
+	for i := 14; i > 0; i-- {
+		if i > 1 {
+			introSpinner.UpdateText("Waiting for " + strconv.Itoa(i) + " seconds...")
+		} else {
+			introSpinner.UpdateText("Waiting for " + strconv.Itoa(i) + " second...")
+		}
+		time.Sleep(second)
+	}
+	introSpinner.Stop()
+}
+
+func clear() {
+	print("\033[H\033[2J")
+}
+
+func randomInt(min, max int) int {
+	rand.Seed(time.Now().UnixNano())
+	return rand.Intn(max-min+1) + min
+}
+
+```
+
+</details>
+
+### coloring/demo
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/demo/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	// Print different colored words.
+	pterm.Println(pterm.Red("Hello, ") + pterm.Green("World") + pterm.Cyan("!"))
+	pterm.Println(pterm.Red("Even " + pterm.Cyan("nested ") + pterm.Green("colors ") + "are supported!"))
+
+	// Print strings with set color.
+	pterm.FgBlack.Println("FgBlack")
+	pterm.FgRed.Println("FgRed")
+	pterm.FgGreen.Println("FgGreen")
+	pterm.FgYellow.Println("FgYellow")
+	pterm.FgBlue.Println("FgBlue")
+	pterm.FgMagenta.Println("FgMagenta")
+	pterm.FgCyan.Println("FgCyan")
+	pterm.FgWhite.Println("FgWhite")
+	pterm.Println() // Print one line space.
+	pterm.FgLightRed.Println("FgLightRed")
+	pterm.FgLightGreen.Println("FgLightGreen")
+	pterm.FgLightYellow.Println("FgLightYellow")
+	pterm.FgLightBlue.Println("FgLightBlue")
+	pterm.FgLightMagenta.Println("FgLightMagenta")
+	pterm.FgLightCyan.Println("FgLightCyan")
+	pterm.FgLightWhite.Println("FgLightWhite")
+}
+
+```
+
+</details>
+
+### coloring/disable-color
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/disable-color/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"math/rand"
+	"strconv"
+	"strings"
+	"time"
+
+	"github.com/pterm/pterm"
+)
+
+// Change this to time.Millisecond*200 to speed up the demo.
+// Useful when debugging.
+const second = time.Second
+
+var pseudoProgramList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chrome pseudo-outlook pseudo-explorer "+
+	"pseudo-dops pseudo-git pseudo-vsc pseudo-intellij pseudo-minecraft pseudo-scoop pseudo-chocolatey", " ")
+
+func main() {
+	pterm.DisableColor()
+	introScreen()
+	clear()
+	pseudoApplicationHeader()
+	time.Sleep(second)
+	installingPseudoList()
+	time.Sleep(second * 2)
+	pterm.DefaultSection.WithLevel(2).Println("Program Install Report")
+	installedProgramsSize()
+	time.Sleep(second * 4)
+	pterm.DefaultSection.Println("Tree Printer")
+	installedTree()
+	time.Sleep(second * 4)
+	pterm.DefaultSection.Println("TrueColor Support")
+	fadeText()
+	time.Sleep(second)
+	pterm.DefaultSection.Println("Bullet List Printer")
+	listPrinter()
+}
+
+func installedTree() {
+	leveledList := pterm.LeveledList{
+		pterm.LeveledListItem{Level: 0, Text: "C:"},
+		pterm.LeveledListItem{Level: 1, Text: "Go"},
+		pterm.LeveledListItem{Level: 1, Text: "Windows"},
+		pterm.LeveledListItem{Level: 1, Text: "Programs"},
+	}
+	for _, s := range pseudoProgramList {
+		if s != "pseudo-minecraft" {
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 2, Text: s})
+		}
+		if s == "pseudo-chrome" {
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Tabs"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Extensions"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "Refined GitHub"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "GitHub Dark Theme"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Bookmarks"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "PTerm"})
+		}
+	}
+
+	pterm.DefaultTree.WithRoot(pterm.NewTreeFromLeveledList(leveledList)).Render()
+}
+
+func installingPseudoList() {
+	pterm.DefaultSection.Println("Installing pseudo programs")
+
+	p, _ := pterm.DefaultProgressbar.WithTotal(len(pseudoProgramList)).WithTitle("Installing stuff").Start()
+	for i := 0; i < p.Total; i++ {
+		p.UpdateTitle("Installing " + pseudoProgramList[i])
+		if pseudoProgramList[i] == "pseudo-minecraft" {
+			pterm.Warning.Println("Could not install pseudo-minecraft\nThe company policy forbids games.")
+		} else {
+			pterm.Success.Println("Installing " + pseudoProgramList[i])
+			p.Increment()
+		}
+		time.Sleep(second / 2)
+	}
+	p.Stop()
+}
+
+func listPrinter() {
+	pterm.NewBulletListFromString(`Good bye
+ Have a nice day!`, " ").Render()
+}
+
+func fadeText() {
+	from := pterm.NewRGB(0, 255, 255) // This RGB value is used as the gradients start point.
+	to := pterm.NewRGB(255, 0, 255)   // This RGB value is used as the gradients first point.
+
+	str := "If your terminal has TrueColor support, you can use RGB colors!\nYou can even fade them :)"
+	strs := strings.Split(str, "")
+	var fadeInfo string // String which will be used to print info.
+	// For loop over the range of the string length.
+	for i := 0; i < len(str); i++ {
+		// Append faded letter to info string.
+		fadeInfo += from.Fade(0, float32(len(str)), float32(i), to).Sprint(strs[i])
+	}
+	pterm.Info.Println(fadeInfo)
+}
+
+func installedProgramsSize() {
+	d := pterm.TableData{{"Program Name", "Status", "Size"}}
+	for _, s := range pseudoProgramList {
+		if s != "pseudo-minecraft" {
+			d = append(d, []string{s, pterm.LightGreen("pass"), strconv.Itoa(randomInt(7, 200)) + "mb"})
+		} else {
+			d = append(d, []string{pterm.LightRed(s), pterm.LightRed("fail"), "0mb"})
+		}
+	}
+	pterm.DefaultTable.WithHasHeader().WithData(d).Render()
+}
+
+func pseudoApplicationHeader() *pterm.TextPrinter {
+	return pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
+		"Pseudo Application created with PTerm")
+}
+
+func introScreen() {
+	pterm.DefaultBigText.WithLetters(
+		pterm.NewLettersFromStringWithStyle("P", pterm.NewStyle(pterm.FgLightCyan)),
+		pterm.NewLettersFromStringWithStyle("Term", pterm.NewStyle(pterm.FgLightMagenta))).
+		Render()
+
+	pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
+		"PTDP - PTerm Demo Program")
+
+	pterm.Info.Println("This animation was generated with the latest version of PTerm!" +
+		"\nPTerm works on nearly every terminal and operating system." +
+		"\nIt's super easy to use!" +
+		"\nIf you want, you can customize everything :)" +
+		"\nYou can see the code of this demo in the " + pterm.LightMagenta("./_examples/demo") + " directory." +
+		"\n" +
+		"\nThis demo was updated at: " + pterm.Green(time.Now().Format("02 Jan 2006 - 15:04:05 MST")))
+	pterm.Println()
+	introSpinner, _ := pterm.DefaultSpinner.WithRemoveWhenDone(true).Start("Waiting for 15 seconds...")
+	time.Sleep(second)
+	for i := 14; i > 0; i-- {
+		if i > 1 {
+			introSpinner.UpdateText("Waiting for " + strconv.Itoa(i) + " seconds...")
+		} else {
+			introSpinner.UpdateText("Waiting for " + strconv.Itoa(i) + " second...")
+		}
+		time.Sleep(second)
+	}
+	introSpinner.Stop()
+}
+
+func clear() {
+	print("\033[H\033[2J")
+}
+
+func randomInt(min, max int) int {
+	rand.Seed(time.Now().UnixNano())
+	return rand.Intn(max-min+1) + min
+}
+
+```
+
+</details>
+
+### coloring/disable-output
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/disable-output/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	for i := 0; i < 15; i++ {
+		switch i {
+		case 5:
+			pterm.Info.Println("Disabled Output!")
+			pterm.DisableOutput()
+		case 10:
+			pterm.EnableOutput()
+			pterm.Info.Println("Enabled Output!")
+		}
+
+		pterm.Printf("Printing something... [%d/%d]\n", i, 15)
+	}
+}
+
+```
+
+</details>
+
+### coloring/disable-styling
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/disable-styling/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"math/rand"
+	"strconv"
+	"strings"
+	"time"
+
+	"github.com/pterm/pterm"
+)
+
+// Change this to time.Millisecond*200 to speed up the demo.
+// Useful when debugging.
+const second = time.Second
+
+var pseudoProgramList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chrome pseudo-outlook pseudo-explorer "+
+	"pseudo-dops pseudo-git pseudo-vsc pseudo-intellij pseudo-minecraft pseudo-scoop pseudo-chocolatey", " ")
+
+func main() {
+	pterm.DisableStyling()
+	introScreen()
+	clear()
+	pseudoApplicationHeader()
+	time.Sleep(second)
+	installingPseudoList()
+	time.Sleep(second * 2)
+	pterm.DefaultSection.WithLevel(2).Println("Program Install Report")
+	installedProgramsSize()
+	time.Sleep(second * 4)
+	pterm.DefaultSection.Println("Tree Printer")
+	installedTree()
+	time.Sleep(second * 4)
+	pterm.DefaultSection.Println("TrueColor Support")
+	fadeText()
+	time.Sleep(second)
+	pterm.DefaultSection.Println("Bullet List Printer")
+	listPrinter()
+}
+
+func installedTree() {
+	leveledList := pterm.LeveledList{
+		pterm.LeveledListItem{Level: 0, Text: "C:"},
+		pterm.LeveledListItem{Level: 1, Text: "Go"},
+		pterm.LeveledListItem{Level: 1, Text: "Windows"},
+		pterm.LeveledListItem{Level: 1, Text: "Programs"},
+	}
+	for _, s := range pseudoProgramList {
+		if s != "pseudo-minecraft" {
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 2, Text: s})
+		}
+		if s == "pseudo-chrome" {
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Tabs"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Extensions"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "Refined GitHub"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "GitHub Dark Theme"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Bookmarks"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "PTerm"})
+		}
+	}
+
+	pterm.DefaultTree.WithRoot(pterm.NewTreeFromLeveledList(leveledList)).Render()
+}
+
+func installingPseudoList() {
+	pterm.DefaultSection.Println("Installing pseudo programs")
+
+	p, _ := pterm.DefaultProgressbar.WithTotal(len(pseudoProgramList)).WithTitle("Installing stuff").Start()
+	for i := 0; i < p.Total; i++ {
+		p.UpdateTitle("Installing " + pseudoProgramList[i])
+		if pseudoProgramList[i] == "pseudo-minecraft" {
+			pterm.Warning.Println("Could not install pseudo-minecraft\nThe company policy forbids games.")
+		} else {
+			pterm.Success.Println("Installing " + pseudoProgramList[i])
+			p.Increment()
+		}
+		time.Sleep(second / 2)
+	}
+	p.Stop()
+}
+
+func listPrinter() {
+	pterm.NewBulletListFromString(`Good bye
+ Have a nice day!`, " ").Render()
+}
+
+func fadeText() {
+	from := pterm.NewRGB(0, 255, 255) // This RGB value is used as the gradients start point.
+	to := pterm.NewRGB(255, 0, 255)   // This RGB value is used as the gradients first point.
+
+	str := "If your terminal has TrueColor support, you can use RGB colors!\nYou can even fade them :)"
+	strs := strings.Split(str, "")
+	var fadeInfo string // String which will be used to print info.
+	// For loop over the range of the string length.
+	for i := 0; i < len(str); i++ {
+		// Append faded letter to info string.
+		fadeInfo += from.Fade(0, float32(len(str)), float32(i), to).Sprint(strs[i])
+	}
+	pterm.Info.Println(fadeInfo)
+}
+
+func installedProgramsSize() {
+	d := pterm.TableData{{"Program Name", "Status", "Size"}}
+	for _, s := range pseudoProgramList {
+		if s != "pseudo-minecraft" {
+			d = append(d, []string{s, pterm.LightGreen("pass"), strconv.Itoa(randomInt(7, 200)) + "mb"})
+		} else {
+			d = append(d, []string{pterm.LightRed(s), pterm.LightRed("fail"), "0mb"})
+		}
+	}
+	pterm.DefaultTable.WithHasHeader().WithData(d).Render()
+}
+
+func pseudoApplicationHeader() *pterm.TextPrinter {
+	return pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
+		"Pseudo Application created with PTerm")
+}
+
+func introScreen() {
+	pterm.DefaultBigText.WithLetters(
+		pterm.NewLettersFromStringWithStyle("P", pterm.NewStyle(pterm.FgLightCyan)),
+		pterm.NewLettersFromStringWithStyle("Term", pterm.NewStyle(pterm.FgLightMagenta))).
+		Render()
+
+	pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
+		"PTDP - PTerm Demo Program")
+
+	pterm.Info.Println("This animation was generated with the latest version of PTerm!" +
+		"\nPTerm works on nearly every terminal and operating system." +
+		"\nIt's super easy to use!" +
+		"\nIf you want, you can customize everything :)" +
+		"\nYou can see the code of this demo in the " + pterm.LightMagenta("./_examples/demo") + " directory." +
+		"\n" +
+		"\nThis demo was updated at: " + pterm.Green(time.Now().Format("02 Jan 2006 - 15:04:05 MST")))
+	pterm.Println()
+	introSpinner, _ := pterm.DefaultSpinner.WithRemoveWhenDone(true).Start("Waiting for 15 seconds...")
+	time.Sleep(second)
+	for i := 14; i > 0; i-- {
+		if i > 1 {
+			introSpinner.UpdateText("Waiting for " + strconv.Itoa(i) + " seconds...")
+		} else {
+			introSpinner.UpdateText("Waiting for " + strconv.Itoa(i) + " second...")
+		}
+		time.Sleep(second)
+	}
+	introSpinner.Stop()
+}
+
+func clear() {
+	print("\033[H\033[2J")
+}
+
+func randomInt(min, max int) int {
+	rand.Seed(time.Now().UnixNano())
+	return rand.Intn(max-min+1) + min
+}
+
+```
+
+</details>
+
+### coloring/fade-colors
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/fade-colors/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	// Print info.
+	pterm.Info.Println("RGB colors only work in Terminals which support TrueColor.")
+
+	from := pterm.NewRGB(0, 255, 255) // This RGB value is used as the gradients start point.
+	to := pterm.NewRGB(255, 0, 255)   // This RGB value is used as the gradients end point.
+
+	// For loop over the range of the terminal height.
+	for i := 0; i < pterm.GetTerminalHeight()-2; i++ {
+		// Print string which is colored with the faded RGB value.
+		from.Fade(0, float32(pterm.GetTerminalHeight()-2), float32(i), to).Println("Hello, World!")
+	}
+}
+
+```
+
+</details>
+
+### coloring/demo
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/demo/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	// Print different colored words.
+	pterm.Println(pterm.Red("Hello, ") + pterm.Green("World") + pterm.Cyan("!"))
+	pterm.Println(pterm.Red("Even " + pterm.Cyan("nested ") + pterm.Green("colors ") + "are supported!"))
+
+	// Print strings with set color.
+	pterm.FgBlack.Println("FgBlack")
+	pterm.FgRed.Println("FgRed")
+	pterm.FgGreen.Println("FgGreen")
+	pterm.FgYellow.Println("FgYellow")
+	pterm.FgBlue.Println("FgBlue")
+	pterm.FgMagenta.Println("FgMagenta")
+	pterm.FgCyan.Println("FgCyan")
+	pterm.FgWhite.Println("FgWhite")
+	pterm.Println() // Print one line space.
+	pterm.FgLightRed.Println("FgLightRed")
+	pterm.FgLightGreen.Println("FgLightGreen")
+	pterm.FgLightYellow.Println("FgLightYellow")
+	pterm.FgLightBlue.Println("FgLightBlue")
+	pterm.FgLightMagenta.Println("FgLightMagenta")
+	pterm.FgLightCyan.Println("FgLightCyan")
+	pterm.FgLightWhite.Println("FgLightWhite")
+}
+
+```
+
+</details>
+
+### coloring/disable-color
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/disable-color/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"math/rand"
+	"strconv"
+	"strings"
+	"time"
+
+	"github.com/pterm/pterm"
+)
+
+// Change this to time.Millisecond*200 to speed up the demo.
+// Useful when debugging.
+const second = time.Second
+
+var pseudoProgramList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chrome pseudo-outlook pseudo-explorer "+
+	"pseudo-dops pseudo-git pseudo-vsc pseudo-intellij pseudo-minecraft pseudo-scoop pseudo-chocolatey", " ")
+
+func main() {
+	pterm.DisableColor()
+	introScreen()
+	clear()
+	pseudoApplicationHeader()
+	time.Sleep(second)
+	installingPseudoList()
+	time.Sleep(second * 2)
+	pterm.DefaultSection.WithLevel(2).Println("Program Install Report")
+	installedProgramsSize()
+	time.Sleep(second * 4)
+	pterm.DefaultSection.Println("Tree Printer")
+	installedTree()
+	time.Sleep(second * 4)
+	pterm.DefaultSection.Println("TrueColor Support")
+	fadeText()
+	time.Sleep(second)
+	pterm.DefaultSection.Println("Bullet List Printer")
+	listPrinter()
+}
+
+func installedTree() {
+	leveledList := pterm.LeveledList{
+		pterm.LeveledListItem{Level: 0, Text: "C:"},
+		pterm.LeveledListItem{Level: 1, Text: "Go"},
+		pterm.LeveledListItem{Level: 1, Text: "Windows"},
+		pterm.LeveledListItem{Level: 1, Text: "Programs"},
+	}
+	for _, s := range pseudoProgramList {
+		if s != "pseudo-minecraft" {
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 2, Text: s})
+		}
+		if s == "pseudo-chrome" {
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Tabs"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Extensions"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "Refined GitHub"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "GitHub Dark Theme"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Bookmarks"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "PTerm"})
+		}
+	}
+
+	pterm.DefaultTree.WithRoot(pterm.NewTreeFromLeveledList(leveledList)).Render()
+}
+
+func installingPseudoList() {
+	pterm.DefaultSection.Println("Installing pseudo programs")
+
+	p, _ := pterm.DefaultProgressbar.WithTotal(len(pseudoProgramList)).WithTitle("Installing stuff").Start()
+	for i := 0; i < p.Total; i++ {
+		p.UpdateTitle("Installing " + pseudoProgramList[i])
+		if pseudoProgramList[i] == "pseudo-minecraft" {
+			pterm.Warning.Println("Could not install pseudo-minecraft\nThe company policy forbids games.")
+		} else {
+			pterm.Success.Println("Installing " + pseudoProgramList[i])
+			p.Increment()
+		}
+		time.Sleep(second / 2)
+	}
+	p.Stop()
+}
+
+func listPrinter() {
+	pterm.NewBulletListFromString(`Good bye
+ Have a nice day!`, " ").Render()
+}
+
+func fadeText() {
+	from := pterm.NewRGB(0, 255, 255) // This RGB value is used as the gradients start point.
+	to := pterm.NewRGB(255, 0, 255)   // This RGB value is used as the gradients first point.
+
+	str := "If your terminal has TrueColor support, you can use RGB colors!\nYou can even fade them :)"
+	strs := strings.Split(str, "")
+	var fadeInfo string // String which will be used to print info.
+	// For loop over the range of the string length.
+	for i := 0; i < len(str); i++ {
+		// Append faded letter to info string.
+		fadeInfo += from.Fade(0, float32(len(str)), float32(i), to).Sprint(strs[i])
+	}
+	pterm.Info.Println(fadeInfo)
+}
+
+func installedProgramsSize() {
+	d := pterm.TableData{{"Program Name", "Status", "Size"}}
+	for _, s := range pseudoProgramList {
+		if s != "pseudo-minecraft" {
+			d = append(d, []string{s, pterm.LightGreen("pass"), strconv.Itoa(randomInt(7, 200)) + "mb"})
+		} else {
+			d = append(d, []string{pterm.LightRed(s), pterm.LightRed("fail"), "0mb"})
+		}
+	}
+	pterm.DefaultTable.WithHasHeader().WithData(d).Render()
+}
+
+func pseudoApplicationHeader() *pterm.TextPrinter {
+	return pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
+		"Pseudo Application created with PTerm")
+}
+
+func introScreen() {
+	pterm.DefaultBigText.WithLetters(
+		pterm.NewLettersFromStringWithStyle("P", pterm.NewStyle(pterm.FgLightCyan)),
+		pterm.NewLettersFromStringWithStyle("Term", pterm.NewStyle(pterm.FgLightMagenta))).
+		Render()
+
+	pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
+		"PTDP - PTerm Demo Program")
+
+	pterm.Info.Println("This animation was generated with the latest version of PTerm!" +
+		"\nPTerm works on nearly every terminal and operating system." +
+		"\nIt's super easy to use!" +
+		"\nIf you want, you can customize everything :)" +
+		"\nYou can see the code of this demo in the " + pterm.LightMagenta("./_examples/demo") + " directory." +
+		"\n" +
+		"\nThis demo was updated at: " + pterm.Green(time.Now().Format("02 Jan 2006 - 15:04:05 MST")))
+	pterm.Println()
+	introSpinner, _ := pterm.DefaultSpinner.WithRemoveWhenDone(true).Start("Waiting for 15 seconds...")
+	time.Sleep(second)
+	for i := 14; i > 0; i-- {
+		if i > 1 {
+			introSpinner.UpdateText("Waiting for " + strconv.Itoa(i) + " seconds...")
+		} else {
+			introSpinner.UpdateText("Waiting for " + strconv.Itoa(i) + " second...")
+		}
+		time.Sleep(second)
+	}
+	introSpinner.Stop()
+}
+
+func clear() {
+	print("\033[H\033[2J")
+}
+
+func randomInt(min, max int) int {
+	rand.Seed(time.Now().UnixNano())
+	return rand.Intn(max-min+1) + min
+}
+
+```
+
+</details>
+
+### coloring/disable-output
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/disable-output/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	for i := 0; i < 15; i++ {
+		switch i {
+		case 5:
+			pterm.Info.Println("Disabled Output!")
+			pterm.DisableOutput()
+		case 10:
+			pterm.EnableOutput()
+			pterm.Info.Println("Enabled Output!")
+		}
+
+		pterm.Printf("Printing something... [%d/%d]\n", i, 15)
+	}
+}
+
+```
+
+</details>
+
+### coloring/disable-styling
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/disable-styling/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"math/rand"
+	"strconv"
+	"strings"
+	"time"
+
+	"github.com/pterm/pterm"
+)
+
+// Change this to time.Millisecond*200 to speed up the demo.
+// Useful when debugging.
+const second = time.Second
+
+var pseudoProgramList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chrome pseudo-outlook pseudo-explorer "+
+	"pseudo-dops pseudo-git pseudo-vsc pseudo-intellij pseudo-minecraft pseudo-scoop pseudo-chocolatey", " ")
+
+func main() {
+	pterm.DisableStyling()
+	introScreen()
+	clear()
+	pseudoApplicationHeader()
+	time.Sleep(second)
+	installingPseudoList()
+	time.Sleep(second * 2)
+	pterm.DefaultSection.WithLevel(2).Println("Program Install Report")
+	installedProgramsSize()
+	time.Sleep(second * 4)
+	pterm.DefaultSection.Println("Tree Printer")
+	installedTree()
+	time.Sleep(second * 4)
+	pterm.DefaultSection.Println("TrueColor Support")
+	fadeText()
+	time.Sleep(second)
+	pterm.DefaultSection.Println("Bullet List Printer")
+	listPrinter()
+}
+
+func installedTree() {
+	leveledList := pterm.LeveledList{
+		pterm.LeveledListItem{Level: 0, Text: "C:"},
+		pterm.LeveledListItem{Level: 1, Text: "Go"},
+		pterm.LeveledListItem{Level: 1, Text: "Windows"},
+		pterm.LeveledListItem{Level: 1, Text: "Programs"},
+	}
+	for _, s := range pseudoProgramList {
+		if s != "pseudo-minecraft" {
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 2, Text: s})
+		}
+		if s == "pseudo-chrome" {
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Tabs"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Extensions"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "Refined GitHub"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "GitHub Dark Theme"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Bookmarks"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "PTerm"})
+		}
+	}
+
+	pterm.DefaultTree.WithRoot(pterm.NewTreeFromLeveledList(leveledList)).Render()
+}
+
+func installingPseudoList() {
+	pterm.DefaultSection.Println("Installing pseudo programs")
+
+	p, _ := pterm.DefaultProgressbar.WithTotal(len(pseudoProgramList)).WithTitle("Installing stuff").Start()
+	for i := 0; i < p.Total; i++ {
+		p.UpdateTitle("Installing " + pseudoProgramList[i])
+		if pseudoProgramList[i] == "pseudo-minecraft" {
+			pterm.Warning.Println("Could not install pseudo-minecraft\nThe company policy forbids games.")
+		} else {
+			pterm.Success.Println("Installing " + pseudoProgramList[i])
+			p.Increment()
+		}
+		time.Sleep(second / 2)
+	}
+	p.Stop()
+}
+
+func listPrinter() {
+	pterm.NewBulletListFromString(`Good bye
+ Have a nice day!`, " ").Render()
+}
+
+func fadeText() {
+	from := pterm.NewRGB(0, 255, 255) // This RGB value is used as the gradients start point.
+	to := pterm.NewRGB(255, 0, 255)   // This RGB value is used as the gradients first point.
+
+	str := "If your terminal has TrueColor support, you can use RGB colors!\nYou can even fade them :)"
+	strs := strings.Split(str, "")
+	var fadeInfo string // String which will be used to print info.
+	// For loop over the range of the string length.
+	for i := 0; i < len(str); i++ {
+		// Append faded letter to info string.
+		fadeInfo += from.Fade(0, float32(len(str)), float32(i), to).Sprint(strs[i])
+	}
+	pterm.Info.Println(fadeInfo)
+}
+
+func installedProgramsSize() {
+	d := pterm.TableData{{"Program Name", "Status", "Size"}}
+	for _, s := range pseudoProgramList {
+		if s != "pseudo-minecraft" {
+			d = append(d, []string{s, pterm.LightGreen("pass"), strconv.Itoa(randomInt(7, 200)) + "mb"})
+		} else {
+			d = append(d, []string{pterm.LightRed(s), pterm.LightRed("fail"), "0mb"})
+		}
+	}
+	pterm.DefaultTable.WithHasHeader().WithData(d).Render()
+}
+
+func pseudoApplicationHeader() *pterm.TextPrinter {
+	return pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
+		"Pseudo Application created with PTerm")
+}
+
+func introScreen() {
+	pterm.DefaultBigText.WithLetters(
+		pterm.NewLettersFromStringWithStyle("P", pterm.NewStyle(pterm.FgLightCyan)),
+		pterm.NewLettersFromStringWithStyle("Term", pterm.NewStyle(pterm.FgLightMagenta))).
+		Render()
+
+	pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
+		"PTDP - PTerm Demo Program")
+
+	pterm.Info.Println("This animation was generated with the latest version of PTerm!" +
+		"\nPTerm works on nearly every terminal and operating system." +
+		"\nIt's super easy to use!" +
+		"\nIf you want, you can customize everything :)" +
+		"\nYou can see the code of this demo in the " + pterm.LightMagenta("./_examples/demo") + " directory." +
+		"\n" +
+		"\nThis demo was updated at: " + pterm.Green(time.Now().Format("02 Jan 2006 - 15:04:05 MST")))
+	pterm.Println()
+	introSpinner, _ := pterm.DefaultSpinner.WithRemoveWhenDone(true).Start("Waiting for 15 seconds...")
+	time.Sleep(second)
+	for i := 14; i > 0; i-- {
+		if i > 1 {
+			introSpinner.UpdateText("Waiting for " + strconv.Itoa(i) + " seconds...")
+		} else {
+			introSpinner.UpdateText("Waiting for " + strconv.Itoa(i) + " second...")
+		}
+		time.Sleep(second)
+	}
+	introSpinner.Stop()
+}
+
+func clear() {
+	print("\033[H\033[2J")
+}
+
+func randomInt(min, max int) int {
+	rand.Seed(time.Now().UnixNano())
+	return rand.Intn(max-min+1) + min
+}
+
+```
+
+</details>
+
+### coloring/fade-colors
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/fade-colors/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	// Print info.
+	pterm.Info.Println("RGB colors only work in Terminals which support TrueColor.")
+
+	from := pterm.NewRGB(0, 255, 255) // This RGB value is used as the gradients start point.
+	to := pterm.NewRGB(255, 0, 255)   // This RGB value is used as the gradients end point.
+
+	// For loop over the range of the terminal height.
+	for i := 0; i < pterm.GetTerminalHeight()-2; i++ {
+		// Print string which is colored with the faded RGB value.
+		from.Fade(0, float32(pterm.GetTerminalHeight()-2), float32(i), to).Println("Hello, World!")
+	}
+}
+
+```
+
+</details>
+
+### coloring/fade-multiple-colors
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/fade-multiple-colors/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"strings"
+
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	from := pterm.NewRGB(0, 255, 255)  // This RGB value is used as the gradients start point.
+	to := pterm.NewRGB(255, 0, 255)    // This RGB value is used as the gradients first point.
+	to2 := pterm.NewRGB(255, 0, 0)     // This RGB value is used as the gradients second point.
+	to3 := pterm.NewRGB(0, 255, 0)     // This RGB value is used as the gradients third point.
+	to4 := pterm.NewRGB(255, 255, 255) // This RGB value is used as the gradients end point.
+
+	str := "RGB colors only work in Terminals which support TrueColor."
+	strs := strings.Split(str, "")
+	var fadeInfo string // String which will be used to print info.
+	// For loop over the range of the string length.
+	for i := 0; i < len(str); i++ {
+		// Append faded letter to info string.
+		fadeInfo += from.Fade(0, float32(len(str)), float32(i), to).Sprint(strs[i])
+	}
+
+	// Print info.
+	pterm.Info.Println(fadeInfo)
+
+	// For loop over the range of the terminal height.
+	for i := 0; i < pterm.GetTerminalHeight()-2; i++ {
+		// Print string which is colored with the faded RGB value.
+		from.Fade(0, float32(pterm.GetTerminalHeight()-2), float32(i), to, to2, to3, to4).Println("Hello, World!")
+	}
+}
+
+```
+
+</details>
+
+### coloring/demo
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/demo/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	// Print different colored words.
+	pterm.Println(pterm.Red("Hello, ") + pterm.Green("World") + pterm.Cyan("!"))
+	pterm.Println(pterm.Red("Even " + pterm.Cyan("nested ") + pterm.Green("colors ") + "are supported!"))
+
+	// Print strings with set color.
+	pterm.FgBlack.Println("FgBlack")
+	pterm.FgRed.Println("FgRed")
+	pterm.FgGreen.Println("FgGreen")
+	pterm.FgYellow.Println("FgYellow")
+	pterm.FgBlue.Println("FgBlue")
+	pterm.FgMagenta.Println("FgMagenta")
+	pterm.FgCyan.Println("FgCyan")
+	pterm.FgWhite.Println("FgWhite")
+	pterm.Println() // Print one line space.
+	pterm.FgLightRed.Println("FgLightRed")
+	pterm.FgLightGreen.Println("FgLightGreen")
+	pterm.FgLightYellow.Println("FgLightYellow")
+	pterm.FgLightBlue.Println("FgLightBlue")
+	pterm.FgLightMagenta.Println("FgLightMagenta")
+	pterm.FgLightCyan.Println("FgLightCyan")
+	pterm.FgLightWhite.Println("FgLightWhite")
+}
+
+```
+
+</details>
+
+### coloring/disable-color
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/disable-color/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"math/rand"
+	"strconv"
+	"strings"
+	"time"
+
+	"github.com/pterm/pterm"
+)
+
+// Change this to time.Millisecond*200 to speed up the demo.
+// Useful when debugging.
+const second = time.Second
+
+var pseudoProgramList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chrome pseudo-outlook pseudo-explorer "+
+	"pseudo-dops pseudo-git pseudo-vsc pseudo-intellij pseudo-minecraft pseudo-scoop pseudo-chocolatey", " ")
+
+func main() {
+	pterm.DisableColor()
+	introScreen()
+	clear()
+	pseudoApplicationHeader()
+	time.Sleep(second)
+	installingPseudoList()
+	time.Sleep(second * 2)
+	pterm.DefaultSection.WithLevel(2).Println("Program Install Report")
+	installedProgramsSize()
+	time.Sleep(second * 4)
+	pterm.DefaultSection.Println("Tree Printer")
+	installedTree()
+	time.Sleep(second * 4)
+	pterm.DefaultSection.Println("TrueColor Support")
+	fadeText()
+	time.Sleep(second)
+	pterm.DefaultSection.Println("Bullet List Printer")
+	listPrinter()
+}
+
+func installedTree() {
+	leveledList := pterm.LeveledList{
+		pterm.LeveledListItem{Level: 0, Text: "C:"},
+		pterm.LeveledListItem{Level: 1, Text: "Go"},
+		pterm.LeveledListItem{Level: 1, Text: "Windows"},
+		pterm.LeveledListItem{Level: 1, Text: "Programs"},
+	}
+	for _, s := range pseudoProgramList {
+		if s != "pseudo-minecraft" {
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 2, Text: s})
+		}
+		if s == "pseudo-chrome" {
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Tabs"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Extensions"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "Refined GitHub"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "GitHub Dark Theme"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Bookmarks"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "PTerm"})
+		}
+	}
+
+	pterm.DefaultTree.WithRoot(pterm.NewTreeFromLeveledList(leveledList)).Render()
+}
+
+func installingPseudoList() {
+	pterm.DefaultSection.Println("Installing pseudo programs")
+
+	p, _ := pterm.DefaultProgressbar.WithTotal(len(pseudoProgramList)).WithTitle("Installing stuff").Start()
+	for i := 0; i < p.Total; i++ {
+		p.UpdateTitle("Installing " + pseudoProgramList[i])
+		if pseudoProgramList[i] == "pseudo-minecraft" {
+			pterm.Warning.Println("Could not install pseudo-minecraft\nThe company policy forbids games.")
+		} else {
+			pterm.Success.Println("Installing " + pseudoProgramList[i])
+			p.Increment()
+		}
+		time.Sleep(second / 2)
+	}
+	p.Stop()
+}
+
+func listPrinter() {
+	pterm.NewBulletListFromString(`Good bye
+ Have a nice day!`, " ").Render()
+}
+
+func fadeText() {
+	from := pterm.NewRGB(0, 255, 255) // This RGB value is used as the gradients start point.
+	to := pterm.NewRGB(255, 0, 255)   // This RGB value is used as the gradients first point.
+
+	str := "If your terminal has TrueColor support, you can use RGB colors!\nYou can even fade them :)"
+	strs := strings.Split(str, "")
+	var fadeInfo string // String which will be used to print info.
+	// For loop over the range of the string length.
+	for i := 0; i < len(str); i++ {
+		// Append faded letter to info string.
+		fadeInfo += from.Fade(0, float32(len(str)), float32(i), to).Sprint(strs[i])
+	}
+	pterm.Info.Println(fadeInfo)
+}
+
+func installedProgramsSize() {
+	d := pterm.TableData{{"Program Name", "Status", "Size"}}
+	for _, s := range pseudoProgramList {
+		if s != "pseudo-minecraft" {
+			d = append(d, []string{s, pterm.LightGreen("pass"), strconv.Itoa(randomInt(7, 200)) + "mb"})
+		} else {
+			d = append(d, []string{pterm.LightRed(s), pterm.LightRed("fail"), "0mb"})
+		}
+	}
+	pterm.DefaultTable.WithHasHeader().WithData(d).Render()
+}
+
+func pseudoApplicationHeader() *pterm.TextPrinter {
+	return pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
+		"Pseudo Application created with PTerm")
+}
+
+func introScreen() {
+	pterm.DefaultBigText.WithLetters(
+		pterm.NewLettersFromStringWithStyle("P", pterm.NewStyle(pterm.FgLightCyan)),
+		pterm.NewLettersFromStringWithStyle("Term", pterm.NewStyle(pterm.FgLightMagenta))).
+		Render()
+
+	pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
+		"PTDP - PTerm Demo Program")
+
+	pterm.Info.Println("This animation was generated with the latest version of PTerm!" +
+		"\nPTerm works on nearly every terminal and operating system." +
+		"\nIt's super easy to use!" +
+		"\nIf you want, you can customize everything :)" +
+		"\nYou can see the code of this demo in the " + pterm.LightMagenta("./_examples/demo") + " directory." +
+		"\n" +
+		"\nThis demo was updated at: " + pterm.Green(time.Now().Format("02 Jan 2006 - 15:04:05 MST")))
+	pterm.Println()
+	introSpinner, _ := pterm.DefaultSpinner.WithRemoveWhenDone(true).Start("Waiting for 15 seconds...")
+	time.Sleep(second)
+	for i := 14; i > 0; i-- {
+		if i > 1 {
+			introSpinner.UpdateText("Waiting for " + strconv.Itoa(i) + " seconds...")
+		} else {
+			introSpinner.UpdateText("Waiting for " + strconv.Itoa(i) + " second...")
+		}
+		time.Sleep(second)
+	}
+	introSpinner.Stop()
+}
+
+func clear() {
+	print("\033[H\033[2J")
+}
+
+func randomInt(min, max int) int {
+	rand.Seed(time.Now().UnixNano())
+	return rand.Intn(max-min+1) + min
+}
+
+```
+
+</details>
+
+### coloring/disable-output
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/disable-output/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	for i := 0; i < 15; i++ {
+		switch i {
+		case 5:
+			pterm.Info.Println("Disabled Output!")
+			pterm.DisableOutput()
+		case 10:
+			pterm.EnableOutput()
+			pterm.Info.Println("Enabled Output!")
+		}
+
+		pterm.Printf("Printing something... [%d/%d]\n", i, 15)
+	}
+}
+
+```
+
+</details>
+
+### coloring/disable-styling
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/disable-styling/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"math/rand"
+	"strconv"
+	"strings"
+	"time"
+
+	"github.com/pterm/pterm"
+)
+
+// Change this to time.Millisecond*200 to speed up the demo.
+// Useful when debugging.
+const second = time.Second
+
+var pseudoProgramList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chrome pseudo-outlook pseudo-explorer "+
+	"pseudo-dops pseudo-git pseudo-vsc pseudo-intellij pseudo-minecraft pseudo-scoop pseudo-chocolatey", " ")
+
+func main() {
+	pterm.DisableStyling()
+	introScreen()
+	clear()
+	pseudoApplicationHeader()
+	time.Sleep(second)
+	installingPseudoList()
+	time.Sleep(second * 2)
+	pterm.DefaultSection.WithLevel(2).Println("Program Install Report")
+	installedProgramsSize()
+	time.Sleep(second * 4)
+	pterm.DefaultSection.Println("Tree Printer")
+	installedTree()
+	time.Sleep(second * 4)
+	pterm.DefaultSection.Println("TrueColor Support")
+	fadeText()
+	time.Sleep(second)
+	pterm.DefaultSection.Println("Bullet List Printer")
+	listPrinter()
+}
+
+func installedTree() {
+	leveledList := pterm.LeveledList{
+		pterm.LeveledListItem{Level: 0, Text: "C:"},
+		pterm.LeveledListItem{Level: 1, Text: "Go"},
+		pterm.LeveledListItem{Level: 1, Text: "Windows"},
+		pterm.LeveledListItem{Level: 1, Text: "Programs"},
+	}
+	for _, s := range pseudoProgramList {
+		if s != "pseudo-minecraft" {
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 2, Text: s})
+		}
+		if s == "pseudo-chrome" {
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Tabs"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Extensions"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "Refined GitHub"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "GitHub Dark Theme"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Bookmarks"})
+			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "PTerm"})
+		}
+	}
+
+	pterm.DefaultTree.WithRoot(pterm.NewTreeFromLeveledList(leveledList)).Render()
+}
+
+func installingPseudoList() {
+	pterm.DefaultSection.Println("Installing pseudo programs")
+
+	p, _ := pterm.DefaultProgressbar.WithTotal(len(pseudoProgramList)).WithTitle("Installing stuff").Start()
+	for i := 0; i < p.Total; i++ {
+		p.UpdateTitle("Installing " + pseudoProgramList[i])
+		if pseudoProgramList[i] == "pseudo-minecraft" {
+			pterm.Warning.Println("Could not install pseudo-minecraft\nThe company policy forbids games.")
+		} else {
+			pterm.Success.Println("Installing " + pseudoProgramList[i])
+			p.Increment()
+		}
+		time.Sleep(second / 2)
+	}
+	p.Stop()
+}
+
+func listPrinter() {
+	pterm.NewBulletListFromString(`Good bye
+ Have a nice day!`, " ").Render()
+}
+
+func fadeText() {
+	from := pterm.NewRGB(0, 255, 255) // This RGB value is used as the gradients start point.
+	to := pterm.NewRGB(255, 0, 255)   // This RGB value is used as the gradients first point.
+
+	str := "If your terminal has TrueColor support, you can use RGB colors!\nYou can even fade them :)"
+	strs := strings.Split(str, "")
+	var fadeInfo string // String which will be used to print info.
+	// For loop over the range of the string length.
+	for i := 0; i < len(str); i++ {
+		// Append faded letter to info string.
+		fadeInfo += from.Fade(0, float32(len(str)), float32(i), to).Sprint(strs[i])
+	}
+	pterm.Info.Println(fadeInfo)
+}
+
+func installedProgramsSize() {
+	d := pterm.TableData{{"Program Name", "Status", "Size"}}
+	for _, s := range pseudoProgramList {
+		if s != "pseudo-minecraft" {
+			d = append(d, []string{s, pterm.LightGreen("pass"), strconv.Itoa(randomInt(7, 200)) + "mb"})
+		} else {
+			d = append(d, []string{pterm.LightRed(s), pterm.LightRed("fail"), "0mb"})
+		}
+	}
+	pterm.DefaultTable.WithHasHeader().WithData(d).Render()
+}
+
+func pseudoApplicationHeader() *pterm.TextPrinter {
+	return pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
+		"Pseudo Application created with PTerm")
+}
+
+func introScreen() {
+	pterm.DefaultBigText.WithLetters(
+		pterm.NewLettersFromStringWithStyle("P", pterm.NewStyle(pterm.FgLightCyan)),
+		pterm.NewLettersFromStringWithStyle("Term", pterm.NewStyle(pterm.FgLightMagenta))).
+		Render()
+
+	pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
+		"PTDP - PTerm Demo Program")
+
+	pterm.Info.Println("This animation was generated with the latest version of PTerm!" +
+		"\nPTerm works on nearly every terminal and operating system." +
+		"\nIt's super easy to use!" +
+		"\nIf you want, you can customize everything :)" +
+		"\nYou can see the code of this demo in the " + pterm.LightMagenta("./_examples/demo") + " directory." +
+		"\n" +
+		"\nThis demo was updated at: " + pterm.Green(time.Now().Format("02 Jan 2006 - 15:04:05 MST")))
+	pterm.Println()
+	introSpinner, _ := pterm.DefaultSpinner.WithRemoveWhenDone(true).Start("Waiting for 15 seconds...")
+	time.Sleep(second)
+	for i := 14; i > 0; i-- {
+		if i > 1 {
+			introSpinner.UpdateText("Waiting for " + strconv.Itoa(i) + " seconds...")
+		} else {
+			introSpinner.UpdateText("Waiting for " + strconv.Itoa(i) + " second...")
+		}
+		time.Sleep(second)
+	}
+	introSpinner.Stop()
+}
+
+func clear() {
+	print("\033[H\033[2J")
+}
+
+func randomInt(min, max int) int {
+	rand.Seed(time.Now().UnixNano())
+	return rand.Intn(max-min+1) + min
+}
+
+```
+
+</details>
+
+### coloring/fade-colors
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/fade-colors/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	// Print info.
+	pterm.Info.Println("RGB colors only work in Terminals which support TrueColor.")
+
+	from := pterm.NewRGB(0, 255, 255) // This RGB value is used as the gradients start point.
+	to := pterm.NewRGB(255, 0, 255)   // This RGB value is used as the gradients end point.
+
+	// For loop over the range of the terminal height.
+	for i := 0; i < pterm.GetTerminalHeight()-2; i++ {
+		// Print string which is colored with the faded RGB value.
+		from.Fade(0, float32(pterm.GetTerminalHeight()-2), float32(i), to).Println("Hello, World!")
+	}
+}
+
+```
+
+</details>
+
+### coloring/fade-multiple-colors
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/fade-multiple-colors/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"strings"
+
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	from := pterm.NewRGB(0, 255, 255)  // This RGB value is used as the gradients start point.
+	to := pterm.NewRGB(255, 0, 255)    // This RGB value is used as the gradients first point.
+	to2 := pterm.NewRGB(255, 0, 0)     // This RGB value is used as the gradients second point.
+	to3 := pterm.NewRGB(0, 255, 0)     // This RGB value is used as the gradients third point.
+	to4 := pterm.NewRGB(255, 255, 255) // This RGB value is used as the gradients end point.
+
+	str := "RGB colors only work in Terminals which support TrueColor."
+	strs := strings.Split(str, "")
+	var fadeInfo string // String which will be used to print info.
+	// For loop over the range of the string length.
+	for i := 0; i < len(str); i++ {
+		// Append faded letter to info string.
+		fadeInfo += from.Fade(0, float32(len(str)), float32(i), to).Sprint(strs[i])
+	}
+
+	// Print info.
+	pterm.Info.Println(fadeInfo)
+
+	// For loop over the range of the terminal height.
+	for i := 0; i < pterm.GetTerminalHeight()-2; i++ {
+		// Print string which is colored with the faded RGB value.
+		from.Fade(0, float32(pterm.GetTerminalHeight()-2), float32(i), to, to2, to3, to4).Println("Hello, World!")
+	}
+}
+
+```
+
+</details>
+
+### coloring/override-default-printers
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/override-default-printers/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	// Print default error.
+	pterm.Error.Println("This is the default Error")
+
+	// Customize default error.
+	pterm.Error.Prefix = pterm.Prefix{
+		Text:  "OVERRIDE",
+		Style: pterm.NewStyle(pterm.BgCyan, pterm.FgRed),
+	}
+
+	// Print new default error.
+	pterm.Error.Println("This is the default Error after the prefix was overridden")
 }
 
 ```
@@ -1148,6 +3665,37 @@ func main() {
 
 	// Print panels.
 	_ = pterm.DefaultPanel.WithPanels(panels).WithPadding(5).Render()
+}
+
+```
+
+</details>
+
+### paragraph/customized
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/paragraph/customized/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	// Print a paragraph with a custom maximal width.
+	pterm.DefaultParagraph.WithMaxWidth(60).Println("This is a custom paragraph printer. As you can see, no words are separated, " +
+		"but the text is split at the spaces. This is useful for continuous text of all kinds. You can manually change the line width if you want to." +
+		"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam")
+
+	// Print one line space.
+	pterm.Println()
+
+	// Print text without a paragraph printer.
+	pterm.Println("This text is written with the default Println() function. No intelligent splitting here." +
+		"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam")
 }
 
 ```
