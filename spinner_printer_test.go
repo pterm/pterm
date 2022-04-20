@@ -2,6 +2,7 @@ package pterm_test
 
 import (
 	"io"
+	"os"
 	"testing"
 	"time"
 
@@ -205,6 +206,54 @@ func TestSpinnerPrinter_DifferentVariations(t *testing.T) {
 			}
 			s.Start(tt.args.text)
 			s.Stop()
+		})
+	}
+}
+
+func TestSpinnerPrinter_WithWriter(t *testing.T) {
+	p := pterm.SpinnerPrinter{}
+	s := os.Stderr
+	p2 := p.WithWriter(s)
+
+	testza.AssertEqual(t, s, p2.Writer)
+	testza.AssertZero(t, p.Writer)
+}
+
+func TestSpinnerPrinter_OutputToWriters(t *testing.T) {
+	testCases := map[string]struct {
+		action                func(*pterm.SpinnerPrinter)
+		expectOutputToContain string
+	}{
+		"ExpectWarningMessageToBeWrittenToStderr": {
+			action:                func(sp *pterm.SpinnerPrinter) { sp.Warning("A warning") },
+			expectOutputToContain: "A warning",
+		},
+		"ExpectFailMessageToBeWrittenToStderr": {
+			action:                func(sp *pterm.SpinnerPrinter) { sp.Fail("An error") },
+			expectOutputToContain: "An error",
+		},
+		"ExpectUpdatedTextToBeWrittenToStderr": {
+			action: func(sp *pterm.SpinnerPrinter) {
+				sp.UpdateText("Updated text")
+			},
+			expectOutputToContain: "Updated text",
+		},
+	}
+
+	for testTitle, testCase := range testCases {
+		t.Run(testTitle, func(t *testing.T) {
+			stderr, err := testza.CaptureStderr(func(w io.Writer) error {
+				sp, err := pterm.DefaultSpinner.WithText("Hello world").WithWriter(os.Stderr).Start()
+				time.Sleep(time.Second) // Required otherwise the goroutine doesn't run and the text isnt outputted
+				testza.AssertNoError(t, err)
+				testCase.action(sp)
+				time.Sleep(time.Second) // Required otherwise the goroutine doesn't run and the text isnt updated
+				return nil
+			})
+
+			testza.AssertNoError(t, err)
+			testza.AssertContains(t, stderr, "Hello world")
+			testza.AssertContains(t, stderr, testCase.expectOutputToContain)
 		})
 	}
 }

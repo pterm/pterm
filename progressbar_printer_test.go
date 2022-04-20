@@ -1,6 +1,8 @@
 package pterm_test
 
 import (
+	"io"
+	"os"
 	"testing"
 	"time"
 
@@ -208,4 +210,44 @@ func TestProgressbarPrinter_UpdateTitle(t *testing.T) {
 	p2.UpdateTitle("test2")
 
 	testza.AssertEqual(t, "test2", p2.Title)
+}
+
+func TestProgressbarPrinter_WithWriter(t *testing.T) {
+	p := pterm.ProgressbarPrinter{}
+	s := os.Stderr
+	p2 := p.WithWriter(s)
+
+	testza.AssertEqual(t, s, p2.Writer)
+	testza.AssertZero(t, p.Writer)
+}
+
+func TestProgressbarPrinter_OutputToWriters(t *testing.T) {
+	testCases := map[string]struct {
+		action                func(*pterm.ProgressbarPrinter)
+		expectOutputToContain string
+	}{
+		"ExpectUpdatedTitleToBeWrittenToStderr": {
+			action: func(pb *pterm.ProgressbarPrinter) {
+				pb.UpdateTitle("Updated text")
+			},
+			expectOutputToContain: "Updated text",
+		},
+	}
+
+	for testTitle, testCase := range testCases {
+		t.Run(testTitle, func(t *testing.T) {
+			stderr, err := testza.CaptureStderr(func(w io.Writer) error {
+				pb, err := pterm.DefaultProgressbar.WithTitle("Hello world").WithWriter(os.Stderr).Start()
+				time.Sleep(time.Second) // Required otherwise the goroutine doesn't run and the text isnt outputted
+				testza.AssertNoError(t, err)
+				testCase.action(pb)
+				time.Sleep(time.Second) // Required otherwise the goroutine doesn't run and the text isnt updated
+				return nil
+			})
+
+			testza.AssertNoError(t, err)
+			testza.AssertContains(t, stderr, "Hello world")
+			testza.AssertContains(t, stderr, testCase.expectOutputToContain)
+		})
+	}
 }
