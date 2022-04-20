@@ -1,4 +1,4 @@
-# bulletlist
+# bulletlist/demo
 
 ![Animation](animation.svg)
 

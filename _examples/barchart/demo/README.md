@@ -1,4 +1,4 @@
-# barchart
+# barchart/demo
 
 ![Animation](animation.svg)
 

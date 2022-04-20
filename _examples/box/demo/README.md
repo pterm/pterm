@@ -1,4 +1,4 @@
-# box
+# box/demo
 
 ![Animation](animation.svg)
 

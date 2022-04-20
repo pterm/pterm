@@ -1,4 +1,4 @@
-# spinner
+# spinner/demo
 
 ![Animation](animation.svg)
 

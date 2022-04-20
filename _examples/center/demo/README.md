@@ -1,4 +1,4 @@
-# center
+# center/demo
 
 ![Animation](animation.svg)
 

@@ -1,4 +1,4 @@
-# print-basic-text
+# basictext/demo
 
 ![Animation](animation.svg)
 

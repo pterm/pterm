@@ -1,4 +1,4 @@
-# disable-color
+# coloring/disable-color
 
 ![Animation](animation.svg)
 

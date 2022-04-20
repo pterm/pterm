@@ -1,4 +1,4 @@
-# barchart-negative-values
+# barchart/negative-values
 
 ![Animation](animation.svg)
 

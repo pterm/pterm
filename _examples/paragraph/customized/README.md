@@ -1,4 +1,4 @@
-# paragraph-custom
+# paragraph/customized
 
 ![Animation](animation.svg)
 

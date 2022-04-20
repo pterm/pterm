@@ -1,4 +1,4 @@
-# theme
+# theme/demo
 
 ![Animation](animation.svg)
 

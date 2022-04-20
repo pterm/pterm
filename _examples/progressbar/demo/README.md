@@ -1,4 +1,4 @@
-# progressbar
+# progressbar/demo
 
 ![Animation](animation.svg)
 

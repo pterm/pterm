@@ -1,4 +1,4 @@
-# print-with-color
+# coloring/demo
 
 ![Animation](animation.svg)
 

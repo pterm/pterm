@@ -1,4 +1,4 @@
-# tree
+# tree/demo
 
 ![Animation](animation.svg)
 

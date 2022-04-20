@@ -43,31 +43,35 @@ func main() {
 	os.WriteFile("./docs/docs/putils.md", []byte(putilsReadme), 0600)
 
 	log.Output(1, "## Generating Examples")
-	files, err := os.ReadDir("./_examples/")
-	if err != nil {
-		log.Panic(err)
-	}
-
+	files, _ := os.ReadDir("./_examples/")
 	var readmeExamples string
+	for _, file := range files {
+		log.Output(2, "Section: "+file.Name())
+		examples, _ := os.ReadDir("./_examples/" + file.Name())
 
-	for _, f := range files {
-		processFile(f)
-	}
+		for _, f := range examples {
+			processFile(file.Name() + "/" + f.Name())
+			log.Output(2, "## Generating readme for example: "+f.Name())
+			exampleCode, err := os.ReadFile("./_examples/" + file.Name() + "/" + f.Name() + "/main.go")
+			if err != nil {
+				log.Panic(err)
+			}
 
-	for _, f := range files {
-		exampleCode, err := os.ReadFile("./_examples/" + f.Name() + "/main.go")
-		if err != nil {
-			log.Panic(err)
+			readmeExamples += "### " + file.Name() + "/" + f.Name() + "\n\n"
+			readmeExamples += "![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/" + file.Name() + "/" + f.Name() + "/animation.svg)\n\n"
+			readmeExamples += "<details>\n\n<summary>SHOW SOURCE</summary>\n\n"
+			readmeExamples += "```go\n"
+			readmeExamples += string(exampleCode) + "\n"
+			readmeExamples += "```\n\n"
+			readmeExamples += "</details>\n\n"
 		}
-
-		readmeExamples += "### " + f.Name() + "\n\n"
-		readmeExamples += "![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/" + f.Name() + "/animation.svg)\n\n"
-		readmeExamples += "<details>\n\n<summary>SHOW SOURCE</summary>\n\n"
-		readmeExamples += "```go\n"
-		readmeExamples += string(exampleCode) + "\n"
-		readmeExamples += "```\n\n"
-		readmeExamples += "</details>\n\n"
 	}
+
+	log.Output(3, "### Generating examples README")
+	examplesReadme, err := os.ReadFile("./_examples/README.md")
+	examplesReadmeContent := string(examplesReadme)
+	examplesReadmeContent = writeBetween("examples", examplesReadmeContent, "\n"+readmeExamples+"\n")
+	os.WriteFile("./_examples/README.md", []byte(examplesReadmeContent), 0755)
 
 	log.Output(3, "### Appending examples to root README.md")
 
@@ -117,34 +121,34 @@ func main() {
 	}
 }
 
-func processFile(f os.DirEntry) {
-	log.Output(3, "### ['"+f.Name()+"'] Generating animations for example")
-	animationDataPath := "./_examples/" + f.Name() + "/animation_data.json"
-	animationSvgPath := "./_examples/" + f.Name() + "/animation.svg"
-	exampleCode, err := os.ReadFile("./_examples/" + f.Name() + "/main.go")
+func processFile(dir string) {
+	log.Output(3, "### ['"+dir+"'] Generating animations for example")
+	animationDataPath := "./_examples/" + dir + "/animation_data.json"
+	animationSvgPath := "./_examples/" + dir + "/animation.svg"
+	exampleCode, err := os.ReadFile("./_examples/" + dir + "/main.go")
 	if err != nil {
 		log.Panic(err)
 	}
 
 	if fileExists(animationDataPath) {
-		log.Output(4, "#### ['"+f.Name()+"']  animation_data.json already exists. Removing it.")
+		log.Output(4, "#### ['"+dir+"']  animation_data.json already exists. Removing it.")
 		err = os.Remove(animationDataPath)
 		if err != nil {
 			log.Panic(err)
 		}
 	}
 	if fileExists(animationSvgPath) {
-		log.Output(4, "#### ['"+f.Name()+"']  animation.svg already exists. Removing it.")
+		log.Output(4, "#### ['"+dir+"']  animation.svg already exists. Removing it.")
 		err := os.Remove(animationSvgPath)
 		if err != nil {
 			log.Panic(err)
 		}
 	}
 
-	log.Output(4, "#### ['"+f.Name()+"'] Running asciinema")
-	execute(`asciinema rec ` + animationDataPath + ` -c "go run ./_examples/` + f.Name() + `"`)
+	log.Output(4, "#### ['"+dir+"'] Running asciinema")
+	execute(`asciinema rec ` + animationDataPath + ` -c "go run ./_examples/` + dir + `"`)
 
-	log.Output(4, "#### ['"+f.Name()+"']  Adding sleep to end of animation_data.json")
+	log.Output(4, "#### ['"+dir+"']  Adding sleep to end of animation_data.json")
 	animationDataLines := getLinesFromFile(animationDataPath)
 	animationDataLastLine := animationDataLines[len(animationDataLines)-1]
 	re := regexp.MustCompile(`\[\d[^,]*`).FindAllString(animationDataLastLine, 1)[0]
@@ -152,22 +156,22 @@ func processFile(f os.DirEntry) {
 	sleepString := `[` + strconv.FormatFloat(lastTime+5, 'f', 6, 64) + `, "o", "\nRestarting animation...\n"]`
 	animationDataFile, err := os.OpenFile(animationDataPath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
 	if err != nil {
-		log.Panicf("[%s] %s", f.Name(), err.Error())
+		log.Panicf("[%s] %s", dir, err.Error())
 	}
 	defer animationDataFile.Close()
 	_, err = animationDataFile.WriteString(sleepString)
 	if err != nil {
-		log.Panicf("[%s] %s", f.Name(), err.Error())
+		log.Panicf("[%s] %s", dir, err.Error())
 	}
 
-	log.Output(4, "#### ['"+f.Name()+"']  Generating SVG")
+	log.Output(4, "#### ['"+dir+"']  Generating SVG")
 	execute(`svg-term --in ` + animationDataPath + ` --out ` + animationSvgPath + ` --no-cursor --window true --no-optimize --profile "./ci/terminal-theme.txt" --term "iterm2"`)
 
-	log.Output(4, "#### ['"+f.Name()+"']  Overwriting SVG font")
+	log.Output(4, "#### ['"+dir+"']  Overwriting SVG font")
 
 	svgContent, err := os.ReadFile(animationSvgPath)
 	if err != nil {
-		log.Panicf("[%s] %s", f.Name(), err.Error())
+		log.Panicf("[%s] %s", dir, err.Error())
 	}
 
 	svgContent = []byte(strings.ReplaceAll(string(svgContent), `font-family:`, `font-family:'JetBrainsMono',`))
@@ -187,19 +191,19 @@ func processFile(f os.DirEntry) {
 	os.Remove(animationSvgPath)
 	os.WriteFile(animationSvgPath, svgContent, 0600)
 
-	log.Output(4, "#### ['"+f.Name()+"']  Generating README.md")
-	readmeString := "# " + f.Name() + "\n\n![Animation](animation.svg)\n\n"
+	log.Output(4, "#### ['"+dir+"']  Generating README.md")
+	readmeString := "# " + dir + "\n\n![Animation](animation.svg)\n\n"
 	readmeString += "```go\n"
 	readmeString += string(exampleCode)
 	readmeString += "\n```\n"
-	err = os.WriteFile("./_examples/"+f.Name()+"/README.md", []byte(readmeString), 0600)
+	err = os.WriteFile("./_examples/"+dir+"/README.md", []byte(readmeString), 0600)
 	if err != nil {
 		log.Panic(err)
 	}
 
-	log.Output(4, "#### ['"+f.Name()+"']  Adding example to global example list")
+	log.Output(4, "#### ['"+dir+"']  Adding example to global example list")
 
-	log.Output(4, "#### ['"+f.Name()+"']  Cleaning files")
+	log.Output(4, "#### ['"+dir+"']  Cleaning files")
 	os.Remove(animationDataPath)
 
 	// wg.Done()

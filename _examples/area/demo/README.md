@@ -1,4 +1,4 @@
-# area
+# area/demo
 
 ![Animation](animation.svg)
 

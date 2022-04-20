@@ -1,4 +1,4 @@
-# demo
+# demo/demo
 
 ![Animation](animation.svg)
 

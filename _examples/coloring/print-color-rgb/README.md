@@ -1,4 +1,4 @@
-# print-color-rgb
+# coloring/print-color-rgb
 
 ![Animation](animation.svg)
 

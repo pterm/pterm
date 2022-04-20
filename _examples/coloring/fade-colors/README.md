@@ -1,4 +1,4 @@
-# print-color-fade
+# coloring/fade-colors
 
 ![Animation](animation.svg)
 

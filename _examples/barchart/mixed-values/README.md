@@ -1,4 +1,4 @@
-# barchart-mixed-values
+# barchart/mixed-values
 
 ![Animation](animation.svg)
 

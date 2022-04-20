@@ -1,4 +1,4 @@
-# paragraph
+# paragraph/demo
 
 ![Animation](animation.svg)
 

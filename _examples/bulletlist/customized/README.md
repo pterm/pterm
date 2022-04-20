@@ -1,4 +1,4 @@
-# bulletlist-custom
+# bulletlist/customized
 
 ![Animation](animation.svg)
 

@@ -1,4 +1,4 @@
-# table
+# table/demo
 
 ![Animation](animation.svg)
 
@@ -18,7 +18,7 @@ func main() {
 	}).Render()
 
 	pterm.Println() // Blank line
-        
+
 	// Create a table with right alignment.
 	pterm.DefaultTable.WithHasHeader().WithData(pterm.TableData{
 		{"Firstname", "Lastname", "Email"},

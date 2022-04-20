@@ -1,4 +1,4 @@
-# bigtext
+# bigtext/demo
 
 ![Animation](animation.svg)
 

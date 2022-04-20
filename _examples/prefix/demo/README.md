@@ -1,4 +1,4 @@
-# prefix
+# prefix/demo
 
 ![Animation](animation.svg)
 

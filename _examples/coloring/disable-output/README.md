@@ -1,4 +1,4 @@
-# disable-output
+# coloring/disable-output
 
 ![Animation](animation.svg)
 

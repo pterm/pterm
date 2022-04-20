@@ -1,4 +1,4 @@
-# section
+# section/demo
 
 ![Animation](animation.svg)
 

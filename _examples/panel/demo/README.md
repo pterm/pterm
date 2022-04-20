@@ -1,4 +1,4 @@
-# panel
+# panel/demo
 
 ![Animation](animation.svg)
 

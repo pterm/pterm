@@ -1,4 +1,4 @@
-# disable-styling
+# coloring/disable-styling
 
 ![Animation](animation.svg)
 

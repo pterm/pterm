@@ -1,4 +1,4 @@
-# style
+# style/demo
 
 ![Animation](animation.svg)
 
