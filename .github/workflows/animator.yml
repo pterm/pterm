@@ -8,6 +8,8 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'autoupdate')"
     runs-on: ubuntu-latest
     steps:
+      - name: Git Setup
+        run: git config --global --add safe.directory /github/workspace
       - name: Update Docs
         uses: pterm/animation-ci@master
         env:
