@@ -45,33 +45,37 @@ func main() {
 	log.Output(1, "## Generating Examples")
 	files, _ := os.ReadDir("./_examples/")
 	var readmeExamples string
-	for _, file := range files {
-		log.Output(2, "Section: "+file.Name())
-		examples, _ := os.ReadDir("./_examples/" + file.Name())
+	for _, section := range files {
+		var sectionExamples string
+		log.Output(2, "Section: "+section.Name())
+		examples, _ := os.ReadDir("./_examples/" + section.Name())
 
-		for _, f := range examples {
-			processFile(file.Name() + "/" + f.Name())
-			log.Output(2, "## Generating readme for example: "+f.Name())
-			exampleCode, err := os.ReadFile("./_examples/" + file.Name() + "/" + f.Name() + "/main.go")
+		for _, example := range examples {
+			processFile(section.Name() + "/" + example.Name())
+			log.Output(2, "## Generating readme for example: "+example.Name())
+			exampleCode, err := os.ReadFile("./_examples/" + section.Name() + "/" + example.Name() + "/main.go")
 			if err != nil {
 				log.Panic(err)
 			}
 
-			readmeExamples += "### " + file.Name() + "/" + f.Name() + "\n\n"
-			readmeExamples += "![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/" + file.Name() + "/" + f.Name() + "/animation.svg)\n\n"
-			readmeExamples += "<details>\n\n<summary>SHOW SOURCE</summary>\n\n"
-			readmeExamples += "```go\n"
-			readmeExamples += string(exampleCode) + "\n"
-			readmeExamples += "```\n\n"
-			readmeExamples += "</details>\n\n"
+			sectionExamples += "### " + section.Name() + "/" + example.Name() + "\n\n"
+			sectionExamples += "![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/" + section.Name() + "/" + example.Name() + "/animation.svg)\n\n"
+			sectionExamples += "<details>\n\n<summary>SHOW SOURCE</summary>\n\n"
+			sectionExamples += "```go\n"
+			sectionExamples += string(exampleCode) + "\n"
+			sectionExamples += "```\n\n"
+			sectionExamples += "</details>\n\n"
+
+			readmeExamples += sectionExamples
 		}
+		os.WriteFile("./_examples/"+section.Name()+"/README.md", []byte(sectionExamples), 0600)
 	}
 
 	log.Output(3, "### Generating examples README")
 	examplesReadme, err := os.ReadFile("./_examples/README.md")
 	examplesReadmeContent := string(examplesReadme)
 	examplesReadmeContent = writeBetween("examples", examplesReadmeContent, "\n"+readmeExamples+"\n")
-	os.WriteFile("./_examples/README.md", []byte(examplesReadmeContent), 0755)
+	os.WriteFile("./_examples/README.md", []byte(examplesReadmeContent), 0600)
 
 	log.Output(3, "### Appending examples to root README.md")
 
