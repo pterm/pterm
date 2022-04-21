@@ -1,10 +1,6 @@
-### area/demo
+# area/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/area/demo/animation.svg)
-
-<details>
-
-<summary>SHOW SOURCE</summary>
+![Animation](animation.svg)
 
 ```go
 package main
@@ -29,6 +25,3 @@ func main() {
 }
 
 ```
-
-</details>
-
