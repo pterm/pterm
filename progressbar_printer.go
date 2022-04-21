@@ -28,7 +28,7 @@ var (
 		ShowCount:                 true,
 		ShowPercentage:            true,
 		ShowElapsedTime:           true,
-		BarFiller:                 "░",
+		BarFiller:                 " ",
 		MaxWidth:                  80,
 	}
 )
