@@ -3569,7 +3569,48 @@ func main() {
 		for i := 0; i < 4; i++ {
 			pterm.Println()
 		}
-
+		text := "All printers are fully customizable!"
+		area := pterm.DefaultArea.WithCenter()
+		area.Update(pterm.DefaultBox.Sprintln(text))
+		time.Sleep(second)
+		area.Update(pterm.DefaultBox.WithTopPadding(1).Sprintln(text))
+		time.Sleep(second / 3)
+		area.Update(pterm.DefaultBox.WithTopPadding(1).WithBottomPadding(1).Sprintln(text))
+		time.Sleep(second / 3)
+		area.Update(pterm.DefaultBox.WithTopPadding(1).WithBottomPadding(1).WithLeftPadding(1).Sprintln(text))
+		time.Sleep(second / 3)
+		area.Update(pterm.DefaultBox.WithTopPadding(1).WithBottomPadding(1).WithLeftPadding(1).WithRightPadding(1).Sprintln(text))
+		time.Sleep(second / 3)
+		area.Update(pterm.DefaultBox.WithTopPadding(1).WithBottomPadding(1).WithLeftPadding(1).WithRightPadding(1).WithTitle("Some title!").WithTitleTopLeft().Sprintln(text))
+		time.Sleep(second / 3)
+		area.Update(pterm.DefaultBox.WithTopPadding(1).WithBottomPadding(1).WithLeftPadding(1).WithRightPadding(1).WithTitle("Some title!").WithTitleTopCenter().Sprintln(text))
+		time.Sleep(second / 3)
+		area.Update(pterm.DefaultBox.WithTopPadding(1).WithBottomPadding(1).WithLeftPadding(1).WithRightPadding(1).WithTitle("Some title!").WithTitleTopRight().Sprintln(text))
+		time.Sleep(second / 3)
+		area.Update(pterm.DefaultBox.WithTopPadding(1).WithBottomPadding(1).WithLeftPadding(1).WithRightPadding(1).WithTitle("Some title!").WithTitleBottomRight().Sprintln(text))
+		time.Sleep(second / 3)
+		area.Update(pterm.DefaultBox.WithTopPadding(1).WithBottomPadding(1).WithLeftPadding(1).WithRightPadding(1).WithTitle("Some title!").WithTitleBottomCenter().Sprintln(text))
+		time.Sleep(second / 3)
+		area.Update(pterm.DefaultBox.WithTopPadding(1).WithBottomPadding(1).WithLeftPadding(1).WithRightPadding(1).WithTitle("Some title!").WithTitleBottomLeft().Sprintln(text))
+		time.Sleep(second / 3)
+		area.Update(pterm.DefaultBox.WithTopPadding(1).WithBottomPadding(1).WithLeftPadding(1).WithRightPadding(1).WithBoxStyle(pterm.NewStyle(pterm.FgCyan)).Sprintln(text))
+		time.Sleep(second / 5)
+		area.Update(pterm.DefaultBox.WithTopPadding(1).WithBottomPadding(1).WithLeftPadding(1).WithRightPadding(1).WithBoxStyle(pterm.NewStyle(pterm.FgRed)).Sprintln(text))
+		time.Sleep(second / 5)
+		area.Update(pterm.DefaultBox.WithTopPadding(1).WithBottomPadding(1).WithLeftPadding(1).WithRightPadding(1).WithBoxStyle(pterm.NewStyle(pterm.FgGreen)).Sprintln(text))
+		time.Sleep(second / 5)
+		area.Update(pterm.DefaultBox.WithTopPadding(1).
+			WithBottomPadding(1).
+			WithLeftPadding(1).
+			WithRightPadding(1).
+			WithHorizontalString("═").
+			WithVerticalString("║").
+			WithBottomLeftCornerString("╗").
+			WithBottomRightCornerString("╔").
+			WithTopLeftCornerString("╝").
+			WithTopRightCornerString("╚").
+			Sprintln(text))
+		area.Stop()
 	})
 
 	showcase("And much more!", 3, func() {
