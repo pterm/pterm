@@ -10,7 +10,9 @@
 package main
 
 import (
+	"flag"
 	"math/rand"
+	"reflect"
 	"strconv"
 	"strings"
 	"time"
@@ -18,109 +20,158 @@ import (
 	"github.com/pterm/pterm"
 )
 
-// Change this to time.Millisecond*200 to speed up the demo.
-// Useful when debugging.
-const second = time.Second
+// Speed the demo up, by setting this flag.
+// Usefull for debugging.
+// Example:
+//   go run main.go -speedup
+var speedup = flag.Bool("speedup", false, "Speed up the demo")
+var skipIntro = flag.Bool("skip-intro", false, "Skips the intro")
+var second = time.Second
 
 var pseudoProgramList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chrome pseudo-outlook pseudo-explorer "+
-	"pseudo-dops pseudo-git pseudo-vsc pseudo-intellij pseudo-minecraft pseudo-scoop pseudo-chocolatey", " ")
+	"pseudo-git pseudo-vsc pseudo-intellij pseudo-minecraft pseudo-scoop pseudo-chocolatey", " ")
 
 func main() {
-	introScreen()
-	clear()
-	pseudoApplicationHeader()
-	time.Sleep(second)
-	installingPseudoList()
-	time.Sleep(second * 2)
-	pterm.DefaultSection.WithLevel(2).Println("Program Install Report")
-	installedProgramsSize()
-	time.Sleep(second * 4)
-	pterm.DefaultSection.Println("Tree Printer")
-	installedTree()
-	time.Sleep(second * 4)
-	pterm.DefaultSection.Println("TrueColor Support")
-	fadeText()
-	time.Sleep(second)
-	pterm.DefaultSection.Println("Bullet List Printer")
-	listPrinter()
-}
+	setup() // Setup the demo (flags etc.)
 
-func installedTree() {
-	leveledList := pterm.LeveledList{
-		pterm.LeveledListItem{Level: 0, Text: "C:"},
-		pterm.LeveledListItem{Level: 1, Text: "Go"},
-		pterm.LeveledListItem{Level: 1, Text: "Windows"},
-		pterm.LeveledListItem{Level: 1, Text: "Programs"},
-	}
-	for _, s := range pseudoProgramList {
-		if s != "pseudo-minecraft" {
-			leveledList = append(leveledList, pterm.LeveledListItem{Level: 2, Text: s})
-		}
-		if s == "pseudo-chrome" {
-			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Tabs"})
-			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Extensions"})
-			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "Refined GitHub"})
-			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "GitHub Dark Theme"})
-			leveledList = append(leveledList, pterm.LeveledListItem{Level: 3, Text: "pseudo-Bookmarks"})
-			leveledList = append(leveledList, pterm.LeveledListItem{Level: 4, Text: "PTerm"})
-		}
+	// Show intro
+	if !*skipIntro {
+		introScreen()
+		clear()
 	}
 
-	pterm.DefaultTree.WithRoot(pterm.NewTreeFromLeveledList(leveledList)).Render()
-}
-
-func installingPseudoList() {
-	pterm.DefaultSection.Println("Installing pseudo programs")
-
-	p, _ := pterm.DefaultProgressbar.WithTotal(len(pseudoProgramList)).WithTitle("Installing stuff").Start()
-	for i := 0; i < p.Total; i++ {
-		p.UpdateTitle("Installing " + pseudoProgramList[i])
-		if pseudoProgramList[i] == "pseudo-minecraft" {
-			pterm.Warning.Println("Could not install pseudo-minecraft\nThe company policy forbids games.")
-		} else {
-			pterm.Success.Println("Installing " + pseudoProgramList[i])
-			p.Increment()
+	showcase("Progress bar", 2, func() {
+		pb, _ := pterm.DefaultProgressbar.WithTotal(len(pseudoProgramList)).WithTitle("Installing stuff").Start()
+		for i := 0; i < pb.Total; i++ {
+			pb.UpdateTitle("Installing " + pseudoProgramList[i])
+			if pseudoProgramList[i] == "pseudo-minecraft" {
+				pterm.Warning.Println("Could not install pseudo-minecraft\nThe company policy forbids games.")
+			} else {
+				pterm.Success.Println("Installing " + pseudoProgramList[i])
+			}
+			pb.Increment()
+			time.Sleep(second / 2)
 		}
+		pb.Stop()
+	})
+
+	showcase("Spinner", 2, func() {
+		list := pseudoProgramList[7:]
+		spinner, _ := pterm.DefaultSpinner.Start("Installing stuff")
+		for i := 0; i < len(list); i++ {
+			spinner.UpdateText("Installing " + list[i])
+			if list[i] == "pseudo-minecraft" {
+				pterm.Warning.Println("Could not install pseudo-minecraft\nThe company policy forbids games.")
+			} else {
+				pterm.Success.Println("Installing " + list[i])
+			}
+			time.Sleep(second)
+		}
+		spinner.Success()
+	})
+
+	showcase("Live Output", 2, func() {
+		pterm.Info.Println("You can use an Area to display changing output:")
+		pterm.Println()
+		area, _ := pterm.DefaultArea.WithCenter().Start() // Start the Area printer, with the Center option.
+		for i := 0; i < 10; i++ {
+			str, _ := pterm.DefaultBigText.WithLetters(pterm.NewLettersFromString(time.Now().Format("15:04:05"))).Srender() // Save current time in str.
+			area.Update(str)                                                                                                // Update Area contents.
+			time.Sleep(time.Second)
+		}
+		area.Stop()
+	})
+
+	showcase("Tables", 4, func() {
+		for i := 0; i < 3; i++ {
+			pterm.Println()
+		}
+		td := [][]string{
+			{"Library", "Description"},
+			{"PTerm", "Make beautiful CLIs"},
+			{"Testza", "Programmer friendly test framework"},
+			{"Cursor", "Move the cursor around the terminal"},
+		}
+		table, _ := pterm.DefaultTable.WithHasHeader().WithData(td).Srender()
+		boxedTable, _ := pterm.DefaultTable.WithHasHeader().WithData(td).WithBoxed().Srender()
+		pterm.DefaultCenter.Println(table)
+		pterm.DefaultCenter.Println(boxedTable)
+	})
+
+	showcase("Default Prefix Printers", 5, func() {
+		// Enable debug messages.
+		pterm.EnableDebugMessages() // Temporarily set debug output to true, to display the debug printer.
+
+		pterm.Debug.Println("Hello, World!") // Print Debug.
 		time.Sleep(second / 2)
-	}
-	p.Stop()
-}
+		pterm.Info.Println("Hello, World!") // Print Info.
+		time.Sleep(second / 2)
+		pterm.Success.Println("Hello, World!") // Print Success.
+		time.Sleep(second / 2)
+		pterm.Warning.Println("Hello, World!") // Print Warning.
+		time.Sleep(second / 2)
+		pterm.Error.Println("Errors show the filename and linenumber inside the terminal!") // Print Error.
+		time.Sleep(second / 2)
+		pterm.Info.WithShowLineNumber().Println("Other PrefixPrinters can do that too!") // Print Error.
+		time.Sleep(second / 2)
+		// Temporarily set Fatal to false, so that the CI won't panic.
+		pterm.Fatal.WithFatal(false).Println("Hello, World!") // Print Fatal.
 
-func listPrinter() {
-	pterm.NewBulletListFromString(`Good bye
- Have a nice day!`, " ").Render()
-}
+		pterm.DisableDebugMessages() // Disable debug output again.
+	})
 
-func fadeText() {
-	from := pterm.NewRGB(0, 255, 255) // This RGB value is used as the gradients start point.
-	to := pterm.NewRGB(255, 0, 255)   // This RGB value is used as the gradients first point.
+	showcase("TrueColor Support", 7, func() {
+		from := pterm.NewRGB(0, 255, 255) // This RGB value is used as the gradients start point.
+		to := pterm.NewRGB(255, 0, 255)   // This RGB value is used as the gradients first point.
 
-	str := "If your terminal has TrueColor support, you can use RGB colors!\nYou can even fade them :)"
-	strs := strings.Split(str, "")
-	var fadeInfo string // String which will be used to print info.
-	// For loop over the range of the string length.
-	for i := 0; i < len(str); i++ {
-		// Append faded letter to info string.
-		fadeInfo += from.Fade(0, float32(len(str)), float32(i), to).Sprint(strs[i])
-	}
-	pterm.Info.Println(fadeInfo)
-}
-
-func installedProgramsSize() {
-	d := pterm.TableData{{"Program Name", "Status", "Size"}}
-	for _, s := range pseudoProgramList {
-		if s != "pseudo-minecraft" {
-			d = append(d, []string{s, pterm.LightGreen("pass"), strconv.Itoa(randomInt(7, 200)) + "mb"})
-		} else {
-			d = append(d, []string{pterm.LightRed(s), pterm.LightRed("fail"), "0mb"})
+		str := "If your terminal has TrueColor support, you can use RGB colors!\nYou can even fade them :)\n\nLorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
+		strs := strings.Split(str, "")
+		var fadeInfo string // String which will be used to print info.
+		// For loop over the range of the string length.
+		for i := 0; i < len(str); i++ {
+			// Append faded letter to info string.
+			fadeInfo += from.Fade(0, float32(len(str)), float32(i), to).Sprint(strs[i])
 		}
-	}
-	pterm.DefaultTable.WithHasHeader().WithData(d).Render()
+		pterm.DefaultCenter.WithCenterEachLineSeparately().Println(fadeInfo)
+	})
+
+	showcase("Themes", 2, func() {
+		pterm.Info.Println("You can change the color theme of PTerm easily to fit your needs!\nThis is the default one:")
+		time.Sleep(second / 2)
+		// Print every value of the default theme with its own style.
+		v := reflect.ValueOf(pterm.ThemeDefault)
+		typeOfS := v.Type()
+
+		if typeOfS == reflect.TypeOf(pterm.Theme{}) {
+			for i := 0; i < v.NumField(); i++ {
+				field, ok := v.Field(i).Interface().(pterm.Style)
+				if ok {
+					field.Println(typeOfS.Field(i).Name)
+				}
+				time.Sleep(time.Millisecond * 250)
+			}
+		}
+	})
+
+	showcase("And much more!", 3, func() {
+		for i := 0; i < 4; i++ {
+			pterm.Println()
+		}
+		box := pterm.DefaultBox.
+			WithBottomPadding(1).
+			WithTopPadding(1).
+			WithLeftPadding(3).
+			WithRightPadding(3).
+			Sprintf("Have fun exploring %s!", pterm.Cyan("PTerm"))
+		pterm.DefaultCenter.Println(box)
+	})
 }
 
-func pseudoApplicationHeader() *pterm.TextPrinter {
-	return pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
-		"Pseudo Application created with PTerm")
+func setup() {
+	flag.Parse()
+	if *speedup {
+		second = time.Millisecond * 200
+	}
 }
 
 func introScreen() {
@@ -155,6 +206,15 @@ func introScreen() {
 }
 
 func clear() {
+	print("\033[H\033[2J")
+}
+
+func showcase(title string, seconds int, content func()) {
+	pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithFullWidth().Println(title)
+	pterm.Println()
+	time.Sleep(second / 2)
+	content()
+	time.Sleep(second * time.Duration(seconds))
 	print("\033[H\033[2J")
 }
 
