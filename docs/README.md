@@ -71,14 +71,6 @@
 
 ---
 
-<p align="center">
-<a href="https://discord.gg/vE2dNkfAmF">
-<img width="300" src="https://user-images.githubusercontent.com/31022056/158916278-4504b838-7ecb-4ab9-a900-7dc002aade78.png" alt="Join us on Discord!" />
-<br/>
-<b>Join us on Discord for support, discussions, updates and general talk!</b>
-</a>
-</p>
-
 ## 📦 Installation
 
 To make PTerm available in your project, you can run the following command.\
@@ -91,83 +83,37 @@ go get github.com/pterm/pterm
 If you want to create a CLI tool, make sure to check out our [cli-template](https://github.com/pterm/cli-template),
 which features automatic website generation, automatic deployments, a custom CI-System and much more!
 
-## 🥅 Goal of PTerm
+## ⭐ Main Features
 
-PTerm is designed to create a **platform independent way to create beautiful terminal output**. Most modules that want to improve the terminal output do not guarantee platform independence - PTerm does. PTerm follows the **most common methods for displaying color in a terminal**. With PTerm, it is possible to create beautiful output **even in low-level environments**. 
+|Feature|Description|
+|-------|-----------|
+|🪀 Easy to use |Our first priority is to keep PTerm as easy to use as possible.<br> With many [examples](#-examples) for each individual component, getting started with PTerm is extremely easy.<br> All components are similar in design and implement interfaces to simplify mixing individual components together.|
+|🤹‍♀️ Cross-Platform |We take special precautions to ensure that PTerm works on as many operating systems and terminals as possible.<br> Whether it's `Windows CMD`, `macOS iTerm2` or in the backend (for example inside a `GitHub Action` or other CI systems), PTerm **guarantees** beautiful output!|
+|🧪 Well tested |PTerm has a 100% test coverage, which means that every line of code inside PTerm gets tested automatically<br>We test PTerm continuously. However, since a human cannot test everything all the time, we have our own test system with which we currently run <!-- unittestcount2:start -->**`28774`**<!-- unittestcount2:end -->automated tests to ensure that PTerm has no bugs. |
+|✨ Consistent Colors|PTerm uses the [ANSI color scheme](https://en.wikipedia.org/wiki/ANSI_escape_code#3/4_bit) which is widely used by terminals to ensure consistent colors in different terminal themes.<br>If that's not enough, PTerm can be used to access the full RGB color scheme (16 million colors) in terminals that support `TrueColor`.|
+|📚 Component system|PTerm consists of many components, called `Printers`, which can be used individually or together to generate pretty console output.|
+|🛠 Configurable|PTerm can be used by without any configuration. However, you can easily configure each component with little code, so everyone has the freedom to design their own terminal output.|
+|✏ Documentation |To view the official documentation of the latest release, you can go to the automatically generated page of [pkg.go.dev](https://pkg.go.dev/github.com/pterm/pterm#section-documentation) This documentation is very technical and includes every method that can be used in PTerm.<br>**For an easy start we recommend that you take a look at the [examples section](#-examples).** Here you can see pretty much every feature of PTerm with example code. The animations of the examples are automatically updated as soon as something changes in PTerm.|
 
-### • 🪀 Easy to use
+<div align="center">
+	
+### Printers (Components)
 
-Our first priority is to keep PTerm as easy to use as possible. With many [examples](#-examples) for each individual component, getting started with PTerm is extremely easy. All components are similar in design and implement interfaces to simplify mixing individual components together.
-
-### • 🤹‍♀️ Cross-Platform
-
-We take special precautions to ensure that PTerm works on as many operating systems and terminals as possible. Whether it's `Windows CMD`, `macOS iTerm2` or in the backend (for example inside a `GitHub Action` or other CI systems), PTerm **guarantees** beautiful output!\
-\
-*PTerm is actively tested on `Windows`, `Linux (Debian & Ubuntu)` and `macOS`.*
-
-### • ⭐ Main Features
-
-|Feature|Example|Docs|-|Feature|Example|Docs
-|---|---|---|---|---|---|---|
-|Bar Charts|[Example](#barchart)|[Docs](https://pterm.sh/#/docs/printer/barchart)|-|RGB|[Example](#print-color-rgb)|[Docs](https://pterm.sh/#/docs/printer/rgb)|
-|BigText|[Example](#bigtext)|[Docs](https://pterm.sh/#/docs/printer/bigtext)|-|Sections|[Example](#section)|[Docs](https://pterm.sh/#/docs/printer/section)|
-|Boxed|[Example](#box)|[Docs](https://pterm.sh/#/docs/printer/box)|-|Spinners|[Example](#spinner)|[Docs](https://pterm.sh/#/docs/printer/spinner)|
-|Bullet Lists|[Example](#bulletlist)|[Docs](https://pterm.sh/#/docs/printer/bulletlist)|-|Trees|[Example](#tree)|[Docs](https://pterm.sh/#/docs/printer/tree)|
-|Centered|[Example](#center)|[Docs](https://pterm.sh/#/docs/printer/center)|-|Theming|[Example](#theme)|[Docs](https://pterm.sh/#/docs/customizing/theming)|
-|Colors|[Example](#print-with-color)|[Docs](https://pterm.sh/#/docs/printer/color)|-|Tables|[Example](#table)|[Docs](https://pterm.sh/#/docs/printer/table)|
-|Headers|[Example](#header)|[Docs](https://pterm.sh/#/docs/printer/header)|-|Styles|[Example](#style)|[Docs](https://pterm.sh/#/docs/printer/style)|
-|Panels|[Example](#panel)|[Docs](https://pterm.sh/#/docs/printer/panel)|-|Area|[Example](#area)|[Docs](https://pterm.sh/#/docs/printer/area)|
-|Paragraphs|[Example](#paragraph)|[Docs](https://pterm.sh/#/docs/printer/paragraph)|-|||
-|Prefixes|[Example](#prefix)|[Docs](https://pterm.sh/#/docs/printer/prefix)|-|||
-|Progress Bars|[Example](#progressbar)|[Docs](https://pterm.sh/#/docs/printer/progressbar)|-|||
-
-### • 🧪 Well tested
-
-> PTerm has a 100% test coverage, which means that every line of code inside PTerm gets tested automatically
-
-We test PTerm continuously. However, since a human cannot test everything all the time, we have our own test system with which we currently run <!-- unittestcount2:start -->**`28774`**<!-- unittestcount2:end -->
-automated tests to ensure that PTerm has no bugs. 
-
-### • ✨ Consistent Colors
-
-PTerm uses the [ANSI color scheme](https://en.wikipedia.org/wiki/ANSI_escape_code#3/4_bit) which is widely used by terminals to ensure consistent colors in different terminal themes.
-If that's not enough, PTerm can be used to access the full RGB color scheme (16 million colors) in terminals that support `TrueColor`.
-
-![ANSI Colors](https://user-images.githubusercontent.com/31022056/96002009-f10c3a80-0e38-11eb-8d90-f3150150599c.png)
-
-### • 📚 Component system
-
-PTerm consists of many components, called `Printers`, which can be used individually or together to generate pretty console output.
-
-### • 🛠 Configurable
-
-PTerm can be used by without any configuration. However, you can easily configure each component with little code, so everyone has the freedom to design their own terminal output.
-
-## ✏ Documentation
-
-To view the official documentation of the latest release, you can go to the automatically generated page of [pkg.go.dev](https://pkg.go.dev/github.com/pterm/pterm#section-documentation) This documentation is very technical and includes every method that can be used in PTerm.
-
-**For an easy start we recommend that you take a look at the [examples section](#-examples).** Here you can see pretty much every feature of PTerm with its source code. The animations of the examples are automatically updated as soon as something changes in PTerm.
-
-Have fun exploring this project 🚀
-
-## 💖 Contributing
-
-If you have found a bug or want to suggest a feature, you can do so [here](https://github.com/pterm/pterm/issues) by opening a new issue.
-
-If you want to contribute to the development of PTerm, you are very welcome to do so. Our contribution guidelines can be found [here](CONTRIBUTING.md).
-
-## 💕 Support
-
-<p align="center">
-If you want to support me in further developing my open source projects, you can give me a little tip 😄 
-<br/>
-Your financial support enables me to focus more on my projects. Thank you very much!
-<br/>
-<a href="https://www.buymeacoffee.com/marvinjwendt" target="_blank">
-<img height="60px" src="https://cdn.buymeacoffee.com/buttons/v2/arial-blue.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" >
-</a>
-</p>
+|Feature|Examples| - |Feature|Examples|
+|-------|--------|---|-----|--------|
+|Bar Charts|[Examples](https://github.com/pterm/pterm/tree/master/_examples/barchart)|-|RGB|[Examples](https://github.com/pterm/pterm/tree/master/_examples/coloring)|
+|BigText|[Examples](https://github.com/pterm/pterm/tree/master/_examples/bigtext)|-|Sections|[Examples](https://github.com/pterm/pterm/tree/master/_examples/section)|
+|Box|[Examples](https://github.com/pterm/pterm/tree/master/_examples/box)|-|Spinners|[Examples](https://github.com/pterm/pterm/tree/master/_examples/spinner)|
+|Bullet Lists|[Examples](https://github.com/pterm/pterm/tree/master/_examples/bulletlist)|-|Trees|[Examples](https://github.com/pterm/pterm/tree/master/_examples/tree)|
+|Centered|[Examples](https://github.com/pterm/pterm/tree/master/_examples/center)|-|Theming|[Examples](https://github.com/pterm/pterm/tree/master/_examples/theme)|
+|Colors|[Examples](https://github.com/pterm/pterm/tree/master/_examples/coloring)|-|Tables|[Examples](https://github.com/pterm/pterm/tree/master/_examples/table)|
+|Headers|[Examples](https://github.com/pterm/pterm/tree/master/_examples/header)|-|Styles|[Examples](https://github.com/pterm/pterm/tree/master/_examples/style)|
+|Panels|[Examples](https://github.com/pterm/pterm/tree/master/_examples/panel)|-|Area|[Examples](https://github.com/pterm/pterm/tree/master/_examples/area)|
+|Paragraphs|[Examples](https://github.com/pterm/pterm/tree/master/_examples/paragraph)|-|||
+|Prefixes|[Examples](https://github.com/pterm/pterm/tree/master/_examples/prefix)|-|||
+|Progress Bars|[Examples](https://github.com/pterm/pterm/tree/master/_examples/progressbar)|-|||
+	
+</div>
 
 ### 🦸‍♂️ Supporters
 
