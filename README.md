@@ -64,7 +64,7 @@
 |
 <strong><a href="https://pterm.sh/#/docs/intro">Documentation</a></strong>
 |
-<strong><a href="#-examples">Examples</a></strong>
+<strong><a href="https://github.com/pterm/pterm/tree/master/_examples">Examples</a></strong>
 |
 <strong><a href="https://github.com/pterm/pterm/discussions?discussions_q=category%3AQ%26A">Q&A</a></strong>
 </p>
