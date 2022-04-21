@@ -3565,6 +3565,13 @@ func main() {
 		}
 	})
 
+	showcase("Fully Customizale", 2, func() {
+		for i := 0; i < 4; i++ {
+			pterm.Println()
+		}
+
+	})
+
 	showcase("And much more!", 3, func() {
 		for i := 0; i < 4; i++ {
 			pterm.Println()
