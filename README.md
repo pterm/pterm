@@ -1,7 +1,7 @@
 <!--suppress HtmlDeprecatedAttribute -->
 
 <h1 align="center">💻 PTerm | Pretty Terminal Printer</h1>
-<p align="center">A golang module to print pretty text</p>
+<p align="center">A modern Go framework to make beautiful CLIs</p>
 
 <p align="center">
 
