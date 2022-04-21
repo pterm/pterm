@@ -1,7 +1,7 @@
 <!--suppress HtmlDeprecatedAttribute -->
 
 <h1 align="center">💻 PTerm | Pretty Terminal Printer</h1>
-<p align="center">A golang module to print pretty text</p>
+<p align="center">A modern Go framework to make beautiful CLIs</p>
 
 <p align="center">
 
@@ -17,12 +17,16 @@
 <img src="https://img.shields.io/github/forks/pterm/pterm.svg?style=flat-square" alt="Forks">
 </a>
 
-<a href="https://github.com/pterm/pterm/issues" style="text-decoration: none">
-<img src="https://img.shields.io/github/issues/pterm/pterm.svg?style=flat-square" alt="Issues">
-</a>
-
 <a href="https://opensource.org/licenses/MIT" style="text-decoration: none">
 <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square" alt="License: MIT">
+</a>
+
+<a href="https://codecov.io/gh/pterm/pterm" style="text-decoration: none">
+<img src="https://img.shields.io/codecov/c/gh/pterm/pterm?color=magenta&logo=codecov&style=flat-square" alt="Downloads">
+</a>
+
+<a href="https://codecov.io/gh/pterm/pterm" style="text-decoration: none">
+<!-- unittestcount:start --><img src="https://img.shields.io/badge/Unit_Tests-28774-magenta?style=flat-square" alt="Forks"><!-- unittestcount:end -->
 </a>
 
 <br/>
@@ -32,16 +36,6 @@
 </a>
 
 <br/>
-
-<a href="https://codecov.io/gh/pterm/pterm" style="text-decoration: none">
-<img src="https://img.shields.io/codecov/c/gh/pterm/pterm?color=magenta&logo=codecov&style=flat-square" alt="Downloads">
-</a>
-
-<a href="https://codecov.io/gh/pterm/pterm" style="text-decoration: none">
-<!-- unittestcount:start --><img src="https://img.shields.io/badge/Unit_Tests-28774-magenta?style=flat-square" alt="Forks"><!-- unittestcount:end -->
-</a>
-	
-<br/>
 <br/>
 
 <a href="https://github.com/pterm/pterm/tree/master/_examples/demo/demo" style="text-decoration: none">
@@ -50,8 +44,6 @@
 </a>
 
 </p>
-
-<br/>
 
 ---
 
@@ -114,14 +106,14 @@ which features automatic website generation, automatic deployments, a custom CI-
 |Paragraphs|[Examples](https://github.com/pterm/pterm/tree/master/_examples/paragraph)|-|||
 |Prefixes|[Examples](https://github.com/pterm/pterm/tree/master/_examples/prefix)|-|||
 |Progress Bars|[Examples](https://github.com/pterm/pterm/tree/master/_examples/progressbar)|-|||
-	
-</div>
 
 ### 🦸‍♂️ Supporters
 
 |-|User|💸|
 |---|---|---|
 |![Jens Lauterbach](https://avatars.githubusercontent.com/u/1292368?s=25)|[@jenslauterbach](https://github.com/jenslauterbach)|25$|
+
+</div>	
 
 ## 🧪 Examples
 
