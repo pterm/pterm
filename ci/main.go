@@ -51,6 +51,9 @@ func main() {
 		examples, _ := os.ReadDir("./_examples/" + section.Name())
 
 		for _, example := range examples {
+			if example.Name() == "README.md" {
+				continue
+			}
 			processFile(section.Name() + "/" + example.Name())
 			log.Output(2, "## Generating readme for example: "+example.Name())
 			exampleCode, err := os.ReadFile("./_examples/" + section.Name() + "/" + example.Name() + "/main.go")
