@@ -123,7 +123,18 @@ which features automatic website generation, automatic deployments, a custom CI-
 
 ## 🧪 Examples
 
-You can find all the examples, with their source code, here: [`./_examples`](./_examples)
+<p align="center">
+<table>
+<tbody>
+<td align="center">
+<img width="2000" height="0"><br>
+<a href="https://github.com/pterm/pterm/tree/master/_examples">‼️ You can find all the examples, in a much better structure and their source code, in "_examples" ‼️</a><br>
+<sub>Click on the link above to show the examples folder.</sub>
+<img width="2000" height="0">
+</td>
+</tbody>
+</table>
+</p>
 
 <!-- examples:start -->
 ### area/demo
