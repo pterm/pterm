@@ -36,8 +36,6 @@
 </a>
 
 <br/>
-
-<br/>
 <br/>
 
 <a href="https://github.com/pterm/pterm/tree/master/_examples/demo/demo" style="text-decoration: none">
