@@ -44,8 +44,8 @@
 <br/>
 <br/>
 
-<a href="https://github.com/pterm/pterm/tree/master/_examples/demo" style="text-decoration: none">
-<img src="https://raw.githubusercontent.com/pterm/pterm/master/_examples/demo/animation.svg" alt="PTerm">
+<a href="https://github.com/pterm/pterm/tree/master/_examples/demo/demo" style="text-decoration: none">
+<img src="https://raw.githubusercontent.com/pterm/pterm/master/_examples/demo/demo/animation.svg" alt="PTerm">
 <p align="center">Show Demo Code</p>
 </a>
 
