@@ -72,7 +72,7 @@ func main() {
 	}
 
 	log.Output(3, "### Generating examples README")
-	examplesReadme, err := os.ReadFile("./_examples/README.md")
+	examplesReadme, _ := os.ReadFile("./_examples/README.md")
 	examplesReadmeContent := string(examplesReadme)
 	examplesReadmeContent = writeBetween("examples", examplesReadmeContent, "\n"+readmeExamples+"\n")
 	os.WriteFile("./_examples/README.md", []byte(examplesReadmeContent), 0600)
