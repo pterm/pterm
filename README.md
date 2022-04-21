@@ -67,6 +67,8 @@
 <strong><a href="https://github.com/pterm/pterm/tree/master/_examples">Examples</a></strong>
 |
 <strong><a href="https://github.com/pterm/pterm/discussions?discussions_q=category%3AQ%26A">Q&A</a></strong>
+|
+<strong><a href="https://discord.gg/vE2dNkfAmF">Discord</a></strong>
 </p>
 
 ---
