@@ -17,10 +17,6 @@
 <img src="https://img.shields.io/github/forks/pterm/pterm.svg?style=flat-square" alt="Forks">
 </a>
 
-<a href="https://github.com/pterm/pterm/issues" style="text-decoration: none">
-<img src="https://img.shields.io/github/issues/pterm/pterm.svg?style=flat-square" alt="Issues">
-</a>
-
 <a href="https://opensource.org/licenses/MIT" style="text-decoration: none">
 <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square" alt="License: MIT">
 </a>
