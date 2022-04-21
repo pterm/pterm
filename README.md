@@ -106,14 +106,14 @@ which features automatic website generation, automatic deployments, a custom CI-
 |Paragraphs|[Examples](https://github.com/pterm/pterm/tree/master/_examples/paragraph)|-|||
 |Prefixes|[Examples](https://github.com/pterm/pterm/tree/master/_examples/prefix)|-|||
 |Progress Bars|[Examples](https://github.com/pterm/pterm/tree/master/_examples/progressbar)|-|||
-	
-</div>
 
 ### 🦸‍♂️ Supporters
 
 |-|User|💸|
 |---|---|---|
 |![Jens Lauterbach](https://avatars.githubusercontent.com/u/1292368?s=25)|[@jenslauterbach](https://github.com/jenslauterbach)|25$|
+
+</div>	
 
 ## 🧪 Examples
 
