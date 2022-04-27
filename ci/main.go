@@ -243,7 +243,6 @@ func main() {
 			}
 
 			newReadmeContent = writeBetween("examples", newReadmeContent, "\n"+readmeExamples+"\n")
-
 		})
 
 		do("Writing README", currentLevel, func(currentLevel int) {
@@ -260,7 +259,6 @@ func main() {
 			if err != nil {
 				log.Panic(err)
 			}
-
 		})
 	})
 }
