@@ -78,13 +78,17 @@ func (p InteractiveConfirmPrinter) WithSuffixStyle(style *Style) *InteractiveCon
 // Example:
 //  result, _ := pterm.DefaultInteractiveConfirm.Show("Are you sure?")
 //	pterm.Println(result)
-func (p *InteractiveConfirmPrinter) Show(text string) (bool, error) {
+func (p InteractiveConfirmPrinter) Show(text ...string) (bool, error) {
 	err := keyboard.StartListener()
 	if err != nil {
 		return false, fmt.Errorf("failed to start keyboard listener: %w", err)
 	}
 
-	p.TextStyle.Print(text + " " + p.getSuffix() + ": ")
+	if text == nil {
+		text = []string{"Please confirm"}
+	}
+
+	p.TextStyle.Print(text[0] + " " + p.getSuffix() + ": ")
 
 	for {
 		keyInfo, err := keyboard.GetKey()
