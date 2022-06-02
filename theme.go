@@ -4,7 +4,7 @@ var (
 	// ThemeDefault is the default theme used by PTerm.
 	// If this variable is overwritten, the new value is used as default theme.
 	ThemeDefault = Theme{
-		PrimaryStyle:            Style{FgCyan},
+		PrimaryStyle:            Style{FgLightCyan},
 		SecondaryStyle:          Style{FgLightMagenta},
 		HighlightStyle:          Style{Bold, FgYellow},
 		InfoMessageStyle:        Style{FgLightCyan},
