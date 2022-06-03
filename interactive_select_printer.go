@@ -35,56 +35,48 @@ func (p InteractiveSelectPrinter) WithDefaultOption(option string) *InteractiveS
 }
 
 func (p InteractiveSelectPrinter) Show(text ...string) (string, error) {
-	err := keyboard.StartListener()
-	if err != nil {
-		return "", fmt.Errorf("failed to start keyboard listener: %w", err)
-	}
+	err := keyboard.Listen(func(keyInfo keys.Key) (stop bool, err error) {
+		if text == nil {
+			text = []string{""}
+		}
 
-	if text == nil {
-		text = []string{""}
-	}
-
-	// Get index of default option
-	if p.DefaultOption != "" {
-		for i, option := range p.Options {
-			if option == p.DefaultOption {
-				p.selectedOption = i
-				break
+		// Get index of default option
+		if p.DefaultOption != "" {
+			for i, option := range p.Options {
+				if option == p.DefaultOption {
+					p.selectedOption = i
+					break
+				}
 			}
 		}
-	}
 
-	area, err := DefaultArea.Start(p.renderSelectMenu())
-	if err != nil {
-		return "", fmt.Errorf("could not start area: %w", err)
-	}
-
-	for p.result == "" {
-		keyInfo, err := keyboard.GetKey()
+		area, err := DefaultArea.Start(p.renderSelectMenu())
 		if err != nil {
-			return "", err
+			return true, fmt.Errorf("could not start area: %w", err)
 		}
-		key := keyInfo.Code
 
-		switch key {
-		case keys.Up:
-			if p.selectedOption > 0 {
-				p.selectedOption--
+		for p.result == "" {
+			key := keyInfo.Code
+
+			switch key {
+			case keys.Up:
+				if p.selectedOption > 0 {
+					p.selectedOption--
+				}
+				area.Update(p.renderSelectMenu())
+			case keys.Down:
+				if p.selectedOption < len(p.Options)-1 {
+					p.selectedOption++
+				}
+				area.Update(p.renderSelectMenu())
+			case keys.CtrlC:
+				os.Exit(1)
+			case keys.Enter:
+				p.result = p.Options[p.selectedOption]
 			}
-			area.Update(p.renderSelectMenu())
-		case keys.Down:
-			if p.selectedOption < len(p.Options)-1 {
-				p.selectedOption++
-			}
-			area.Update(p.renderSelectMenu())
-		case keys.CtrlC:
-			os.Exit(1)
-		case keys.Enter:
-			p.result = p.Options[p.selectedOption]
 		}
-	}
-
-	err = keyboard.StopListener()
+		return true, nil
+	})
 	if err != nil {
 		return "", fmt.Errorf("failed to start keyboard listener: %w", err)
 	}

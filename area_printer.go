@@ -3,7 +3,7 @@ package pterm
 import (
 	"strings"
 
-	"github.com/atomicgo/cursor"
+	"atomicgo.dev/cursor"
 
 	"github.com/pterm/pterm/internal"
 )

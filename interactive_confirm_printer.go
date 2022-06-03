@@ -79,50 +79,55 @@ func (p InteractiveConfirmPrinter) WithSuffixStyle(style *Style) *InteractiveCon
 //  result, _ := pterm.DefaultInteractiveConfirm.Show("Are you sure?")
 //	pterm.Println(result)
 func (p InteractiveConfirmPrinter) Show(text ...string) (bool, error) {
-	err := keyboard.StartListener()
-	if err != nil {
-		return false, fmt.Errorf("failed to start keyboard listener: %w", err)
-	}
-
-	if text == nil {
-		text = []string{"Please confirm"}
-	}
-
-	p.TextStyle.Print(text[0] + " " + p.getSuffix() + ": ")
-
-	for {
-		keyInfo, err := keyboard.GetKey()
-		key := keyInfo.Code
-		char := keyInfo.String()
+	var result bool
+	err := keyboard.Listen(func(keyInfo keys.Key) (stop bool, err error) {
 		if err != nil {
-			return false, fmt.Errorf("failed to get key: %w", err)
+			return false, fmt.Errorf("failed to start keyboard listener: %w", err)
 		}
 
-		switch key {
-		case keys.RuneKey:
-			switch char {
-			case "y", "Y":
-				p.ConfirmStyle.Print(p.ConfirmText)
-				Println()
-				return true, keyboard.StopListener()
-			case "n", "N":
-				p.RejectStyle.Print(p.RejectText)
-				Println()
-				return false, keyboard.StopListener()
-			}
-		case keys.Enter:
-			if p.DefaultValue {
-				p.ConfirmStyle.Print(p.ConfirmText)
-			} else {
-				p.RejectStyle.Print(p.RejectText)
-			}
-			Println()
-			return p.DefaultValue, keyboard.StopListener()
-		case keys.CtrlC:
-			os.Exit(1)
-			return false, keyboard.StopListener()
+		if text == nil {
+			text = []string{"Please confirm"}
 		}
-	}
+
+		p.TextStyle.Print(text[0] + " " + p.getSuffix() + ": ")
+
+		for {
+			key := keyInfo.Code
+			char := keyInfo.String()
+			if err != nil {
+				return false, fmt.Errorf("failed to get key: %w", err)
+			}
+
+			switch key {
+			case keys.RuneKey:
+				switch char {
+				case "y", "Y":
+					p.ConfirmStyle.Print(p.ConfirmText)
+					Println()
+					result = true
+					return true, nil
+				case "n", "N":
+					p.RejectStyle.Print(p.RejectText)
+					Println()
+					result = false
+					return true, nil
+				}
+			case keys.Enter:
+				if p.DefaultValue {
+					p.ConfirmStyle.Print(p.ConfirmText)
+				} else {
+					p.RejectStyle.Print(p.RejectText)
+				}
+				Println()
+				result = p.DefaultValue
+				return true, nil
+			case keys.CtrlC:
+				os.Exit(1)
+				return true, nil
+			}
+		}
+	})
+	return result, err
 }
 
 func (p InteractiveConfirmPrinter) getSuffix() string {
