@@ -80,52 +80,48 @@ func (p InteractiveConfirmPrinter) WithSuffixStyle(style *Style) *InteractiveCon
 //	pterm.Println(result)
 func (p InteractiveConfirmPrinter) Show(text ...string) (bool, error) {
 	var result bool
+
+	if text == nil || len(text) == 0 || text[0] == "" {
+		text = []string{"Please confirm"}
+	}
+
+	p.TextStyle.Print(text[0] + " " + p.getSuffix() + ": ")
+
 	err := keyboard.Listen(func(keyInfo keys.Key) (stop bool, err error) {
+		key := keyInfo.Code
+		char := keyInfo.String()
 		if err != nil {
-			return false, fmt.Errorf("failed to start keyboard listener: %w", err)
+			return false, fmt.Errorf("failed to get key: %w", err)
 		}
 
-		if text == nil {
-			text = []string{"Please confirm"}
-		}
-
-		p.TextStyle.Print(text[0] + " " + p.getSuffix() + ": ")
-
-		for {
-			key := keyInfo.Code
-			char := keyInfo.String()
-			if err != nil {
-				return false, fmt.Errorf("failed to get key: %w", err)
-			}
-
-			switch key {
-			case keys.RuneKey:
-				switch char {
-				case "y", "Y":
-					p.ConfirmStyle.Print(p.ConfirmText)
-					Println()
-					result = true
-					return true, nil
-				case "n", "N":
-					p.RejectStyle.Print(p.RejectText)
-					Println()
-					result = false
-					return true, nil
-				}
-			case keys.Enter:
-				if p.DefaultValue {
-					p.ConfirmStyle.Print(p.ConfirmText)
-				} else {
-					p.RejectStyle.Print(p.RejectText)
-				}
+		switch key {
+		case keys.RuneKey:
+			switch char {
+			case "y", "Y":
+				p.ConfirmStyle.Print(p.ConfirmText)
 				Println()
-				result = p.DefaultValue
+				result = true
 				return true, nil
-			case keys.CtrlC:
-				os.Exit(1)
+			case "n", "N":
+				p.RejectStyle.Print(p.RejectText)
+				Println()
+				result = false
 				return true, nil
 			}
+		case keys.Enter:
+			if p.DefaultValue {
+				p.ConfirmStyle.Print(p.ConfirmText)
+			} else {
+				p.RejectStyle.Print(p.RejectText)
+			}
+			Println()
+			result = p.DefaultValue
+			return true, nil
+		case keys.CtrlC:
+			os.Exit(1)
+			return true, nil
 		}
+		return false, nil
 	})
 	return result, err
 }
