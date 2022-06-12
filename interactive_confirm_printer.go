@@ -10,6 +10,8 @@ import (
 
 var (
 	// DefaultInteractiveConfirm is the default InteractiveConfirm printer.
+	// Pressing "y" will return true, "n" will return false.
+	// Pressing enter without typing "y" or "n" will return the configured default value (by default set to "no").
 	DefaultInteractiveConfirm = InteractiveConfirmPrinter{
 		DefaultValue: false,
 		TextStyle:    &ThemeDefault.PrimaryStyle,
@@ -21,6 +23,7 @@ var (
 	}
 )
 
+// InteractiveConfirmPrinter is a printer for interactive confirm prompts.
 type InteractiveConfirmPrinter struct {
 	DefaultValue bool
 	TextStyle    *Style
