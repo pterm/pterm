@@ -57,6 +57,46 @@ func main() {
 
 </details>
 
+### header-custom/demo
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/header-custom/demo/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	// All available options: https://pkg.go.dev/github.com/pterm/pterm#HeaderPrinter
+
+	// Build on top of DefaultHeader
+	pterm.DefaultHeader. // Use DefaultHeader as base
+				WithMargin(15).
+				WithBackgroundStyle(pterm.NewStyle(pterm.BgCyan)).
+				WithTextStyle(pterm.NewStyle(pterm.FgBlack)).
+				Println("This is a custom header!")
+	// Instead of printing the header you can set it to a variable.
+	// You can then reuse your custom header.
+
+	// Making a completely new HeaderPrinter
+	newHeader := pterm.HeaderPrinter{
+		TextStyle:       pterm.NewStyle(pterm.FgBlack),
+		BackgroundStyle: pterm.NewStyle(pterm.BgRed),
+		Margin:          20,
+	}
+
+	// Print header.
+	newHeader.Println("This is a custom header!")
+}
+
+```
+
+</details>
+
 ### panel/demo
 
 ![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/panel/demo/animation.svg)
@@ -103,33 +143,6 @@ func main() {
 	pterm.DefaultHeader.Println("This is the default header!")
 	pterm.Println() // spacer
 	pterm.DefaultHeader.WithFullWidth().Println("This is a full-width header.")
-}
-
-```
-
-</details>
-
-### center/demo
-
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/center/demo/animation.svg)
-
-<details>
-
-<summary>SHOW SOURCE</summary>
-
-```go
-package main
-
-import "github.com/pterm/pterm"
-
-func main() {
-	pterm.DefaultCenter.Println("This text is centered!\nIt centeres the whole block by default.\nIn that way you can do stuff like this:")
-
-	// Generate BigLetters
-	s, _ := pterm.DefaultBigText.WithLetters(pterm.NewLettersFromString("PTerm")).Srender()
-	pterm.DefaultCenter.Println(s) // Print BigLetters with the default CenterPrinter
-
-	pterm.DefaultCenter.WithCenterEachLineSeparately().Println("This text is centered!\nBut each line is\ncentered\nseparately")
 }
 
 ```
@@ -190,6 +203,44 @@ func main() {
 	pterm.DefaultSection.WithLevel(2).Println("This is another section!")
 	// Print placeholder.
 	pterm.Info.Println("And this is\nmore placeholder text")
+}
+
+```
+
+</details>
+
+### table/demo
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/table/demo/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	// Create a fork of the default table, fill it with data and print it.
+	// Data can also be generated and inserted later.
+	pterm.DefaultTable.WithHasHeader().WithData(pterm.TableData{
+		{"Firstname", "Lastname", "Email"},
+		{"Paul", "Dean", "nisi.dictum.augue@velitAliquam.co.uk"},
+		{"Callie", "Mckay", "egestas.nunc.sed@est.com"},
+		{"Libby", "Camacho", "aliquet.lobortis@semper.com"},
+	}).Render()
+
+	pterm.Println() // Blank line
+
+	// Create a table with right alignment.
+	pterm.DefaultTable.WithHasHeader().WithData(pterm.TableData{
+		{"Firstname", "Lastname", "Email"},
+		{"Paul", "Dean", "nisi.dictum.augue@velitAliquam.co.uk"},
+		{"Callie", "Mckay", "egestas.nunc.sed@est.com"},
+		{"Libby", "Camacho", "aliquet.lobortis@semper.com"},
+	}).WithRightAlignment().Render()
 }
 
 ```
@@ -258,47 +309,9 @@ func main() {
 
 </details>
 
-### table/demo
+### center/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/table/demo/animation.svg)
-
-<details>
-
-<summary>SHOW SOURCE</summary>
-
-```go
-package main
-
-import "github.com/pterm/pterm"
-
-func main() {
-	// Create a fork of the default table, fill it with data and print it.
-	// Data can also be generated and inserted later.
-	pterm.DefaultTable.WithHasHeader().WithData(pterm.TableData{
-		{"Firstname", "Lastname", "Email"},
-		{"Paul", "Dean", "nisi.dictum.augue@velitAliquam.co.uk"},
-		{"Callie", "Mckay", "egestas.nunc.sed@est.com"},
-		{"Libby", "Camacho", "aliquet.lobortis@semper.com"},
-	}).Render()
-
-	pterm.Println() // Blank line
-
-	// Create a table with right alignment.
-	pterm.DefaultTable.WithHasHeader().WithData(pterm.TableData{
-		{"Firstname", "Lastname", "Email"},
-		{"Paul", "Dean", "nisi.dictum.augue@velitAliquam.co.uk"},
-		{"Callie", "Mckay", "egestas.nunc.sed@est.com"},
-		{"Libby", "Camacho", "aliquet.lobortis@semper.com"},
-	}).WithRightAlignment().Render()
-}
-
-```
-
-</details>
-
-### header-custom/demo
-
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/header-custom/demo/animation.svg)
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/center/demo/animation.svg)
 
 <details>
 
@@ -310,26 +323,13 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// All available options: https://pkg.go.dev/github.com/pterm/pterm#HeaderPrinter
+	pterm.DefaultCenter.Println("This text is centered!\nIt centeres the whole block by default.\nIn that way you can do stuff like this:")
 
-	// Build on top of DefaultHeader
-	pterm.DefaultHeader. // Use DefaultHeader as base
-				WithMargin(15).
-				WithBackgroundStyle(pterm.NewStyle(pterm.BgCyan)).
-				WithTextStyle(pterm.NewStyle(pterm.FgBlack)).
-				Println("This is a custom header!")
-	// Instead of printing the header you can set it to a variable.
-	// You can then reuse your custom header.
+	// Generate BigLetters
+	s, _ := pterm.DefaultBigText.WithLetters(pterm.NewLettersFromString("PTerm")).Srender()
+	pterm.DefaultCenter.Println(s) // Print BigLetters with the default CenterPrinter
 
-	// Making a completely new HeaderPrinter
-	newHeader := pterm.HeaderPrinter{
-		TextStyle:       pterm.NewStyle(pterm.FgBlack),
-		BackgroundStyle: pterm.NewStyle(pterm.BgRed),
-		Margin:          20,
-	}
-
-	// Print header.
-	newHeader.Println("This is a custom header!")
+	pterm.DefaultCenter.WithCenterEachLineSeparately().Println("This text is centered!\nBut each line is\ncentered\nseparately")
 }
 
 ```
@@ -390,7 +390,7 @@ func main() {
 	}).Render()
 
 	// Convert a text to a list and print it.
-	putils.NewBulletListFromString(`0
+	putils.BulletListFromString(`0
  1
   2
    3`, " ").Render()
@@ -444,7 +444,7 @@ func main() {
 	}
 
 	// Generate tree from LeveledList.
-	root := putils.NewTreeFromLeveledList(leveledList)
+	root := putils.TreeFromLeveledList(leveledList)
 
 	// Render TreePrinter
 	pterm.DefaultTree.WithRoot(root).Render()
@@ -473,18 +473,58 @@ import (
 func main() {
 	// Print a large text with the LetterStyle from the standard theme.
 	// Useful for title screens.
-	pterm.DefaultBigText.WithLetters(putils.NewLettersFromString("PTerm")).Render()
+	pterm.DefaultBigText.WithLetters(putils.LettersFromString("PTerm")).Render()
 
 	// Print a large text with differently colored letters.
 	pterm.DefaultBigText.WithLetters(
-		putils.NewLettersFromStringWithStyle("P", pterm.NewStyle(pterm.FgCyan)),
-		putils.NewLettersFromStringWithStyle("Term", pterm.NewStyle(pterm.FgLightMagenta))).
+		putils.LettersFromStringWithStyle("P", pterm.NewStyle(pterm.FgCyan)),
+		putils.LettersFromStringWithStyle("Term", pterm.NewStyle(pterm.FgLightMagenta))).
 		Render()
 
-	// NewLettersFromStringWithRGB can be used to create a large text with a specific RGB color.
+	// LettersFromStringWithRGB can be used to create a large text with a specific RGB color.
 	pterm.DefaultBigText.WithLetters(
-		putils.NewLettersFromStringWithRGB("PTerm", pterm.NewRGB(255, 215, 0))).
+		putils.LettersFromStringWithRGB("PTerm", pterm.NewRGB(255, 215, 0))).
 		Render()
+}
+
+```
+
+</details>
+
+### barchart/demo
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/demo/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	positiveBars := pterm.Bars{
+		pterm.Bar{
+			Label: "Bar 1",
+			Value: 5,
+		},
+		pterm.Bar{
+			Label: "Bar 2",
+			Value: 3,
+		},
+		pterm.Bar{
+			Label: "Longer Label",
+			Value: 7,
+		},
+	}
+
+	pterm.Info.Println("Chart example with positive only values (bars use 100% of chart area)")
+	_ = pterm.DefaultBarChart.WithBars(positiveBars).Render()
+	_ = pterm.DefaultBarChart.WithHorizontal().WithBars(positiveBars).Render()
 }
 
 ```
@@ -579,9 +619,9 @@ func main() {
 
 </details>
 
-### barchart/demo
+### box/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/demo/animation.svg)
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/box/demo/animation.svg)
 
 <details>
 
@@ -590,29 +630,21 @@ func main() {
 ```go
 package main
 
-import (
-	"github.com/pterm/pterm"
-)
+import "github.com/pterm/pterm"
 
 func main() {
-	positiveBars := pterm.Bars{
-		pterm.Bar{
-			Label: "Bar 1",
-			Value: 5,
-		},
-		pterm.Bar{
-			Label: "Bar 2",
-			Value: 3,
-		},
-		pterm.Bar{
-			Label: "Longer Label",
-			Value: 7,
-		},
-	}
+	pterm.Info.Println("This might not be rendered correctly on GitHub,\nbut it will work in a real terminal.\nThis is because GitHub does not use a monospaced font by default for SVGs.")
 
-	pterm.Info.Println("Chart example with positive only values (bars use 100% of chart area)")
-	_ = pterm.DefaultBarChart.WithBars(positiveBars).Render()
-	_ = pterm.DefaultBarChart.WithHorizontal().WithBars(positiveBars).Render()
+	panel1 := pterm.DefaultBox.Sprint("Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit,\nsed do eiusmod tempor incididunt\nut labore et dolore\nmagna aliqua.")
+	panel2 := pterm.DefaultBox.WithTitle("title").Sprint("Ut enim ad minim veniam,\nquis nostrud exercitation\nullamco laboris\nnisi ut aliquip\nex ea commodo\nconsequat.")
+	panel3 := pterm.DefaultBox.WithTitle("bottom center title").WithTitleBottomCenter().Sprint("Duis aute irure\ndolor in reprehenderit\nin voluptate velit esse cillum\ndolore eu fugiat\nnulla pariatur.")
+
+	panels, _ := pterm.DefaultPanel.WithPanels(pterm.Panels{
+		{{Data: panel1}, {Data: panel2}},
+		{{Data: panel3}},
+	}).Srender()
+
+	pterm.DefaultBox.WithTitle("Lorem Ipsum").WithTitleBottomRight().WithRightPadding(0).WithBottomPadding(0).Println(panels)
 }
 
 ```
@@ -651,38 +683,6 @@ func main() {
 		p.Increment()                                              // Increment the progressbar by one. Use Add(x int) to increment by a custom amount.
 		time.Sleep(time.Millisecond * 350)                         // Sleep 350 milliseconds.
 	}
-}
-
-```
-
-</details>
-
-### box/demo
-
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/box/demo/animation.svg)
-
-<details>
-
-<summary>SHOW SOURCE</summary>
-
-```go
-package main
-
-import "github.com/pterm/pterm"
-
-func main() {
-	pterm.Info.Println("This might not be rendered correctly on GitHub,\nbut it will work in a real terminal.\nThis is because GitHub does not use a monospaced font by default for SVGs.")
-
-	panel1 := pterm.DefaultBox.Sprint("Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit,\nsed do eiusmod tempor incididunt\nut labore et dolore\nmagna aliqua.")
-	panel2 := pterm.DefaultBox.WithTitle("title").Sprint("Ut enim ad minim veniam,\nquis nostrud exercitation\nullamco laboris\nnisi ut aliquip\nex ea commodo\nconsequat.")
-	panel3 := pterm.DefaultBox.WithTitle("bottom center title").WithTitleBottomCenter().Sprint("Duis aute irure\ndolor in reprehenderit\nin voluptate velit esse cillum\ndolore eu fugiat\nnulla pariatur.")
-
-	panels, _ := pterm.DefaultPanel.WithPanels(pterm.Panels{
-		{{Data: panel1}, {Data: panel2}},
-		{{Data: panel3}},
-	}).Srender()
-
-	pterm.DefaultBox.WithTitle("Lorem Ipsum").WithTitleBottomRight().WithRightPadding(0).WithBottomPadding(0).Println(panels)
 }
 
 ```
@@ -870,38 +870,6 @@ func main() {
 
 </details>
 
-### coloring/disable-output
-
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/disable-output/animation.svg)
-
-<details>
-
-<summary>SHOW SOURCE</summary>
-
-```go
-package main
-
-import "github.com/pterm/pterm"
-
-func main() {
-	for i := 0; i < 15; i++ {
-		switch i {
-		case 5:
-			pterm.Info.Println("Disabled Output!")
-			pterm.DisableOutput()
-		case 10:
-			pterm.EnableOutput()
-			pterm.Info.Println("Enabled Output!")
-		}
-
-		pterm.Printf("Printing something... [%d/%d]\n", i, 15)
-	}
-}
-
-```
-
-</details>
-
 ### coloring/demo
 
 ![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/demo/animation.svg)
@@ -937,6 +905,38 @@ func main() {
 	pterm.FgLightMagenta.Println("FgLightMagenta")
 	pterm.FgLightCyan.Println("FgLightCyan")
 	pterm.FgLightWhite.Println("FgLightWhite")
+}
+
+```
+
+</details>
+
+### coloring/disable-output
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/disable-output/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	for i := 0; i < 15; i++ {
+		switch i {
+		case 5:
+			pterm.Info.Println("Disabled Output!")
+			pterm.DisableOutput()
+		case 10:
+			pterm.EnableOutput()
+			pterm.Info.Println("Enabled Output!")
+		}
+
+		pterm.Printf("Printing something... [%d/%d]\n", i, 15)
+	}
 }
 
 ```
@@ -1439,8 +1439,8 @@ func main() {
 		pterm.Println()
 		area, _ := pterm.DefaultArea.WithCenter().Start() // Start the Area printer, with the Center option.
 		for i := 0; i < 10; i++ {
-			str, _ := pterm.DefaultBigText.WithLetters(putils.NewLettersFromString(time.Now().Format("15:04:05"))).Srender() // Save current time in str.
-			area.Update(str)                                                                                                 // Update Area contents.
+			str, _ := pterm.DefaultBigText.WithLetters(putils.LettersFromString(time.Now().Format("15:04:05"))).Srender() // Save current time in str.
+			area.Update(str)                                                                                              // Update Area contents.
 			time.Sleep(time.Second)
 		}
 		area.Stop()
@@ -1588,8 +1588,8 @@ func setup() {
 
 func introScreen() {
 	ptermLogo, _ := pterm.DefaultBigText.WithLetters(
-		putils.NewLettersFromStringWithStyle("P", pterm.NewStyle(pterm.FgLightCyan)),
-		putils.NewLettersFromStringWithStyle("Term", pterm.NewStyle(pterm.FgLightMagenta))).
+		putils.LettersFromStringWithStyle("P", pterm.NewStyle(pterm.FgLightCyan)),
+		putils.LettersFromStringWithStyle("Term", pterm.NewStyle(pterm.FgLightMagenta))).
 		Srender()
 
 	pterm.DefaultCenter.Print(ptermLogo)
