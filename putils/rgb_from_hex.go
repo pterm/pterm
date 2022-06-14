@@ -7,9 +7,9 @@ import (
 	"github.com/pterm/pterm"
 )
 
-// NewRGBFromHEX converts a HEX and returns a new RGB.
+// RGBFromHEX converts a HEX and returns a new RGB.
 // If the hex code is not valid it returns pterm.ErrHexCodeIsInvalid.
-func NewRGBFromHEX(hex string) (pterm.RGB, error) {
+func RGBFromHEX(hex string) (pterm.RGB, error) {
 	hex = strings.ToLower(hex)
 	hex = strings.ReplaceAll(hex, "#", "")
 	hex = strings.ReplaceAll(hex, "0x", "")

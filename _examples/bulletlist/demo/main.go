@@ -15,7 +15,7 @@ func main() {
 	}).Render()
 
 	// Convert a text to a list and print it.
-	putils.NewBulletListFromString(`0
+	putils.BulletListFromString(`0
  1
   2
    3`, " ").Render()
