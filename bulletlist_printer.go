@@ -3,27 +3,7 @@ package pterm
 import (
 	"io"
 	"strings"
-
-	"github.com/pterm/pterm/internal"
 )
-
-// NewBulletListFromStrings returns a BulletListPrinter with Text using the NewTreeListItemFromString method.
-func NewBulletListFromStrings(s []string, padding string) BulletListPrinter {
-	var lis []BulletListItem
-	for _, line := range s {
-		lis = append(lis, NewBulletListItemFromString(line, padding))
-	}
-	return *DefaultBulletList.WithItems(lis)
-}
-
-// NewBulletListItemFromString returns a BulletListItem with a Text. The padding is counted in the Text to define the Level of the ListItem.
-func NewBulletListItemFromString(text string, padding string) BulletListItem {
-	s, l := internal.RemoveAndCountPrefix(text, padding)
-	return BulletListItem{
-		Level: l,
-		Text:  s,
-	}
-}
 
 // BulletListItem is able to render a ListItem.
 type BulletListItem struct {
@@ -62,11 +42,6 @@ func (p BulletListItem) WithBullet(bullet string) *BulletListItem {
 func (p BulletListItem) WithBulletStyle(style *Style) *BulletListItem {
 	p.BulletStyle = style
 	return &p
-}
-
-// NewBulletListFromString returns a BulletListPrinter with Text using the NewTreeListItemFromString method, splitting after return (\n).
-func NewBulletListFromString(s string, padding string) BulletListPrinter {
-	return NewBulletListFromStrings(strings.Split(s, "\n"), padding)
 }
 
 // DefaultBulletList contains standards, which can be used to print a BulletListPrinter.

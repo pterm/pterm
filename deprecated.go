@@ -1,6 +1,10 @@
 package pterm
 
-import "strings"
+import (
+	"strings"
+
+	"github.com/pterm/pterm/internal"
+)
 
 // NewLettersFromString creates a Letters object from a string, which is prefilled with the LetterStyle from ThemeDefault.
 // You can override the ThemeDefault LetterStyle if you want to.
@@ -43,4 +47,33 @@ func NewLettersFromStringWithRGB(text string, rgb RGB) Letters {
 	}
 
 	return l
+}
+
+// NewBulletListFromStrings returns a BulletListPrinter with Text using the NewTreeListItemFromString method.
+//
+// Deprecated: use putils.NewBulletListFromStrings instead.
+func NewBulletListFromStrings(s []string, padding string) BulletListPrinter {
+	var lis []BulletListItem
+	for _, line := range s {
+		lis = append(lis, NewBulletListItemFromString(line, padding))
+	}
+	return *DefaultBulletList.WithItems(lis)
+}
+
+// NewBulletListItemFromString returns a BulletListItem with a Text. The padding is counted in the Text to define the Level of the ListItem.
+//
+// Deprecated: use putils.NewBulletListItemFromString instead.
+func NewBulletListItemFromString(text string, padding string) BulletListItem {
+	s, l := internal.RemoveAndCountPrefix(text, padding)
+	return BulletListItem{
+		Level: l,
+		Text:  s,
+	}
+}
+
+// NewBulletListFromString returns a BulletListPrinter with Text using the NewTreeListItemFromString method, splitting after return (\n).
+//
+// Deprecated: use putils.NewBulletListFromString instead.
+func NewBulletListFromString(s string, padding string) BulletListPrinter {
+	return NewBulletListFromStrings(strings.Split(s, "\n"), padding)
 }
