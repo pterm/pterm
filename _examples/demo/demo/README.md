@@ -72,8 +72,8 @@ func main() {
 		pterm.Println()
 		area, _ := pterm.DefaultArea.WithCenter().Start() // Start the Area printer, with the Center option.
 		for i := 0; i < 10; i++ {
-			str, _ := pterm.DefaultBigText.WithLetters(pterm.NewLettersFromString(time.Now().Format("15:04:05"))).Srender() // Save current time in str.
-			area.Update(str)                                                                                                // Update Area contents.
+			str, _ := pterm.DefaultBigText.WithLetters(putils.NewLettersFromString(time.Now().Format("15:04:05"))).Srender() // Save current time in str.
+			area.Update(str)                                                                                                 // Update Area contents.
 			time.Sleep(time.Second)
 		}
 		area.Stop()

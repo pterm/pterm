@@ -14,6 +14,9 @@ Feel free to contribute your utility functions via pull request!
 func DefaultTableFromStructSlice(structSlice interface{}) *pterm.TablePrinter
 func DownloadFileWithDefaultProgressbar(title, outputPath, url string, mode os.FileMode) error
 func DownloadFileWithProgressbar(progressbar *pterm.ProgressbarPrinter, outputPath, url string, mode os.FileMode) error
+func NewBulletListFromString(s string, padding string) pterm.BulletListPrinter
+func NewBulletListFromStrings(s []string, padding string) pterm.BulletListPrinter
+func NewBulletListItemFromString(text string, padding string) pterm.BulletListItem
 func NewLettersFromString(text string) pterm.Letters
 func NewLettersFromStringWithRGB(text string, rgb pterm.RGB) pterm.Letters
 func NewLettersFromStringWithStyle(text string, style *pterm.Style) pterm.Letters
