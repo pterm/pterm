@@ -14,22 +14,6 @@ import (
 // Letters is a slice of Letter.
 type Letters []Letter
 
-// NewLettersFromStringWithRGB creates a Letters object from a string and applies an RGB color to it (overwrites style).
-func NewLettersFromStringWithRGB(text string, rgb RGB) Letters {
-	s := strings.Split(text, "")
-	l := Letters{}
-
-	for _, s2 := range s {
-		l = append(l, Letter{
-			String: s2,
-			Style:  &Style{},
-			RGB:    rgb,
-		})
-	}
-
-	return l
-}
-
 // Letter is an object, which holds a string and a specific Style for it.
 type Letter struct {
 	String string

@@ -26,3 +26,21 @@ func NewLettersFromStringWithStyle(text string, style *Style) Letters {
 
 	return l
 }
+
+// NewLettersFromStringWithRGB creates a Letters object from a string and applies an RGB color to it (overwrites style).
+//
+// Deprecated: use putils.NewLettersFromStringWithRGB instead.
+func NewLettersFromStringWithRGB(text string, rgb RGB) Letters {
+	s := strings.Split(text, "")
+	l := Letters{}
+
+	for _, s2 := range s {
+		l = append(l, Letter{
+			String: s2,
+			Style:  &Style{},
+			RGB:    rgb,
+		})
+	}
+
+	return l
+}

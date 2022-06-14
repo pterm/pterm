@@ -26,3 +26,19 @@ func NewLettersFromStringWithStyle(text string, style *pterm.Style) pterm.Letter
 
 	return l
 }
+
+// NewLettersFromStringWithRGB creates a Letters object from a string and applies an RGB color to it (overwrites style).
+func NewLettersFromStringWithRGB(text string, rgb pterm.RGB) pterm.Letters {
+	s := strings.Split(text, "")
+	l := pterm.Letters{}
+
+	for _, s2 := range s {
+		l = append(l, pterm.Letter{
+			String: s2,
+			Style:  &pterm.Style{},
+			RGB:    rgb,
+		})
+	}
+
+	return l
+}
