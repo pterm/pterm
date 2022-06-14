@@ -1,6 +1,7 @@
 package pterm
 
 import (
+	"strconv"
 	"strings"
 
 	"github.com/pterm/pterm/internal"
@@ -116,4 +117,32 @@ func NewTreeFromLeveledList(leveledListItems LeveledList) TreeNode {
 	}
 
 	return *root
+}
+
+// NewRGBFromHEX converts a HEX and returns a new RGB.
+//
+// Deprecated: use putils.NewRGBFromHEX instead.
+func NewRGBFromHEX(hex string) (RGB, error) {
+	hex = strings.ToLower(hex)
+	hex = strings.ReplaceAll(hex, "#", "")
+	hex = strings.ReplaceAll(hex, "0x", "")
+
+	if len(hex) == 3 {
+		hex = string([]byte{hex[0], hex[0], hex[1], hex[1], hex[2], hex[2]})
+	}
+	if len(hex) != 6 {
+		return RGB{}, ErrHexCodeIsInvalid
+	}
+
+	i64, err := strconv.ParseInt(hex, 16, 32)
+	if err != nil {
+		return RGB{}, err
+	}
+	c := int(i64)
+
+	return RGB{
+		R: uint8(c >> 16),
+		G: uint8((c & 0x00FF00) >> 8),
+		B: uint8(c & 0x0000FF),
+	}, nil
 }
