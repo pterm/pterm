@@ -20,6 +20,7 @@ func NewBulletListItemFromString(text string, padding string) pterm.BulletListIt
 func NewLettersFromString(text string) pterm.Letters
 func NewLettersFromStringWithRGB(text string, rgb pterm.RGB) pterm.Letters
 func NewLettersFromStringWithStyle(text string, style *pterm.Style) pterm.Letters
+func NewTreeFromLeveledList(leveledListItems pterm.LeveledList) pterm.TreeNode
 func PrintAverageExecutionTime(count int, f func(i int) error) error
 func RunWithDefaultSpinner(initzialSpinnerText string, f func(spinner *pterm.SpinnerPrinter) error) error
 func RunWithSpinner(spinner *pterm.SpinnerPrinter, f func(spinner *pterm.SpinnerPrinter) error) error

@@ -185,9 +185,9 @@ func main() {
 
 </details>
 
-### section/demo
+### panel/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/section/demo/animation.svg)
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/panel/demo/animation.svg)
 
 <details>
 
@@ -199,15 +199,65 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Print a section with level one.
-	pterm.DefaultSection.Println("This is a section!")
-	// Print placeholder.
-	pterm.Info.Println("And here is some text.\nThis text could be anything.\nBasically it's just a placeholder")
+	// Declare panels in a two dimensional grid system.
+	panels := pterm.Panels{
+		{{Data: "This is the first panel"}, {Data: pterm.DefaultHeader.Sprint("Hello, World!")}, {Data: "This\npanel\ncontains\nmultiple\nlines"}},
+		{{Data: pterm.Red("This is another\npanel line")}, {Data: "This is the second panel\nwith a new line"}},
+	}
 
-	// Print a section with level two.
-	pterm.DefaultSection.WithLevel(2).Println("This is another section!")
-	// Print placeholder.
-	pterm.Info.Println("And this is\nmore placeholder text")
+	// Print panels.
+	_ = pterm.DefaultPanel.WithPanels(panels).WithPadding(5).Render()
+}
+
+```
+
+</details>
+
+### header/demo
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/header/demo/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	// Print a default header.
+	pterm.DefaultHeader.Println("This is the default header!")
+	pterm.Println() // spacer
+	pterm.DefaultHeader.WithFullWidth().Println("This is a full-width header.")
+}
+
+```
+
+</details>
+
+### center/demo
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/center/demo/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	pterm.DefaultCenter.Println("This text is centered!\nIt centeres the whole block by default.\nIn that way you can do stuff like this:")
+
+	// Generate BigLetters
+	s, _ := pterm.DefaultBigText.WithLetters(pterm.NewLettersFromString("PTerm")).Srender()
+	pterm.DefaultCenter.Println(s) // Print BigLetters with the default CenterPrinter
+
+	pterm.DefaultCenter.WithCenterEachLineSeparately().Println("This text is centered!\nBut each line is\ncentered\nseparately")
 }
 
 ```
@@ -245,37 +295,9 @@ func main() {
 
 </details>
 
-### panel/demo
+### section/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/panel/demo/animation.svg)
-
-<details>
-
-<summary>SHOW SOURCE</summary>
-
-```go
-package main
-
-import "github.com/pterm/pterm"
-
-func main() {
-	// Declare panels in a two dimensional grid system.
-	panels := pterm.Panels{
-		{{Data: "This is the first panel"}, {Data: pterm.DefaultHeader.Sprint("Hello, World!")}, {Data: "This\npanel\ncontains\nmultiple\nlines"}},
-		{{Data: pterm.Red("This is another\npanel line")}, {Data: "This is the second panel\nwith a new line"}},
-	}
-
-	// Print panels.
-	_ = pterm.DefaultPanel.WithPanels(panels).WithPadding(5).Render()
-}
-
-```
-
-</details>
-
-### header-custom/demo
-
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/header-custom/demo/animation.svg)
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/section/demo/animation.svg)
 
 <details>
 
@@ -287,81 +309,15 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// All available options: https://pkg.go.dev/github.com/pterm/pterm#HeaderPrinter
+	// Print a section with level one.
+	pterm.DefaultSection.Println("This is a section!")
+	// Print placeholder.
+	pterm.Info.Println("And here is some text.\nThis text could be anything.\nBasically it's just a placeholder")
 
-	// Build on top of DefaultHeader
-	pterm.DefaultHeader. // Use DefaultHeader as base
-				WithMargin(15).
-				WithBackgroundStyle(pterm.NewStyle(pterm.BgCyan)).
-				WithTextStyle(pterm.NewStyle(pterm.FgBlack)).
-				Println("This is a custom header!")
-	// Instead of printing the header you can set it to a variable.
-	// You can then reuse your custom header.
-
-	// Making a completely new HeaderPrinter
-	newHeader := pterm.HeaderPrinter{
-		TextStyle:       pterm.NewStyle(pterm.FgBlack),
-		BackgroundStyle: pterm.NewStyle(pterm.BgRed),
-		Margin:          20,
-	}
-
-	// Print header.
-	newHeader.Println("This is a custom header!")
-}
-
-```
-
-</details>
-
-### header/demo
-
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/header/demo/animation.svg)
-
-<details>
-
-<summary>SHOW SOURCE</summary>
-
-```go
-package main
-
-import "github.com/pterm/pterm"
-
-func main() {
-	// Print a default header.
-	pterm.DefaultHeader.Println("This is the default header!")
-	pterm.Println() // spacer
-	pterm.DefaultHeader.WithFullWidth().Println("This is a full-width header.")
-}
-
-```
-
-</details>
-
-### paragraph/demo
-
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/paragraph/demo/animation.svg)
-
-<details>
-
-<summary>SHOW SOURCE</summary>
-
-```go
-package main
-
-import "github.com/pterm/pterm"
-
-func main() {
-	// Print long text with default paragraph printer.
-	pterm.DefaultParagraph.Println("This is the default paragraph printer. As you can see, no words are separated, " +
-		"but the text is split at the spaces. This is useful for continuous text of all kinds. You can manually change the line width if you want to." +
-		"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam")
-
-	// Print one line space.
-	pterm.Println()
-
-	// Print long text without paragraph printer.
-	pterm.Println("This text is written with the default Println() function. No intelligent splitting here." +
-		"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam")
+	// Print a section with level two.
+	pterm.DefaultSection.WithLevel(2).Println("This is another section!")
+	// Print placeholder.
+	pterm.Info.Println("And this is\nmore placeholder text")
 }
 
 ```
@@ -399,9 +355,9 @@ func main() {
 
 </details>
 
-### center/demo
+### paragraph/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/center/demo/animation.svg)
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/paragraph/demo/animation.svg)
 
 <details>
 
@@ -413,13 +369,17 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	pterm.DefaultCenter.Println("This text is centered!\nIt centeres the whole block by default.\nIn that way you can do stuff like this:")
+	// Print long text with default paragraph printer.
+	pterm.DefaultParagraph.Println("This is the default paragraph printer. As you can see, no words are separated, " +
+		"but the text is split at the spaces. This is useful for continuous text of all kinds. You can manually change the line width if you want to." +
+		"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam")
 
-	// Generate BigLetters
-	s, _ := pterm.DefaultBigText.WithLetters(pterm.NewLettersFromString("PTerm")).Srender()
-	pterm.DefaultCenter.Println(s) // Print BigLetters with the default CenterPrinter
+	// Print one line space.
+	pterm.Println()
 
-	pterm.DefaultCenter.WithCenterEachLineSeparately().Println("This text is centered!\nBut each line is\ncentered\nseparately")
+	// Print long text without paragraph printer.
+	pterm.Println("This text is written with the default Println() function. No intelligent splitting here." +
+		"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam")
 }
 
 ```
@@ -464,9 +424,9 @@ func main() {
 
 </details>
 
-### tree/demo
+### header-custom/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/tree/demo/animation.svg)
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/header-custom/demo/animation.svg)
 
 <details>
 
@@ -475,42 +435,29 @@ func main() {
 ```go
 package main
 
-import (
-	"github.com/pterm/pterm"
-)
+import "github.com/pterm/pterm"
 
 func main() {
-	// You can use a LeveledList here, for easy generation.
-	leveledList := pterm.LeveledList{
-		pterm.LeveledListItem{Level: 0, Text: "C:"},
-		pterm.LeveledListItem{Level: 1, Text: "Users"},
-		pterm.LeveledListItem{Level: 1, Text: "Windows"},
-		pterm.LeveledListItem{Level: 1, Text: "Programs"},
-		pterm.LeveledListItem{Level: 1, Text: "Programs(x86)"},
-		pterm.LeveledListItem{Level: 1, Text: "dev"},
-		pterm.LeveledListItem{Level: 0, Text: "D:"},
-		pterm.LeveledListItem{Level: 0, Text: "E:"},
-		pterm.LeveledListItem{Level: 1, Text: "Movies"},
-		pterm.LeveledListItem{Level: 1, Text: "Music"},
-		pterm.LeveledListItem{Level: 2, Text: "LinkinPark"},
-		pterm.LeveledListItem{Level: 1, Text: "Games"},
-		pterm.LeveledListItem{Level: 2, Text: "Shooter"},
-		pterm.LeveledListItem{Level: 3, Text: "CallOfDuty"},
-		pterm.LeveledListItem{Level: 3, Text: "CS:GO"},
-		pterm.LeveledListItem{Level: 3, Text: "Battlefield"},
-		pterm.LeveledListItem{Level: 4, Text: "Battlefield 1"},
-		pterm.LeveledListItem{Level: 4, Text: "Battlefield 2"},
-		pterm.LeveledListItem{Level: 0, Text: "F:"},
-		pterm.LeveledListItem{Level: 1, Text: "dev"},
-		pterm.LeveledListItem{Level: 2, Text: "dops"},
-		pterm.LeveledListItem{Level: 2, Text: "PTerm"},
+	// All available options: https://pkg.go.dev/github.com/pterm/pterm#HeaderPrinter
+
+	// Build on top of DefaultHeader
+	pterm.DefaultHeader. // Use DefaultHeader as base
+				WithMargin(15).
+				WithBackgroundStyle(pterm.NewStyle(pterm.BgCyan)).
+				WithTextStyle(pterm.NewStyle(pterm.FgBlack)).
+				Println("This is a custom header!")
+	// Instead of printing the header you can set it to a variable.
+	// You can then reuse your custom header.
+
+	// Making a completely new HeaderPrinter
+	newHeader := pterm.HeaderPrinter{
+		TextStyle:       pterm.NewStyle(pterm.FgBlack),
+		BackgroundStyle: pterm.NewStyle(pterm.BgRed),
+		Margin:          20,
 	}
 
-	// Generate tree from LeveledList.
-	root := pterm.NewTreeFromLeveledList(leveledList)
-
-	// Render TreePrinter
-	pterm.DefaultTree.WithRoot(root).Render()
+	// Print header.
+	newHeader.Println("This is a custom header!")
 }
 
 ```
@@ -581,6 +528,60 @@ func main() {
 
 </details>
 
+### tree/demo
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/tree/demo/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"github.com/pterm/pterm"
+	"github.com/pterm/pterm/putils"
+)
+
+func main() {
+	// You can use a LeveledList here, for easy generation.
+	leveledList := pterm.LeveledList{
+		pterm.LeveledListItem{Level: 0, Text: "C:"},
+		pterm.LeveledListItem{Level: 1, Text: "Users"},
+		pterm.LeveledListItem{Level: 1, Text: "Windows"},
+		pterm.LeveledListItem{Level: 1, Text: "Programs"},
+		pterm.LeveledListItem{Level: 1, Text: "Programs(x86)"},
+		pterm.LeveledListItem{Level: 1, Text: "dev"},
+		pterm.LeveledListItem{Level: 0, Text: "D:"},
+		pterm.LeveledListItem{Level: 0, Text: "E:"},
+		pterm.LeveledListItem{Level: 1, Text: "Movies"},
+		pterm.LeveledListItem{Level: 1, Text: "Music"},
+		pterm.LeveledListItem{Level: 2, Text: "LinkinPark"},
+		pterm.LeveledListItem{Level: 1, Text: "Games"},
+		pterm.LeveledListItem{Level: 2, Text: "Shooter"},
+		pterm.LeveledListItem{Level: 3, Text: "CallOfDuty"},
+		pterm.LeveledListItem{Level: 3, Text: "CS:GO"},
+		pterm.LeveledListItem{Level: 3, Text: "Battlefield"},
+		pterm.LeveledListItem{Level: 4, Text: "Battlefield 1"},
+		pterm.LeveledListItem{Level: 4, Text: "Battlefield 2"},
+		pterm.LeveledListItem{Level: 0, Text: "F:"},
+		pterm.LeveledListItem{Level: 1, Text: "dev"},
+		pterm.LeveledListItem{Level: 2, Text: "dops"},
+		pterm.LeveledListItem{Level: 2, Text: "PTerm"},
+	}
+
+	// Generate tree from LeveledList.
+	root := putils.NewTreeFromLeveledList(leveledList)
+
+	// Render TreePrinter
+	pterm.DefaultTree.WithRoot(root).Render()
+}
+
+```
+
+</details>
+
 ### bigtext/demo
 
 ![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/bigtext/demo/animation.svg)
@@ -612,6 +613,54 @@ func main() {
 	pterm.DefaultBigText.WithLetters(
 		putils.NewLettersFromStringWithRGB("PTerm", pterm.NewRGB(255, 215, 0))).
 		Render()
+}
+
+```
+
+</details>
+
+### barchart/mixed-values
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/mixed-values/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	mixedBars := pterm.Bars{
+		pterm.Bar{
+			Label: "Bar 1",
+			Value: 2,
+		},
+		pterm.Bar{
+			Label: "Bar 2",
+			Value: -3,
+		},
+		pterm.Bar{
+			Label: "Bar 3",
+			Value: -2,
+		},
+		pterm.Bar{
+			Label: "Bar 4",
+			Value: 5,
+		},
+		pterm.Bar{
+			Label: "Longer Label",
+			Value: 7,
+		},
+	}
+
+	pterm.DefaultSection.Println("Chart example with mixed values (note screen space usage in case when ABSOLUTE values of negative and positive parts are differ too much)")
+	_ = pterm.DefaultBarChart.WithBars(mixedBars).WithShowValue().Render()
+	_ = pterm.DefaultBarChart.WithHorizontal().WithBars(mixedBars).WithShowValue().Render()
 }
 
 ```
@@ -692,54 +741,6 @@ func main() {
 	pterm.Info.Println("Chart example with positive only values (bars use 100% of chart area)")
 	_ = pterm.DefaultBarChart.WithBars(positiveBars).Render()
 	_ = pterm.DefaultBarChart.WithHorizontal().WithBars(positiveBars).Render()
-}
-
-```
-
-</details>
-
-### barchart/mixed-values
-
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/mixed-values/animation.svg)
-
-<details>
-
-<summary>SHOW SOURCE</summary>
-
-```go
-package main
-
-import (
-	"github.com/pterm/pterm"
-)
-
-func main() {
-	mixedBars := pterm.Bars{
-		pterm.Bar{
-			Label: "Bar 1",
-			Value: 2,
-		},
-		pterm.Bar{
-			Label: "Bar 2",
-			Value: -3,
-		},
-		pterm.Bar{
-			Label: "Bar 3",
-			Value: -2,
-		},
-		pterm.Bar{
-			Label: "Bar 4",
-			Value: 5,
-		},
-		pterm.Bar{
-			Label: "Longer Label",
-			Value: 7,
-		},
-	}
-
-	pterm.DefaultSection.Println("Chart example with mixed values (note screen space usage in case when ABSOLUTE values of negative and positive parts are differ too much)")
-	_ = pterm.DefaultBarChart.WithBars(mixedBars).WithShowValue().Render()
-	_ = pterm.DefaultBarChart.WithHorizontal().WithBars(mixedBars).WithShowValue().Render()
 }
 
 ```
@@ -941,6 +942,31 @@ func main() {
 
 </details>
 
+### coloring/print-color-rgb
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/print-color-rgb/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	// Print strings with a custom RGB color.
+	// NOTICE: This only works with terminals which support TrueColor.
+	pterm.NewRGB(178, 44, 199).Println("This text is printed with a custom RGB!")
+	pterm.NewRGB(15, 199, 209).Println("This text is printed with a custom RGB!")
+	pterm.NewRGB(201, 144, 30).Println("This text is printed with a custom RGB!")
+}
+
+```
+
+</details>
+
 ### coloring/override-default-printers
 
 ![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/override-default-printers/animation.svg)
@@ -972,9 +998,9 @@ func main() {
 
 </details>
 
-### coloring/print-color-rgb
+### coloring/disable-output
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/print-color-rgb/animation.svg)
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/disable-output/animation.svg)
 
 <details>
 
@@ -986,11 +1012,18 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Print strings with a custom RGB color.
-	// NOTICE: This only works with terminals which support TrueColor.
-	pterm.NewRGB(178, 44, 199).Println("This text is printed with a custom RGB!")
-	pterm.NewRGB(15, 199, 209).Println("This text is printed with a custom RGB!")
-	pterm.NewRGB(201, 144, 30).Println("This text is printed with a custom RGB!")
+	for i := 0; i < 15; i++ {
+		switch i {
+		case 5:
+			pterm.Info.Println("Disabled Output!")
+			pterm.DisableOutput()
+		case 10:
+			pterm.EnableOutput()
+			pterm.Info.Println("Enabled Output!")
+		}
+
+		pterm.Printf("Printing something... [%d/%d]\n", i, 15)
+	}
 }
 
 ```
@@ -1032,38 +1065,6 @@ func main() {
 	pterm.FgLightMagenta.Println("FgLightMagenta")
 	pterm.FgLightCyan.Println("FgLightCyan")
 	pterm.FgLightWhite.Println("FgLightWhite")
-}
-
-```
-
-</details>
-
-### coloring/disable-output
-
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/disable-output/animation.svg)
-
-<details>
-
-<summary>SHOW SOURCE</summary>
-
-```go
-package main
-
-import "github.com/pterm/pterm"
-
-func main() {
-	for i := 0; i < 15; i++ {
-		switch i {
-		case 5:
-			pterm.Info.Println("Disabled Output!")
-			pterm.DisableOutput()
-		case 10:
-			pterm.EnableOutput()
-			pterm.Info.Println("Enabled Output!")
-		}
-
-		pterm.Printf("Printing something... [%d/%d]\n", i, 15)
-	}
 }
 
 ```
