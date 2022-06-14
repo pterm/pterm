@@ -2,8 +2,8 @@ package putils
 
 import "github.com/pterm/pterm"
 
-// NewTreeFromLeveledList converts a TreeItems list to a TreeNode and returns it.
-func NewTreeFromLeveledList(leveledListItems pterm.LeveledList) pterm.TreeNode {
+// TreeFromLeveledList converts a TreeItems list to a TreeNode and returns it.
+func TreeFromLeveledList(leveledListItems pterm.LeveledList) pterm.TreeNode {
 	if len(leveledListItems) == 0 {
 		return pterm.TreeNode{}
 	}

@@ -33,7 +33,7 @@ func main() {
 	}
 
 	// Generate tree from LeveledList.
-	root := putils.NewTreeFromLeveledList(leveledList)
+	root := putils.TreeFromLeveledList(leveledList)
 
 	// Render TreePrinter
 	pterm.DefaultTree.WithRoot(root).Render()
