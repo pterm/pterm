@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/pterm/pterm"
+	"github.com/pterm/pterm/putils"
 )
 
 // Speed the demo up, by setting this flag.
@@ -215,8 +216,8 @@ func setup() {
 
 func introScreen() {
 	ptermLogo, _ := pterm.DefaultBigText.WithLetters(
-		pterm.NewLettersFromStringWithStyle("P", pterm.NewStyle(pterm.FgLightCyan)),
-		pterm.NewLettersFromStringWithStyle("Term", pterm.NewStyle(pterm.FgLightMagenta))).
+		putils.NewLettersFromStringWithStyle("P", pterm.NewStyle(pterm.FgLightCyan)),
+		putils.NewLettersFromStringWithStyle("Term", pterm.NewStyle(pterm.FgLightMagenta))).
 		Srender()
 
 	pterm.DefaultCenter.Print(ptermLogo)
