@@ -59,13 +59,14 @@ func (p InteractiveSelectPrinter) WithMaxHeight(maxHeight int) *InteractiveSelec
 	return &p
 }
 
+// Show shows the interactive select menu and returns the selected entry.
 func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
-	if len(text) == 0 || text[0] == "" {
+	if len(text) == 0 || Sprint(text[0]) == "" {
 		text = []string{"Please select an option"}
 	}
 
 	p.text = p.TextStyle.Sprint(text[0])
-	p.fuzzySearchMatches = p.Options
+	p.fuzzySearchMatches = append([]string{}, p.Options...)
 
 	if p.MaxHeight == 0 {
 		p.MaxHeight = DefaultInteractiveSelect.MaxHeight
@@ -102,7 +103,6 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 
 			// append to fuzzy search string
 			p.fuzzySearchString += keyInfo.String()
-
 			p.selectedOption = 0
 			area.Update(p.renderSelectMenu())
 		case keys.Space:
@@ -112,11 +112,12 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 		case keys.Backspace:
 			// Remove last character from fuzzy search string
 			if len(p.fuzzySearchString) > 0 {
-				p.fuzzySearchString = p.fuzzySearchString[:len(p.fuzzySearchString)-1]
+				// Handle UTF-8 characters
+				p.fuzzySearchString = string([]rune(p.fuzzySearchString)[:len([]rune(p.fuzzySearchString))-1])
 			}
 
 			if p.fuzzySearchString == "" {
-				p.fuzzySearchMatches = p.Options
+				p.fuzzySearchMatches = append([]string{}, p.Options...)
 			}
 
 			area.Update(p.renderSelectMenu())
@@ -140,7 +141,6 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 			if len(p.fuzzySearchMatches) == 0 {
 				return false, nil
 			}
-			p.result = p.fuzzySearchMatches[p.selectedOption]
 			area.Update(p.renderFinishedMenu())
 			return true, nil
 		}
@@ -155,17 +155,23 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 	return p.result, nil
 }
 
-func (p InteractiveSelectPrinter) renderSelectMenu() string {
+func (p *InteractiveSelectPrinter) renderSelectMenu() string {
 	var content string
 	content += Sprintf("%s %s: %s\n", p.text, ThemeDefault.SecondaryStyle.Sprint("[type to search]"), p.fuzzySearchString)
 
 	// find options that match fuzzy search string
-	rankedResults := fuzzy.RankFind(p.fuzzySearchString, p.fuzzySearchMatches)
+	rankedResults := fuzzy.RankFindFold(p.fuzzySearchString, p.fuzzySearchMatches)
 	// map rankedResults to fuzzySearchMatches
 	p.fuzzySearchMatches = []string{}
-	sort.Sort(rankedResults)
+	if len(rankedResults) != len(p.Options) {
+		sort.Sort(rankedResults)
+	}
 	for _, result := range rankedResults {
 		p.fuzzySearchMatches = append(p.fuzzySearchMatches, result.Target)
+	}
+
+	if len(p.fuzzySearchMatches) != 0 {
+		p.result = p.fuzzySearchMatches[p.selectedOption]
 	}
 
 	for i, option := range p.fuzzySearchMatches {
