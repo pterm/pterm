@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"atomicgo.dev/cursor"
 	"atomicgo.dev/keyboard"
 	"atomicgo.dev/keyboard/keys"
 )
@@ -126,6 +127,7 @@ func (p InteractiveConfirmPrinter) Show(text ...string) (bool, error) {
 		}
 		return false, nil
 	})
+	cursor.StartOfLine()
 	return result, err
 }
 
