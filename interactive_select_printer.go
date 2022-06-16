@@ -114,6 +114,11 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 	err = keyboard.Listen(func(keyInfo keys.Key) (stop bool, err error) {
 		key := keyInfo.Code
 
+		maxHeight := p.MaxHeight
+		if maxHeight > len(p.fuzzySearchMatches) {
+			maxHeight = len(p.fuzzySearchMatches)
+		}
+
 		switch key {
 		case keys.RuneKey:
 			// Fuzzy search for options
@@ -122,7 +127,7 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 			p.selectedOption = 0
 			p.displayedOptionsStart = 0
 			p.displayedOptionsEnd = p.MaxHeight
-			p.displayedOptions = append([]string{}, p.fuzzySearchMatches[:p.MaxHeight]...)
+			p.displayedOptions = append([]string{}, p.fuzzySearchMatches[:maxHeight]...)
 			area.Update(p.renderSelectMenu())
 		case keys.Space:
 			p.fuzzySearchString += " "
@@ -141,6 +146,9 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 
 			area.Update(p.renderSelectMenu())
 		case keys.Up:
+			if len(p.fuzzySearchMatches) == 0 {
+				return false, nil
+			}
 			if p.selectedOption > 0 {
 				p.selectedOption--
 				if p.selectedOption < p.displayedOptionsStart {
@@ -161,6 +169,9 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 
 			area.Update(p.renderSelectMenu())
 		case keys.Down:
+			if len(p.fuzzySearchMatches) == 0 {
+				return false, nil
+			}
 			p.displayedOptions = p.fuzzySearchMatches[:p.MaxHeight]
 			if p.selectedOption < len(p.fuzzySearchMatches)-1 {
 				p.selectedOption++
