@@ -121,6 +121,8 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 
 		if maxHeight > len(p.fuzzySearchMatches) {
 			maxHeight = len(p.fuzzySearchMatches)
+		} else {
+			maxHeight = p.MaxHeight
 		}
 
 		switch key {
