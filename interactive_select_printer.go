@@ -75,13 +75,18 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 		p.MaxHeight = DefaultInteractiveSelect.MaxHeight
 	}
 
+	maxHeight := p.MaxHeight
+	if maxHeight > len(p.fuzzySearchMatches) {
+		maxHeight = len(p.fuzzySearchMatches)
+	}
+
 	if len(p.Options) == 0 {
 		return "", fmt.Errorf("no options provided")
 	}
 
-	p.displayedOptions = append([]string{}, p.fuzzySearchMatches[:p.MaxHeight]...)
+	p.displayedOptions = append([]string{}, p.fuzzySearchMatches[:maxHeight]...)
 	p.displayedOptionsStart = 0
-	p.displayedOptionsEnd = p.MaxHeight
+	p.displayedOptionsEnd = maxHeight
 
 	// Get index of default option
 	if p.DefaultOption != "" {
@@ -90,10 +95,10 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 				p.selectedOption = i
 				if i > 0 {
 					p.displayedOptionsStart = i - 1
-					p.displayedOptionsEnd = i - 1 + p.MaxHeight
+					p.displayedOptionsEnd = i - 1 + maxHeight
 				} else {
 					p.displayedOptionsStart = 0
-					p.displayedOptionsEnd = p.MaxHeight
+					p.displayedOptionsEnd = maxHeight
 				}
 				p.displayedOptions = p.Options[p.displayedOptionsStart:p.displayedOptionsEnd]
 				break
@@ -114,7 +119,6 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 	err = keyboard.Listen(func(keyInfo keys.Key) (stop bool, err error) {
 		key := keyInfo.Code
 
-		maxHeight := p.MaxHeight
 		if maxHeight > len(p.fuzzySearchMatches) {
 			maxHeight = len(p.fuzzySearchMatches)
 		}
@@ -126,7 +130,7 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 			p.fuzzySearchString += keyInfo.String()
 			p.selectedOption = 0
 			p.displayedOptionsStart = 0
-			p.displayedOptionsEnd = p.MaxHeight
+			p.displayedOptionsEnd = maxHeight
 			p.displayedOptions = append([]string{}, p.fuzzySearchMatches[:maxHeight]...)
 			area.Update(p.renderSelectMenu())
 		case keys.Space:
@@ -156,13 +160,13 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 					p.displayedOptionsEnd--
 					if p.displayedOptionsStart < 0 {
 						p.displayedOptionsStart = 0
-						p.displayedOptionsEnd = p.MaxHeight
+						p.displayedOptionsEnd = maxHeight
 					}
 					p.displayedOptions = p.fuzzySearchMatches[p.displayedOptionsStart:p.displayedOptionsEnd]
 				}
 			} else {
 				p.selectedOption = len(p.fuzzySearchMatches) - 1
-				p.displayedOptionsStart = len(p.fuzzySearchMatches) - p.MaxHeight
+				p.displayedOptionsStart = len(p.fuzzySearchMatches) - maxHeight
 				p.displayedOptionsEnd = len(p.fuzzySearchMatches)
 				p.displayedOptions = p.fuzzySearchMatches[p.displayedOptionsStart:p.displayedOptionsEnd]
 			}
@@ -172,7 +176,7 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 			if len(p.fuzzySearchMatches) == 0 {
 				return false, nil
 			}
-			p.displayedOptions = p.fuzzySearchMatches[:p.MaxHeight]
+			p.displayedOptions = p.fuzzySearchMatches[:maxHeight]
 			if p.selectedOption < len(p.fuzzySearchMatches)-1 {
 				p.selectedOption++
 				if p.selectedOption >= p.displayedOptionsEnd {
@@ -183,7 +187,7 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 			} else {
 				p.selectedOption = 0
 				p.displayedOptionsStart = 0
-				p.displayedOptionsEnd = p.MaxHeight
+				p.displayedOptionsEnd = maxHeight
 				p.displayedOptions = p.fuzzySearchMatches[p.displayedOptionsStart:p.displayedOptionsEnd]
 			}
 
