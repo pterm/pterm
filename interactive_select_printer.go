@@ -34,11 +34,14 @@ type InteractiveSelectPrinter struct {
 	Selector      string
 	SelectorStyle *Style
 
-	selectedOption     int
-	result             string
-	text               string
-	fuzzySearchString  string
-	fuzzySearchMatches []string
+	selectedOption        int
+	result                string
+	text                  string
+	fuzzySearchString     string
+	fuzzySearchMatches    []string
+	displayedOptions      []string
+	displayedOptionsStart int
+	displayedOptionsEnd   int
 }
 
 // WithOptions sets the options.
@@ -76,11 +79,23 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 		return "", fmt.Errorf("no options provided")
 	}
 
+	p.displayedOptions = append([]string{}, p.fuzzySearchMatches[:p.MaxHeight]...)
+	p.displayedOptionsStart = 0
+	p.displayedOptionsEnd = p.MaxHeight
+
 	// Get index of default option
 	if p.DefaultOption != "" {
 		for i, option := range p.Options {
 			if option == p.DefaultOption {
 				p.selectedOption = i
+				if i > 0 {
+					p.displayedOptionsStart = i - 1
+					p.displayedOptionsEnd = i - 1 + p.MaxHeight
+				} else {
+					p.displayedOptionsStart = 0
+					p.displayedOptionsEnd = p.MaxHeight
+				}
+				p.displayedOptions = p.Options[p.displayedOptionsStart:p.displayedOptionsEnd]
 				break
 			}
 		}
@@ -92,6 +107,8 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 		return "", fmt.Errorf("could not start area: %w", err)
 	}
 
+	area.Update(p.renderSelectMenu())
+
 	cursor.Hide()
 	defer cursor.Show()
 	err = keyboard.Listen(func(keyInfo keys.Key) (stop bool, err error) {
@@ -100,10 +117,12 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 		switch key {
 		case keys.RuneKey:
 			// Fuzzy search for options
-
 			// append to fuzzy search string
 			p.fuzzySearchString += keyInfo.String()
 			p.selectedOption = 0
+			p.displayedOptionsStart = 0
+			p.displayedOptionsEnd = p.MaxHeight
+			p.displayedOptions = append([]string{}, p.fuzzySearchMatches[:p.MaxHeight]...)
 			area.Update(p.renderSelectMenu())
 		case keys.Space:
 			p.fuzzySearchString += " "
@@ -124,16 +143,39 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 		case keys.Up:
 			if p.selectedOption > 0 {
 				p.selectedOption--
+				if p.selectedOption < p.displayedOptionsStart {
+					p.displayedOptionsStart--
+					p.displayedOptionsEnd--
+					if p.displayedOptionsStart < 0 {
+						p.displayedOptionsStart = 0
+						p.displayedOptionsEnd = p.MaxHeight
+					}
+					p.displayedOptions = p.fuzzySearchMatches[p.displayedOptionsStart:p.displayedOptionsEnd]
+				}
 			} else {
 				p.selectedOption = len(p.fuzzySearchMatches) - 1
+				p.displayedOptionsStart = len(p.fuzzySearchMatches) - p.MaxHeight
+				p.displayedOptionsEnd = len(p.fuzzySearchMatches)
+				p.displayedOptions = p.fuzzySearchMatches[p.displayedOptionsStart:p.displayedOptionsEnd]
 			}
+
 			area.Update(p.renderSelectMenu())
 		case keys.Down:
+			p.displayedOptions = p.fuzzySearchMatches[:p.MaxHeight]
 			if p.selectedOption < len(p.fuzzySearchMatches)-1 {
 				p.selectedOption++
+				if p.selectedOption >= p.displayedOptionsEnd {
+					p.displayedOptionsStart++
+					p.displayedOptionsEnd++
+					p.displayedOptions = p.fuzzySearchMatches[p.displayedOptionsStart:p.displayedOptionsEnd]
+				}
 			} else {
 				p.selectedOption = 0
+				p.displayedOptionsStart = 0
+				p.displayedOptionsEnd = p.MaxHeight
+				p.displayedOptions = p.fuzzySearchMatches[p.displayedOptionsStart:p.displayedOptionsEnd]
 			}
+
 			area.Update(p.renderSelectMenu())
 		case keys.CtrlC:
 			os.Exit(1)
@@ -160,7 +202,7 @@ func (p *InteractiveSelectPrinter) renderSelectMenu() string {
 	content += Sprintf("%s %s: %s\n", p.text, ThemeDefault.SecondaryStyle.Sprint("[type to search]"), p.fuzzySearchString)
 
 	// find options that match fuzzy search string
-	rankedResults := fuzzy.RankFindFold(p.fuzzySearchString, p.fuzzySearchMatches)
+	rankedResults := fuzzy.RankFindFold(p.fuzzySearchString, p.Options)
 	// map rankedResults to fuzzySearchMatches
 	p.fuzzySearchMatches = []string{}
 	if len(rankedResults) != len(p.Options) {
@@ -174,7 +216,18 @@ func (p *InteractiveSelectPrinter) renderSelectMenu() string {
 		p.result = p.fuzzySearchMatches[p.selectedOption]
 	}
 
-	for i, option := range p.fuzzySearchMatches {
+	indexMapper := make([]string, len(p.fuzzySearchMatches))
+	for i := 0; i < len(p.fuzzySearchMatches); i++ {
+		// if in displayed options range
+		if i >= p.displayedOptionsStart && i < p.displayedOptionsEnd {
+			indexMapper[i] = p.fuzzySearchMatches[i]
+		}
+	}
+
+	for i, option := range indexMapper {
+		if option == "" {
+			continue
+		}
 		if i == p.selectedOption {
 			content += Sprintf("%s %s\n", p.renderSelector(), option)
 		} else {
