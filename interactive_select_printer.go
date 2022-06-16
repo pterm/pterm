@@ -119,7 +119,7 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 	err = keyboard.Listen(func(keyInfo keys.Key) (stop bool, err error) {
 		key := keyInfo.Code
 
-		if maxHeight > len(p.fuzzySearchMatches) {
+		if p.MaxHeight > len(p.fuzzySearchMatches) {
 			maxHeight = len(p.fuzzySearchMatches)
 		} else {
 			maxHeight = p.MaxHeight
@@ -150,6 +150,19 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 				p.fuzzySearchMatches = append([]string{}, p.Options...)
 			}
 
+			p.renderSelectMenu()
+
+			if len(p.fuzzySearchMatches) > p.MaxHeight {
+				maxHeight = p.MaxHeight
+			} else {
+				maxHeight = len(p.fuzzySearchMatches)
+			}
+
+			p.selectedOption = 0
+			p.displayedOptionsStart = 0
+			p.displayedOptionsEnd = maxHeight
+			p.displayedOptions = append([]string{}, p.fuzzySearchMatches[p.displayedOptionsStart:p.displayedOptionsEnd]...)
+
 			area.Update(p.renderSelectMenu())
 		case keys.Up:
 			if len(p.fuzzySearchMatches) == 0 {
@@ -164,13 +177,13 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 						p.displayedOptionsStart = 0
 						p.displayedOptionsEnd = maxHeight
 					}
-					p.displayedOptions = p.fuzzySearchMatches[p.displayedOptionsStart:p.displayedOptionsEnd]
+					p.displayedOptions = append([]string{}, p.fuzzySearchMatches[p.displayedOptionsStart:p.displayedOptionsEnd]...)
 				}
 			} else {
 				p.selectedOption = len(p.fuzzySearchMatches) - 1
 				p.displayedOptionsStart = len(p.fuzzySearchMatches) - maxHeight
 				p.displayedOptionsEnd = len(p.fuzzySearchMatches)
-				p.displayedOptions = p.fuzzySearchMatches[p.displayedOptionsStart:p.displayedOptionsEnd]
+				p.displayedOptions = append([]string{}, p.fuzzySearchMatches[p.displayedOptionsStart:p.displayedOptionsEnd]...)
 			}
 
 			area.Update(p.renderSelectMenu())
@@ -184,13 +197,13 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 				if p.selectedOption >= p.displayedOptionsEnd {
 					p.displayedOptionsStart++
 					p.displayedOptionsEnd++
-					p.displayedOptions = p.fuzzySearchMatches[p.displayedOptionsStart:p.displayedOptionsEnd]
+					p.displayedOptions = append([]string{}, p.fuzzySearchMatches[p.displayedOptionsStart:p.displayedOptionsEnd]...)
 				}
 			} else {
 				p.selectedOption = 0
 				p.displayedOptionsStart = 0
 				p.displayedOptionsEnd = maxHeight
-				p.displayedOptions = p.fuzzySearchMatches[p.displayedOptionsStart:p.displayedOptionsEnd]
+				p.displayedOptions = append([]string{}, p.fuzzySearchMatches[p.displayedOptionsStart:p.displayedOptionsEnd]...)
 			}
 
 			area.Update(p.renderSelectMenu())
