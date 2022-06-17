@@ -113,7 +113,7 @@ func main() {
 
 							pterm.Info.Println("[" + dir + "] Running asciinema")
 							execute(`go build -o ./_examples/` + dir + `/bundle ./_examples/` + dir)
-							execute(`asciinema rec ` + animationDataPath + `--stdin -i 60 -c "./_examples/` + dir + `/bundle"`)
+							execute(`asciinema rec ` + animationDataPath + ` --stdin -i 60 -c "./_examples/` + dir + `/bundle"`)
 							os.Remove("./_examples/" + dir + "/bundle")
 
 							pterm.Info.Println("[" + dir + "] Adding sleep to end of 'animation_data.json'")
