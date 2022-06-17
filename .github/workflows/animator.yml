@@ -1,17 +1,17 @@
-on:
-  push:
-    branches: master
-
-name: Update Animations
-jobs:
-  animator:
-    if: "!contains(github.event.head_commit.message, 'autoupdate')"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Git Setup
-        run: git config --global --add safe.directory /github/workspace
-      - name: Update Docs
-        uses: pterm/animation-ci@master
-        env:
-          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          TERM: xterm-256color
+#on:
+#  push:
+#    branches: master
+#
+#name: Update Animations
+#jobs:
+#  animator:
+#    if: "!contains(github.event.head_commit.message, 'autoupdate')"
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Git Setup
+#        run: git config --global --add safe.directory /github/workspace
+#      - name: Update Docs
+#        uses: pterm/animation-ci@master
+#        env:
+#          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+#          TERM: xterm-256color
