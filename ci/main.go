@@ -26,8 +26,6 @@ func (e *Examples) Add(name, content string) {
 }
 
 func main() {
-	// var wg sync.WaitGroup
-
 	pterm.Info.Prefix = pterm.Prefix{
 		Text:  "LOG",
 		Style: pterm.NewStyle(pterm.FgGray),
@@ -81,17 +79,13 @@ func main() {
 				var sectionExamples string
 				do("Section: "+section.Name(), currentLevel, func(currentLevel int) {
 					examples, _ := os.ReadDir("./_examples/" + section.Name())
-					// sectionWg := sync.WaitGroup{}
 					for _, example := range examples {
 						if example.Name() == "README.md" {
 							continue
 						}
 
-						// sectionWg.Add(1)
-						// wg.Add(1)
 						example := example
 						section := section
-						// go func() {
 						dir := section.Name() + "/" + example.Name()
 						do("Generating Animations for Example: "+dir, currentLevel, func(currentLevel int) {
 							exampleRenderStart := time.Now()
@@ -193,20 +187,12 @@ func main() {
 							sectionExamples += "</details>\n\n"
 
 							pterm.Info.Println("[" + dir + "] This example took: " + time.Since(exampleRenderStart).String())
-							// sectionWg.Done()
-							// wg.Done()
 						})
-						// }()
 					}
-					// go func() {
-					// sectionWg.Wait()
 					readmeExamples += sectionExamples
 					os.WriteFile("./_examples/"+section.Name()+"/README.md", []byte(sectionExamples), 0600)
-					// }()
 				})
 			}
-
-			// wg.Wait()
 
 			pterm.Info.Println("Writing '/_examples/README.md'")
 			examplesReadme, _ := os.ReadFile("./_examples/README.md")
