@@ -164,6 +164,17 @@ func (p *InteractiveMultiselectPrinter) Show(text ...string) ([]string, error) {
 			p.displayedOptions = append([]string{}, p.fuzzySearchMatches[p.displayedOptionsStart:p.displayedOptionsEnd]...)
 
 			area.Update(p.renderSelectMenu())
+		case keys.Left:
+			// Unselect all options
+			p.selectedOptions = []int{}
+			area.Update(p.renderSelectMenu())
+		case keys.Right:
+			// Select all options
+			p.selectedOptions = []int{}
+			for i := 0; i < len(p.Options); i++ {
+				p.selectedOptions = append(p.selectedOptions, i)
+			}
+			area.Update(p.renderSelectMenu())
 		case keys.Up:
 			if len(p.fuzzySearchMatches) == 0 {
 				return false, nil
@@ -266,7 +277,7 @@ func (p *InteractiveMultiselectPrinter) selectOption(optionText string) {
 
 func (p *InteractiveMultiselectPrinter) renderSelectMenu() string {
 	var content string
-	content += Sprintf("%s %s: %s\n", p.text, ThemeDefault.SecondaryStyle.Sprint("[select with enter, type to search, confirm with tab]"), p.fuzzySearchString)
+	content += Sprintf("%s: %s\n", p.text, p.fuzzySearchString)
 
 	// find options that match fuzzy search string
 	rankedResults := fuzzy.RankFindFold(p.fuzzySearchString, p.Options)
@@ -303,6 +314,8 @@ func (p *InteractiveMultiselectPrinter) renderSelectMenu() string {
 			content += Sprintf("  %s %s\n", checkmark, option)
 		}
 	}
+
+	content += ThemeDefault.SecondaryStyle.Sprintfln("enter: %s | tab: %s | left: %s | right: %s | type to %s", Bold.Sprint("select"), Bold.Sprint("confirm"), Bold.Sprint("none"), Bold.Sprint("all"), Bold.Sprint("filter"))
 
 	return content
 }
