@@ -7,6 +7,7 @@ package main
 
 import (
 	"github.com/pterm/pterm"
+	"github.com/pterm/pterm/putils"
 )
 
 func main() {
@@ -37,7 +38,7 @@ func main() {
 	}
 
 	// Generate tree from LeveledList.
-	root := pterm.NewTreeFromLeveledList(leveledList)
+	root := putils.TreeFromLeveledList(leveledList)
 
 	// Render TreePrinter
 	pterm.DefaultTree.WithRoot(root).Render()
