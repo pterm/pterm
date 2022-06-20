@@ -14,19 +14,27 @@ import (
 var (
 	// DefaultInteractiveTextInput is the default InteractiveTextInput printer.
 	DefaultInteractiveTextInput = InteractiveTextInputPrinter{
-		TextStyle: &ThemeDefault.PrimaryStyle,
+		DefaultText: "Input text",
+		TextStyle:   &ThemeDefault.PrimaryStyle,
 	}
 )
 
 // InteractiveTextInputPrinter is a printer for interactive select menus.
 type InteractiveTextInputPrinter struct {
-	TextStyle *Style
-	MultiLine bool
+	TextStyle   *Style
+	DefaultText string
+	MultiLine   bool
 
 	input      []string
 	cursorXPos int
 	cursorYPos int
 	text       string
+}
+
+// WithDefaultText sets the default text.
+func (p *InteractiveTextInputPrinter) WithDefaultText(text string) *InteractiveTextInputPrinter {
+	p.DefaultText = text
+	return p
 }
 
 // WithTextStyle sets the text style.
@@ -46,7 +54,7 @@ func (p *InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	var areaText string
 
 	if len(text) == 0 || Sprint(text[0]) == "" {
-		text = []string{"Input text"}
+		text = []string{p.DefaultText}
 	}
 
 	if p.MultiLine {

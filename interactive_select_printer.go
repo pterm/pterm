@@ -15,6 +15,7 @@ var (
 	// DefaultInteractiveSelect is the default InteractiveSelect printer.
 	DefaultInteractiveSelect = InteractiveSelectPrinter{
 		TextStyle:     &ThemeDefault.PrimaryStyle,
+		DefaultText:   "Please select an option",
 		Options:       []string{},
 		OptionStyle:   &ThemeDefault.DefaultText,
 		DefaultOption: "",
@@ -27,6 +28,7 @@ var (
 // InteractiveSelectPrinter is a printer for interactive select menus.
 type InteractiveSelectPrinter struct {
 	TextStyle     *Style
+	DefaultText   string
 	Options       []string
 	OptionStyle   *Style
 	DefaultOption string
@@ -42,6 +44,12 @@ type InteractiveSelectPrinter struct {
 	displayedOptions      []string
 	displayedOptionsStart int
 	displayedOptionsEnd   int
+}
+
+// WithDefaultText sets the default text.
+func (p InteractiveSelectPrinter) WithDefaultText(text string) *InteractiveSelectPrinter {
+	p.DefaultText = text
+	return &p
 }
 
 // WithOptions sets the options.
@@ -65,7 +73,7 @@ func (p InteractiveSelectPrinter) WithMaxHeight(maxHeight int) *InteractiveSelec
 // Show shows the interactive select menu and returns the selected entry.
 func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 	if len(text) == 0 || Sprint(text[0]) == "" {
-		text = []string{"Please select an option"}
+		text = []string{p.DefaultText}
 	}
 
 	p.text = p.TextStyle.Sprint(text[0])
