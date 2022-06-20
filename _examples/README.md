@@ -243,7 +243,7 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	pterm.Info.Println("This might not be rendered correctly on GitHub,\nbut it will work in a real terminal.\nThis is because GitHub does not use a monospaced font by default for SVGs.")
+	pterm.Info.Println("This might not be rendered correctly on GitHub,\nbut it will work in a real terminal.\nThis is because GitHub does not use a monospaced font by default for SVGs")
 
 	panel1 := pterm.DefaultBox.Sprint("Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit,\nsed do eiusmod tempor incididunt\nut labore et dolore\nmagna aliqua.")
 	panel2 := pterm.DefaultBox.WithTitle("title").Sprint("Ut enim ad minim veniam,\nquis nostrud exercitation\nullamco laboris\nnisi ut aliquip\nex ea commodo\nconsequat.")
@@ -900,6 +900,160 @@ func main() {
 
 	// Print header.
 	newHeader.Println("This is a custom header!")
+}
+
+```
+
+</details>
+
+### interactive_confirm/demo
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/interactive_confirm/demo/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	result, _ := pterm.DefaultInteractiveConfirm.Show()
+	pterm.Println() // Blank line
+	pterm.Info.Printfln("You answered: %s", boolToText(result))
+}
+
+func boolToText(b bool) string {
+	if b {
+		return pterm.Green("Yes")
+	}
+	return pterm.Red("No")
+}
+
+```
+
+</details>
+
+### interactive_multiselect/demo
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/interactive_multiselect/demo/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	var options []string
+
+	for i := 0; i < 100; i++ {
+		options = append(options, fmt.Sprintf("Option %d", i))
+	}
+
+	for i := 0; i < 5; i++ {
+		options = append(options, fmt.Sprintf("You can use fuzzy searching (%d)", i))
+	}
+
+	selectedOptions, _ := pterm.DefaultInteractiveMultiselect.WithOptions(options).Show()
+	pterm.Info.Printfln("Selected options: %s", pterm.Green(selectedOptions))
+}
+
+```
+
+</details>
+
+### interactive_select/demo
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/interactive_select/demo/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	var options []string
+
+	for i := 0; i < 100; i++ {
+		options = append(options, fmt.Sprintf("Option %d", i))
+	}
+
+	for i := 0; i < 5; i++ {
+		options = append(options, fmt.Sprintf("You can use fuzzy searching (%d)", i))
+	}
+
+	selectedOption, _ := pterm.DefaultInteractiveSelect.WithOptions(options).Show()
+	pterm.Info.Printfln("Selected option: %s", pterm.Green(selectedOption))
+}
+
+```
+
+</details>
+
+### interactive_textinput/demo
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/interactive_textinput/demo/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	result, _ := pterm.DefaultInteractiveTextInput.WithMultiLine(false).Show()
+	pterm.Println() // Blank line
+	pterm.Info.Printfln("You answered: %s", result)
+}
+
+```
+
+</details>
+
+### interactive_textinput/multi-line
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/interactive_textinput/multi-line/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	result, _ := pterm.DefaultInteractiveTextInput.WithMultiLine().Show() // Text input with multi line enabled
+	pterm.Println()                                                       // Blank line
+	pterm.Info.Printfln("You answered: %s", result)
 }
 
 ```

@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Features
+- **input:** added text input printer
+
 
 <a name="v0.12.41"></a>
 ## [v0.12.41] - 2022-04-12
