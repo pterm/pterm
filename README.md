@@ -52,9 +52,9 @@
 |
 <strong><a href="#-installation">Installation</a></strong>
 |
-<strong><a href="https://pterm.sh/#/quick-start">Quick Start</a></strong>
+<strong><a href="https://docs.pterm.sh/getting-started">Getting Started</a></strong>
 |
-<strong><a href="https://pterm.sh/#/docs/intro">Documentation</a></strong>
+<strong><a href="https://docs.pterm.sh/">Documentation</a></strong>
 |
 <strong><a href="https://github.com/pterm/pterm/tree/master/_examples">Examples</a></strong>
 |
