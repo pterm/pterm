@@ -16,7 +16,11 @@ func init() {
 			time.Sleep(time.Second)
 			for i := 0; i < 10; i++ {
 				keyboard.SimulateKeyPress(keys.Down)
-				time.Sleep(time.Millisecond * 250)
+				if i%2 == 0 {
+					time.Sleep(time.Millisecond * 100)
+					keyboard.SimulateKeyPress(keys.Enter)
+				}
+				time.Sleep(time.Millisecond * 500)
 			}
 			time.Sleep(time.Second)
 
@@ -33,6 +37,8 @@ func init() {
 			}
 
 			keyboard.SimulateKeyPress(keys.Enter)
+			time.Sleep(time.Millisecond * 350)
+			keyboard.SimulateKeyPress(keys.Tab)
 		}()
 	}
 }

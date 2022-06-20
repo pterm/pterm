@@ -6,6 +6,7 @@ import (
 	"atomicgo.dev/keyboard"
 	"atomicgo.dev/keyboard/keys"
 	"github.com/MarvinJWendt/testza"
+
 	"github.com/pterm/pterm"
 )
 
@@ -17,6 +18,11 @@ func TestInteractiveSelectPrinter_Show(t *testing.T) {
 	}()
 	result, _ := pterm.DefaultInteractiveSelect.WithOptions([]string{"a", "b", "c", "d", "e"}).WithDefaultOption("b").Show()
 	testza.AssertEqual(t, "d", result)
+}
+
+func TestInteractiveSelectPrinter_WithDefaultText(t *testing.T) {
+	p := pterm.DefaultInteractiveSelect.WithDefaultText("default")
+	testza.AssertEqual(t, p.DefaultText, "default")
 }
 
 func TestInteractiveSelectPrinter_WithDefaultOption(t *testing.T) {

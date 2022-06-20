@@ -15,6 +15,7 @@ var (
 	// Pressing enter without typing "y" or "n" will return the configured default value (by default set to "no").
 	DefaultInteractiveConfirm = InteractiveConfirmPrinter{
 		DefaultValue: false,
+		DefaultText:  "Please confirm",
 		TextStyle:    &ThemeDefault.PrimaryStyle,
 		ConfirmText:  "Yes",
 		ConfirmStyle: &ThemeDefault.SuccessMessageStyle,
@@ -27,12 +28,19 @@ var (
 // InteractiveConfirmPrinter is a printer for interactive confirm prompts.
 type InteractiveConfirmPrinter struct {
 	DefaultValue bool
+	DefaultText  string
 	TextStyle    *Style
 	ConfirmText  string
 	ConfirmStyle *Style
 	RejectText   string
 	RejectStyle  *Style
 	SuffixStyle  *Style
+}
+
+// WithDefaultText sets the default text.
+func (p InteractiveConfirmPrinter) WithDefaultText(text string) *InteractiveConfirmPrinter {
+	p.DefaultText = text
+	return &p
 }
 
 // WithDefaultValue sets the default value, which will be returned when the user presses enter without typing "y" or "n".
@@ -86,7 +94,7 @@ func (p InteractiveConfirmPrinter) Show(text ...string) (bool, error) {
 	var result bool
 
 	if len(text) == 0 || text[0] == "" {
-		text = []string{"Please confirm"}
+		text = []string{p.DefaultText}
 	}
 
 	p.TextStyle.Print(text[0] + " " + p.getSuffix() + ": ")
