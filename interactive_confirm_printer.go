@@ -85,7 +85,7 @@ func (p InteractiveConfirmPrinter) WithSuffixStyle(style *Style) *InteractiveCon
 func (p InteractiveConfirmPrinter) Show(text ...string) (bool, error) {
 	var result bool
 
-	if text == nil || len(text) == 0 || text[0] == "" {
+	if len(text) == 0 || text[0] == "" {
 		text = []string{"Please confirm"}
 	}
 
