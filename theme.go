@@ -4,7 +4,8 @@ var (
 	// ThemeDefault is the default theme used by PTerm.
 	// If this variable is overwritten, the new value is used as default theme.
 	ThemeDefault = Theme{
-		PrimaryStyle:            Style{FgCyan},
+		DefaultText:             Style{FgDefault, BgDefault},
+		PrimaryStyle:            Style{FgLightCyan},
 		SecondaryStyle:          Style{FgLightMagenta},
 		HighlightStyle:          Style{Bold, FgYellow},
 		InfoMessageStyle:        Style{FgLightCyan},
@@ -49,6 +50,7 @@ var (
 // Theme contains every Style used in PTerm. You can create own themes for your application or use one
 // of the existing themes.
 type Theme struct {
+	DefaultText             Style
 	PrimaryStyle            Style
 	SecondaryStyle          Style
 	HighlightStyle          Style

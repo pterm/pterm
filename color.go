@@ -212,32 +212,32 @@ func (c Color) Printfln(format string, a ...interface{}) *TextPrinter {
 // PrintOnError prints every error which is not nil.
 // If every error is nil, nothing will be printed.
 // This can be used for simple error checking.
-func (p Color) PrintOnError(a ...interface{}) *TextPrinter {
+func (c Color) PrintOnError(a ...interface{}) *TextPrinter {
 	for _, arg := range a {
 		if err, ok := arg.(error); ok {
 			if err != nil {
-				p.Println(err)
+				c.Println(err)
 			}
 		}
 	}
 
-	tp := TextPrinter(p)
+	tp := TextPrinter(c)
 	return &tp
 }
 
 // PrintOnErrorf wraps every error which is not nil and prints it.
 // If every error is nil, nothing will be printed.
 // This can be used for simple error checking.
-func (p Color) PrintOnErrorf(format string, a ...interface{}) *TextPrinter {
+func (c Color) PrintOnErrorf(format string, a ...interface{}) *TextPrinter {
 	for _, arg := range a {
 		if err, ok := arg.(error); ok {
 			if err != nil {
-				p.Println(fmt.Errorf(format, err))
+				c.Println(fmt.Errorf(format, err))
 			}
 		}
 	}
 
-	tp := TextPrinter(p)
+	tp := TextPrinter(c)
 	return &tp
 }
 

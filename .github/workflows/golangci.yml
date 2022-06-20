@@ -1,3 +1,5 @@
+
+
 name: golangci-lint
 on: [ push, pull_request ]
 jobs:
@@ -10,10 +12,9 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.16
+          go-version: 1.18
 
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
         with:
-          # Required: the version of golangci-lint is required and must be specified without patch version: we always use the latest patch version.
-          version: v1.39
+          version: latest
