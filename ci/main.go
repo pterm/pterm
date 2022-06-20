@@ -15,13 +15,13 @@ import (
 )
 
 type Examples struct {
-	sync.Mutex
-	m map[string]string
+	mu sync.Mutex
+	m  map[string]string
 }
 
 func (e *Examples) Add(name, content string) {
-	e.Lock()
-	defer e.Unlock()
+	e.mu.Lock()
+	defer e.mu.Unlock()
 	e.m[name] = content
 }
 
