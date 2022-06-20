@@ -14,9 +14,13 @@ func init() {
 	if os.Getenv("CI") == "true" {
 		go func() {
 			time.Sleep(time.Second)
-			input := "11111112222222\n"
-			for _, r := range []rune(input) {
-				keyboard.SimulateKeyPress(r)
+			input := "1111111\n2222222"
+			for _, r := range input {
+				if r == '\n' {
+					keyboard.SimulateKeyPress(keys.Enter)
+				} else {
+					keyboard.SimulateKeyPress(r)
+				}
 				time.Sleep(time.Millisecond * 250)
 			}
 
@@ -30,8 +34,12 @@ func init() {
 			keyboard.SimulateKeyPress(keys.Enter)
 			time.Sleep(time.Millisecond * 500)
 			input = "33333333\n4\n5555555"
-			for _, r := range []rune(input) {
-				keyboard.SimulateKeyPress(r)
+			for _, r := range input {
+				if r == '\n' {
+					keyboard.SimulateKeyPress(keys.Enter)
+				} else {
+					keyboard.SimulateKeyPress(r)
+				}
 				time.Sleep(time.Millisecond * 250)
 			}
 
