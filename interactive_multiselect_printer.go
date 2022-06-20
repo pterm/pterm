@@ -25,7 +25,7 @@ var (
 	}
 )
 
-// InteractiveMultiselectPrinter is a printer for interactive select menus.
+// InteractiveMultiselectPrinter is a printer for interactive multiselect menus.
 type InteractiveMultiselectPrinter struct {
 	DefaultText    string
 	TextStyle      *Style
@@ -70,7 +70,7 @@ func (p InteractiveMultiselectPrinter) WithMaxHeight(maxHeight int) *Interactive
 	return &p
 }
 
-// Show shows the interactive select menu and returns the selected entry.
+// Show shows the interactive multiselect menu and returns the selected entry.
 func (p *InteractiveMultiselectPrinter) Show(text ...string) ([]string, error) {
 	if len(text) == 0 || Sprint(text[0]) == "" {
 		text = []string{p.DefaultText}
