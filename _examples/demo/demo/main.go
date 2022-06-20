@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/pterm/pterm"
+	"github.com/pterm/pterm/putils"
 )
 
 // Speed the demo up, by setting this flag.
@@ -66,8 +67,8 @@ func main() {
 		pterm.Println()
 		area, _ := pterm.DefaultArea.WithCenter().Start() // Start the Area printer, with the Center option.
 		for i := 0; i < 10; i++ {
-			str, _ := pterm.DefaultBigText.WithLetters(pterm.NewLettersFromString(time.Now().Format("15:04:05"))).Srender() // Save current time in str.
-			area.Update(str)                                                                                                // Update Area contents.
+			str, _ := pterm.DefaultBigText.WithLetters(putils.LettersFromString(time.Now().Format("15:04:05"))).Srender() // Save current time in str.
+			area.Update(str)                                                                                              // Update Area contents.
 			time.Sleep(time.Second)
 		}
 		area.Stop()
@@ -215,8 +216,8 @@ func setup() {
 
 func introScreen() {
 	ptermLogo, _ := pterm.DefaultBigText.WithLetters(
-		pterm.NewLettersFromStringWithStyle("P", pterm.NewStyle(pterm.FgLightCyan)),
-		pterm.NewLettersFromStringWithStyle("Term", pterm.NewStyle(pterm.FgLightMagenta))).
+		putils.LettersFromStringWithStyle("P", pterm.NewStyle(pterm.FgLightCyan)),
+		putils.LettersFromStringWithStyle("Term", pterm.NewStyle(pterm.FgLightMagenta))).
 		Srender()
 
 	pterm.DefaultCenter.Print(ptermLogo)
