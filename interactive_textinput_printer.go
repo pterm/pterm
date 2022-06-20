@@ -50,9 +50,9 @@ func (p *InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	}
 
 	if p.MultiLine {
-		areaText = p.TextStyle.Sprint(text[0] + ": \n")
+		areaText = p.TextStyle.Sprintfln("%s %s :", text[0], ThemeDefault.SecondaryStyle.Sprint("[Press tab to submit]"))
 	} else {
-		areaText = p.TextStyle.Sprint(text[0] + ": ")
+		areaText = p.TextStyle.Sprintf("%s: ", text[0])
 	}
 	p.text = areaText
 	area, err := DefaultArea.Start(areaText)
@@ -64,7 +64,7 @@ func (p *InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	cursor.Up(1)
 	cursor.StartOfLine()
 	if !p.MultiLine {
-		cursor.Right(len(RemoveColorFromString(text[0])) + 2)
+		cursor.Right(len(RemoveColorFromString(areaText)))
 	}
 
 	err = keyboard.Listen(func(key keys.Key) (stop bool, err error) {
