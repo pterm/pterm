@@ -133,7 +133,7 @@ func main() {
 							}
 
 							pterm.Info.Println("[" + dir + "] Generating SVG")
-							execute(`svg-term --in ` + animationDataPath + ` --out ` + animationSvgPath + ` --no-cursor --window true --no-optimize --profile "./ci/terminal-theme.txt" --term "iterm2"`)
+							execute(`svg-term --in ` + animationDataPath + ` --out ` + animationSvgPath + ` --window true --no-optimize --profile "./ci/terminal-theme.txt" --term "iterm2"`)
 
 							pterm.Info.Println("[" + dir + "] Overwriting SVG font")
 
