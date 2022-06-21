@@ -1,4 +1,0 @@
-#!/bin/bash
-
-printf '\033[8;25;80t'
-time go run ./ci/
