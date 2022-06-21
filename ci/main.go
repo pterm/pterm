@@ -133,9 +133,9 @@ func main() {
 							}
 
 							pterm.Info.Println("[" + dir + "] Generating SVG")
-							var noCursorFlag string
+							noCursorFlag := "--no-cursor"
 							if strings.Contains(animationDataPath, "interactive") {
-								noCursorFlag = "--no-cursor"
+								noCursorFlag = ""
 							}
 							execute(`svg-term --in ` + animationDataPath + ` --out ` + animationSvgPath + " " + noCursorFlag + ` --window true --no-optimize --profile "./ci/terminal-theme.txt" --term "iterm2"`)
 
