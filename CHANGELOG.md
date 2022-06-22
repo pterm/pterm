@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Bug Fixes
+- **spinner:** fix line didn't clear properly
+
 
 <a name="v0.12.42"></a>
 ## [v0.12.42] - 2022-06-21
