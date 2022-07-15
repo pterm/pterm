@@ -4,9 +4,9 @@ import (
 	"encoding/csv"
 	"io"
 	"strings"
-	"unicode/utf8"
 
 	"github.com/pterm/pterm/internal"
+	"github.com/mattn/go-runewidth"
 )
 
 // DefaultTable contains standards, which can be used to print a TablePrinter.
@@ -163,7 +163,7 @@ func (p TablePrinter) Srender() (string, error) {
 
 	for _, row := range p.Data {
 		for ci, column := range row {
-			columnLength := utf8.RuneCountInString(RemoveColorFromString(column))
+			columnLength := runewidth.StringWidth(RemoveColorFromString(column))
 			if columnLength > maxColumnWidth[ci] {
 				maxColumnWidth[ci] = columnLength
 			}
@@ -174,11 +174,11 @@ func (p TablePrinter) Srender() (string, error) {
 		rowWidth := 0
 		for ci, column := range row {
 			columnString := p.createColumnString(column, maxColumnWidth[ci])
-			rowWidth += utf8.RuneCountInString(RemoveColorFromString(columnString))
+			rowWidth += runewidth.StringWidth(RemoveColorFromString(columnString))
 
 			if ci != len(row) && ci != 0 {
 				ret += p.Style.Sprint(p.SeparatorStyle.Sprint(p.Separator))
-				rowWidth += utf8.RuneCountInString(RemoveColorFromString(p.SeparatorStyle.Sprint(p.Separator)))
+				rowWidth += runewidth.StringWidth(RemoveColorFromString(p.SeparatorStyle.Sprint(p.Separator)))
 			}
 
 			if p.HasHeader && ri == 0 {
@@ -209,7 +209,7 @@ func (p TablePrinter) Srender() (string, error) {
 }
 
 func (p TablePrinter) createColumnString(data string, maxColumnWidth int) string {
-	columnLength := utf8.RuneCountInString(RemoveColorFromString(data))
+	columnLength := runewidth.StringWidth(RemoveColorFromString(data))
 	if p.RightAlignment {
 		return strings.Repeat(" ", maxColumnWidth-columnLength) + data
 	}
