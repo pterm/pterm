@@ -5,8 +5,8 @@ import (
 	"io"
 	"strings"
 
-	"github.com/pterm/pterm/internal"
 	"github.com/mattn/go-runewidth"
+	"github.com/pterm/pterm/internal"
 )
 
 // DefaultTable contains standards, which can be used to print a TablePrinter.

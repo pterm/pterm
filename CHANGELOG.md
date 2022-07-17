@@ -3,6 +3,7 @@
 
 ### Bug Fixes
 - **spinner:** fix line didn't clear properly
+- **table:** fixed column length calculation for Chinese strings
 
 
 <a name="v0.12.42"></a>
