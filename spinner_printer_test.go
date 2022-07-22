@@ -12,6 +12,7 @@ import (
 
 func TestSpinnerPrinter_NilPrint(t *testing.T) {
 	p := pterm.SpinnerPrinter{}
+	p.Info()
 	p.Success()
 	p.Warning()
 	p.Fail()
@@ -41,6 +42,13 @@ func TestSpinnerPrinter_GenericStartRawOutput(t *testing.T) {
 func TestSpinnerPrinter_GenericStop(t *testing.T) {
 	p := pterm.DefaultSpinner
 	p.GenericStop()
+}
+
+func TestSpinnerPrinter_Info(t *testing.T) {
+	p := pterm.DefaultSpinner
+	testPrintContains(t, func(w io.Writer, a interface{}) {
+		p.Info(a)
+	})
 }
 
 func TestSpinnerPrinter_Success(t *testing.T) {
@@ -172,6 +180,7 @@ func TestSpinnerPrinter_DifferentVariations(t *testing.T) {
 		Style          *pterm.Style
 		Delay          time.Duration
 		MessageStyle   *pterm.Style
+		InfoPrinter    pterm.TextPrinter
 		SuccessPrinter pterm.TextPrinter
 		FailPrinter    pterm.TextPrinter
 		WarningPrinter pterm.TextPrinter
@@ -198,6 +207,7 @@ func TestSpinnerPrinter_DifferentVariations(t *testing.T) {
 				Style:          tt.fields.Style,
 				Delay:          tt.fields.Delay,
 				MessageStyle:   tt.fields.MessageStyle,
+				InfoPrinter:    tt.fields.InfoPrinter,
 				SuccessPrinter: tt.fields.SuccessPrinter,
 				FailPrinter:    tt.fields.FailPrinter,
 				WarningPrinter: tt.fields.WarningPrinter,
