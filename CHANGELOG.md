@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+
+<a name="v0.12.43"></a>
+## [v0.12.43] - 2022-07-17
 ### Bug Fixes
 - **spinner:** fix line didn't clear properly
 - **table:** fixed column length calculation for Chinese strings
@@ -1016,7 +1019,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.42...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.43...HEAD
+[v0.12.43]: https://github.com/pterm/pterm/compare/v0.12.42...v0.12.43
 [v0.12.42]: https://github.com/pterm/pterm/compare/v0.12.41...v0.12.42
 [v0.12.41]: https://github.com/pterm/pterm/compare/v0.12.40...v0.12.41
 [v0.12.40]: https://github.com/pterm/pterm/compare/v0.12.39...v0.12.40
