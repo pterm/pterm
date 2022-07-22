@@ -18,6 +18,7 @@ var DefaultSpinner = SpinnerPrinter{
 	TimerRoundingFactor: time.Second,
 	TimerStyle:          &ThemeDefault.TimerStyle,
 	MessageStyle:        &ThemeDefault.SpinnerTextStyle,
+	InfoPrinter:         &Info,
 	SuccessPrinter:      &Success,
 	FailPrinter:         &Error,
 	WarningPrinter:      &Warning,
@@ -32,6 +33,7 @@ type SpinnerPrinter struct {
 	Style               *Style
 	Delay               time.Duration
 	MessageStyle        *Style
+	InfoPrinter         TextPrinter
 	SuccessPrinter      TextPrinter
 	FailPrinter         TextPrinter
 	WarningPrinter      TextPrinter
@@ -185,6 +187,21 @@ func (s *SpinnerPrinter) GenericStop() (*LivePrinter, error) {
 	_ = s.Stop()
 	lp := LivePrinter(s)
 	return &lp, nil
+}
+
+// Info displays an info message
+// If no message is given, the text of the SpinnerPrinter will be reused as the default message.
+func (s *SpinnerPrinter) Info(message ...interface{}) {
+	if s.InfoPrinter == nil {
+		s.InfoPrinter = &Info
+	}
+
+	if len(message) == 0 {
+		message = []interface{}{s.Text}
+	}
+	fClearLine(s.Writer)
+	Fprinto(s.Writer, s.InfoPrinter.Sprint(message...))
+	_ = s.Stop()
 }
 
 // Success displays the success printer.
