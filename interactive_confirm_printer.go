@@ -3,6 +3,7 @@ package pterm
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"atomicgo.dev/cursor"
 	"atomicgo.dev/keyboard"
@@ -98,10 +99,11 @@ func (p InteractiveConfirmPrinter) Show(text ...string) (bool, error) {
 	}
 
 	p.TextStyle.Print(text[0] + " " + p.getSuffix() + ": ")
+	y, n := p.getShortHandles()
 
 	err := keyboard.Listen(func(keyInfo keys.Key) (stop bool, err error) {
 		key := keyInfo.Code
-		char := keyInfo.String()
+		char := strings.ToLower(keyInfo.String())
 		if err != nil {
 			return false, fmt.Errorf("failed to get key: %w", err)
 		}
@@ -109,12 +111,12 @@ func (p InteractiveConfirmPrinter) Show(text ...string) (bool, error) {
 		switch key {
 		case keys.RuneKey:
 			switch char {
-			case "y", "Y":
+			case y:
 				p.ConfirmStyle.Print(p.ConfirmText)
 				Println()
 				result = true
 				return true, nil
-			case "n", "N":
+			case n:
 				p.RejectStyle.Print(p.RejectText)
 				Println()
 				result = false
@@ -139,15 +141,21 @@ func (p InteractiveConfirmPrinter) Show(text ...string) (bool, error) {
 	return result, err
 }
 
+// getShortHandles returns the short hand answers for the confirmation prompt
+func (p InteractiveConfirmPrinter) getShortHandles() (string, string) {
+	y := strings.ToLower(string([]rune(p.ConfirmText)[0]))
+	n := strings.ToLower(string([]rune(p.RejectText)[0]))
+
+	return y, n
+}
+
+// getSuffix returns the confirmation prompt suffix
 func (p InteractiveConfirmPrinter) getSuffix() string {
-	var y string
-	var n string
+	y, n := p.getShortHandles()
 	if p.DefaultValue {
-		y = "Y"
-		n = "n"
+		y = strings.ToUpper(y)
 	} else {
-		y = "y"
-		n = "N"
+		n = strings.ToUpper(n)
 	}
 
 	return p.SuffixStyle.Sprintf("[%s/%s]", y, n)
