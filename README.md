@@ -90,7 +90,7 @@ which features automatic website generation, automatic deployments, a custom CI-
 |✏ Documentation |To view the official documentation of the latest release, you can go to the automatically generated page of [pkg.go.dev](https://pkg.go.dev/github.com/pterm/pterm#section-documentation) This documentation is very technical and includes every method that can be used in PTerm.<br>**For an easy start we recommend that you take a look at the [examples section](#-examples).** Here you can see pretty much every feature of PTerm with example code. The animations of the examples are automatically updated as soon as something changes in PTerm.|
 
 <div align="center">
-	
+
 ### Printers (Components)
 
 |Feature|Examples| - |Feature|Examples|
@@ -113,7 +113,7 @@ which features automatic website generation, automatic deployments, a custom CI-
 |---|---|---|
 |![Jens Lauterbach](https://avatars.githubusercontent.com/u/1292368?s=25)|[@jenslauterbach](https://github.com/jenslauterbach)|25$|
 
-</div>	
+</div>
 
 ## 🧪 Examples
 
@@ -1066,6 +1066,31 @@ func boolToText(b bool) string {
 
 </details>
 
+### interactive_continue/demo
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/interactive_continue/demo/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	result, _ := pterm.DefaultInteractiveContinue.Show()
+	pterm.Println() // Blank line
+	pterm.Info.Printfln("You answered: %s", result)
+}
+
+```
+
+</details>
+
 ### interactive_multiselect/demo
 
 ![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/interactive_multiselect/demo/animation.svg)
@@ -1608,7 +1633,7 @@ func main() {
 
 <!-- examples:end -->
 
-  
+
 ---
 
 > GitHub [@pterm](https://github.com/pterm) &nbsp;&middot;&nbsp;
