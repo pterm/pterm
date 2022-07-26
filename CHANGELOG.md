@@ -1,6 +1,15 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Bug Fixes
+- the interactive confirm answers should match the confirm/reject text
+
+### Test
+- add tests for custom answers
+
+
+<a name="v0.12.44"></a>
+## [v0.12.44] - 2022-07-22
 
 <a name="v0.12.43"></a>
 ## [v0.12.43] - 2022-07-17
@@ -1019,7 +1028,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.43...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.44...HEAD
+[v0.12.44]: https://github.com/pterm/pterm/compare/v0.12.43...v0.12.44
 [v0.12.43]: https://github.com/pterm/pterm/compare/v0.12.42...v0.12.43
 [v0.12.42]: https://github.com/pterm/pterm/compare/v0.12.41...v0.12.42
 [v0.12.41]: https://github.com/pterm/pterm/compare/v0.12.40...v0.12.41

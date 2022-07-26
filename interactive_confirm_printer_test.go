@@ -76,6 +76,45 @@ func TestInteractiveConfirmPrinter_WithRejectText(t *testing.T) {
 	testza.AssertEqual(t, p.RejectText, "reject")
 }
 
+func TestInteractiveConfirmPrinter_CustomAnswers(t *testing.T) {
+	p := pterm.DefaultInteractiveConfirm.WithRejectText("reject").WithConfirmText("accept")
+	tests := []struct {
+		name     string
+		key      rune
+		expected bool
+	}{
+		{
+			name:     "Accept_upper_case",
+			key:      'A',
+			expected: true,
+		},
+		{
+			name:     "Accept_lower",
+			key:      'a',
+			expected: true,
+		},
+		{
+			name:     "Reject_upper_case",
+			key:      'R',
+			expected: false,
+		},
+		{
+			name:     "Reject_lower_case",
+			key:      'r',
+			expected: false,
+		},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			go func() {
+				keyboard.SimulateKeyPress(tc.key)
+			}()
+			result, _ := p.Show()
+			testza.AssertEqual(t, result, tc.expected)
+		})
+	}
+}
+
 func TestInteractiveConfirmPrinter_WithSuffixStyle(t *testing.T) {
 	style := pterm.NewStyle(pterm.FgRed)
 	p := pterm.DefaultInteractiveConfirm.WithSuffixStyle(style)
