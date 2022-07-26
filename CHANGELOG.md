@@ -2,6 +2,7 @@
 ## [Unreleased]
 
 ### Bug Fixes
+- make sure the interactive printers can cleanup after Ctrl+C
 - the interactive confirm answers should match the confirm/reject text
 
 ### Test
