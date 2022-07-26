@@ -2,13 +2,13 @@ package pterm
 
 import (
 	"fmt"
-	"os"
 	"sort"
 
 	"atomicgo.dev/cursor"
 	"atomicgo.dev/keyboard"
 	"atomicgo.dev/keyboard/keys"
 	"github.com/lithammer/fuzzysearch/fuzzy"
+	"github.com/pterm/pterm/internal"
 )
 
 var (
@@ -72,6 +72,11 @@ func (p InteractiveSelectPrinter) WithMaxHeight(maxHeight int) *InteractiveSelec
 
 // Show shows the interactive select menu and returns the selected entry.
 func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
+	// should be the first defer statement to make sure it is executed last
+	// and all the needed cleanup can be done before
+	cancel, exit := internal.NewCancelationSignal()
+	defer exit()
+
 	if len(text) == 0 || Sprint(text[0]) == "" {
 		text = []string{p.DefaultText}
 	}
@@ -124,6 +129,7 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 
 	cursor.Hide()
 	defer cursor.Show()
+
 	err = keyboard.Listen(func(keyInfo keys.Key) (stop bool, err error) {
 		key := keyInfo.Code
 
@@ -216,7 +222,8 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 
 			area.Update(p.renderSelectMenu())
 		case keys.CtrlC:
-			os.Exit(1)
+			cancel()
+			return true, nil
 		case keys.Enter:
 			if len(p.fuzzySearchMatches) == 0 {
 				return false, nil

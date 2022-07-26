@@ -1,7 +1,6 @@
 package pterm
 
 import (
-	"os"
 	"strings"
 
 	"atomicgo.dev/cursor"
@@ -51,6 +50,11 @@ func (p *InteractiveTextInputPrinter) WithMultiLine(multiLine ...bool) *Interact
 
 // Show shows the interactive select menu and returns the selected entry.
 func (p *InteractiveTextInputPrinter) Show(text ...string) (string, error) {
+	// should be the first defer statement to make sure it is executed last
+	// and all the needed cleanup can be done before
+	cancel, exit := internal.NewCancelationSignal()
+	defer exit()
+
 	var areaText string
 
 	if len(text) == 0 || Sprint(text[0]) == "" {
@@ -130,7 +134,8 @@ func (p *InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 				p.cursorXPos = 0
 			}
 		case keys.CtrlC:
-			os.Exit(0)
+			cancel()
+			return true, nil
 		case keys.Down:
 			if p.cursorYPos+1 < len(p.input) {
 				p.cursorXPos = (internal.GetStringMaxWidth(p.input[p.cursorYPos]) + p.cursorXPos) - internal.GetStringMaxWidth(p.input[p.cursorYPos+1])
