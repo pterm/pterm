@@ -181,6 +181,9 @@ func (p *InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 		return "", err
 	}
 
+	// Add new line
+	Println()
+
 	for i, s := range p.input {
 		if i < len(p.input)-1 {
 			areaText += s + "\n"
