@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+
+<a name="v0.12.45"></a>
+## [v0.12.45] - 2022-07-26
 ### Bug Fixes
 - make sure the interactive printers can cleanup after Ctrl+C
 - the interactive confirm answers should match the confirm/reject text
@@ -1029,7 +1032,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.44...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.45...HEAD
+[v0.12.45]: https://github.com/pterm/pterm/compare/v0.12.44...v0.12.45
 [v0.12.44]: https://github.com/pterm/pterm/compare/v0.12.43...v0.12.44
 [v0.12.43]: https://github.com/pterm/pterm/compare/v0.12.42...v0.12.43
 [v0.12.42]: https://github.com/pterm/pterm/compare/v0.12.41...v0.12.42
