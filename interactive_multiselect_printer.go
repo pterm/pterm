@@ -227,8 +227,10 @@ func (p *InteractiveMultiselectPrinter) Show(text ...string) ([]string, error) {
 			cancel()
 			return true, nil
 		case keys.Enter:
-			// Select option if not already selected
-			p.selectOption(p.fuzzySearchMatches[p.selectedOption])
+			if len(p.fuzzySearchMatches) > 0 {
+				// Select option if not already selected
+				p.selectOption(p.fuzzySearchMatches[p.selectedOption])
+			}
 			area.Update(p.renderSelectMenu())
 		}
 
