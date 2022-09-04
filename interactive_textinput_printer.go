@@ -31,25 +31,25 @@ type InteractiveTextInputPrinter struct {
 }
 
 // WithDefaultText sets the default text.
-func (p *InteractiveTextInputPrinter) WithDefaultText(text string) *InteractiveTextInputPrinter {
+func (p InteractiveTextInputPrinter) WithDefaultText(text string) *InteractiveTextInputPrinter {
 	p.DefaultText = text
-	return p
+	return &p
 }
 
 // WithTextStyle sets the text style.
-func (p *InteractiveTextInputPrinter) WithTextStyle(style *Style) *InteractiveTextInputPrinter {
+func (p InteractiveTextInputPrinter) WithTextStyle(style *Style) *InteractiveTextInputPrinter {
 	p.TextStyle = style
-	return p
+	return &p
 }
 
 // WithMultiLine sets the multi line flag.
-func (p *InteractiveTextInputPrinter) WithMultiLine(multiLine ...bool) *InteractiveTextInputPrinter {
+func (p InteractiveTextInputPrinter) WithMultiLine(multiLine ...bool) *InteractiveTextInputPrinter {
 	p.MultiLine = internal.WithBoolean(multiLine)
-	return p
+	return &p
 }
 
 // Show shows the interactive select menu and returns the selected entry.
-func (p *InteractiveTextInputPrinter) Show(text ...string) (string, error) {
+func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	// should be the first defer statement to make sure it is executed last
 	// and all the needed cleanup can be done before
 	cancel, exit := internal.NewCancelationSignal()
@@ -195,7 +195,7 @@ func (p *InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	return strings.ReplaceAll(areaText, p.text, ""), nil
 }
 
-func (p *InteractiveTextInputPrinter) updateArea(area *AreaPrinter) string {
+func (p InteractiveTextInputPrinter) updateArea(area *AreaPrinter) string {
 	if !p.MultiLine {
 		p.cursorYPos = 0
 	}
