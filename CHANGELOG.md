@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Bug Fixes
+- **textinput:** fixed overwriting the default values
+
 
 <a name="v0.12.45"></a>
 ## [v0.12.45] - 2022-07-26
