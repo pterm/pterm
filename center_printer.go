@@ -18,6 +18,7 @@ var DefaultCenter = CenterPrinter{
 // CenterPrinter prints centered text.
 type CenterPrinter struct {
 	CenterEachLineSeparately bool
+	CenterTextOnly           bool
 	Writer                   io.Writer
 }
 
@@ -25,6 +26,13 @@ type CenterPrinter struct {
 func (p CenterPrinter) WithCenterEachLineSeparately(b ...bool) *CenterPrinter {
 	bt := internal.WithBoolean(b)
 	p.CenterEachLineSeparately = bt
+	return &p
+}
+
+// WithCenterTextOnly centers the text only without taking the terminal into account.
+func (p CenterPrinter) WithCenterTextOnly(b ...bool) *CenterPrinter {
+	bt := internal.WithBoolean(b)
+	p.CenterTextOnly = bt
 	return &p
 }
 
@@ -46,12 +54,34 @@ func (p CenterPrinter) Sprint(a ...interface{}) string {
 	var ret string
 
 	if p.CenterEachLineSeparately {
-		for _, line := range lines {
-			margin := (GetTerminalWidth() - runewidth.StringWidth(RemoveColorFromString(line))) / 2
-			if margin < 1 {
-				ret += line + "\n"
+		var margin int
+		var longestLine int
+		if p.CenterTextOnly {
+			for _, line := range lines {
+				if runewidth.StringWidth(RemoveColorFromString(line)) > longestLine {
+					longestLine = runewidth.StringWidth(RemoveColorFromString(line))
+				}
+			}
+		}
+
+		for i, line := range lines {
+			if p.CenterTextOnly {
+				margin = (longestLine - runewidth.StringWidth(RemoveColorFromString(line))) / 2
 			} else {
-				ret += strings.Repeat(" ", margin) + line + "\n"
+				margin = (GetTerminalWidth() - runewidth.StringWidth(RemoveColorFromString(line))) / 2
+			}
+			if margin < 1 {
+				if i < len(lines)-1 {
+					ret += line + "\n"
+				} else {
+					ret += line
+				}
+			} else {
+				if i < len(lines)-1 {
+					ret += strings.Repeat(" ", margin) + line + "\n"
+				} else {
+					ret += strings.Repeat(" ", margin) + line
+				}
 			}
 		}
 		return ret
@@ -66,18 +96,30 @@ func (p CenterPrinter) Sprint(a ...interface{}) string {
 		}
 	}
 
-	indent := GetTerminalWidth() - maxLineWidth
+	var indent int
+
+	if !p.CenterTextOnly {
+		indent = GetTerminalWidth() - maxLineWidth
+	}
 
 	if indent/2 < 1 {
-		for _, line := range lines {
-			ret += line + "\n"
+		for i, line := range lines {
+			if i < len(lines)-1 {
+				ret += line + "\n"
+			} else {
+				ret += line
+			}
 		}
 
 		return ret
 	}
 
-	for _, line := range lines {
-		ret += strings.Repeat(" ", indent/2) + line + "\n"
+	for i, line := range lines {
+		if i < len(lines)-1 {
+			ret += strings.Repeat(" ", indent/2) + line + "\n"
+		} else {
+			ret += strings.Repeat(" ", indent/2) + line
+		}
 	}
 
 	return ret

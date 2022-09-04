@@ -9,6 +9,9 @@ import (
 // CenterText returns a centered string with a padding left and right
 func CenterText(text string, width int) string {
 	var lines []string
+	if width == 0 {
+		width = GetStringMaxWidth(text)
+	}
 	linesTmp := strings.Split(text, "\n")
 	for _, line := range linesTmp {
 		if len(color.ClearCode(line)) > width {
