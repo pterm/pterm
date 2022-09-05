@@ -15,7 +15,8 @@ import (
 // Speed the demo up, by setting this flag.
 // Usefull for debugging.
 // Example:
-//   go run main.go -speedup
+//
+//	go run main.go -speedup
 var speedup = flag.Bool("speedup", false, "Speed up the demo")
 var skipIntro = flag.Bool("skip-intro", false, "Skips the intro")
 var second = time.Second
@@ -87,7 +88,9 @@ func main() {
 		table, _ := pterm.DefaultTable.WithHasHeader().WithData(td).Srender()
 		boxedTable, _ := pterm.DefaultTable.WithHasHeader().WithData(td).WithBoxed().Srender()
 		pterm.DefaultCenter.Println(table)
+		pterm.Println()
 		pterm.DefaultCenter.Println(boxedTable)
+		pterm.Println()
 	})
 
 	showcase("Default Prefix Printers", 5, func() {
@@ -125,6 +128,7 @@ func main() {
 			fadeInfo += from.Fade(0, float32(len(str)), float32(i), to).Sprint(strs[i])
 		}
 		pterm.DefaultCenter.WithCenterEachLineSeparately().Println(fadeInfo)
+		pterm.Println()
 	})
 
 	showcase("Themes", 2, func() {
@@ -204,6 +208,7 @@ func main() {
 			WithRightPadding(3).
 			Sprintf("Have fun exploring %s!", pterm.Cyan("PTerm"))
 		pterm.DefaultCenter.Println(box)
+		pterm.Println()
 	})
 }
 
@@ -221,8 +226,10 @@ func introScreen() {
 		Srender()
 
 	pterm.DefaultCenter.Print(ptermLogo)
+	pterm.Println()
 
 	pterm.DefaultCenter.Print(pterm.DefaultHeader.WithFullWidth().WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Sprint("PTDP - PTerm Demo Program"))
+	pterm.Println()
 
 	pterm.Info.Println("This animation was generated with the latest version of PTerm!" +
 		"\nPTerm works on nearly every terminal and operating system." +

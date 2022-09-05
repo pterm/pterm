@@ -13,12 +13,13 @@ import (
 // DefaultCenter is the default CenterPrinter.
 var DefaultCenter = CenterPrinter{
 	CenterEachLineSeparately: false,
+	CenterOnTerminalWidth:    true,
 }
 
 // CenterPrinter prints centered text.
 type CenterPrinter struct {
 	CenterEachLineSeparately bool
-	CenterTextOnly           bool
+	CenterOnTerminalWidth    bool
 	Writer                   io.Writer
 }
 
@@ -29,10 +30,14 @@ func (p CenterPrinter) WithCenterEachLineSeparately(b ...bool) *CenterPrinter {
 	return &p
 }
 
-// WithCenterTextOnly centers the text only without taking the terminal into account.
-func (p CenterPrinter) WithCenterTextOnly(b ...bool) *CenterPrinter {
+// WithCenterOnTerminalWidth centers the text only without taking the terminal into account.
+// If CenterOnTerminalWidth is true, CenterEachLineSeparately will be set to true.
+func (p CenterPrinter) WithCenterOnTerminalWidth(b ...bool) *CenterPrinter {
 	bt := internal.WithBoolean(b)
-	p.CenterTextOnly = bt
+	p.CenterOnTerminalWidth = bt
+	if !bt {
+		p.CenterEachLineSeparately = true
+	}
 	return &p
 }
 
@@ -56,7 +61,7 @@ func (p CenterPrinter) Sprint(a ...interface{}) string {
 	if p.CenterEachLineSeparately {
 		var margin int
 		var longestLine int
-		if p.CenterTextOnly {
+		if p.CenterOnTerminalWidth {
 			for _, line := range lines {
 				if runewidth.StringWidth(RemoveColorFromString(line)) > longestLine {
 					longestLine = runewidth.StringWidth(RemoveColorFromString(line))
@@ -65,7 +70,7 @@ func (p CenterPrinter) Sprint(a ...interface{}) string {
 		}
 
 		for i, line := range lines {
-			if p.CenterTextOnly {
+			if p.CenterOnTerminalWidth {
 				margin = (longestLine - runewidth.StringWidth(RemoveColorFromString(line))) / 2
 			} else {
 				margin = (GetTerminalWidth() - runewidth.StringWidth(RemoveColorFromString(line))) / 2
@@ -96,11 +101,7 @@ func (p CenterPrinter) Sprint(a ...interface{}) string {
 		}
 	}
 
-	var indent int
-
-	if !p.CenterTextOnly {
-		indent = GetTerminalWidth() - maxLineWidth
-	}
+	indent := GetTerminalWidth() - maxLineWidth
 
 	if indent/2 < 1 {
 		for i, line := range lines {

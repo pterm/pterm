@@ -58,7 +58,7 @@ func (p *AreaPrinter) Update(text ...interface{}) {
 	p.content = str
 
 	if p.Center {
-		str = DefaultCenter.Sprint(str)
+		str = DefaultCenter.Sprintln(str)
 	}
 
 	if p.Fullscreen {

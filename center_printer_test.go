@@ -139,48 +139,8 @@ func TestCenterPrinterPrintMethodsCenterSeparately(t *testing.T) {
 	})
 }
 
-func TestCenterPrinterPrintMethodsCenterSeparatelyAndWithCenterTextOnly(t *testing.T) {
-	p := pterm.DefaultCenter.WithCenterEachLineSeparately().WithCenterTextOnly()
-
-	t.Run("Print", func(t *testing.T) {
-		testPrintContains(t, func(w io.Writer, a interface{}) {
-			p.Print(a)
-		})
-	})
-
-	t.Run("Printf", func(t *testing.T) {
-		testPrintfContains(t, func(w io.Writer, format string, a interface{}) {
-			p.Printf(format, a)
-		})
-	})
-
-	t.Run("Println", func(t *testing.T) {
-		testPrintlnContains(t, func(w io.Writer, a interface{}) {
-			p.Println(a)
-		})
-	})
-
-	t.Run("Sprint", func(t *testing.T) {
-		testSprintContains(t, func(a interface{}) string {
-			return p.Sprint(a)
-		})
-	})
-
-	t.Run("Sprintf", func(t *testing.T) {
-		testSprintfContains(t, func(format string, a interface{}) string {
-			return p.Sprintf(format, a)
-		})
-	})
-
-	t.Run("Sprintln", func(t *testing.T) {
-		testSprintlnContains(t, func(a interface{}) string {
-			return p.Sprintln(a)
-		})
-	})
-}
-
 func TestCenterPrinterPrintMethodsWithCenterTextOnly(t *testing.T) {
-	p := pterm.DefaultCenter.WithCenterTextOnly()
+	p := pterm.DefaultCenter.WithCenterOnTerminalWidth()
 
 	t.Run("Print", func(t *testing.T) {
 		testPrintContains(t, func(w io.Writer, a interface{}) {
