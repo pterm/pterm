@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Features
+- **putils:** add `CenterText` in putils
+
 ### Bug Fixes
 - **textinput:** fixed overwriting the default values
 

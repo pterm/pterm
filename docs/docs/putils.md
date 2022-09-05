@@ -14,6 +14,7 @@ Feel free to contribute your utility functions via pull request!
 func BulletListFromString(s string, padding string) pterm.BulletListPrinter
 func BulletListFromStrings(s []string, padding string) pterm.BulletListPrinter
 func BulletListItemFromString(text string, padding string) pterm.BulletListItem
+func CenterText(text string) string
 func DefaultTableFromStructSlice(structSlice interface{}) *pterm.TablePrinter
 func DownloadFileWithDefaultProgressbar(title, outputPath, url string, mode os.FileMode) error
 func DownloadFileWithProgressbar(progressbar *pterm.ProgressbarPrinter, outputPath, url string, mode os.FileMode) error
