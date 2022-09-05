@@ -7,8 +7,12 @@ import (
 )
 
 // CenterText returns a centered string with a padding left and right
+// If width is 0, it will be calculated automatically
 func CenterText(text string, width int) string {
 	var lines []string
+	if width == 0 {
+		width = GetStringMaxWidth(text)
+	}
 	linesTmp := strings.Split(text, "\n")
 	for _, line := range linesTmp {
 		if len(color.ClearCode(line)) > width {
