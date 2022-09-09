@@ -22,6 +22,7 @@ var (
 		MaxHeight:      5,
 		Selector:       ">",
 		SelectorStyle:  &ThemeDefault.SecondaryStyle,
+		Filter:         true,
 	}
 )
 
@@ -35,6 +36,7 @@ type InteractiveMultiselectPrinter struct {
 	MaxHeight      int
 	Selector       string
 	SelectorStyle  *Style
+	Filter         bool
 
 	selectedOption        int
 	selectedOptions       []int
@@ -67,6 +69,12 @@ func (p InteractiveMultiselectPrinter) WithDefaultText(text string) *Interactive
 // WithMaxHeight sets the maximum height of the select menu.
 func (p InteractiveMultiselectPrinter) WithMaxHeight(maxHeight int) *InteractiveMultiselectPrinter {
 	p.MaxHeight = maxHeight
+	return &p
+}
+
+// WithFilter sets the Filter option
+func (p InteractiveMultiselectPrinter) WithFilter(filter bool) *InteractiveMultiselectPrinter {
+	p.Filter = filter
 	return &p
 }
 
@@ -126,13 +134,15 @@ func (p *InteractiveMultiselectPrinter) Show(text ...string) ([]string, error) {
 
 		switch key {
 		case keys.RuneKey:
-			// Fuzzy search for options
-			// append to fuzzy search string
-			p.fuzzySearchString += keyInfo.String()
-			p.selectedOption = 0
-			p.displayedOptionsStart = 0
-			p.displayedOptionsEnd = maxHeight
-			p.displayedOptions = append([]string{}, p.fuzzySearchMatches[:maxHeight]...)
+			if p.Filter {
+				// Fuzzy search for options
+				// append to fuzzy search string
+				p.fuzzySearchString += keyInfo.String()
+				p.selectedOption = 0
+				p.displayedOptionsStart = 0
+				p.displayedOptionsEnd = maxHeight
+				p.displayedOptions = append([]string{}, p.fuzzySearchMatches[:maxHeight]...)
+			}
 			area.Update(p.renderSelectMenu())
 		case keys.Tab:
 			if len(p.fuzzySearchMatches) == 0 {
@@ -323,7 +333,11 @@ func (p *InteractiveMultiselectPrinter) renderSelectMenu() string {
 		}
 	}
 
-	content += ThemeDefault.SecondaryStyle.Sprintfln("enter: %s | tab: %s | left: %s | right: %s | type to %s", Bold.Sprint("select"), Bold.Sprint("confirm"), Bold.Sprint("none"), Bold.Sprint("all"), Bold.Sprint("filter"))
+	if p.Filter {
+		content += ThemeDefault.SecondaryStyle.Sprintfln("enter: %s | tab: %s | left: %s | right: %s | type to %s", Bold.Sprint("select"), Bold.Sprint("confirm"), Bold.Sprint("none"), Bold.Sprint("all"), Bold.Sprint("filter"))
+	} else {
+		content += ThemeDefault.SecondaryStyle.Sprintfln("enter: %s | tab: %s | left: %s | right: %s", Bold.Sprint("select"), Bold.Sprint("confirm"), Bold.Sprint("none"), Bold.Sprint("all"))
+	}
 
 	return content
 }
