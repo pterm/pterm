@@ -23,6 +23,8 @@ var (
 		Selector:       ">",
 		SelectorStyle:  &ThemeDefault.SecondaryStyle,
 		Filter:         true,
+		KeySelect:      keys.Enter,
+		KeyConfirm:     keys.Tab,
 	}
 )
 
@@ -46,6 +48,9 @@ type InteractiveMultiselectPrinter struct {
 	displayedOptions      []string
 	displayedOptionsStart int
 	displayedOptionsEnd   int
+
+	KeySelect  keys.KeyCode
+	KeyConfirm keys.KeyCode
 }
 
 // WithOptions sets the options.
@@ -75,6 +80,18 @@ func (p InteractiveMultiselectPrinter) WithMaxHeight(maxHeight int) *Interactive
 // WithFilter sets the Filter option
 func (p InteractiveMultiselectPrinter) WithFilter(filter bool) *InteractiveMultiselectPrinter {
 	p.Filter = filter
+	return &p
+}
+
+// WithKeySelect sets the confirm key
+func (p InteractiveMultiselectPrinter) WithKeySelect(keySelect keys.KeyCode) *InteractiveMultiselectPrinter {
+	p.KeySelect = keySelect
+	return &p
+}
+
+// WithKeyConfirm sets the confirm key
+func (p InteractiveMultiselectPrinter) WithKeyConfirm(keyConfirm keys.KeyCode) *InteractiveMultiselectPrinter {
+	p.KeyConfirm = keyConfirm
 	return &p
 }
 
@@ -119,6 +136,10 @@ func (p *InteractiveMultiselectPrinter) Show(text ...string) ([]string, error) {
 		return nil, fmt.Errorf("could not start area: %w", err)
 	}
 
+	if p.Filter && (p.KeyConfirm == keys.Space || p.KeySelect == keys.Space) {
+		return nil, fmt.Errorf("if filter/search is active, keys.Space can not be used for KeySelect or KeyConfirm")
+	}
+
 	area.Update(p.renderSelectMenu())
 
 	cursor.Hide()
@@ -133,6 +154,18 @@ func (p *InteractiveMultiselectPrinter) Show(text ...string) ([]string, error) {
 		}
 
 		switch key {
+		case p.KeyConfirm:
+			if len(p.fuzzySearchMatches) == 0 {
+				return false, nil
+			}
+			area.Update(p.renderFinishedMenu())
+			return true, nil
+		case p.KeySelect:
+			if len(p.fuzzySearchMatches) > 0 {
+				// Select option if not already selected
+				p.selectOption(p.fuzzySearchMatches[p.selectedOption])
+			}
+			area.Update(p.renderSelectMenu())
 		case keys.RuneKey:
 			if p.Filter {
 				// Fuzzy search for options
@@ -144,16 +177,12 @@ func (p *InteractiveMultiselectPrinter) Show(text ...string) ([]string, error) {
 				p.displayedOptions = append([]string{}, p.fuzzySearchMatches[:maxHeight]...)
 			}
 			area.Update(p.renderSelectMenu())
-		case keys.Tab:
-			if len(p.fuzzySearchMatches) == 0 {
-				return false, nil
-			}
-			area.Update(p.renderFinishedMenu())
-			return true, nil
 		case keys.Space:
-			p.fuzzySearchString += " "
-			p.selectedOption = 0
-			area.Update(p.renderSelectMenu())
+			if p.Filter {
+				p.fuzzySearchString += " "
+				p.selectedOption = 0
+				area.Update(p.renderSelectMenu())
+			}
 		case keys.Backspace:
 			// Remove last character from fuzzy search string
 			if len(p.fuzzySearchString) > 0 {
@@ -236,12 +265,6 @@ func (p *InteractiveMultiselectPrinter) Show(text ...string) ([]string, error) {
 		case keys.CtrlC:
 			cancel()
 			return true, nil
-		case keys.Enter:
-			if len(p.fuzzySearchMatches) > 0 {
-				// Select option if not already selected
-				p.selectOption(p.fuzzySearchMatches[p.selectedOption])
-			}
-			area.Update(p.renderSelectMenu())
 		}
 
 		return false, nil
@@ -333,11 +356,11 @@ func (p *InteractiveMultiselectPrinter) renderSelectMenu() string {
 		}
 	}
 
+	help := fmt.Sprintf("%s: %s | %s: %s | left: %s | right: %s", p.KeySelect, Bold.Sprint("select"), p.KeyConfirm, Bold.Sprint("confirm"), Bold.Sprint("none"), Bold.Sprint("all"))
 	if p.Filter {
-		content += ThemeDefault.SecondaryStyle.Sprintfln("enter: %s | tab: %s | left: %s | right: %s | type to %s", Bold.Sprint("select"), Bold.Sprint("confirm"), Bold.Sprint("none"), Bold.Sprint("all"), Bold.Sprint("filter"))
-	} else {
-		content += ThemeDefault.SecondaryStyle.Sprintfln("enter: %s | tab: %s | left: %s | right: %s", Bold.Sprint("select"), Bold.Sprint("confirm"), Bold.Sprint("none"), Bold.Sprint("all"))
+		help += fmt.Sprintf("| type to %s", Bold.Sprint("filter"))
 	}
+	content += ThemeDefault.SecondaryStyle.Sprintfln(help)
 
 	return content
 }
