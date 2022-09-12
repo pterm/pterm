@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+
+<a name="v0.12.46"></a>
+## [v0.12.46] - 2022-09-05
 ### Features
 - **putils:** add `CenterText` in putils
 
@@ -1038,7 +1041,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.45...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.46...HEAD
+[v0.12.46]: https://github.com/pterm/pterm/compare/v0.12.45...v0.12.46
 [v0.12.45]: https://github.com/pterm/pterm/compare/v0.12.44...v0.12.45
 [v0.12.44]: https://github.com/pterm/pterm/compare/v0.12.43...v0.12.44
 [v0.12.43]: https://github.com/pterm/pterm/compare/v0.12.42...v0.12.43
