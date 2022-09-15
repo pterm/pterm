@@ -15,23 +15,25 @@ var (
 	// Pressing "y" will return yes, "n" will return no, "a" returns all and "s" returns stop.
 	// Pressing enter without typing any letter will return the configured default value (by default set to "yes", the fisrt option).
 	DefaultInteractiveContinue = InteractiveContinuePrinter{
-		DefaultValue: "Y",
-		DefaultText:  "Do you want to continue",
-		TextStyle:    &ThemeDefault.PrimaryStyle,
-		Options:      map[string]string{"Y": "yes", "n": "no", "a": "allways", "s": "stop"},
-		OptionsStyle: &ThemeDefault.SuccessMessageStyle,
-		SuffixStyle:  &ThemeDefault.SecondaryStyle,
+		DefaultValueIndex: 0,
+		DefaultText:       "Do you want to continue",
+		TextStyle:         &ThemeDefault.PrimaryStyle,
+		Options:           []string{"yes", "no", "all", "stop"},
+		OptionsStyle:      &ThemeDefault.SuccessMessageStyle,
+		SuffixStyle:       &ThemeDefault.SecondaryStyle,
 	}
 )
 
 // InteractiveContinuePrinter is a printer for interactive continue prompts.
 type InteractiveContinuePrinter struct {
-	DefaultValue string
-	DefaultText  string
-	TextStyle    *Style
-	Options      map[string]string
-	OptionsStyle *Style
-	SuffixStyle  *Style
+	DefaultValueIndex int
+	DefaultText       string
+	TextStyle         *Style
+	Options           []string
+	OptionsStyle      *Style
+	Handles           []string
+	ShowFullHandles   bool
+	SuffixStyle       *Style
 }
 
 // WithDefaultText sets the default text.
@@ -41,11 +43,22 @@ func (p InteractiveContinuePrinter) WithDefaultText(text string) *InteractiveCon
 }
 
 // WithDefaultValueIndex sets the default value, which will be returned when the user presses enter without typing any letter.
-func (p InteractiveContinuePrinter) WithDefaultValue(value string) *InteractiveContinuePrinter {
-	if _, ok := p.Options[value]; !ok {
-		panic("Invalid value: " + value)
+func (p InteractiveContinuePrinter) WithDefaultValueIndex(value int) *InteractiveContinuePrinter {
+	if value >= len(p.Options) {
+		panic("Index out of range")
 	}
-	p.DefaultValue = value
+	p.DefaultValueIndex = value
+	return &p
+}
+
+// WithDefaultValue sets the default value, which will be returned when the user presses enter without typing any letter.
+func (p InteractiveContinuePrinter) WithDefaultValue(value string) *InteractiveContinuePrinter {
+	for i, o := range p.Options {
+		if o == value {
+			p.DefaultValueIndex = i
+			break
+		}
+	}
 	return &p
 }
 
@@ -56,8 +69,24 @@ func (p InteractiveContinuePrinter) WithTextStyle(style *Style) *InteractiveCont
 }
 
 // WithOptions sets the options.
-func (p InteractiveContinuePrinter) WithOptions(options map[string]string) *InteractiveContinuePrinter {
+func (p InteractiveContinuePrinter) WithOptions(options []string) *InteractiveContinuePrinter {
 	p.Options = options
+	return &p
+}
+
+// WithHandles allows you to customize the short handles for the answers.
+func (p InteractiveContinuePrinter) WithHandles(handles []string) *InteractiveContinuePrinter {
+	if len(handles) != len(p.Options) {
+		panic("Invalid number of handles")
+	}
+	p.Handles = handles
+	return &p
+}
+
+// WithFullHandles will set ShowFullHandles to true
+// this makes the printer display the full options instead their shorthand version.
+func (p InteractiveContinuePrinter) WithFullHandles() *InteractiveContinuePrinter {
+	p.ShowFullHandles = true
 	return &p
 }
 
@@ -76,14 +105,21 @@ func (p InteractiveContinuePrinter) WithSuffixStyle(style *Style) *InteractiveCo
 // Show shows the continue prompt.
 //
 // Example:
-//
-//	 result, _ := pterm.DefaultInteractiveContinue.Show("Do you want to apply the changes?")
-//		pterm.Println(result)
+//  result, _ := pterm.DefaultInteractiveContinue.Show("Do you want to apply the changes?")
+//	pterm.Println(result)
 func (p InteractiveContinuePrinter) Show(text ...string) (string, error) {
 	var result string
 
 	if len(text) == 0 || text[0] == "" {
 		text = []string{p.DefaultText}
+	}
+
+	if p.ShowFullHandles {
+		p.Handles = p.Options
+	}
+
+	if p.Handles == nil || len(p.Handles) == 0 {
+		p.Handles = p.getDefaultHandles()
 	}
 
 	p.TextStyle.Print(text[0] + " " + p.getSuffix() + ": ")
@@ -97,17 +133,19 @@ func (p InteractiveContinuePrinter) Show(text ...string) (string, error) {
 
 		switch key {
 		case keys.RuneKey:
-			for k := range p.Options {
-				c := string([]rune(k)[0])
-				if char == c || (k == p.DefaultValue && strings.EqualFold(c, char)) {
+			for i, c := range p.Handles {
+				if p.ShowFullHandles {
+					c = string([]rune(c)[0])
+				}
+				if char == c || (i == p.DefaultValueIndex && strings.EqualFold(c, char)) {
 					Println()
-					result = p.Options[k]
+					result = p.Options[i]
 					return true, nil
 				}
 			}
 		case keys.Enter:
 			Println()
-			result = p.Options[p.DefaultValue]
+			result = p.Options[p.DefaultValueIndex]
 			return true, nil
 		case keys.CtrlC:
 			os.Exit(1)
@@ -119,19 +157,22 @@ func (p InteractiveContinuePrinter) Show(text ...string) (string, error) {
 	return result, err
 }
 
+// getDefaultHandles returns the short hand answers for the continueation prompt
+func (p InteractiveContinuePrinter) getDefaultHandles() []string {
+	handles := []string{}
+	for _, option := range p.Options {
+		handles = append(handles, strings.ToLower(string([]rune(option)[0])))
+	}
+	handles[p.DefaultValueIndex] = strings.ToUpper(handles[p.DefaultValueIndex])
+
+	return handles
+}
+
 // getSuffix returns the continueation prompt suffix
 func (p InteractiveContinuePrinter) getSuffix() string {
-	if p.Options == nil || len(p.Options) == 0 {
+	if p.Handles == nil || len(p.Handles) != len(p.Options) {
 		panic("Handles not initialized")
 	}
-	var (
-		builder strings.Builder
-		step    string
-	)
-	for k, v := range p.Options {
-		builder.WriteString(fmt.Sprintf("%s%s (%s)", step, k, v))
-		step = " / "
-	}
 
-	return p.SuffixStyle.Sprintf("[%s]", builder.String())
+	return p.SuffixStyle.Sprintf("[%s]", strings.Join(p.Handles, "/"))
 }
