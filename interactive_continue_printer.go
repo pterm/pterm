@@ -107,9 +107,8 @@ func (p InteractiveContinuePrinter) WithSuffixStyle(style *Style) *InteractiveCo
 // Show shows the continue prompt.
 //
 // Example:
-//
-//	result, _ := pterm.DefaultInteractiveContinue.Show("Do you want to apply the changes?")
-//	pterm.Println(result)
+//  result, _ := pterm.DefaultInteractiveContinue.Show("Do you want to apply the changes?")
+//  pterm.Println(result)
 func (p InteractiveContinuePrinter) Show(text ...string) (string, error) {
 	var result string
 
