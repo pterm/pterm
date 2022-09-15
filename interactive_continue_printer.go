@@ -143,12 +143,14 @@ func (p InteractiveContinuePrinter) Show(text ...string) (string, error) {
 					c = string([]rune(c)[0])
 				}
 				if char == c || (i == p.DefaultValueIndex && strings.EqualFold(c, char)) {
+					p.OptionsStyle.Print(p.Options[i])
 					Println()
 					result = p.Options[i]
 					return true, nil
 				}
 			}
 		case keys.Enter:
+			p.OptionsStyle.Print(p.Options[p.DefaultValueIndex])
 			Println()
 			result = p.Options[p.DefaultValueIndex]
 			return true, nil
