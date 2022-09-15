@@ -177,7 +177,7 @@ func (p *InteractiveContinuePrinter) setDefaultHandles() {
 	}
 }
 
-// getSuffix returns the continueation prompt suffix
+// getSuffix returns the continuation prompt suffix
 func (p *InteractiveContinuePrinter) getSuffix() string {
 	if p.Handles == nil || len(p.Handles) != len(p.Options) {
 		p.setDefaultHandles()
