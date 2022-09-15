@@ -116,16 +116,6 @@ func (p InteractiveContinuePrinter) Show(text ...string) (string, error) {
 		text = []string{p.DefaultText}
 	}
 
-	if p.ShowShortHandles {
-		p.Handles = p.getShortHandles()
-	}
-
-	if p.Handles == nil || len(p.Handles) == 0 {
-		p.Handles = make([]string, len(p.Options))
-		copy(p.Handles, p.Options)
-		p.Handles[p.DefaultValueIndex] = cases.Title(language.Und, cases.Compact).String(p.Handles[p.DefaultValueIndex])
-	}
-
 	p.TextStyle.Print(text[0] + " " + p.getSuffix() + ": ")
 
 	err := keyboard.Listen(func(keyInfo keys.Key) (stop bool, err error) {
@@ -174,10 +164,23 @@ func (p InteractiveContinuePrinter) getShortHandles() []string {
 	return handles
 }
 
+// setDefaultHandles initialises the handles
+func (p *InteractiveContinuePrinter) setDefaultHandles() {
+	if p.ShowShortHandles {
+		p.Handles = p.getShortHandles()
+	}
+
+	if p.Handles == nil || len(p.Handles) == 0 {
+		p.Handles = make([]string, len(p.Options))
+		copy(p.Handles, p.Options)
+		p.Handles[p.DefaultValueIndex] = cases.Title(language.Und, cases.Compact).String(p.Handles[p.DefaultValueIndex])
+	}
+}
+
 // getSuffix returns the continueation prompt suffix
-func (p InteractiveContinuePrinter) getSuffix() string {
+func (p *InteractiveContinuePrinter) getSuffix() string {
 	if p.Handles == nil || len(p.Handles) != len(p.Options) {
-		panic("Handles not initialized")
+		p.setDefaultHandles()
 	}
 
 	return p.SuffixStyle.Sprintf("[%s]", strings.Join(p.Handles, "/"))
