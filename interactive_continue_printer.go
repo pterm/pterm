@@ -79,7 +79,9 @@ func (p InteractiveContinuePrinter) WithOptions(options []string) *InteractiveCo
 // WithHandles allows you to customize the short handles for the answers.
 func (p InteractiveContinuePrinter) WithHandles(handles []string) *InteractiveContinuePrinter {
 	if len(handles) != len(p.Options) {
-		panic("Invalid number of handles")
+		Warning.Printf("%v is not a valid set of handles", handles)
+		p.setDefaultHandles()
+		return &p
 	}
 	p.Handles = handles
 	return &p
