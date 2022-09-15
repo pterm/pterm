@@ -8,6 +8,8 @@ import (
 	"atomicgo.dev/cursor"
 	"atomicgo.dev/keyboard"
 	"atomicgo.dev/keyboard/keys"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 var (
@@ -32,7 +34,7 @@ type InteractiveContinuePrinter struct {
 	Options           []string
 	OptionsStyle      *Style
 	Handles           []string
-	ShowFullHandles   bool
+	ShowshortHandles  bool
 	SuffixStyle       *Style
 }
 
@@ -83,10 +85,10 @@ func (p InteractiveContinuePrinter) WithHandles(handles []string) *InteractiveCo
 	return &p
 }
 
-// WithFullHandles will set ShowFullHandles to true
-// this makes the printer display the full options instead their shorthand version.
-func (p InteractiveContinuePrinter) WithFullHandles() *InteractiveContinuePrinter {
-	p.ShowFullHandles = true
+// WithShortHandles will set ShowShortHandles to true
+// this makes the printer display the shorthand options instead their shorthand version.
+func (p InteractiveContinuePrinter) WithShortHandles() *InteractiveContinuePrinter {
+	p.ShowshortHandles = true
 	return &p
 }
 
@@ -105,8 +107,9 @@ func (p InteractiveContinuePrinter) WithSuffixStyle(style *Style) *InteractiveCo
 // Show shows the continue prompt.
 //
 // Example:
-//  result, _ := pterm.DefaultInteractiveContinue.Show("Do you want to apply the changes?")
-//	pterm.Println(result)
+//
+//	 result, _ := pterm.DefaultInteractiveContinue.Show("Do you want to apply the changes?")
+//		pterm.Println(result)
 func (p InteractiveContinuePrinter) Show(text ...string) (string, error) {
 	var result string
 
@@ -114,12 +117,14 @@ func (p InteractiveContinuePrinter) Show(text ...string) (string, error) {
 		text = []string{p.DefaultText}
 	}
 
-	if p.ShowFullHandles {
-		p.Handles = p.Options
+	if p.ShowshortHandles {
+		p.Handles = p.getShortHandles()
 	}
 
 	if p.Handles == nil || len(p.Handles) == 0 {
-		p.Handles = p.getDefaultHandles()
+		p.Handles = make([]string, len(p.Options))
+		copy(p.Handles, p.Options)
+		p.Handles[p.DefaultValueIndex] = cases.Title(language.Und, cases.Compact).String(p.Handles[p.DefaultValueIndex])
 	}
 
 	p.TextStyle.Print(text[0] + " " + p.getSuffix() + ": ")
@@ -134,7 +139,7 @@ func (p InteractiveContinuePrinter) Show(text ...string) (string, error) {
 		switch key {
 		case keys.RuneKey:
 			for i, c := range p.Handles {
-				if p.ShowFullHandles {
+				if !p.ShowshortHandles {
 					c = string([]rune(c)[0])
 				}
 				if char == c || (i == p.DefaultValueIndex && strings.EqualFold(c, char)) {
@@ -157,8 +162,8 @@ func (p InteractiveContinuePrinter) Show(text ...string) (string, error) {
 	return result, err
 }
 
-// getDefaultHandles returns the short hand answers for the continueation prompt
-func (p InteractiveContinuePrinter) getDefaultHandles() []string {
+// getShortHandles returns the short hand answers for the continueation prompt
+func (p InteractiveContinuePrinter) getShortHandles() []string {
 	handles := []string{}
 	for _, option := range p.Options {
 		handles = append(handles, strings.ToLower(string([]rune(option)[0])))
