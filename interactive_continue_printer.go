@@ -20,7 +20,7 @@ var (
 		DefaultValueIndex: 0,
 		DefaultText:       "Do you want to continue",
 		TextStyle:         &ThemeDefault.PrimaryStyle,
-		Options:           []string{"yes", "no", "all", "stop"},
+		Options:           []string{"yes", "no", "all", "cancel"},
 		OptionsStyle:      &ThemeDefault.SuccessMessageStyle,
 		SuffixStyle:       &ThemeDefault.SecondaryStyle,
 	}
@@ -34,7 +34,7 @@ type InteractiveContinuePrinter struct {
 	Options           []string
 	OptionsStyle      *Style
 	Handles           []string
-	ShowshortHandles  bool
+	ShowShortHandles  bool
 	SuffixStyle       *Style
 }
 
@@ -85,10 +85,10 @@ func (p InteractiveContinuePrinter) WithHandles(handles []string) *InteractiveCo
 	return &p
 }
 
-// WithShortHandles will set ShowShortHandles to true
+// WithShowShortHandles will set ShowShortHandles to true
 // this makes the printer display the shorthand options instead their shorthand version.
-func (p InteractiveContinuePrinter) WithShortHandles() *InteractiveContinuePrinter {
-	p.ShowshortHandles = true
+func (p InteractiveContinuePrinter) WithShowShortHandles() *InteractiveContinuePrinter {
+	p.ShowShortHandles = true
 	return &p
 }
 
@@ -108,8 +108,8 @@ func (p InteractiveContinuePrinter) WithSuffixStyle(style *Style) *InteractiveCo
 //
 // Example:
 //
-//	 result, _ := pterm.DefaultInteractiveContinue.Show("Do you want to apply the changes?")
-//		pterm.Println(result)
+//	result, _ := pterm.DefaultInteractiveContinue.Show("Do you want to apply the changes?")
+//	pterm.Println(result)
 func (p InteractiveContinuePrinter) Show(text ...string) (string, error) {
 	var result string
 
@@ -117,7 +117,7 @@ func (p InteractiveContinuePrinter) Show(text ...string) (string, error) {
 		text = []string{p.DefaultText}
 	}
 
-	if p.ShowshortHandles {
+	if p.ShowShortHandles {
 		p.Handles = p.getShortHandles()
 	}
 
@@ -139,7 +139,7 @@ func (p InteractiveContinuePrinter) Show(text ...string) (string, error) {
 		switch key {
 		case keys.RuneKey:
 			for i, c := range p.Handles {
-				if !p.ShowshortHandles {
+				if !p.ShowShortHandles {
 					c = string([]rune(c)[0])
 				}
 				if char == c || (i == p.DefaultValueIndex && strings.EqualFold(c, char)) {
@@ -164,7 +164,7 @@ func (p InteractiveContinuePrinter) Show(text ...string) (string, error) {
 
 // getShortHandles returns the short hand answers for the continueation prompt
 func (p InteractiveContinuePrinter) getShortHandles() []string {
-	handles := []string{}
+	var handles []string
 	for _, option := range p.Options {
 		handles = append(handles, strings.ToLower(string([]rune(option)[0])))
 	}

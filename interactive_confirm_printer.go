@@ -89,8 +89,9 @@ func (p InteractiveConfirmPrinter) WithSuffixStyle(style *Style) *InteractiveCon
 // Show shows the confirm prompt.
 //
 // Example:
-//  result, _ := pterm.DefaultInteractiveConfirm.Show("Are you sure?")
-//	pterm.Println(result)
+//
+//	 result, _ := pterm.DefaultInteractiveConfirm.Show("Are you sure?")
+//		pterm.Println(result)
 func (p InteractiveConfirmPrinter) Show(text ...string) (bool, error) {
 	var result bool
 

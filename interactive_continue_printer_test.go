@@ -64,9 +64,9 @@ func TestInteractiveContinuePrinter_WithDefaultValue_no(t *testing.T) {
 	testza.AssertEqual(t, result, "no")
 }
 
-func TestInteractiveContinuePrinter_WithShortHandles(t *testing.T) {
-	p := pterm.DefaultInteractiveContinue.WithShortHandles()
-	testza.AssertTrue(t, p.ShowshortHandles)
+func TestInteractiveContinuePrinter_WithShowShortHandles(t *testing.T) {
+	p := pterm.DefaultInteractiveContinue.WithShowShortHandles()
+	testza.AssertTrue(t, p.ShowShortHandles)
 	go func() {
 		keyboard.SimulateKeyPress('n')
 	}()
