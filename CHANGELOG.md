@@ -1,6 +1,21 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Features
+- adding interactive continue printer
+
+### Bug Fixes
+- typo
+- append the selected value to the prompt
+
+### Code Refactoring
+- ignore invalid custom handles
+- initiazile handles on getSuffix
+- comment format
+- address renaming PR comments
+- show full handles by default
+- use a map for the options
+
 
 <a name="v0.12.46"></a>
 ## [v0.12.46] - 2022-09-05
