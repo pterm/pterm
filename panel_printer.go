@@ -58,8 +58,7 @@ func (p PanelPrinter) WithBottomPadding(bottomPadding int) *PanelPrinter {
 
 // WithSameColumnWidth returns a new PanelPrinter with specific options.
 func (p PanelPrinter) WithSameColumnWidth(b ...bool) *PanelPrinter {
-	b2 := internal.WithBoolean(b)
-	p.SameColumnWidth = b2
+	p.SameColumnWidth = internal.WithBoolean(b)
 	return &p
 }
 

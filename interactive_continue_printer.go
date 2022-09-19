@@ -10,6 +10,8 @@ import (
 	"atomicgo.dev/keyboard/keys"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
+
+	"github.com/pterm/pterm/internal"
 )
 
 var (
@@ -89,8 +91,8 @@ func (p InteractiveContinuePrinter) WithHandles(handles []string) *InteractiveCo
 
 // WithShowShortHandles will set ShowShortHandles to true
 // this makes the printer display the shorthand options instead their shorthand version.
-func (p InteractiveContinuePrinter) WithShowShortHandles() *InteractiveContinuePrinter {
-	p.ShowShortHandles = true
+func (p InteractiveContinuePrinter) WithShowShortHandles(b ...bool) *InteractiveContinuePrinter {
+	p.ShowShortHandles = internal.WithBoolean(b)
 	return &p
 }
 
