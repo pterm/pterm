@@ -164,7 +164,7 @@ func (p *ProgressbarPrinter) Increment() *ProgressbarPrinter {
 	return p
 }
 
-// This method changed the title and re-renders the progressbar
+// UpdateTitle updates the title and re-renders the progressbar
 func (p *ProgressbarPrinter) UpdateTitle(title string) *ProgressbarPrinter {
 	p.Title = title
 	p.updateProgress()
