@@ -97,6 +97,9 @@ func (p *AreaPrinter) Start(text ...interface{}) (*AreaPrinter, error) {
 // Stop terminates the AreaPrinter immediately.
 // The AreaPrinter will not resolve into anything.
 func (p *AreaPrinter) Stop() error {
+	if !p.isActive {
+		return nil
+	}
 	p.isActive = false
 	if p.RemoveWhenDone {
 		p.Clear()
