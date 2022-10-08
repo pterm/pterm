@@ -2,11 +2,11 @@ package pterm_test
 
 import (
 	"testing"
-
+	
 	"atomicgo.dev/keyboard"
 	"atomicgo.dev/keyboard/keys"
 	"github.com/MarvinJWendt/testza"
-
+	
 	"github.com/pterm/pterm"
 )
 
@@ -62,7 +62,12 @@ func TestInteractiveConfirmPrinter_WithConfirmText(t *testing.T) {
 
 func TestInteractiveConfirmPrinter_WithDefaultText(t *testing.T) {
 	p := pterm.DefaultInteractiveConfirm.WithDefaultText("default")
-	testza.AssertEqual(t, p.DefaultText, "default")
+	testza.AssertEqual(t, p.Label, "default")
+}
+
+func TestInteractiveConfirmPrinter_WithLabel(t *testing.T) {
+	p := pterm.DefaultInteractiveConfirm.WithLabel("default")
+	testza.AssertEqual(t, p.Label, "default")
 }
 
 func TestInteractiveConfirmPrinter_WithRejectStyle(t *testing.T) {
@@ -124,5 +129,11 @@ func TestInteractiveConfirmPrinter_WithSuffixStyle(t *testing.T) {
 func TestInteractiveConfirmPrinter_WithTextStyle(t *testing.T) {
 	style := pterm.NewStyle(pterm.FgRed)
 	p := pterm.DefaultInteractiveConfirm.WithTextStyle(style)
-	testza.AssertEqual(t, p.TextStyle, style)
+	testza.AssertEqual(t, p.LabelStyle, style)
+}
+
+func TestInteractiveConfirmPrinter_WithLabelStyle(t *testing.T) {
+	style := pterm.NewStyle(pterm.FgRed)
+	p := pterm.DefaultInteractiveConfirm.WithLabelStyle(style)
+	testza.AssertEqual(t, p.LabelStyle, style)
 }

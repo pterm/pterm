@@ -2,11 +2,11 @@ package pterm_test
 
 import (
 	"testing"
-
+	
 	"atomicgo.dev/keyboard"
 	"atomicgo.dev/keyboard/keys"
 	"github.com/MarvinJWendt/testza"
-
+	
 	"github.com/pterm/pterm"
 )
 
@@ -133,7 +133,12 @@ func TestInteractiveContinuePrinter_WithHandles(t *testing.T) {
 
 func TestInteractiveContinuePrinter_WithDefaultText(t *testing.T) {
 	p := pterm.DefaultInteractiveContinue.WithDefaultText("default")
-	testza.AssertEqual(t, p.DefaultText, "default")
+	testza.AssertEqual(t, p.Label, "default")
+}
+
+func TestInteractiveContinuePrinter_WithLabel(t *testing.T) {
+	p := pterm.DefaultInteractiveContinue.WithLabel("default")
+	testza.AssertEqual(t, p.Label, "default")
 }
 
 func TestInteractiveContinuePrinter_CustomAnswers(t *testing.T) {
@@ -179,5 +184,11 @@ func TestInteractiveContinuePrinter_WithSuffixStyle(t *testing.T) {
 func TestInteractiveContinuePrinter_WithTextStyle(t *testing.T) {
 	style := pterm.NewStyle(pterm.FgRed)
 	p := pterm.DefaultInteractiveContinue.WithTextStyle(style)
-	testza.AssertEqual(t, p.TextStyle, style)
+	testza.AssertEqual(t, p.LabelStyle, style)
+}
+
+func TestInteractiveContinuePrinter_WithLabelStyle(t *testing.T) {
+	style := pterm.NewStyle(pterm.FgRed)
+	p := pterm.DefaultInteractiveContinue.WithLabelStyle(style)
+	testza.AssertEqual(t, p.LabelStyle, style)
 }

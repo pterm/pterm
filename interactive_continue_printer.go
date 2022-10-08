@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"os"
 	"strings"
-
+	
 	"atomicgo.dev/cursor"
 	"atomicgo.dev/keyboard"
 	"atomicgo.dev/keyboard/keys"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
-
+	
 	"github.com/pterm/pterm/internal"
 )
 
@@ -20,8 +20,8 @@ var (
 	// Pressing enter without typing any letter will return the configured default value (by default set to "yes", the fisrt option).
 	DefaultInteractiveContinue = InteractiveContinuePrinter{
 		DefaultValueIndex: 0,
-		DefaultText:       "Do you want to continue",
-		TextStyle:         &ThemeDefault.PrimaryStyle,
+		Label:             "Do you want to continue",
+		LabelStyle:        &ThemeDefault.PrimaryStyle,
 		Options:           []string{"yes", "no", "all", "cancel"},
 		OptionsStyle:      &ThemeDefault.SuccessMessageStyle,
 		SuffixStyle:       &ThemeDefault.SecondaryStyle,
@@ -31,8 +31,8 @@ var (
 // InteractiveContinuePrinter is a printer for interactive continue prompts.
 type InteractiveContinuePrinter struct {
 	DefaultValueIndex int
-	DefaultText       string
-	TextStyle         *Style
+	Label             string
+	LabelStyle        *Style
 	Options           []string
 	OptionsStyle      *Style
 	Handles           []string
@@ -41,8 +41,15 @@ type InteractiveContinuePrinter struct {
 }
 
 // WithDefaultText sets the default text.
+//
+// Deprecated: use InteractiveContinuePrinter.WithLabel instead.
 func (p InteractiveContinuePrinter) WithDefaultText(text string) *InteractiveContinuePrinter {
-	p.DefaultText = text
+	return p.WithLabel(text)
+}
+
+// WithLabel sets the label text.
+func (p InteractiveContinuePrinter) WithLabel(text string) *InteractiveContinuePrinter {
+	p.Label = text
 	return &p
 }
 
@@ -67,8 +74,15 @@ func (p InteractiveContinuePrinter) WithDefaultValue(value string) *InteractiveC
 }
 
 // WithTextStyle sets the text style.
+//
+// Deprecated: use InteractiveContinuePrinter.WithLabelStyle instead.
 func (p InteractiveContinuePrinter) WithTextStyle(style *Style) *InteractiveContinuePrinter {
-	p.TextStyle = style
+	return p.WithLabelStyle(style)
+}
+
+// WithLabelStyle sets the label style.
+func (p InteractiveContinuePrinter) WithLabelStyle(style *Style) *InteractiveContinuePrinter {
+	p.LabelStyle = style
 	return &p
 }
 
@@ -115,20 +129,20 @@ func (p InteractiveContinuePrinter) WithSuffixStyle(style *Style) *InteractiveCo
 //  pterm.Println(result)
 func (p InteractiveContinuePrinter) Show(text ...string) (string, error) {
 	var result string
-
+	
 	if len(text) == 0 || text[0] == "" {
-		text = []string{p.DefaultText}
+		text = []string{p.Label}
 	}
-
-	p.TextStyle.Print(text[0] + " " + p.getSuffix() + ": ")
-
+	
+	p.LabelStyle.Print(text[0] + " " + p.getSuffix() + ": ")
+	
 	err := keyboard.Listen(func(keyInfo keys.Key) (stop bool, err error) {
 		if err != nil {
 			return false, fmt.Errorf("failed to get key: %w", err)
 		}
 		key := keyInfo.Code
 		char := keyInfo.String()
-
+		
 		switch key {
 		case keys.RuneKey:
 			for i, c := range p.Handles {
@@ -164,7 +178,7 @@ func (p InteractiveContinuePrinter) getShortHandles() []string {
 		handles = append(handles, strings.ToLower(string([]rune(option)[0])))
 	}
 	handles[p.DefaultValueIndex] = strings.ToUpper(handles[p.DefaultValueIndex])
-
+	
 	return handles
 }
 
@@ -173,7 +187,7 @@ func (p *InteractiveContinuePrinter) setDefaultHandles() {
 	if p.ShowShortHandles {
 		p.Handles = p.getShortHandles()
 	}
-
+	
 	if p.Handles == nil || len(p.Handles) == 0 {
 		p.Handles = make([]string, len(p.Options))
 		copy(p.Handles, p.Options)
@@ -186,6 +200,6 @@ func (p *InteractiveContinuePrinter) getSuffix() string {
 	if p.Handles == nil || len(p.Handles) != len(p.Options) {
 		p.setDefaultHandles()
 	}
-
+	
 	return p.SuffixStyle.Sprintf("[%s]", strings.Join(p.Handles, "/"))
 }

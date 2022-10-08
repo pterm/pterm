@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
-
+	
 	"atomicgo.dev/cursor"
 	"atomicgo.dev/keyboard"
 	"atomicgo.dev/keyboard/keys"
@@ -16,8 +16,8 @@ var (
 	// Pressing enter without typing "y" or "n" will return the configured default value (by default set to "no").
 	DefaultInteractiveConfirm = InteractiveConfirmPrinter{
 		DefaultValue: false,
-		DefaultText:  "Please confirm",
-		TextStyle:    &ThemeDefault.PrimaryStyle,
+		Label:        "Please confirm",
+		LabelStyle:   &ThemeDefault.PrimaryStyle,
 		ConfirmText:  "Yes",
 		ConfirmStyle: &ThemeDefault.SuccessMessageStyle,
 		RejectText:   "No",
@@ -29,8 +29,8 @@ var (
 // InteractiveConfirmPrinter is a printer for interactive confirm prompts.
 type InteractiveConfirmPrinter struct {
 	DefaultValue bool
-	DefaultText  string
-	TextStyle    *Style
+	Label        string
+	LabelStyle   *Style
 	ConfirmText  string
 	ConfirmStyle *Style
 	RejectText   string
@@ -39,8 +39,15 @@ type InteractiveConfirmPrinter struct {
 }
 
 // WithDefaultText sets the default text.
+//
+// Deprecated: use InteractiveConfirmPrinter.WithLabel instead.
 func (p InteractiveConfirmPrinter) WithDefaultText(text string) *InteractiveConfirmPrinter {
-	p.DefaultText = text
+	return p.WithLabel(text)
+}
+
+// WithLabel sets the label text.
+func (p InteractiveConfirmPrinter) WithLabel(text string) *InteractiveConfirmPrinter {
+	p.Label = text
 	return &p
 }
 
@@ -51,8 +58,15 @@ func (p InteractiveConfirmPrinter) WithDefaultValue(value bool) *InteractiveConf
 }
 
 // WithTextStyle sets the text style.
+//
+// Deprecated: use InteractiveConfirmPrinter.WithLabelStyle instead.
 func (p InteractiveConfirmPrinter) WithTextStyle(style *Style) *InteractiveConfirmPrinter {
-	p.TextStyle = style
+	return p.WithLabelStyle(style)
+}
+
+// WithLabelStyle sets the label style.
+func (p InteractiveConfirmPrinter) WithLabelStyle(style *Style) *InteractiveConfirmPrinter {
+	p.LabelStyle = style
 	return &p
 }
 
@@ -93,21 +107,21 @@ func (p InteractiveConfirmPrinter) WithSuffixStyle(style *Style) *InteractiveCon
 //  pterm.Println(result)
 func (p InteractiveConfirmPrinter) Show(text ...string) (bool, error) {
 	var result bool
-
+	
 	if len(text) == 0 || text[0] == "" {
-		text = []string{p.DefaultText}
+		text = []string{p.Label}
 	}
-
-	p.TextStyle.Print(text[0] + " " + p.getSuffix() + ": ")
+	
+	p.LabelStyle.Print(text[0] + " " + p.getSuffix() + ": ")
 	y, n := p.getShortHandles()
-
+	
 	err := keyboard.Listen(func(keyInfo keys.Key) (stop bool, err error) {
 		key := keyInfo.Code
 		char := strings.ToLower(keyInfo.String())
 		if err != nil {
 			return false, fmt.Errorf("failed to get key: %w", err)
 		}
-
+		
 		switch key {
 		case keys.RuneKey:
 			switch char {
@@ -145,7 +159,7 @@ func (p InteractiveConfirmPrinter) Show(text ...string) (bool, error) {
 func (p InteractiveConfirmPrinter) getShortHandles() (string, string) {
 	y := strings.ToLower(string([]rune(p.ConfirmText)[0]))
 	n := strings.ToLower(string([]rune(p.RejectText)[0]))
-
+	
 	return y, n
 }
 
@@ -157,6 +171,6 @@ func (p InteractiveConfirmPrinter) getSuffix() string {
 	} else {
 		n = strings.ToUpper(n)
 	}
-
+	
 	return p.SuffixStyle.Sprintf("[%s/%s]", y, n)
 }
