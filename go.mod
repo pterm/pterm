@@ -5,7 +5,7 @@ go 1.18
 require (
 	atomicgo.dev/cursor v0.1.1
 	atomicgo.dev/keyboard v0.2.8
-	github.com/MarvinJWendt/testza v0.4.3
+	github.com/MarvinJWendt/testza v0.5.0
 	github.com/gookit/color v1.5.2
 	github.com/lithammer/fuzzysearch v1.1.5
 	github.com/mattn/go-runewidth v0.0.13
@@ -16,7 +16,7 @@ require (
 require (
 	github.com/containerd/console v1.0.3 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/klauspost/cpuid/v2 v2.1.0 // indirect
+	github.com/klauspost/cpuid/v2 v2.1.1 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/sergi/go-diff v1.2.0 // indirect
 	github.com/xo/terminfo v0.0.0-20210125001918-ca9a967f8778 // indirect
