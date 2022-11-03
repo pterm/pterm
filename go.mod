@@ -8,7 +8,7 @@ require (
 	github.com/MarvinJWendt/testza v0.5.0
 	github.com/gookit/color v1.5.2
 	github.com/lithammer/fuzzysearch v1.1.5
-	github.com/mattn/go-runewidth v0.0.13
+	github.com/mattn/go-runewidth v0.0.14
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211
 	golang.org/x/text v0.3.8
 )
