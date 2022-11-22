@@ -2,6 +2,7 @@ package pterm
 
 import (
 	"fmt"
+	"math"
 	"sort"
 
 	"atomicgo.dev/cursor"
@@ -106,9 +107,9 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 		for i, option := range p.Options {
 			if option == p.DefaultOption {
 				p.selectedOption = i
-				if i > 0 {
-					p.displayedOptionsStart = i - 1
-					p.displayedOptionsEnd = i - 1 + maxHeight
+				if i > 0 && len(p.Options) > maxHeight {
+					p.displayedOptionsEnd = int(math.Min(float64(i-1+maxHeight), float64(len(p.Options))))
+					p.displayedOptionsStart = p.displayedOptionsEnd - maxHeight
 				} else {
 					p.displayedOptionsStart = 0
 					p.displayedOptionsEnd = maxHeight
