@@ -1,6 +1,10 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Bug Fixes
+- revert original test & add new test
+- slice bounds out of range on select printer
+
 
 <a name="v0.12.49"></a>
 ## [v0.12.49] - 2022-10-03
