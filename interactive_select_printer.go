@@ -275,9 +275,9 @@ func (p *InteractiveSelectPrinter) renderSelectMenu() string {
 			continue
 		}
 		if i == p.selectedOption {
-			content += Sprintf("%s %s\n", p.renderSelector(), option)
+			content += Sprintf("%s %s\n", p.renderSelector(), p.OptionStyle.Sprint(option))
 		} else {
-			content += Sprintf("  %s\n", option)
+			content += Sprintf("  %s\n", p.OptionStyle.Sprint(option))
 		}
 	}
 
