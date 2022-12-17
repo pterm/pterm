@@ -245,7 +245,7 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 
 func (p *InteractiveSelectPrinter) renderSelectMenu() string {
 	var content string
-	content += Sprintf("%s %s: %s\n", p.text, ThemeDefault.SecondaryStyle.Sprint("[type to search]"), p.fuzzySearchString)
+	content += Sprintf("%s %s: %s\n", p.text, p.SelectorStyle.Sprint("[type to search]"), p.fuzzySearchString)
 
 	// find options that match fuzzy search string
 	rankedResults := fuzzy.RankFindFold(p.fuzzySearchString, p.Options)
