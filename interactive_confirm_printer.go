@@ -89,8 +89,9 @@ func (p InteractiveConfirmPrinter) WithSuffixStyle(style *Style) *InteractiveCon
 // Show shows the confirm prompt.
 //
 // Example:
-//  result, _ := pterm.DefaultInteractiveConfirm.Show("Are you sure?")
-//  pterm.Println(result)
+//
+//	result, _ := pterm.DefaultInteractiveConfirm.Show("Are you sure?")
+//	pterm.Println(result)
 func (p InteractiveConfirmPrinter) Show(text ...string) (bool, error) {
 	// should be the first defer statement to make sure it is executed last
 	// and all the needed cleanup can be done before

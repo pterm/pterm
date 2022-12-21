@@ -2,6 +2,12 @@
 ## [Unreleased]
 
 ### Bug Fixes
+- Make sure the confirm printer can clean up after Ctrl+C
+
+
+<a name="v0.12.50"></a>
+## [v0.12.50] - 2022-11-22
+### Bug Fixes
 - revert original test & add new test
 - slice bounds out of range on select printer
 
@@ -490,13 +496,13 @@
 
 ### Code Refactoring
 - remove analytics
-- **boxprinter:** change from `RenderablePrinter` to `TextPrinter`
 - **boxprinter:** return theme when style is nil
 - **boxprinter:** change `DefaultBox` top and bottom padding to 0
 - **boxprinter:** fix spacing between boxes and in boxes
 - **boxprinter:** refactor code
-- **panelprinter:** optional border for `Panel`
+- **boxprinter:** change from `RenderablePrinter` to `TextPrinter`
 - **panelprinter:** add `BoxPrinter` to surround panels with a fully custom box
+- **panelprinter:** optional border for `Panel`
 
 
 <a name="v0.12.7"></a>
@@ -583,8 +589,8 @@
 - **panel:** add test for `WithBottomPadding`
 - **panel:** add test for `WithSameColumnWidth` & multiple `panel`
 - **panel:** add test for `WithSameColumnWidth`
-- **progressbar:** change `Progressbar` to `ProgressbarPrinter`
 - **progressbar:** change directory name `progressbar_test` to `progressbar_printer_test`
+- **progressbar:** change `Progressbar` to `ProgressbarPrinter`
 - **spinner:** change directory name `spinner_test` to `spinner_printer_test`
 - **spinner:** change `Spinner` to `SpinnerPrinter`
 - **table:** change `Table` to `TablePrinter`
@@ -599,8 +605,8 @@
 - **progressbar:** change `ActiveProgressbars` to `ActiveProgressbarPrinters`
 - **progressbar:** change directory name `progressbar` to `progressbar_printer`
 - **progressbar:** change `Progressbar` to `ProgressbarPrinter`
-- **spinner:** change `Spinner` to `SpinnerPrinter`
 - **spinner:** change directory name `spinner` to `spinner_printer`
+- **spinner:** change `Spinner` to `SpinnerPrinter`
 - **table:** change `Table` to `TablePrinter`
 - **tree:** change `Tree` to `TreePrinter`
 
@@ -694,10 +700,10 @@ The global variable `DisableOutput` was renamed to `Output`.
 - **tree:** add Indent to control the spacing between levels and changed docs(examples)
 - **tree:** add more spacing between levels
 - **tree:** refactor `Tree` code and write tests for `Tree`
-- **tree:** refactor `Tree` code
-- **tree:** refactor `Tree` code
-- **tree:** refactor `Tree` code
 - **tree:** refactor `Tree` code and write tests for `Tree`
+- **tree:** refactor `Tree` code
+- **tree:** refactor `Tree` code
+- **tree:** refactor `Tree` code
 
 
 <a name="v0.9.2"></a>
@@ -1076,7 +1082,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.49...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.50...HEAD
+[v0.12.50]: https://github.com/pterm/pterm/compare/v0.12.49...v0.12.50
 [v0.12.49]: https://github.com/pterm/pterm/compare/v0.12.48...v0.12.49
 [v0.12.48]: https://github.com/pterm/pterm/compare/v0.12.47...v0.12.48
 [v0.12.47]: https://github.com/pterm/pterm/compare/v0.12.46...v0.12.47
