@@ -2,12 +2,12 @@ package pterm
 
 import (
 	"fmt"
-	"os"
 	"strings"
 
 	"atomicgo.dev/cursor"
 	"atomicgo.dev/keyboard"
 	"atomicgo.dev/keyboard/keys"
+	"github.com/pterm/pterm/internal"
 )
 
 var (
@@ -92,6 +92,11 @@ func (p InteractiveConfirmPrinter) WithSuffixStyle(style *Style) *InteractiveCon
 //  result, _ := pterm.DefaultInteractiveConfirm.Show("Are you sure?")
 //  pterm.Println(result)
 func (p InteractiveConfirmPrinter) Show(text ...string) (bool, error) {
+	// should be the first defer statement to make sure it is executed last
+	// and all the needed cleanup can be done before
+	cancel, exit := internal.NewCancelationSignal()
+	defer exit()
+
 	var result bool
 
 	if len(text) == 0 || text[0] == "" {
@@ -101,6 +106,7 @@ func (p InteractiveConfirmPrinter) Show(text ...string) (bool, error) {
 	p.TextStyle.Print(text[0] + " " + p.getSuffix() + ": ")
 	y, n := p.getShortHandles()
 
+	var interrupted bool
 	err := keyboard.Listen(func(keyInfo keys.Key) (stop bool, err error) {
 		key := keyInfo.Code
 		char := strings.ToLower(keyInfo.String())
@@ -132,12 +138,15 @@ func (p InteractiveConfirmPrinter) Show(text ...string) (bool, error) {
 			result = p.DefaultValue
 			return true, nil
 		case keys.CtrlC:
-			os.Exit(1)
+			cancel()
+			interrupted = true
 			return true, nil
 		}
 		return false, nil
 	})
-	cursor.StartOfLine()
+	if !interrupted {
+		cursor.StartOfLine()
+	}
 	return result, err
 }
 
