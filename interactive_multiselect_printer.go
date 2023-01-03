@@ -8,6 +8,7 @@ import (
 	"atomicgo.dev/keyboard"
 	"atomicgo.dev/keyboard/keys"
 	"github.com/lithammer/fuzzysearch/fuzzy"
+
 	"github.com/pterm/pterm/internal"
 )
 
@@ -25,8 +26,17 @@ var (
 		Filter:         true,
 		KeySelect:      keys.Enter,
 		KeyConfirm:     keys.Tab,
+		Checkmarks: Checkmarks{
+			Selected:    "✓",
+			NotSelected: "✗",
+		},
 	}
 )
+
+type Checkmarks struct {
+	Selected    string
+	NotSelected string
+}
 
 // InteractiveMultiselectPrinter is a printer for interactive multiselect menus.
 type InteractiveMultiselectPrinter struct {
@@ -39,6 +49,7 @@ type InteractiveMultiselectPrinter struct {
 	Selector       string
 	SelectorStyle  *Style
 	Filter         bool
+	Checkmarks     Checkmarks
 
 	selectedOption        int
 	selectedOptions       []int
@@ -92,6 +103,12 @@ func (p InteractiveMultiselectPrinter) WithKeySelect(keySelect keys.KeyCode) *In
 // WithKeyConfirm sets the confirm key
 func (p InteractiveMultiselectPrinter) WithKeyConfirm(keyConfirm keys.KeyCode) *InteractiveMultiselectPrinter {
 	p.KeyConfirm = keyConfirm
+	return &p
+}
+
+// WithCheckmarks sets the checkmark
+func (p InteractiveMultiselectPrinter) WithCheckmarks(checkmarks Checkmarks) *InteractiveMultiselectPrinter {
+	p.Checkmarks = checkmarks
 	return &p
 }
 
@@ -345,9 +362,9 @@ func (p *InteractiveMultiselectPrinter) renderSelectMenu() string {
 		}
 		var checkmark string
 		if p.isSelected(option) {
-			checkmark = fmt.Sprintf("[%s]", Green("✓"))
+			checkmark = fmt.Sprintf("[%s]", Green(p.Checkmarks.Selected))
 		} else {
-			checkmark = fmt.Sprintf("[%s]", Red("✗"))
+			checkmark = fmt.Sprintf("[%s]", Red(p.Checkmarks.NotSelected))
 		}
 		if i == p.selectedOption {
 			content += Sprintf("%s %s %s\n", p.renderSelector(), checkmark, option)
