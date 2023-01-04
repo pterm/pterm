@@ -1,6 +1,12 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Code Refactoring
+- **progressbar:** make add more safe
+
+
+<a name="v0.12.51"></a>
+## [v0.12.51] - 2022-12-24
 ### Bug Fixes
 - Make sure the confirm printer can clean up after Ctrl+C
 
@@ -1082,7 +1088,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.50...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.51...HEAD
+[v0.12.51]: https://github.com/pterm/pterm/compare/v0.12.50...v0.12.51
 [v0.12.50]: https://github.com/pterm/pterm/compare/v0.12.49...v0.12.50
 [v0.12.49]: https://github.com/pterm/pterm/compare/v0.12.48...v0.12.49
 [v0.12.48]: https://github.com/pterm/pterm/compare/v0.12.47...v0.12.48
