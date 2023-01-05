@@ -1,5 +1,11 @@
 package pterm
 
+// Checkmark is used in the interactive multiselect printer.
+type Checkmark struct {
+	Checked   string
+	Unchecked string
+}
+
 // Bars is used to display multiple Bar.
 type Bars []Bar
 
@@ -9,12 +15,6 @@ type Bar struct {
 	Value      int
 	Style      *Style
 	LabelStyle *Style
-}
-
-// Checkmark is used in the interactive multiselect printer.
-type Checkmark struct {
-	Checked   string
-	Unchecked string
 }
 
 // WithLabel returns a new Bar with a specific option.
