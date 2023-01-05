@@ -1,6 +1,10 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Features
+- **color:** added `color.ToStyle()`
+- **color:** added `color.ToStyle()`
+
 
 <a name="v0.12.52"></a>
 ## [v0.12.52] - 2023-01-05
