@@ -152,7 +152,13 @@ func TestColorPrinterPrintMethods(t *testing.T) {
 }
 
 func TestNewStyle(t *testing.T) {
+	s := pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold)
+	testza.AssertEqual(t, s, &pterm.Style{pterm.FgRed, pterm.BgBlue, pterm.Bold})
+}
 
+func TestColor_ToStyle(t *testing.T) {
+	s := pterm.FgCyan.ToStyle()
+	testza.AssertEqual(t, s, &pterm.Style{pterm.FgCyan})
 }
 
 func TestStyle_Add(t *testing.T) {
