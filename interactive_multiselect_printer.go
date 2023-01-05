@@ -26,10 +26,7 @@ var (
 		Filter:         true,
 		KeySelect:      keys.Enter,
 		KeyConfirm:     keys.Tab,
-		Checkmark: Checkmark{
-			Checked:   "✓",
-			Unchecked: "✗",
-		},
+		Checkmark:      &ThemeDefault.Checkmark,
 	}
 )
 
@@ -44,7 +41,7 @@ type InteractiveMultiselectPrinter struct {
 	Selector       string
 	SelectorStyle  *Style
 	Filter         bool
-	Checkmark      Checkmark
+	Checkmark      *Checkmark
 
 	selectedOption        int
 	selectedOptions       []int
@@ -102,7 +99,7 @@ func (p InteractiveMultiselectPrinter) WithKeyConfirm(keyConfirm keys.KeyCode) *
 }
 
 // WithCheckmark sets the checkmark
-func (p InteractiveMultiselectPrinter) WithCheckmark(checkmark Checkmark) *InteractiveMultiselectPrinter {
+func (p InteractiveMultiselectPrinter) WithCheckmark(checkmark *Checkmark) *InteractiveMultiselectPrinter {
 	p.Checkmark = checkmark
 	return &p
 }
@@ -357,9 +354,9 @@ func (p *InteractiveMultiselectPrinter) renderSelectMenu() string {
 		}
 		var checkmark string
 		if p.isSelected(option) {
-			checkmark = fmt.Sprintf("[%s]", Green(p.Checkmark.Checked))
+			checkmark = fmt.Sprintf("[%s]", p.Checkmark.Checked)
 		} else {
-			checkmark = fmt.Sprintf("[%s]", Red(p.Checkmark.Unchecked))
+			checkmark = fmt.Sprintf("[%s]", p.Checkmark.Unchecked)
 		}
 		if i == p.selectedOption {
 			content += Sprintf("%s %s %s\n", p.renderSelector(), checkmark, option)
