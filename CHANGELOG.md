@@ -6,6 +6,9 @@
 - **color:** added `color.ToStyle()`
 - **progressbar:** added optional title to `Start` method
 
+### Bug Fixes
+- **prefix:** fixed line numbers in different print functions
+
 
 <a name="v0.12.52"></a>
 ## [v0.12.52] - 2023-01-05
