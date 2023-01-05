@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+
+<a name="v0.12.52"></a>
+## [v0.12.52] - 2023-01-05
 ### Features
 - **multiselect:** added theme support for checkmarks
 - **multiselect:** added theme support for checkmarks
@@ -1095,7 +1098,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.51...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.52...HEAD
+[v0.12.52]: https://github.com/pterm/pterm/compare/v0.12.51...v0.12.52
 [v0.12.51]: https://github.com/pterm/pterm/compare/v0.12.50...v0.12.51
 [v0.12.50]: https://github.com/pterm/pterm/compare/v0.12.49...v0.12.50
 [v0.12.49]: https://github.com/pterm/pterm/compare/v0.12.48...v0.12.49
