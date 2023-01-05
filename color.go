@@ -246,6 +246,11 @@ func (c Color) String() string {
 	return fmt.Sprintf("%d", c)
 }
 
+// ToStyle converts the color to a style.
+func (c Color) ToStyle() *Style {
+	return &Style{c}
+}
+
 // Style is a collection of colors.
 // Can include foreground, background and styling (eg. Bold, Underscore, etc.) colors.
 type Style []Color
