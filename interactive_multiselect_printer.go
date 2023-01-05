@@ -8,6 +8,7 @@ import (
 	"atomicgo.dev/keyboard"
 	"atomicgo.dev/keyboard/keys"
 	"github.com/lithammer/fuzzysearch/fuzzy"
+
 	"github.com/pterm/pterm/internal"
 )
 
@@ -25,6 +26,10 @@ var (
 		Filter:         true,
 		KeySelect:      keys.Enter,
 		KeyConfirm:     keys.Tab,
+		Checkmark: Checkmark{
+			Checked:   "✓",
+			Unchecked: "✗",
+		},
 	}
 )
 
@@ -39,6 +44,7 @@ type InteractiveMultiselectPrinter struct {
 	Selector       string
 	SelectorStyle  *Style
 	Filter         bool
+	Checkmark      Checkmark
 
 	selectedOption        int
 	selectedOptions       []int
@@ -92,6 +98,12 @@ func (p InteractiveMultiselectPrinter) WithKeySelect(keySelect keys.KeyCode) *In
 // WithKeyConfirm sets the confirm key
 func (p InteractiveMultiselectPrinter) WithKeyConfirm(keyConfirm keys.KeyCode) *InteractiveMultiselectPrinter {
 	p.KeyConfirm = keyConfirm
+	return &p
+}
+
+// WithCheckmark sets the checkmark
+func (p InteractiveMultiselectPrinter) WithCheckmark(checkmark Checkmark) *InteractiveMultiselectPrinter {
+	p.Checkmark = checkmark
 	return &p
 }
 
@@ -345,9 +357,9 @@ func (p *InteractiveMultiselectPrinter) renderSelectMenu() string {
 		}
 		var checkmark string
 		if p.isSelected(option) {
-			checkmark = fmt.Sprintf("[%s]", Green("✓"))
+			checkmark = fmt.Sprintf("[%s]", Green(p.Checkmark.Checked))
 		} else {
-			checkmark = fmt.Sprintf("[%s]", Red("✗"))
+			checkmark = fmt.Sprintf("[%s]", Red(p.Checkmark.Unchecked))
 		}
 		if i == p.selectedOption {
 			content += Sprintf("%s %s %s\n", p.renderSelector(), checkmark, option)
