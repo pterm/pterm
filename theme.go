@@ -43,6 +43,10 @@ var (
 		BarLabelStyle:           Style{FgLightCyan},
 		BarStyle:                Style{FgCyan},
 		TimerStyle:              Style{FgGray},
+		Checkmark: Checkmark{
+			Checked:   Green("✓"),
+			Unchecked: Red("✗"),
+		},
 	}
 )
 
@@ -89,6 +93,7 @@ type Theme struct {
 	BoxTextStyle            Style
 	BarLabelStyle           Style
 	BarStyle                Style
+	Checkmark               Checkmark
 }
 
 // WithPrimaryStyle returns a new theme with overridden value.
