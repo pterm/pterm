@@ -1,4 +1,4 @@
-# interactive_multiselect/custom-checkmarks
+# interactive_multiselect/custom-checkmark
 
 ![Animation](animation.svg)
 
@@ -24,7 +24,7 @@ func main() {
 	printer.Filter = false
 	printer.KeyConfirm = keys.Enter
 	printer.KeySelect = keys.Space
-	printer.Checkmarks = pterm.Checkmarks{Selected: "+", NotSelected: "-"}
+	printer.Checkmark = pterm.Checkmark{Checked: "+", Unchecked: "-"}
 	selectedOptions, _ := printer.Show()
 	pterm.Info.Printfln("Selected options: %s", pterm.Green(selectedOptions))
 }

@@ -26,17 +26,12 @@ var (
 		Filter:         true,
 		KeySelect:      keys.Enter,
 		KeyConfirm:     keys.Tab,
-		Checkmarks: Checkmarks{
-			Selected:    "✓",
-			NotSelected: "✗",
+		Checkmark: Checkmark{
+			Checked:   "✓",
+			Unchecked: "✗",
 		},
 	}
 )
-
-type Checkmarks struct {
-	Selected    string
-	NotSelected string
-}
 
 // InteractiveMultiselectPrinter is a printer for interactive multiselect menus.
 type InteractiveMultiselectPrinter struct {
@@ -49,7 +44,7 @@ type InteractiveMultiselectPrinter struct {
 	Selector       string
 	SelectorStyle  *Style
 	Filter         bool
-	Checkmarks     Checkmarks
+	Checkmark      Checkmark
 
 	selectedOption        int
 	selectedOptions       []int
@@ -106,9 +101,9 @@ func (p InteractiveMultiselectPrinter) WithKeyConfirm(keyConfirm keys.KeyCode) *
 	return &p
 }
 
-// WithCheckmarks sets the checkmark
-func (p InteractiveMultiselectPrinter) WithCheckmarks(checkmarks Checkmarks) *InteractiveMultiselectPrinter {
-	p.Checkmarks = checkmarks
+// WithCheckmark sets the checkmark
+func (p InteractiveMultiselectPrinter) WithCheckmark(checkmark Checkmark) *InteractiveMultiselectPrinter {
+	p.Checkmark = checkmark
 	return &p
 }
 
@@ -362,9 +357,9 @@ func (p *InteractiveMultiselectPrinter) renderSelectMenu() string {
 		}
 		var checkmark string
 		if p.isSelected(option) {
-			checkmark = fmt.Sprintf("[%s]", Green(p.Checkmarks.Selected))
+			checkmark = fmt.Sprintf("[%s]", Green(p.Checkmark.Checked))
 		} else {
-			checkmark = fmt.Sprintf("[%s]", Red(p.Checkmarks.NotSelected))
+			checkmark = fmt.Sprintf("[%s]", Red(p.Checkmark.Unchecked))
 		}
 		if i == p.selectedOption {
 			content += Sprintf("%s %s %s\n", p.renderSelector(), checkmark, option)

@@ -11,6 +11,12 @@ type Bar struct {
 	LabelStyle *Style
 }
 
+// Checkmark is used in the interactive multiselect printer.
+type Checkmark struct {
+	Checked   string
+	Unchecked string
+}
+
 // WithLabel returns a new Bar with a specific option.
 func (p Bar) WithLabel(s string) *Bar {
 	p.Label = s

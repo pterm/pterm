@@ -62,7 +62,7 @@ func TestInteractiveMultiselectPrinter_WithKeyConfirm(t *testing.T) {
 	testza.AssertEqual(t, p.KeyConfirm, keys.Left)
 }
 
-func TestInteractiveMultiselectPrinter_WithCheckmarks(t *testing.T) {
-	p := pterm.DefaultInteractiveMultiselect.WithCheckmarks(pterm.Checkmarks{Selected: "+", NotSelected: "-"}).WithOptions([]string{"a", "b", "c"})
-	testza.AssertEqual(t, p.Checkmarks, pterm.Checkmarks{Selected: "+", NotSelected: "-"})
+func TestInteractiveMultiselectPrinter_WithCheckmark(t *testing.T) {
+	p := pterm.DefaultInteractiveMultiselect.WithCheckmark(pterm.Checkmark{Checked: "+", Unchecked: "-"}).WithOptions([]string{"a", "b", "c"})
+	testza.AssertEqual(t, p.Checkmark, pterm.Checkmark{Checked: "+", Unchecked: "-"})
 }
