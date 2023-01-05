@@ -1,4 +1,4 @@
-# interactive_multiselect/custom-checkmark
+# interactive_multiselect/custom-checkmarks
 
 ![Animation](animation.svg)
 
