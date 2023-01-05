@@ -1,6 +1,13 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Features
+- **multiselect:** added theme support for checkmarks
+- **multiselect:** added theme support for checkmarks
+
+### Test
+- **multiselect:** fixed test
+
 ### Code Refactoring
 - **progressbar:** make add more safe
 

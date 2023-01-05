@@ -1121,7 +1121,7 @@ func main() {
 	printer.Filter = false
 	printer.KeyConfirm = keys.Enter
 	printer.KeySelect = keys.Space
-	printer.Checkmark = pterm.Checkmark{Checked: "+", Unchecked: "-"}
+	printer.Checkmark = &pterm.Checkmark{Checked: pterm.Green("+"), Unchecked: pterm.Red("-")}
 	selectedOptions, _ := printer.Show()
 	pterm.Info.Printfln("Selected options: %s", pterm.Green(selectedOptions))
 }
