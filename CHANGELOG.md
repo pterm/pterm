@@ -4,6 +4,7 @@
 ### Features
 - **color:** added `color.ToStyle()`
 - **color:** added `color.ToStyle()`
+- **progressbar:** added optional title to `Start` method
 
 
 <a name="v0.12.52"></a>
