@@ -199,9 +199,8 @@ func (p *PrefixPrinter) Sprint(a ...interface{}) string {
 		}
 	}
 
-	_, fileName, line, _ := runtime.Caller(3 + p.LineNumberOffset)
-
 	if p.ShowLineNumber {
+		_, fileName, line, _ := runtime.Caller(3 + p.LineNumberOffset)
 		ret += FgGray.Sprint("\n└ " + fmt.Sprintf("(%s:%d)\n", fileName, line))
 		newLine = false
 	}
@@ -248,7 +247,9 @@ func (p *PrefixPrinter) Print(a ...interface{}) *TextPrinter {
 	if p.Debugger && !PrintDebugMessages {
 		return &tp
 	}
+	p.LineNumberOffset--
 	Fprint(p.Writer, p.Sprint(a...))
+	p.LineNumberOffset++
 	checkFatal(p)
 	return &tp
 }
@@ -286,7 +287,9 @@ func (p *PrefixPrinter) Printfln(format string, a ...interface{}) *TextPrinter {
 	if p.Debugger && !PrintDebugMessages {
 		return &tp
 	}
+	p.LineNumberOffset++
 	Fprint(p.Writer, p.Sprintfln(format, a...))
+	p.LineNumberOffset--
 	checkFatal(p)
 	return &tp
 }
