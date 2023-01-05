@@ -3,6 +3,14 @@
 > This document explains how to participate in the development of PTerm.\
 If your goal is to report a bug instead of programming PTerm, you can do so [here](https://github.com/pterm/pterm/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc).
 
+## Best practise
+
+We enforce some best practises, especially made for PTerm, to provide a clean and consistent user experience.
+
+### Styles
+
+Styles should always be consumed as pointers. That way, the user can change the style of printers globally.
+
 ## Creating a new printer
 
 > In this chapter we will show you how to create a new printer.
