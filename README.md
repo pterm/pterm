@@ -1106,6 +1106,7 @@ import (
 	"fmt"
 
 	"atomicgo.dev/keyboard/keys"
+
 	"github.com/pterm/pterm"
 )
 
