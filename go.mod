@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	atomicgo.dev/cursor v0.1.1
-	atomicgo.dev/keyboard v0.2.8
+	atomicgo.dev/keyboard v0.2.9
 	github.com/MarvinJWendt/testza v0.5.1
 	github.com/gookit/color v1.5.2
 	github.com/lithammer/fuzzysearch v1.1.5
