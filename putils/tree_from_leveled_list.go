@@ -10,7 +10,6 @@ func TreeFromLeveledList(leveledListItems pterm.LeveledList) pterm.TreeNode {
 
 	root := &pterm.TreeNode{
 		Children: []pterm.TreeNode{},
-		Text:     leveledListItems[0].Text,
 	}
 
 	for i, record := range leveledListItems {
