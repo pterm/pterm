@@ -1,45 +1,6 @@
-### tree/demo
+# tree/from-leveled-list
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/tree/demo/animation.svg)
-
-<details>
-
-<summary>SHOW SOURCE</summary>
-
-```go
-package main
-
-import (
-	"github.com/pterm/pterm"
-)
-
-func main() {
-	tree := pterm.TreeNode{
-		Text: "Top node",
-		Children: []pterm.TreeNode{{
-			Text: "Child node",
-			Children: []pterm.TreeNode{
-				{Text: "Grandchild node"},
-				{Text: "Grandchild node"},
-				{Text: "Grandchild node"},
-			},
-		}},
-	}
-
-	pterm.DefaultTree.WithRoot(tree).Render()
-}
-
-```
-
-</details>
-
-### tree/from-leveled-list
-
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/tree/from-leveled-list/animation.svg)
-
-<details>
-
-<summary>SHOW SOURCE</summary>
+![Animation](animation.svg)
 
 ```go
 package main
@@ -85,6 +46,3 @@ func main() {
 }
 
 ```
-
-</details>
-

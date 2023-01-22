@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Bug Fixes
+- **tree:** print top node [#443](https://github.com/pterm/pterm/issues/443)
+
 
 <a name="v0.12.53"></a>
 ## [v0.12.53] - 2023-01-05
