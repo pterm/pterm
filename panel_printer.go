@@ -89,7 +89,7 @@ func (p PanelPrinter) getRawOutput() string {
 func (p PanelPrinter) Srender() (string, error) {
 	var ret string
 
-	if RawOutput {
+	if RawOutput.Load() {
 		return p.getRawOutput(), nil
 	}
 

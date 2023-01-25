@@ -245,7 +245,7 @@ func (p BarChartPrinter) Srender() (string, error) {
 	}
 	// =================================================================================================================
 
-	if RawOutput {
+	if RawOutput.Load() {
 		return p.getRawOutput(), nil
 	}
 	for i, bar := range p.Bars {

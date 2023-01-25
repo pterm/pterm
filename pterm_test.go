@@ -1,43 +1,44 @@
 package pterm_test
 
 import (
+	"testing"
+
 	"github.com/MarvinJWendt/testza"
 	"github.com/pterm/pterm"
-	"testing"
 )
 
 func TestDisableDebugMessages(t *testing.T) {
-	pterm.PrintDebugMessages = true
+	pterm.PrintDebugMessages.Store(true)
 	pterm.DisableDebugMessages()
-	testza.AssertFalse(t, pterm.PrintDebugMessages)
+	testza.AssertFalse(t, pterm.PrintDebugMessages.Load())
 }
 
 func TestEnableDebugMessages(t *testing.T) {
 	pterm.EnableDebugMessages()
-	testza.AssertTrue(t, pterm.PrintDebugMessages)
+	testza.AssertTrue(t, pterm.PrintDebugMessages.Load())
 }
 
 func TestDisableOutput(t *testing.T) {
 	pterm.DisableOutput()
-	testza.AssertFalse(t, pterm.Output)
+	testza.AssertFalse(t, pterm.Output.Load())
 }
 
 func TestEnableOutput(t *testing.T) {
 	pterm.DisableOutput()
 	pterm.EnableOutput()
-	testza.AssertTrue(t, pterm.Output)
+	testza.AssertTrue(t, pterm.Output.Load())
 }
 
 func TestDisableStyling(t *testing.T) {
-	pterm.RawOutput = false
+	pterm.RawOutput.Store(false)
 	pterm.DisableStyling()
-	testza.AssertTrue(t, pterm.RawOutput)
+	testza.AssertTrue(t, pterm.RawOutput.Load())
 }
 
 func TestEnableStyling(t *testing.T) {
-	pterm.RawOutput = true
+	pterm.RawOutput.Store(true)
 	pterm.EnableStyling()
-	testza.AssertFalse(t, pterm.RawOutput)
+	testza.AssertFalse(t, pterm.RawOutput.Load())
 }
 
 func TestInterfaceImplementation(t *testing.T) {

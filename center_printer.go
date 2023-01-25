@@ -37,7 +37,7 @@ func (p CenterPrinter) WithWriter(writer io.Writer) *CenterPrinter {
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
 func (p CenterPrinter) Sprint(a ...interface{}) string {
-	if RawOutput {
+	if RawOutput.Load() {
 		return Sprint(a...)
 	}
 

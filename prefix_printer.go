@@ -156,11 +156,11 @@ func (p PrefixPrinter) WithWriter(writer io.Writer) *PrefixPrinter {
 // Spaces are added between operands when neither is a string.
 func (p *PrefixPrinter) Sprint(a ...interface{}) string {
 	m := Sprint(a...)
-	if p.Debugger && !PrintDebugMessages {
+	if p.Debugger && !PrintDebugMessages.Load() {
 		return ""
 	}
 
-	if RawOutput {
+	if RawOutput.Load() {
 		if p.Prefix.Text != "" {
 			return Sprintf("%s: %s", strings.TrimSpace(p.Prefix.Text), Sprint(a...))
 		} else {
@@ -215,7 +215,7 @@ func (p *PrefixPrinter) Sprint(a ...interface{}) string {
 // Sprintln formats using the default formats for its operands and returns the resulting string.
 // Spaces are always added between operands and a newline is appended.
 func (p PrefixPrinter) Sprintln(a ...interface{}) string {
-	if p.Debugger && !PrintDebugMessages {
+	if p.Debugger && !PrintDebugMessages.Load() {
 		return ""
 	}
 	str := fmt.Sprintln(a...)
@@ -224,7 +224,7 @@ func (p PrefixPrinter) Sprintln(a ...interface{}) string {
 
 // Sprintf formats according to a format specifier and returns the resulting string.
 func (p PrefixPrinter) Sprintf(format string, a ...interface{}) string {
-	if p.Debugger && !PrintDebugMessages {
+	if p.Debugger && !PrintDebugMessages.Load() {
 		return ""
 	}
 	return p.Sprint(Sprintf(format, a...))
@@ -233,7 +233,7 @@ func (p PrefixPrinter) Sprintf(format string, a ...interface{}) string {
 // Sprintfln formats according to a format specifier and returns the resulting string.
 // Spaces are always added between operands and a newline is appended.
 func (p PrefixPrinter) Sprintfln(format string, a ...interface{}) string {
-	if p.Debugger && !PrintDebugMessages {
+	if p.Debugger && !PrintDebugMessages.Load() {
 		return ""
 	}
 	return p.Sprintf(format, a...) + "\n"
@@ -244,7 +244,7 @@ func (p PrefixPrinter) Sprintfln(format string, a ...interface{}) string {
 // It returns the number of bytes written and any write error encountered.
 func (p *PrefixPrinter) Print(a ...interface{}) *TextPrinter {
 	tp := TextPrinter(p)
-	if p.Debugger && !PrintDebugMessages {
+	if p.Debugger && !PrintDebugMessages.Load() {
 		return &tp
 	}
 	p.LineNumberOffset--
@@ -259,7 +259,7 @@ func (p *PrefixPrinter) Print(a ...interface{}) *TextPrinter {
 // It returns the number of bytes written and any write error encountered.
 func (p *PrefixPrinter) Println(a ...interface{}) *TextPrinter {
 	tp := TextPrinter(p)
-	if p.Debugger && !PrintDebugMessages {
+	if p.Debugger && !PrintDebugMessages.Load() {
 		return &tp
 	}
 	Fprint(p.Writer, p.Sprintln(a...))
@@ -271,7 +271,7 @@ func (p *PrefixPrinter) Println(a ...interface{}) *TextPrinter {
 // It returns the number of bytes written and any write error encountered.
 func (p *PrefixPrinter) Printf(format string, a ...interface{}) *TextPrinter {
 	tp := TextPrinter(p)
-	if p.Debugger && !PrintDebugMessages {
+	if p.Debugger && !PrintDebugMessages.Load() {
 		return &tp
 	}
 	Fprint(p.Writer, p.Sprintf(format, a...))
@@ -284,7 +284,7 @@ func (p *PrefixPrinter) Printf(format string, a ...interface{}) *TextPrinter {
 // It returns the number of bytes written and any write error encountered.
 func (p *PrefixPrinter) Printfln(format string, a ...interface{}) *TextPrinter {
 	tp := TextPrinter(p)
-	if p.Debugger && !PrintDebugMessages {
+	if p.Debugger && !PrintDebugMessages.Load() {
 		return &tp
 	}
 	p.LineNumberOffset++

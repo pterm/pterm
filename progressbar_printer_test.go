@@ -3,6 +3,7 @@ package pterm_test
 import (
 	"io"
 	"os"
+	"strings"
 	"testing"
 	"time"
 
@@ -236,18 +237,40 @@ func TestProgressbarPrinter_OutputToWriters(t *testing.T) {
 
 	for testTitle, testCase := range testCases {
 		t.Run(testTitle, func(t *testing.T) {
-			stderr, err := testza.CaptureStderr(func(w io.Writer) error {
-				pb, err := pterm.DefaultProgressbar.WithTitle("Hello world").WithWriter(os.Stderr).Start()
+			out := captureStdout(func(w io.Writer) {
+				pb, err := pterm.DefaultProgressbar.WithTitle("Hello world").WithWriter(w).Start()
 				time.Sleep(time.Second) // Required otherwise the goroutine doesn't run and the text isnt outputted
 				testza.AssertNoError(t, err)
 				testCase.action(pb)
 				time.Sleep(time.Second) // Required otherwise the goroutine doesn't run and the text isnt updated
-				return nil
 			})
 
-			testza.AssertNoError(t, err)
-			testza.AssertContains(t, stderr, "Hello world")
-			testza.AssertContains(t, stderr, testCase.expectOutputToContain)
+			testza.AssertContains(t, out, "Hello world")
+			testza.AssertContains(t, out, testCase.expectOutputToContain)
 		})
 	}
+}
+
+// Test dirrectly from #302
+func TestProgressbarPrinter_InstallingPseudoList(t *testing.T) {
+	out := captureStdout(func(w io.Writer) {
+		var pseudoProgramList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chrome pseudo-outlook pseudo-explorer "+
+			"pseudo-dops pseudo-git pseudo-vsc pseudo-intellij pseudo-asd pseudo-scoop pseudo-minecraft", " ")
+		p, _ := pterm.DefaultProgressbar.WithTotal(len(pseudoProgramList)).WithTitle("Installing stuff").WithWriter(w).Start()
+		for i := 0; i < p.Total; i++ {
+			if pseudoProgramList[i] == "pseudo-minecraft" {
+				pterm.Warning.Println("Could not install pseudo-minecraft, The company policy forbids games.")
+			} else {
+				pterm.Success.Println("Installing " + pseudoProgramList[i])
+				p.Increment()
+			}
+			time.Sleep(time.Second / 4) // test timer
+		}
+		p.Stop()
+	})
+
+	testza.AssertContains(t, out, "Installing stuff")
+	testza.AssertContains(t, out, "Installing pseudo-scoop")
+	testza.AssertContains(t, out, "3s")
+	testza.AssertContains(t, out, "Could not install pseudo-minecraft, The company policy forbids games.")
 }

@@ -6,20 +6,22 @@
 // View the animated examples here: https://github.com/pterm/pterm#-examples
 package pterm
 
-import "github.com/gookit/color"
+import (
+	"github.com/gookit/color"
+	"go.uber.org/atomic"
+)
 
 var (
 	// Output completely disables output from pterm if set to false. Can be used in CLI application quiet mode.
-	Output = true
+	Output = atomic.NewBool(true)
 
 	// PrintDebugMessages sets if messages printed by the DebugPrinter should be printed.
-	PrintDebugMessages = false
+	PrintDebugMessages = atomic.NewBool(false)
 
 	// RawOutput is set to true if pterm.DisableStyling() was called.
 	// The variable indicates that PTerm will not add additional styling to text.
 	// Use pterm.DisableStyling() or pterm.EnableStyling() to change this variable.
-	// Changing this variable directly, will disable or enable the output of colored text.
-	RawOutput = false
+	RawOutput = atomic.NewBool(false)
 )
 
 func init() {
@@ -28,28 +30,28 @@ func init() {
 
 // EnableOutput enables the output of PTerm.
 func EnableOutput() {
-	Output = true
+	Output.Store(true)
 }
 
 // DisableOutput disables the output of PTerm.
 func DisableOutput() {
-	Output = false
+	Output.Store(false)
 }
 
 // EnableDebugMessages enables the output of debug printers.
 func EnableDebugMessages() {
-	PrintDebugMessages = true
+	PrintDebugMessages.Store(true)
 }
 
 // DisableDebugMessages disables the output of debug printers.
 func DisableDebugMessages() {
-	PrintDebugMessages = false
+	PrintDebugMessages.Store(false)
 }
 
 // EnableStyling enables the default PTerm styling.
 // This also calls EnableColor.
 func EnableStyling() {
-	RawOutput = false
+	RawOutput.Store(false)
 	EnableColor()
 }
 
@@ -57,7 +59,7 @@ func EnableStyling() {
 // You can use this to print to text files etc.
 // This also calls DisableColor.
 func DisableStyling() {
-	RawOutput = true
+	RawOutput.Store(true)
 	DisableColor()
 }
 

@@ -4,6 +4,7 @@ import (
 	"io"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/gookit/color"
@@ -11,9 +12,12 @@ import (
 	"github.com/pterm/pterm/internal"
 )
 
-// ActiveProgressBarPrinters contains all running ProgressbarPrinters.
+// activeProgressBarPrinters contains all running ProgressbarPrinters.
 // Generally, there should only be one active ProgressbarPrinter at a time.
-var ActiveProgressBarPrinters []*ProgressbarPrinter
+type atomicActiveProgressBarPrinters struct {
+	printers []*ProgressbarPrinter
+	lock     *sync.Mutex
+}
 
 var (
 	// DefaultProgressbar is the default ProgressbarPrinter.
@@ -30,6 +34,11 @@ var (
 		ShowElapsedTime:           true,
 		BarFiller:                 " ",
 		MaxWidth:                  80,
+	}
+
+	activeProgressBarPrinters = atomicActiveProgressBarPrinters{
+		printers: []*ProgressbarPrinter{},
+		lock:     &sync.Mutex{},
 	}
 )
 
@@ -235,7 +244,7 @@ func (p *ProgressbarPrinter) updateProgress() *ProgressbarPrinter {
 		bar = ""
 	}
 
-	if !RawOutput {
+	if !RawOutput.Load() {
 		Fprinto(p.Writer, before+bar+after)
 	}
 	return p
@@ -258,14 +267,18 @@ func (p *ProgressbarPrinter) Add(count int) *ProgressbarPrinter {
 
 // Start the ProgressbarPrinter.
 func (p ProgressbarPrinter) Start(title ...interface{}) (*ProgressbarPrinter, error) {
-	if RawOutput && p.ShowTitle {
+	if RawOutput.Load() && p.ShowTitle {
 		Fprintln(p.Writer, p.Title)
 	}
 	p.IsActive = true
 	if len(title) != 0 {
 		p.Title = Sprint(title...)
 	}
-	ActiveProgressBarPrinters = append(ActiveProgressBarPrinters, &p)
+
+	activeProgressBarPrinters.lock.Lock()
+	activeProgressBarPrinters.printers = append(activeProgressBarPrinters.printers, &p)
+	activeProgressBarPrinters.lock.Unlock()
+
 	p.startedAt = time.Now()
 
 	p.updateProgress()

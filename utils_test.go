@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"sync"
 	"testing"
 
 	"github.com/MarvinJWendt/testza"
@@ -191,7 +192,33 @@ func testDoesNotOutput(t *testing.T, logic func(w io.Writer)) {
 	pterm.EnableStyling()
 }
 
-var outBuf bytes.Buffer
+type Buffer struct {
+	b bytes.Buffer
+	m sync.Mutex
+}
+
+func (b *Buffer) Read(p []byte) (n int, err error) {
+	b.m.Lock()
+	defer b.m.Unlock()
+	return b.b.Read(p)
+}
+func (b *Buffer) Write(p []byte) (n int, err error) {
+	b.m.Lock()
+	defer b.m.Unlock()
+	return b.b.Write(p)
+}
+func (b *Buffer) String() string {
+	b.m.Lock()
+	defer b.m.Unlock()
+	return b.b.String()
+}
+func (b *Buffer) Reset() {
+	b.m.Lock()
+	defer b.m.Unlock()
+	b.b.Reset()
+}
+
+var outBuf Buffer
 
 // setupStdoutCapture sets up a fake stdout capture.
 func setupStdoutCapture() {
