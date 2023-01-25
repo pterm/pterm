@@ -3,6 +3,7 @@ package pterm
 import (
 	"os"
 
+	"go.uber.org/atomic"
 	"golang.org/x/term"
 )
 
@@ -15,15 +16,15 @@ var FallbackTerminalWidth = 80
 var FallbackTerminalHeight = 10
 
 // forcedTerminalWidth, when set along with forcedTerminalHeight, forces the terminal width value.
-var forcedTerminalWidth int = 0
+var forcedTerminalWidth *atomic.Int64 = atomic.NewInt64(0)
 
 // forcedTerminalHeight, when set along with forcedTerminalWidth, forces the terminal height value.
-var forcedTerminalHeight int = 0
+var forcedTerminalHeight *atomic.Int64 = atomic.NewInt64(0)
 
 // GetTerminalWidth returns the terminal width of the active terminal.
 func GetTerminalWidth() int {
-	if forcedTerminalWidth > 0 {
-		return forcedTerminalWidth
+	if forcedTerminalWidth.Load() > 0 {
+		return int(forcedTerminalWidth.Load())
 	}
 	width, _, _ := GetTerminalSize()
 	return width
@@ -31,8 +32,8 @@ func GetTerminalWidth() int {
 
 // GetTerminalHeight returns the terminal height of the active terminal.
 func GetTerminalHeight() int {
-	if forcedTerminalHeight > 0 {
-		return forcedTerminalHeight
+	if forcedTerminalHeight.Load() > 0 {
+		return int(forcedTerminalHeight.Load())
 	}
 	_, height, _ := GetTerminalSize()
 	return height
@@ -40,8 +41,8 @@ func GetTerminalHeight() int {
 
 // GetTerminalSize returns the width and the height of the active terminal.
 func GetTerminalSize() (width, height int, err error) {
-	if forcedTerminalWidth > 0 && forcedTerminalHeight > 0 {
-		return forcedTerminalWidth, forcedTerminalHeight, nil
+	if forcedTerminalWidth.Load() > 0 && forcedTerminalHeight.Load() > 0 {
+		return int(forcedTerminalWidth.Load()), int(forcedTerminalHeight.Load()), nil
 	}
 	w, h, err := term.GetSize(int(os.Stdout.Fd()))
 	if w <= 0 {
@@ -58,7 +59,7 @@ func GetTerminalSize() (width, height int, err error) {
 
 // setForcedTerminalSize turns off terminal size autodetection. Usuful for unified tests.
 func SetForcedTerminalSize(width int, height int) {
-	forcedTerminalWidth = width
-	forcedTerminalHeight = height
+	forcedTerminalWidth.Store(int64(width))
+	forcedTerminalHeight.Store(int64(height))
 	RecalculateTerminalSize()
 }

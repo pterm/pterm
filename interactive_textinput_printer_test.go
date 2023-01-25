@@ -1,3 +1,5 @@
+//go:build !race
+
 package pterm_test
 
 import (

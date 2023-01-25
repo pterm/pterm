@@ -4,29 +4,42 @@ import (
 	"fmt"
 	"io"
 	"strings"
+	"sync"
 
 	"github.com/gookit/color"
 )
 
+// Need to use this because "github.com/gookit/color" is NOT a thread-safe library for Print & Sprintf functions.
+// Used to protect against some unsafe actions in Fprint as well
+var pLock sync.RWMutex
+
 // SetDefaultOutput sets the default output of pterm.
 func SetDefaultOutput(w io.Writer) {
+	pLock.Lock()
+	defer pLock.Unlock()
 	color.SetOutput(w)
 }
 
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
 func Sprint(a ...interface{}) string {
+	pLock.Lock()
+	defer pLock.Unlock()
 	return color.Sprint(a...)
 }
 
 // Sprintf formats according to a format specifier and returns the resulting string.
 func Sprintf(format string, a ...interface{}) string {
+	pLock.Lock()
+	defer pLock.Unlock()
 	return color.Sprintf(format, a...)
 }
 
 // Sprintfln formats according to a format specifier and returns the resulting string.
 // Spaces are always added between operands and a newline is appended.
 func Sprintfln(format string, a ...interface{}) string {
+	pLock.Lock()
+	defer pLock.Unlock()
 	return color.Sprintf(format, a...) + "\n"
 }
 
@@ -98,44 +111,43 @@ func PrintOnErrorf(format string, a ...interface{}) {
 // Spaces are added between operands when neither is a string.
 // It returns the number of bytes written and any write error encountered.
 func Fprint(writer io.Writer, a ...interface{}) {
-	if !Output {
+	pLock.Lock()
+	defer pLock.Unlock()
+	if !Output.Load() {
 		return
 	}
 
 	var ret string
 	var printed bool
 
-	for _, bar := range ActiveProgressBarPrinters {
+	activeProgressBarPrinters.lock.Lock()
+	for _, bar := range activeProgressBarPrinters.printers {
 		if bar.IsActive && bar.Writer == writer {
 			ret += sClearLine()
-			ret += Sprinto(a...)
+			ret += "\r" + color.Sprint(a...)
 			printed = true
 		}
 	}
+	activeProgressBarPrinters.lock.Unlock()
 
-	for _, spinner := range activeSpinnerPrinters {
-		if spinner.IsActive && spinner.Writer == writer {
+	activeSpinnerPrinters.lock.Lock()
+	for _, spinner := range activeSpinnerPrinters.printers {
+		if spinner.atomicIsActive.Load() && spinner.Writer == writer {
 			ret += sClearLine()
-			ret += Sprinto(a...)
+			ret += "\r" + color.Sprint(a...)
 			printed = true
 		}
 	}
+	activeSpinnerPrinters.lock.Unlock()
 
 	if !printed {
-		ret = color.Sprint(Sprint(a...))
+		ret = color.Sprint(a...)
 	}
 
 	if writer != nil {
-		color.Fprint(writer, Sprint(ret))
+		color.Fprint(writer, color.Sprint(ret))
 	} else {
-		color.Print(Sprint(ret))
-	}
-
-	// Refresh all progressbars in case they were overwritten previously. Reference: #302
-	for _, bar := range ActiveProgressBarPrinters {
-		if bar.IsActive {
-			bar.UpdateTitle(bar.Title)
-		}
+		color.Print(color.Sprint(ret))
 	}
 }
 
@@ -154,22 +166,26 @@ func Fprintln(writer io.Writer, a ...interface{}) {
 //	time.Sleep(time.Second)
 //	pterm.Printo("Hello, Earth!")
 func Printo(a ...interface{}) {
-	if !Output {
+	pLock.Lock()
+	defer pLock.Unlock()
+	if !Output.Load() {
 		return
 	}
 
-	color.Print("\r" + Sprint(a...))
+	color.Print("\r" + color.Sprint(a...))
 }
 
 // Fprinto prints Printo to a custom writer.
 func Fprinto(w io.Writer, a ...interface{}) {
-	if !Output {
+	pLock.Lock()
+	defer pLock.Unlock()
+	if !Output.Load() {
 		return
 	}
 	if w != nil {
-		color.Fprint(w, "\r", Sprint(a...))
+		color.Fprint(w, "\r", color.Sprint(a...))
 	} else {
-		color.Print("\r", Sprint(a...))
+		color.Print("\r", color.Sprint(a...))
 	}
 }
 
@@ -183,5 +199,5 @@ func fClearLine(writer io.Writer) {
 }
 
 func sClearLine() string {
-	return Sprinto(strings.Repeat(" ", GetTerminalWidth()))
+	return "\r" + color.Sprint(strings.Repeat(" ", GetTerminalWidth()))
 }

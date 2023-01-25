@@ -34,7 +34,7 @@ func (p ParagraphPrinter) WithWriter(writer io.Writer) *ParagraphPrinter {
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
 func (p ParagraphPrinter) Sprint(a ...interface{}) string {
-	if RawOutput {
+	if RawOutput.Load() {
 		return Sprint(a...)
 	}
 

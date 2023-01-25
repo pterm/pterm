@@ -12,12 +12,16 @@ var PrintColor = true
 
 // EnableColor enables colors.
 func EnableColor() {
+	pLock.Lock()
+	defer pLock.Unlock()
 	color.Enable = true
 	PrintColor = true
 }
 
 // DisableColor disables colors.
 func DisableColor() {
+	pLock.Lock()
+	defer pLock.Unlock()
 	color.Enable = false
 	PrintColor = false
 }
@@ -148,10 +152,12 @@ func (c Color) Sprintln(a ...interface{}) string {
 // Spaces are added between operands when neither is a string.
 // Input will be colored with the parent Color.
 func (c Color) Sprint(a ...interface{}) string {
-	message := Sprint(a...)
+	pLock.Lock()
+	defer pLock.Unlock()
+	message := color.Sprint(a...)
 	messageLines := strings.Split(message, "\n")
 	for i, line := range messageLines {
-		messageLines[i] = color.RenderCode(c.String(), strings.ReplaceAll(line, color.ResetSet, Sprintf("\x1b[0m\u001B[%sm", c.String())))
+		messageLines[i] = color.RenderCode(c.String(), strings.ReplaceAll(line, color.ResetSet, color.Sprintf("\x1b[0m\u001B[%sm", c.String())))
 	}
 	message = strings.Join(messageLines, "\n")
 	return message
@@ -280,10 +286,12 @@ func (s Style) Add(styles ...Style) Style {
 // Spaces are added between operands when neither is a string.
 // Input will be colored with the parent Style.
 func (s Style) Sprint(a ...interface{}) string {
-	message := Sprint(a...)
+	pLock.Lock()
+	defer pLock.Unlock()
+	message := color.Sprint(a...)
 	messageLines := strings.Split(message, "\n")
 	for i, line := range messageLines {
-		messageLines[i] = color.RenderCode(s.String(), strings.ReplaceAll(line, color.ResetSet, Sprintf("\x1b[0m\u001B[%sm", s.String())))
+		messageLines[i] = color.RenderCode(s.String(), strings.ReplaceAll(line, color.ResetSet, color.Sprintf("\x1b[0m\u001B[%sm", s.String())))
 	}
 	message = strings.Join(messageLines, "\n")
 	return color.RenderCode(s.String(), message)

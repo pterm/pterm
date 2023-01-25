@@ -31,8 +31,11 @@ jobs:
       - name: Build
         run: go build -v .
 
+      - name: Test Race
+        run: go test -race -p 1 .
+
       - name: Test
-        run: go test -coverprofile="coverage.txt" -covermode=atomic -p 1 .
+        run: go test -race -coverprofile="coverage.txt" -covermode=atomic -p 1 .
 
       - name: Upload coverage to Codecov
         if: success() && matrix.os == 'ubuntu-latest'

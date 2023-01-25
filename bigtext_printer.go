@@ -74,7 +74,7 @@ func (p BigTextPrinter) WithWriter(writer io.Writer) *BigTextPrinter {
 func (p BigTextPrinter) Srender() (string, error) {
 	var ret string
 
-	if RawOutput {
+	if RawOutput.Load() {
 		for _, letter := range p.Letters {
 			ret += letter.String
 		}

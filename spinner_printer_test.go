@@ -164,12 +164,12 @@ func TestSpinnerPrinter_WithTimerRoundingFactor(t *testing.T) {
 }
 
 func TestSpinnerPrinter_WithRawOutput(t *testing.T) {
-	pterm.RawOutput = true
+	pterm.RawOutput.Store(true)
 	s, _ := pterm.DefaultSpinner.Start()
 	go func() {
 		time.Sleep(time.Millisecond * 50)
 		s.Stop()
-		pterm.RawOutput = false
+		pterm.RawOutput.Store(false)
 	}()
 }
 
