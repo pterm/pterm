@@ -253,19 +253,22 @@ func (p TablePrinter) renderRow(t table, r row) string {
 	// a newline in a cell should be in the same column as the original cell
 	for i := 0; i < r.height; i++ {
 		for j, c := range r.cells {
-			if i < len(c.lines) {
-				s += c.lines[i]
-			}
 			var currentLine string
 			if i < len(c.lines) {
 				currentLine = c.lines[i]
 			}
 			paddingForLine := t.maxColumnWidths[j] - internal.GetStringMaxWidth(currentLine)
 
+			if p.RightAlignment {
+				s += strings.Repeat(" ", paddingForLine)
+			}
+
+			if i < len(c.lines) {
+				s += strings.TrimSpace(c.lines[i])
+			}
+
 			if j < len(r.cells)-1 {
 				if p.LeftAlignment {
-					s += strings.Repeat(" ", paddingForLine)
-				} else if p.RightAlignment {
 					s += strings.Repeat(" ", paddingForLine)
 				}
 				s += p.SeparatorStyle.Sprint(p.Separator)

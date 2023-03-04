@@ -18,7 +18,7 @@ func main() {
 	pterm.DefaultTable.WithHasHeader().WithData(pterm.TableData{
 		{"Firstname", "Lastname", "Email"},
 		{"Paul\n\nNewline", "Dean", "nisi.dictum.augue@velitAliquam.co.uk"},
-		{"Callie", "Mckay", "egestas.nunc.sed@est.com\n\nNewline"},
+		{"Callie", "Mckay", "egestas.nunc.sed@est.com\nNewline"},
 		{"Libby", "Camacho", "aliquet.lobortis@semper.com"},
 		{"张", "小宝", "zhang@example.com"},
 	}).Render()
