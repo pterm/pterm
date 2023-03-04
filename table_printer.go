@@ -197,10 +197,8 @@ func (p TablePrinter) Srender() (string, error) {
 		for i, c := range r.cells {
 			if len(t.maxColumnWidths) <= i {
 				t.maxColumnWidths = append(t.maxColumnWidths, c.width)
-			} else {
-				if c.width > t.maxColumnWidths[i] {
-					t.maxColumnWidths[i] = c.width
-				}
+			} else if c.width > t.maxColumnWidths[i] {
+				t.maxColumnWidths[i] = c.width
 			}
 		}
 
