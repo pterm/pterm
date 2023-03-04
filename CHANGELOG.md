@@ -1,6 +1,16 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Features
+- **table:** multiline support for table printer
+- **table:** multiline support for table printer
+
+### Code Refactoring
+- **table:** fixed linting
+
+
+<a name="v0.12.54"></a>
+## [v0.12.54] - 2023-01-22
 ### Bug Fixes
 - **tree:** print top node [#443](https://github.com/pterm/pterm/issues/443)
 
@@ -1112,7 +1122,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.53...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.54...HEAD
+[v0.12.54]: https://github.com/pterm/pterm/compare/v0.12.53...v0.12.54
 [v0.12.53]: https://github.com/pterm/pterm/compare/v0.12.52...v0.12.53
 [v0.12.52]: https://github.com/pterm/pterm/compare/v0.12.51...v0.12.52
 [v0.12.51]: https://github.com/pterm/pterm/compare/v0.12.50...v0.12.51
