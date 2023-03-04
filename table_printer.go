@@ -2,11 +2,9 @@ package pterm
 
 import (
 	"encoding/csv"
+	"github.com/pterm/pterm/internal"
 	"io"
 	"strings"
-
-	"github.com/mattn/go-runewidth"
-	"github.com/pterm/pterm/internal"
 )
 
 // DefaultTable contains standards, which can be used to print a TablePrinter.
@@ -140,6 +138,23 @@ func (p TablePrinter) WithWriter(writer io.Writer) *TablePrinter {
 	return &p
 }
 
+type table struct {
+	rows            []row
+	maxColumnWidths []int
+}
+
+type row struct {
+	height       int
+	cells        []cell
+	columnWidths []int
+}
+
+type cell struct {
+	width  int
+	height int
+	lines  []string
+}
+
 // Srender renders the TablePrinter as a string.
 func (p TablePrinter) Srender() (string, error) {
 	if p.Style == nil {
@@ -158,70 +173,109 @@ func (p TablePrinter) Srender() (string, error) {
 		p.RowSeparatorStyle = NewStyle()
 	}
 
-	var ret string
-	maxColumnWidth := make(map[int]int)
+	var t table
 
-	for _, row := range p.Data {
-		for ci, column := range row {
-			columnLength := runewidth.StringWidth(RemoveColorFromString(column))
-			if columnLength > maxColumnWidth[ci] {
-				maxColumnWidth[ci] = columnLength
+	// convert data to table and calculate values
+	for _, rRaw := range p.Data {
+		var r row
+		for _, cRaw := range rRaw {
+			var c cell
+			c.lines = strings.Split(cRaw, "\n")
+			c.height = len(c.lines)
+			for _, l := range c.lines {
+				if len(l) > c.width {
+					c.width = internal.GetStringMaxWidth(l)
+				}
 			}
+			r.cells = append(r.cells, c)
+			if c.height > r.height {
+				r.height = c.height
+			}
+		}
+
+		// set max column widths of table
+		for i, c := range r.cells {
+			if len(t.maxColumnWidths) <= i {
+				t.maxColumnWidths = append(t.maxColumnWidths, c.width)
+			} else if c.width > t.maxColumnWidths[i] {
+				t.maxColumnWidths[i] = c.width
+			}
+		}
+
+		t.rows = append(t.rows, r)
+	}
+
+	var maxRowWidth int
+	for _, r := range t.rows {
+		rowWidth := internal.GetStringMaxWidth(p.renderRow(t, r))
+		if rowWidth > maxRowWidth {
+			maxRowWidth = rowWidth
 		}
 	}
 
-	for ri, row := range p.Data {
-		rowWidth := 0
-		for ci, column := range row {
-			columnString := p.createColumnString(column, maxColumnWidth[ci])
-			rowWidth += runewidth.StringWidth(RemoveColorFromString(columnString))
+	// render table
+	var s string
 
-			if ci != len(row) && ci != 0 {
-				ret += p.Style.Sprint(p.SeparatorStyle.Sprint(p.Separator))
-				rowWidth += runewidth.StringWidth(RemoveColorFromString(p.SeparatorStyle.Sprint(p.Separator)))
+	for i, r := range t.rows {
+		if i == 0 && p.HasHeader {
+			s += p.HeaderStyle.Sprint(p.renderRow(t, r))
+
+			if p.HeaderRowSeparator != "" {
+				s += strings.Repeat(p.HeaderRowSeparatorStyle.Sprint(p.HeaderRowSeparator), maxRowWidth) + "\n"
 			}
-
-			if p.HasHeader && ri == 0 {
-				ret += p.Style.Sprint(p.HeaderStyle.Sprint(columnString))
-			} else {
-				ret += p.Style.Sprint(columnString)
-			}
+			continue
 		}
 
-		if p.HasHeader && ri == 0 && p.HeaderRowSeparator != "" {
-			ret += p.createHeaderRowSeparatorString(rowWidth)
-		}
+		s += p.renderRow(t, r)
 
-		if ri != len(p.Data)-1 && ri != 0 && p.RowSeparator != "" {
-			ret += p.createRowSeparatorString(rowWidth)
+		if p.RowSeparator != "" {
+			s += strings.Repeat(p.RowSeparatorStyle.Sprint(p.RowSeparator), maxRowWidth) + "\n"
 		}
-
-		ret += "\n"
 	}
-
-	ret = strings.TrimSuffix(ret, "\n")
 
 	if p.Boxed {
-		ret = DefaultBox.Sprint(ret)
+		s = DefaultBox.Sprint(strings.TrimSuffix(s, "\n"))
 	}
 
-	return ret, nil
+	return s, nil
 }
 
-func (p TablePrinter) createColumnString(data string, maxColumnWidth int) string {
-	columnLength := runewidth.StringWidth(RemoveColorFromString(data))
-	if p.RightAlignment {
-		return strings.Repeat(" ", maxColumnWidth-columnLength) + data
+// renderRow renders a row.
+// It merges the cells of a row into one string.
+// Each line of each cell is merged with the same line of the other cells.
+func (p TablePrinter) renderRow(t table, r row) string {
+	var s string
+
+	// merge lines of cells and add separator
+	// use the t.maxColumnWidths to add padding to the corresponding cell
+	// a newline in a cell should be in the same column as the original cell
+	for i := 0; i < r.height; i++ {
+		for j, c := range r.cells {
+			var currentLine string
+			if i < len(c.lines) {
+				currentLine = c.lines[i]
+			}
+			paddingForLine := t.maxColumnWidths[j] - internal.GetStringMaxWidth(currentLine)
+
+			if p.RightAlignment {
+				s += strings.Repeat(" ", paddingForLine)
+			}
+
+			if i < len(c.lines) {
+				s += strings.TrimSpace(c.lines[i])
+			}
+
+			if j < len(r.cells)-1 {
+				if p.LeftAlignment {
+					s += strings.Repeat(" ", paddingForLine)
+				}
+				s += p.SeparatorStyle.Sprint(p.Separator)
+			}
+		}
+		s += "\n"
 	}
-	return data + strings.Repeat(" ", maxColumnWidth-columnLength)
-}
 
-func (p TablePrinter) createHeaderRowSeparatorString(rowWidth int) string {
-	return "\n" + p.Style.Sprint(p.HeaderRowSeparatorStyle.Sprint(strings.Repeat(p.HeaderRowSeparator, rowWidth)))
-}
-
-func (p TablePrinter) createRowSeparatorString(rowWidth int) string {
-	return "\n" + p.Style.Sprint(p.RowSeparatorStyle.Sprint(strings.Repeat(p.RowSeparator, rowWidth)))
+	return s
 }
 
 // Render prints the TablePrinter to the terminal.

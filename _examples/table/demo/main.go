@@ -14,12 +14,12 @@ func main() {
 
 	pterm.Println() // Blank line
 
-	// Create a table with right alignment.
+	// Create a table with multiple lines in a row.
 	pterm.DefaultTable.WithHasHeader().WithData(pterm.TableData{
 		{"Firstname", "Lastname", "Email"},
-		{"Paul", "Dean", "nisi.dictum.augue@velitAliquam.co.uk"},
-		{"Callie", "Mckay", "egestas.nunc.sed@est.com"},
+		{"Paul\n\nNewline", "Dean", "nisi.dictum.augue@velitAliquam.co.uk"},
+		{"Callie", "Mckay", "egestas.nunc.sed@est.com\nNewline"},
 		{"Libby", "Camacho", "aliquet.lobortis@semper.com"},
 		{"张", "小宝", "zhang@example.com"},
-	}).WithRightAlignment().Render()
+	}).Render()
 }
