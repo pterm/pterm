@@ -1,6 +1,12 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Bug Fixes
+- **table:** fixed panic when multiple lines contained color in a single row
+
+
+<a name="v0.12.55"></a>
+## [v0.12.55] - 2023-03-04
 ### Features
 - **table:** multiline support for table printer
 - **table:** multiline support for table printer
@@ -1122,7 +1128,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.54...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.55...HEAD
+[v0.12.55]: https://github.com/pterm/pterm/compare/v0.12.54...v0.12.55
 [v0.12.54]: https://github.com/pterm/pterm/compare/v0.12.53...v0.12.54
 [v0.12.53]: https://github.com/pterm/pterm/compare/v0.12.52...v0.12.53
 [v0.12.52]: https://github.com/pterm/pterm/compare/v0.12.51...v0.12.52
