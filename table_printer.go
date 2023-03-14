@@ -183,7 +183,7 @@ func (p TablePrinter) Srender() (string, error) {
 			c.lines = strings.Split(cRaw, "\n")
 			c.height = len(c.lines)
 			for _, l := range c.lines {
-				if len(l) > c.width {
+				if internal.GetStringMaxWidth(l) > c.width {
 					c.width = internal.GetStringMaxWidth(l)
 				}
 			}
