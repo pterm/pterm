@@ -140,7 +140,11 @@ func (s SpinnerPrinter) Start(text ...interface{}) (*SpinnerPrinter, error) {
 	go func() {
 		for s.IsActive {
 			for _, seq := range s.Sequence {
-				if !s.IsActive || RawOutput {
+				if !s.IsActive {
+					continue
+				}
+				if RawOutput {
+					time.Sleep(s.Delay)
 					continue
 				}
 
