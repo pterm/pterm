@@ -4,6 +4,7 @@ name: golangci-lint
 on: [ push, pull_request ]
 jobs:
   golangci:
+    if: "!contains(github.event.head_commit.message, 'autoupdate')"
     name: lint
     runs-on: ubuntu-latest
     steps:
