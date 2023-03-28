@@ -236,7 +236,7 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 		return false, nil
 	})
 	if err != nil {
-		fmt.Println(err)
+		Error.Println(err)
 		return "", fmt.Errorf("failed to start keyboard listener: %w", err)
 	}
 
