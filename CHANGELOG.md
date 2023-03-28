@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Code Refactoring
+- use `pterm.Print` instead of `fmt.Print` functions
+
 
 <a name="v0.12.56"></a>
 ## [v0.12.56] - 2023-03-14
