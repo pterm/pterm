@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+
+<a name="v0.12.56"></a>
+## [v0.12.56] - 2023-03-14
 ### Bug Fixes
 - **table:** fixed panic when multiple lines contained color in a single row
 
@@ -1128,7 +1131,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.55...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.56...HEAD
+[v0.12.56]: https://github.com/pterm/pterm/compare/v0.12.55...v0.12.56
 [v0.12.55]: https://github.com/pterm/pterm/compare/v0.12.54...v0.12.55
 [v0.12.54]: https://github.com/pterm/pterm/compare/v0.12.53...v0.12.54
 [v0.12.53]: https://github.com/pterm/pterm/compare/v0.12.52...v0.12.53
