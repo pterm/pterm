@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+
+<a name="v0.12.57"></a>
+## [v0.12.57] - 2023-03-28
 ### Code Refactoring
 - use `pterm.Print` instead of `fmt.Print` functions
 
@@ -1134,7 +1137,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.56...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.57...HEAD
+[v0.12.57]: https://github.com/pterm/pterm/compare/v0.12.56...v0.12.57
 [v0.12.56]: https://github.com/pterm/pterm/compare/v0.12.55...v0.12.56
 [v0.12.55]: https://github.com/pterm/pterm/compare/v0.12.54...v0.12.55
 [v0.12.54]: https://github.com/pterm/pterm/compare/v0.12.53...v0.12.54
