@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -38,7 +37,7 @@ func execute(command string) {
 		log.Panicf("Fail Running [%s] with output [%s] and status [%s]", cmd.String(), output, err)
 	}
 	pterm.FgGray.Println(strings.Repeat("-", 80))
-	fmt.Println(string(output))
+	pterm.Println(string(output))
 	pterm.FgGray.Println(strings.Repeat("-", 80))
 }
 

@@ -279,7 +279,7 @@ func (p *InteractiveMultiselectPrinter) Show(text ...string) ([]string, error) {
 		return false, nil
 	})
 	if err != nil {
-		fmt.Println(err)
+		Error.Println(err)
 		return nil, fmt.Errorf("failed to start keyboard listener: %w", err)
 	}
 
