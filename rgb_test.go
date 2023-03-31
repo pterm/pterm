@@ -23,10 +23,10 @@ func TestNewRGB(t *testing.T) {
 		args args
 		want pterm.RGB
 	}{
-		{name: "1", args: args{0, 0, 0}, want: pterm.RGB{0, 0, 0}},
-		{name: "3", args: args{255, 255, 255}, want: pterm.RGB{255, 255, 255}},
-		{name: "4", args: args{127, 127, 127}, want: pterm.RGB{127, 127, 127}},
-		{name: "5", args: args{1, 2, 3}, want: pterm.RGB{1, 2, 3}},
+		{name: "1", args: args{0, 0, 0}, want: pterm.RGB{0, 0, 0, false}},
+		{name: "3", args: args{255, 255, 255}, want: pterm.RGB{255, 255, 255, false}},
+		{name: "4", args: args{127, 127, 127}, want: pterm.RGB{127, 127, 127, false}},
+		{name: "5", args: args{1, 2, 3}, want: pterm.RGB{1, 2, 3, false}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -155,7 +155,7 @@ func TestRGB_GetValues(t *testing.T) {
 }
 
 func TestRGB_Print(t *testing.T) {
-	RGBs := []pterm.RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
+	RGBs := []pterm.RGB{{0, 0, 0, false}, {127, 127, 127, false}, {255, 255, 255, false}}
 
 	for _, rgb := range RGBs {
 		t.Run(pterm.Sprintf("%v %v %v", rgb.R, rgb.G, rgb.B), func(t *testing.T) {
@@ -168,7 +168,7 @@ func TestRGB_Print(t *testing.T) {
 }
 
 func TestRGB_Printf(t *testing.T) {
-	RGBs := []pterm.RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
+	RGBs := []pterm.RGB{{0, 0, 0, false}, {127, 127, 127, false}, {255, 255, 255, false}}
 
 	for _, rgb := range RGBs {
 		t.Run(pterm.Sprintf("%v %v %v", rgb.R, rgb.G, rgb.B), func(t *testing.T) {
@@ -181,7 +181,7 @@ func TestRGB_Printf(t *testing.T) {
 }
 
 func TestRGB_Printfln(t *testing.T) {
-	RGBs := []pterm.RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
+	RGBs := []pterm.RGB{{0, 0, 0, false}, {127, 127, 127, false}, {255, 255, 255, false}}
 
 	for _, rgb := range RGBs {
 		t.Run(pterm.Sprintfln("%v %v %v", rgb.R, rgb.G, rgb.B), func(t *testing.T) {
@@ -194,7 +194,7 @@ func TestRGB_Printfln(t *testing.T) {
 }
 
 func TestRGB_Println(t *testing.T) {
-	RGBs := []pterm.RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
+	RGBs := []pterm.RGB{{0, 0, 0, false}, {127, 127, 127, false}, {255, 255, 255, false}}
 
 	for _, rgb := range RGBs {
 		t.Run(pterm.Sprintf("%v %v %v", rgb.R, rgb.G, rgb.B), func(t *testing.T) {
@@ -207,7 +207,7 @@ func TestRGB_Println(t *testing.T) {
 }
 
 func TestRGB_Sprint(t *testing.T) {
-	RGBs := []pterm.RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
+	RGBs := []pterm.RGB{{0, 0, 0, false}, {127, 127, 127, false}, {255, 255, 255, false}}
 
 	for _, rgb := range RGBs {
 		t.Run(pterm.Sprintf("%v %v %v", rgb.R, rgb.G, rgb.B), func(t *testing.T) {
@@ -219,7 +219,7 @@ func TestRGB_Sprint(t *testing.T) {
 }
 
 func TestRGB_Sprintf(t *testing.T) {
-	RGBs := []pterm.RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
+	RGBs := []pterm.RGB{{0, 0, 0, false}, {127, 127, 127, false}, {255, 255, 255, false}}
 
 	for _, rgb := range RGBs {
 		t.Run("", func(t *testing.T) {
@@ -231,7 +231,7 @@ func TestRGB_Sprintf(t *testing.T) {
 }
 
 func TestRGB_Sprintfln(t *testing.T) {
-	RGBs := []pterm.RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
+	RGBs := []pterm.RGB{{0, 0, 0, false}, {127, 127, 127, false}, {255, 255, 255, false}}
 
 	for _, rgb := range RGBs {
 		t.Run("", func(t *testing.T) {
@@ -243,7 +243,7 @@ func TestRGB_Sprintfln(t *testing.T) {
 }
 
 func TestRGB_Sprintln(t *testing.T) {
-	RGBs := []pterm.RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
+	RGBs := []pterm.RGB{{0, 0, 0, false}, {127, 127, 127, false}, {255, 255, 255, false}}
 
 	for _, rgb := range RGBs {
 		t.Run(pterm.Sprintf("%v %v %v", rgb.R, rgb.G, rgb.B), func(t *testing.T) {
@@ -255,7 +255,7 @@ func TestRGB_Sprintln(t *testing.T) {
 }
 
 func TestRGB_PrintOnError(t *testing.T) {
-	RGBs := []pterm.RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
+	RGBs := []pterm.RGB{{0, 0, 0, false}, {127, 127, 127, false}, {255, 255, 255, false}}
 
 	for _, rgb := range RGBs {
 		t.Run("PrintOnError", func(t *testing.T) {
@@ -268,7 +268,7 @@ func TestRGB_PrintOnError(t *testing.T) {
 }
 
 func TestRGB_PrintIfError_WithoutError(t *testing.T) {
-	RGBs := []pterm.RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
+	RGBs := []pterm.RGB{{0, 0, 0, false}, {127, 127, 127, false}, {255, 255, 255, false}}
 
 	for _, rgb := range RGBs {
 		t.Run("PrintIfError_WithoutError", func(t *testing.T) {
@@ -281,7 +281,7 @@ func TestRGB_PrintIfError_WithoutError(t *testing.T) {
 }
 
 func TestRGB_PrintOnErrorf(t *testing.T) {
-	RGBs := []pterm.RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
+	RGBs := []pterm.RGB{{0, 0, 0, false}, {127, 127, 127, false}, {255, 255, 255, false}}
 
 	for _, rgb := range RGBs {
 		t.Run("PrintOnErrorf", func(t *testing.T) {
@@ -294,7 +294,7 @@ func TestRGB_PrintOnErrorf(t *testing.T) {
 }
 
 func TestRGB_PrintIfError_WithoutErrorf(t *testing.T) {
-	RGBs := []pterm.RGB{{0, 0, 0}, {127, 127, 127}, {255, 255, 255}}
+	RGBs := []pterm.RGB{{0, 0, 0, false}, {127, 127, 127, false}, {255, 255, 255, false}}
 
 	for _, rgb := range RGBs {
 		t.Run("PrintIfError_WithoutErrorf", func(t *testing.T) {
