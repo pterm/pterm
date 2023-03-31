@@ -1,6 +1,11 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Features
+- **rgb:** made it possible to use RGB colors as background
+- **rgb:** made it possible to use RGB colors as background
+- **rgb:** made it possible to use RGB colors as background
+
 
 <a name="v0.12.57"></a>
 ## [v0.12.57] - 2023-03-28
