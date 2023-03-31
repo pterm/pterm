@@ -93,15 +93,15 @@ func TestRGB_Fade(t *testing.T) {
 		args   args
 		want   pterm.RGB
 	}{
-		{name: "Middle", fields: fields{0, 0, 0}, args: args{min: 0, max: 100, current: 50, end: []pterm.RGB{{255, 255, 255}}}, want: pterm.RGB{127, 127, 127}},
-		{name: "ZeroToZero", fields: fields{0, 0, 0}, args: args{min: 0, max: 100, current: 50, end: []pterm.RGB{{0, 0, 0}}}, want: pterm.RGB{0, 0, 0}},
-		{name: "DifferentValues", fields: fields{0, 1, 2}, args: args{min: 0, max: 100, current: 50, end: []pterm.RGB{{0, 1, 2}}}, want: pterm.RGB{0, 1, 2}},
-		{name: "NegativeRangeMiddle", fields: fields{0, 0, 0}, args: args{min: -50, max: 50, current: 0, end: []pterm.RGB{{255, 255, 255}}}, want: pterm.RGB{127, 127, 127}},
-		{name: "NegativeRangeMiddleMultipleRGB", fields: fields{0, 0, 0}, args: args{min: -50, max: 50, current: 0, end: []pterm.RGB{{127, 127, 127}, {255, 255, 255}}}, want: pterm.RGB{127, 127, 127}},
-		{name: "MiddleMultipleRGB", fields: fields{0, 0, 0}, args: args{min: 0, max: 100, current: 50, end: []pterm.RGB{{127, 127, 127}, {255, 255, 255}}}, want: pterm.RGB{127, 127, 127}},
-		{name: "1/4MultipleRGB", fields: fields{0, 0, 0}, args: args{min: 0, max: 100, current: 25, end: []pterm.RGB{{255, 255, 255}, {255, 255, 255}}}, want: pterm.RGB{127, 127, 127}},
-		{name: "MiddleMultipleRGBPositiveMin", fields: fields{0, 0, 0}, args: args{min: 10, max: 110, current: 60, end: []pterm.RGB{{127, 127, 127}, {255, 255, 255}}}, want: pterm.RGB{127, 127, 127}},
-		{name: "MiddleNoRGB", fields: fields{0, 0, 0}, args: args{min: 10, max: 110, current: 60, end: []pterm.RGB{}}, want: pterm.RGB{0, 0, 0}},
+		{name: "Middle", fields: fields{0, 0, 0}, args: args{min: 0, max: 100, current: 50, end: []pterm.RGB{{255, 255, 255, false}}}, want: pterm.RGB{127, 127, 127, false}},
+		{name: "ZeroToZero", fields: fields{0, 0, 0}, args: args{min: 0, max: 100, current: 50, end: []pterm.RGB{{0, 0, 0, false}}}, want: pterm.RGB{0, 0, 0, false}},
+		{name: "DifferentValues", fields: fields{0, 1, 2}, args: args{min: 0, max: 100, current: 50, end: []pterm.RGB{{0, 1, 2, false}}}, want: pterm.RGB{0, 1, 2, false}},
+		{name: "NegativeRangeMiddle", fields: fields{0, 0, 0}, args: args{min: -50, max: 50, current: 0, end: []pterm.RGB{{255, 255, 255, false}}}, want: pterm.RGB{127, 127, 127, false}},
+		{name: "NegativeRangeMiddleMultipleRGB", fields: fields{0, 0, 0}, args: args{min: -50, max: 50, current: 0, end: []pterm.RGB{{127, 127, 127, false}, {255, 255, 255, false}}}, want: pterm.RGB{127, 127, 127, false}},
+		{name: "MiddleMultipleRGB", fields: fields{0, 0, 0}, args: args{min: 0, max: 100, current: 50, end: []pterm.RGB{{127, 127, 127, false}, {255, 255, 255, false}}}, want: pterm.RGB{127, 127, 127, false}},
+		{name: "1/4MultipleRGB", fields: fields{0, 0, 0}, args: args{min: 0, max: 100, current: 25, end: []pterm.RGB{{255, 255, 255, false}, {255, 255, 255, false}}}, want: pterm.RGB{127, 127, 127, false}},
+		{name: "MiddleMultipleRGBPositiveMin", fields: fields{0, 0, 0}, args: args{min: 10, max: 110, current: 60, end: []pterm.RGB{{127, 127, 127, false}, {255, 255, 255, false}}}, want: pterm.RGB{127, 127, 127, false}},
+		{name: "MiddleNoRGB", fields: fields{0, 0, 0}, args: args{min: 10, max: 110, current: 60, end: []pterm.RGB{}}, want: pterm.RGB{0, 0, 0, false}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
