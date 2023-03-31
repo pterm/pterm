@@ -12,9 +12,10 @@ import (
 // The name of the model comes from the initials of the three additive primary colors, red, green, and blue.
 // https://en.wikipedia.org/wiki/RGB_color_model
 type RGB struct {
-	R uint8
-	G uint8
-	B uint8
+	R          uint8
+	G          uint8
+	B          uint8
+	Background bool
 }
 
 // GetValues returns the RGB values separately.
@@ -23,8 +24,14 @@ func (p RGB) GetValues() (r, g, b uint8) {
 }
 
 // NewRGB returns a new RGB.
-func NewRGB(r, g, b uint8) RGB {
-	return RGB{R: r, G: g, B: b}
+func NewRGB(r, g, b uint8, background ...bool) RGB {
+	var bg bool
+
+	if len(background) > 0 {
+		bg = background[0]
+	}
+
+	return RGB{R: r, G: g, B: b, Background: bg}
 }
 
 // Fade fades one RGB value (over other RGB values) to another RGB value, by giving the function a minimum, maximum and current value.
@@ -36,9 +43,10 @@ func (p RGB) Fade(min, max, current float32, end ...RGB) RGB {
 	}
 	if len(end) == 1 {
 		return RGB{
-			R: uint8(internal.MapRangeToRange(min, max, float32(p.R), float32(end[0].R), current)),
-			G: uint8(internal.MapRangeToRange(min, max, float32(p.G), float32(end[0].G), current)),
-			B: uint8(internal.MapRangeToRange(min, max, float32(p.B), float32(end[0].B), current)),
+			R:          uint8(internal.MapRangeToRange(min, max, float32(p.R), float32(end[0].R), current)),
+			G:          uint8(internal.MapRangeToRange(min, max, float32(p.G), float32(end[0].G), current)),
+			B:          uint8(internal.MapRangeToRange(min, max, float32(p.B), float32(end[0].B), current)),
+			Background: p.Background,
 		}
 	} else if len(end) > 1 {
 		f := (max - min) / float32(len(end))
@@ -60,7 +68,10 @@ func (p RGB) Fade(min, max, current float32, end ...RGB) RGB {
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
 func (p RGB) Sprint(a ...interface{}) string {
-	return color.RGB(p.R, p.G, p.B).Sprint(a...)
+	if p.Background {
+		return color.RGB(p.R, p.G, p.B, p.Background).Sprint(a...) + "\033[0m\033[K"
+	}
+	return color.RGB(p.R, p.G, p.B, p.Background).Sprint(a...)
 }
 
 // Sprintln formats using the default formats for its operands and returns the resulting string.
