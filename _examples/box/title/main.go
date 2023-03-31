@@ -4,7 +4,7 @@ import "github.com/pterm/pterm"
 
 func main() {
 	// Default titled bpx
-	paddedBox := pterm.DefaultBox.WithLeftPadding(4).WithRightPadding(4).WithTopPadding(2).WithBottomPadding(2)
+	paddedBox := pterm.DefaultBox.WithLeftPadding(4).WithRightPadding(4).WithTopPadding(1).WithBottomPadding(1)
 
 	title := pterm.LightRed("I'm a box!")
 
@@ -17,7 +17,8 @@ func main() {
 	box7 := paddedBox.WithTitle(title).WithTitleTopLeft().Sprint("Hello, World!\n      7")
 
 	pterm.DefaultPanel.WithPanels([][]pterm.Panel{
-		{{box1}, {box2}, {box3}, {box4}},
-		{{box5}, {box6}, {box7}},
+		{{box1}, {box2}, {box3}},
+		{{box4}, {box5}, {box6}},
+		{{box7}},
 	}).Render()
 }
