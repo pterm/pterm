@@ -3,6 +3,70 @@
 > This directory contains examples of using the PTerm library.
 
 <!-- examples:start -->
+### area/center
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/area/center/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"time"
+
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	area, _ := pterm.DefaultArea.WithCenter().Start()
+
+	for i := 0; i < 5; i++ {
+		area.Update(pterm.Sprintf("Current count: %d\nAreas can update their content dynamically!", i))
+		time.Sleep(time.Second)
+	}
+
+	area.Stop()
+}
+
+```
+
+</details>
+
+### area/default
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/area/default/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"time"
+
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	area, _ := pterm.DefaultArea.Start()
+
+	for i := 0; i < 5; i++ {
+		area.Update(pterm.Sprintf("Current count: %d\nAreas can update their content dynamically!", i))
+		time.Sleep(time.Second)
+	}
+
+	area.Stop()
+}
+
+```
+
+</details>
+
 ### area/demo
 
 ![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/area/demo/animation.svg)
@@ -31,6 +95,205 @@ func main() {
 		time.Sleep(time.Second)
 	}
 	area.Stop()
+}
+
+```
+
+</details>
+
+### area/dynamic-chart
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/area/dynamic-chart/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"time"
+
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	area, _ := pterm.DefaultArea.WithFullscreen().WithCenter().Start()
+	defer area.Stop()
+
+	for i := 0; i < 10; i++ {
+		barchart := pterm.DefaultBarChart.WithBars(dynamicBars(i))
+		content, _ := barchart.Srender()
+		area.Update(content)
+		time.Sleep(500 * time.Millisecond)
+	}
+}
+
+func dynamicBars(i int) pterm.Bars {
+	return pterm.Bars{
+		{Label: "A", Value: 10},
+		{Label: "B", Value: 20 * i},
+		{Label: "C", Value: 30},
+		{Label: "D", Value: 40 + i},
+	}
+}
+
+```
+
+</details>
+
+### area/fullscreen
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/area/fullscreen/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"time"
+
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	area, _ := pterm.DefaultArea.WithFullscreen().Start()
+
+	for i := 0; i < 5; i++ {
+		area.Update(pterm.Sprintf("Current count: %d\nAreas can update their content dynamically!", i))
+		time.Sleep(time.Second)
+	}
+
+	area.Stop()
+}
+
+```
+
+</details>
+
+### area/fullscreen-center
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/area/fullscreen-center/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"time"
+
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	area, _ := pterm.DefaultArea.WithFullscreen().WithCenter().Start()
+
+	for i := 0; i < 5; i++ {
+		area.Update(pterm.Sprintf("Current count: %d\nAreas can update their content dynamically!", i))
+		time.Sleep(time.Second)
+	}
+
+	area.Stop()
+}
+
+```
+
+</details>
+
+### barchart/custom-height
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/custom-height/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	pterm.DefaultBarChart.WithBars([]pterm.Bar{
+		{Label: "A", Value: 10},
+		{Label: "B", Value: 20},
+		{Label: "C", Value: 30},
+		{Label: "D", Value: 40},
+		{Label: "E", Value: 50},
+		{Label: "F", Value: 40},
+		{Label: "G", Value: 30},
+		{Label: "H", Value: 20},
+		{Label: "I", Value: 10},
+	}).WithHeight(5).Render()
+}
+
+```
+
+</details>
+
+### barchart/custom-width
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/custom-width/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	pterm.DefaultBarChart.WithBars([]pterm.Bar{
+		{Label: "A", Value: 10},
+		{Label: "B", Value: 20},
+		{Label: "C", Value: 30},
+		{Label: "D", Value: 40},
+		{Label: "E", Value: 50},
+		{Label: "F", Value: 40},
+		{Label: "G", Value: 30},
+		{Label: "H", Value: 20},
+		{Label: "I", Value: 10},
+	}).WithHorizontal().WithWidth(5).Render()
+}
+
+```
+
+</details>
+
+### barchart/default
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/default/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	pterm.DefaultBarChart.WithBars([]pterm.Bar{
+		{Label: "A", Value: 10},
+		{Label: "B", Value: 20},
+		{Label: "C", Value: 30},
+		{Label: "D", Value: 40},
+		{Label: "E", Value: 50},
+		{Label: "F", Value: 40},
+		{Label: "G", Value: 30},
+		{Label: "H", Value: 20},
+		{Label: "I", Value: 10},
+	}).Render()
 }
 
 ```
@@ -71,6 +334,68 @@ func main() {
 	pterm.Info.Println("Chart example with positive only values (bars use 100% of chart area)")
 	_ = pterm.DefaultBarChart.WithBars(positiveBars).Render()
 	_ = pterm.DefaultBarChart.WithHorizontal().WithBars(positiveBars).Render()
+}
+
+```
+
+</details>
+
+### barchart/horizontal
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/horizontal/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	pterm.DefaultBarChart.WithBars([]pterm.Bar{
+		{Label: "A", Value: 10},
+		{Label: "B", Value: 20},
+		{Label: "C", Value: 30},
+		{Label: "D", Value: 40},
+		{Label: "E", Value: 50},
+		{Label: "F", Value: 40},
+		{Label: "G", Value: 30},
+		{Label: "H", Value: 20},
+		{Label: "I", Value: 10},
+	}).WithHorizontal().Render()
+}
+
+```
+
+</details>
+
+### barchart/horizontal-show-value
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/horizontal-show-value/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	pterm.DefaultBarChart.WithBars([]pterm.Bar{
+		{Label: "A", Value: 10},
+		{Label: "B", Value: 20},
+		{Label: "C", Value: 30},
+		{Label: "D", Value: 40},
+		{Label: "E", Value: 50},
+		{Label: "F", Value: 40},
+		{Label: "G", Value: 30},
+		{Label: "H", Value: 20},
+		{Label: "I", Value: 10},
+	}).WithHorizontal().WithShowValue().Render()
 }
 
 ```
@@ -165,6 +490,37 @@ func main() {
 
 </details>
 
+### barchart/show-value
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/show-value/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	pterm.DefaultBarChart.WithBars([]pterm.Bar{
+		{Label: "A", Value: 10},
+		{Label: "B", Value: 20},
+		{Label: "C", Value: 30},
+		{Label: "D", Value: 40},
+		{Label: "E", Value: 50},
+		{Label: "F", Value: 40},
+		{Label: "G", Value: 30},
+		{Label: "H", Value: 20},
+		{Label: "I", Value: 10},
+	}).WithShowValue().Render()
+}
+
+```
+
+</details>
+
 ### basictext/demo
 
 ![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/basictext/demo/animation.svg)
@@ -186,6 +542,57 @@ func main() {
 	pterm.DefaultBasicText.Println("For example to resolve progressbars and spinners.")
 	// If you just want to print text, you should use this instead:
 	// 	pterm.Println("Hello, World!")
+}
+
+```
+
+</details>
+
+### bigtext/colored
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/bigtext/colored/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"github.com/pterm/pterm"
+	"github.com/pterm/pterm/putils"
+)
+
+func main() {
+	pterm.DefaultBigText.WithLetters(
+		putils.LettersFromStringWithStyle("P", pterm.FgCyan.ToStyle()),
+		putils.LettersFromStringWithStyle("Term", pterm.FgLightMagenta.ToStyle())).
+		Render()
+}
+
+```
+
+</details>
+
+### bigtext/default
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/bigtext/default/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"github.com/pterm/pterm"
+	"github.com/pterm/pterm/putils"
+)
+
+func main() {
+	pterm.DefaultBigText.WithLetters(putils.LettersFromString("PTerm")).Render()
 }
 
 ```
@@ -215,14 +622,61 @@ func main() {
 
 	// Print a large text with differently colored letters.
 	pterm.DefaultBigText.WithLetters(
-		putils.LettersFromStringWithStyle("P", pterm.NewStyle(pterm.FgCyan)),
-		putils.LettersFromStringWithStyle("Term", pterm.NewStyle(pterm.FgLightMagenta))).
+		putils.LettersFromStringWithStyle("P", pterm.FgCyan.ToStyle()),
+		putils.LettersFromStringWithStyle("Term", pterm.FgLightMagenta.ToStyle())).
 		Render()
 
 	// LettersFromStringWithRGB can be used to create a large text with a specific RGB color.
 	pterm.DefaultBigText.WithLetters(
 		putils.LettersFromStringWithRGB("PTerm", pterm.NewRGB(255, 215, 0))).
 		Render()
+}
+
+```
+
+</details>
+
+### box/custom-padding
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/box/custom-padding/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	pterm.DefaultBox.
+		WithRightPadding(10).
+		WithLeftPadding(10).
+		WithTopPadding(2).
+		WithBottomPadding(2).
+		Println("Hello, World!")
+}
+
+```
+
+</details>
+
+### box/default
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/box/default/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	pterm.DefaultBox.Println("Hello, World!")
 }
 
 ```
@@ -255,6 +709,43 @@ func main() {
 	}).Srender()
 
 	pterm.DefaultBox.WithTitle("Lorem Ipsum").WithTitleBottomRight().WithRightPadding(0).WithBottomPadding(0).Println(panels)
+}
+
+```
+
+</details>
+
+### box/title
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/box/title/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	// Default titled bpx
+	paddedBox := pterm.DefaultBox.WithLeftPadding(4).WithRightPadding(4).WithTopPadding(2).WithBottomPadding(2)
+
+	title := pterm.LightRed("I'm a box!")
+
+	box1 := paddedBox.WithTitle(title).Sprint("Hello, World!\n      1")
+	box2 := paddedBox.WithTitle(title).WithTitleTopCenter().Sprint("Hello, World!\n      2")
+	box3 := paddedBox.WithTitle(title).WithTitleTopRight().Sprint("Hello, World!\n      3")
+	box4 := paddedBox.WithTitle(title).WithTitleBottomRight().Sprint("Hello, World!\n      4")
+	box5 := paddedBox.WithTitle(title).WithTitleBottomCenter().Sprint("Hello, World!\n      5")
+	box6 := paddedBox.WithTitle(title).WithTitleBottomLeft().Sprint("Hello, World!\n      6")
+	box7 := paddedBox.WithTitle(title).WithTitleTopLeft().Sprint("Hello, World!\n      7")
+
+	pterm.DefaultPanel.WithPanels([][]pterm.Panel{
+		{{box1}, {box2}, {box3}, {box4}},
+		{{box5}, {box6}, {box7}},
+	}).Render()
 }
 
 ```

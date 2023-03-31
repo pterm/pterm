@@ -1,3 +1,54 @@
+### bigtext/colored
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/bigtext/colored/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"github.com/pterm/pterm"
+	"github.com/pterm/pterm/putils"
+)
+
+func main() {
+	pterm.DefaultBigText.WithLetters(
+		putils.LettersFromStringWithStyle("P", pterm.FgCyan.ToStyle()),
+		putils.LettersFromStringWithStyle("Term", pterm.FgLightMagenta.ToStyle())).
+		Render()
+}
+
+```
+
+</details>
+
+### bigtext/default
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/bigtext/default/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"github.com/pterm/pterm"
+	"github.com/pterm/pterm/putils"
+)
+
+func main() {
+	pterm.DefaultBigText.WithLetters(putils.LettersFromString("PTerm")).Render()
+}
+
+```
+
+</details>
+
 ### bigtext/demo
 
 ![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/bigtext/demo/animation.svg)
@@ -21,8 +72,8 @@ func main() {
 
 	// Print a large text with differently colored letters.
 	pterm.DefaultBigText.WithLetters(
-		putils.LettersFromStringWithStyle("P", pterm.NewStyle(pterm.FgCyan)),
-		putils.LettersFromStringWithStyle("Term", pterm.NewStyle(pterm.FgLightMagenta))).
+		putils.LettersFromStringWithStyle("P", pterm.FgCyan.ToStyle()),
+		putils.LettersFromStringWithStyle("Term", pterm.FgLightMagenta.ToStyle())).
 		Render()
 
 	// LettersFromStringWithRGB can be used to create a large text with a specific RGB color.

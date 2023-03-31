@@ -1,3 +1,50 @@
+### box/custom-padding
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/box/custom-padding/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	pterm.DefaultBox.
+		WithRightPadding(10).
+		WithLeftPadding(10).
+		WithTopPadding(2).
+		WithBottomPadding(2).
+		Println("Hello, World!")
+}
+
+```
+
+</details>
+
+### box/default
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/box/default/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	pterm.DefaultBox.Println("Hello, World!")
+}
+
+```
+
+</details>
+
 ### box/demo
 
 ![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/box/demo/animation.svg)
@@ -24,6 +71,43 @@ func main() {
 	}).Srender()
 
 	pterm.DefaultBox.WithTitle("Lorem Ipsum").WithTitleBottomRight().WithRightPadding(0).WithBottomPadding(0).Println(panels)
+}
+
+```
+
+</details>
+
+### box/title
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/box/title/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	// Default titled bpx
+	paddedBox := pterm.DefaultBox.WithLeftPadding(4).WithRightPadding(4).WithTopPadding(2).WithBottomPadding(2)
+
+	title := pterm.LightRed("I'm a box!")
+
+	box1 := paddedBox.WithTitle(title).Sprint("Hello, World!\n      1")
+	box2 := paddedBox.WithTitle(title).WithTitleTopCenter().Sprint("Hello, World!\n      2")
+	box3 := paddedBox.WithTitle(title).WithTitleTopRight().Sprint("Hello, World!\n      3")
+	box4 := paddedBox.WithTitle(title).WithTitleBottomRight().Sprint("Hello, World!\n      4")
+	box5 := paddedBox.WithTitle(title).WithTitleBottomCenter().Sprint("Hello, World!\n      5")
+	box6 := paddedBox.WithTitle(title).WithTitleBottomLeft().Sprint("Hello, World!\n      6")
+	box7 := paddedBox.WithTitle(title).WithTitleTopLeft().Sprint("Hello, World!\n      7")
+
+	pterm.DefaultPanel.WithPanels([][]pterm.Panel{
+		{{box1}, {box2}, {box3}, {box4}},
+		{{box5}, {box6}, {box7}},
+	}).Render()
 }
 
 ```
