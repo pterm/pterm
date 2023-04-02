@@ -74,8 +74,6 @@ Make sure to run this command inside your project, when you're using go modules 
 go get github.com/pterm/pterm
 ```
 
-<div align="center">
-
 ### Printers (Components)
 
 |Feature|Examples| - |Feature|Examples|
@@ -92,7 +90,6 @@ go get github.com/pterm/pterm
 |Prefixes|[Examples](https://github.com/pterm/pterm/tree/master/_examples/prefix)|-|||
 |Progress Bars|[Examples](https://github.com/pterm/pterm/tree/master/_examples/progressbar)|-|||
 
-</div>
 
 ## ⭐ Main Features
 
