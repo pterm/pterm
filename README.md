@@ -74,6 +74,18 @@ Make sure to run this command inside your project, when you're using go modules 
 go get github.com/pterm/pterm
 ```
 
+## ⭐ Main Features
+
+| Feature          | Description                                         |
+|------------------|-----------------------------------------------------|
+| 🪀 Easy to use    | PTerm emphasizes ease of use, with [examples](#-examples) and consistent component design. |
+| 🤹‍♀️ Cross-Platform | PTerm works on various OS and terminals, including `Windows CMD`, `macOS iTerm2`, and in CI systems like `GitHub Actions`. |
+| 🧪 Well tested    | A high test coverage and <!-- unittestcount2:start -->`28774`<!-- unittestcount2:end --> automated tests ensure PTerm's reliability. |
+| ✨ Consistent Colors | PTerm uses the [ANSI color scheme](https://en.wikipedia.org/wiki/ANSI_escape_code#3/4_bit) for uniformity and supports `TrueColor` for advanced terminals. |
+| 📚 Component system | PTerm's flexible `Printers` can be used individually or combined to generate beautiful console output. |
+| 🛠 Configurable   | PTerm is ready to use without configuration but allows easy customization for unique terminal output. |
+| ✏ Documentation  | Access comprehensive docs on [pkg.go.dev](https://pkg.go.dev/github.com/pterm/pterm#section-documentation) and view practical examples in the [examples section](#-examples). |
+
 ### Printers (Components)
 
 |Feature|Examples| - |Feature|Examples|
@@ -89,19 +101,6 @@ go get github.com/pterm/pterm
 |Paragraphs|[Examples](https://github.com/pterm/pterm/tree/master/_examples/paragraph)|-|||
 |Prefixes|[Examples](https://github.com/pterm/pterm/tree/master/_examples/prefix)|-|||
 |Progress Bars|[Examples](https://github.com/pterm/pterm/tree/master/_examples/progressbar)|-|||
-
-
-## ⭐ Main Features
-
-| Feature          | Description                                         |
-|------------------|-----------------------------------------------------|
-| 🪀 Easy to use    | PTerm emphasizes ease of use, with [examples](#-examples) and consistent component design. |
-| 🤹‍♀️ Cross-Platform | PTerm works on various OS and terminals, including `Windows CMD`, `macOS iTerm2`, and in CI systems like `GitHub Actions`. |
-| 🧪 Well tested    | A high test coverage and <!-- unittestcount2:start -->`28774`<!-- unittestcount2:end --> automated tests ensure PTerm's reliability. |
-| ✨ Consistent Colors | PTerm uses the [ANSI color scheme](https://en.wikipedia.org/wiki/ANSI_escape_code#3/4_bit) for uniformity and supports `TrueColor` for advanced terminals. |
-| 📚 Component system | PTerm's flexible `Printers` can be used individually or combined to generate beautiful console output. |
-| 🛠 Configurable   | PTerm is ready to use without configuration but allows easy customization for unique terminal output. |
-| ✏ Documentation  | Access comprehensive docs on [pkg.go.dev](https://pkg.go.dev/github.com/pterm/pterm#section-documentation) and view practical examples in the [examples section](#-examples). |
 
 
 <div align="center">
