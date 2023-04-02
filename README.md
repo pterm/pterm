@@ -88,7 +88,17 @@ go get github.com/pterm/pterm
 
 ### Printers (Components)
 
-<!-- printers:start --><!-- printers:end -->
+<!-- printers:start -->
+| Feature | Feature | Feature | Feature |
+| :-------: | :-------: | :-------: | :-------: |
+| Area <br/> ([Example](https://github.com/pterm/pterm/tree/master/_examples/area)) |Barchart <br/> ([Example](https://github.com/pterm/pterm/tree/master/_examples/barchart)) |Basictext <br/> ([Example](https://github.com/pterm/pterm/tree/master/_examples/basictext)) |Bigtext <br/> ([Example](https://github.com/pterm/pterm/tree/master/_examples/bigtext)) |
+| Box <br/> ([Example](https://github.com/pterm/pterm/tree/master/_examples/box)) |Bulletlist <br/> ([Example](https://github.com/pterm/pterm/tree/master/_examples/bulletlist)) |Center <br/> ([Example](https://github.com/pterm/pterm/tree/master/_examples/center)) |Coloring <br/> ([Example](https://github.com/pterm/pterm/tree/master/_examples/coloring)) |
+| Demo <br/> ([Example](https://github.com/pterm/pterm/tree/master/_examples/demo)) |Header <br/> ([Example](https://github.com/pterm/pterm/tree/master/_examples/header)) |Interactive confirm <br/> ([Example](https://github.com/pterm/pterm/tree/master/_examples/interactive_confirm)) |Interactive continue <br/> ([Example](https://github.com/pterm/pterm/tree/master/_examples/interactive_continue)) |
+| Interactive multiselect <br/> ([Example](https://github.com/pterm/pterm/tree/master/_examples/interactive_multiselect)) |Interactive select <br/> ([Example](https://github.com/pterm/pterm/tree/master/_examples/interactive_select)) |Interactive textinput <br/> ([Example](https://github.com/pterm/pterm/tree/master/_examples/interactive_textinput)) |Panel <br/> ([Example](https://github.com/pterm/pterm/tree/master/_examples/panel)) |
+| Paragraph <br/> ([Example](https://github.com/pterm/pterm/tree/master/_examples/paragraph)) |Prefix <br/> ([Example](https://github.com/pterm/pterm/tree/master/_examples/prefix)) |Progressbar <br/> ([Example](https://github.com/pterm/pterm/tree/master/_examples/progressbar)) |Section <br/> ([Example](https://github.com/pterm/pterm/tree/master/_examples/section)) |
+| Spinner <br/> ([Example](https://github.com/pterm/pterm/tree/master/_examples/spinner)) |Style <br/> ([Example](https://github.com/pterm/pterm/tree/master/_examples/style)) |Table <br/> ([Example](https://github.com/pterm/pterm/tree/master/_examples/table)) |Theme <br/> ([Example](https://github.com/pterm/pterm/tree/master/_examples/theme)) |
+| Tree <br/> ([Example](https://github.com/pterm/pterm/tree/master/_examples/tree)) | |  |  | 
+<!-- printers:end -->
 
 
 <div align="center">
