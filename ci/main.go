@@ -111,23 +111,23 @@ func main() {
 			// generate table
 			tableContent := "| Feature | Feature | Feature | Feature |\n| :-------: | :-------: | :-------: | :-------: |\n"
 			for i, feature := range allPrinters {
-				// the table should contain 4 columns. Each cell is a feature.
+				// the table should contain 5 columns. Each cell is a feature.
 				// Make multiple rows, if there are more than 4 features.
 				// A link to the examples should be included in every cell.
 				// Format: "[Example](https://github.com/pterm/pterm/tree/master/_examples/FEATURE)"
-				if i%4 == 0 {
+				if i%5 == 0 {
 					tableContent += "| "
 				}
 				name := strings.ToUpper(string(feature[0])) + feature[1:]
 				name = strings.ReplaceAll(name, "_", " ")
 				tableContent += fmt.Sprintf("%s <br/> ([Example](https://github.com/pterm/pterm/tree/master/_examples/%s)) |", name, feature)
-				if (i+1)%4 == 0 {
+				if (i+1)%5 == 0 {
 					tableContent += "\n"
 				}
 
 				// fill left over cells with empty strings if in the last row
 				if i == len(allPrinters)-1 {
-					tableContent += strings.Repeat(" | ", 4-(i+1)%4)
+					tableContent += strings.Repeat(" | ", 5-(i+1)%5)
 				}
 			}
 
@@ -140,7 +140,6 @@ func main() {
 
 			// write readme
 			os.WriteFile("./README.md", []byte(readmeString), 0600)
-
 		})
 
 		var readmeExamples string
