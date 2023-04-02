@@ -109,7 +109,7 @@ func main() {
 			}
 
 			// generate table
-			tableContent := "| Feature | Feature | Feature | Feature |\n| :-------: | :-------: | :-------: | :-------: |\n"
+			tableContent := "| Feature | Feature | Feature | Feature | Feature |\n| :-------: | :-------: | :-------: | :-------: | :-------: |\n"
 			for i, feature := range allPrinters {
 				// the table should contain 5 columns. Each cell is a feature.
 				// Make multiple rows, if there are more than 4 features.
