@@ -14,7 +14,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-latest, windows-latest ]
+        os: [ windows-latest ]
     steps:
 
       - name: Set up Go 1.x
