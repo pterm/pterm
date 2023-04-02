@@ -120,7 +120,7 @@ func main() {
 				}
 				name := strings.ToUpper(string(feature[0])) + feature[1:]
 				name = strings.ReplaceAll(name, "_", " ")
-				tableContent += fmt.Sprintf("%s <br/> ([Example](https://github.com/pterm/pterm/tree/master/_examples/%s)) |", name, feature)
+				tableContent += fmt.Sprintf("%s <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/%s) |", name, feature)
 				if (i+1)%5 == 0 {
 					tableContent += "\n"
 				}
