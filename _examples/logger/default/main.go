@@ -1,6 +1,9 @@
 package main
 
-import "github.com/pterm/pterm"
+import (
+	"github.com/pterm/pterm"
+	"time"
+)
 
 func main() {
 	logger := pterm.DefaultLogger.WithLevel(pterm.LogLevelTrace) // Only show logs with a level of Trace or higher.
@@ -20,4 +23,5 @@ func main() {
 	logger.Error("Damn, here it is!", logger.Args("error", "something went wrong"))
 	logger.Info("But what's really cool is, that you can print very long logs, and PTerm will automatically wrap them for you! Say goodbye to text, that has weird line breaks!", logger.Args("very", "long"))
 	logger.Fatal("Oh no, this process is getting killed!", logger.Args("fatal", true))
+	time.Sleep(time.Second * 2)
 }
