@@ -22,6 +22,6 @@ func main() {
 	logger.Warn("Oh no, I see an error coming to us!", logger.Args("speed", 88, "measures", "mph"))
 	logger.Error("Damn, here it is!", logger.Args("error", "something went wrong"))
 	logger.Info("But what's really cool is, that you can print very long logs, and PTerm will automatically wrap them for you! Say goodbye to text, that has weird line breaks!", logger.Args("very", "long"))
-	logger.Fatal("Oh no, this process is getting killed!", logger.Args("fatal", true))
 	time.Sleep(time.Second * 2)
+	logger.Fatal("Oh no, this process is getting killed!", logger.Args("fatal", true))
 }
