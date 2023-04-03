@@ -36,6 +36,9 @@ func NewRGB(r, g, b uint8, background ...bool) RGB {
 
 // Fade fades one RGB value (over other RGB values) to another RGB value, by giving the function a minimum, maximum and current value.
 func (p RGB) Fade(min, max, current float32, end ...RGB) RGB {
+	if max == current {
+		return end[len(end)-1]
+	}
 	if min < 0 {
 		max -= min
 		current -= min
