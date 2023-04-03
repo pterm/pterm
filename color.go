@@ -276,6 +276,23 @@ func (s Style) Add(styles ...Style) Style {
 	return ret
 }
 
+// RemoveColor removes the given colors from the Style.
+func (s Style) RemoveColor(colors ...Color) Style {
+	ret := s
+
+	for _, c := range colors {
+		// remove via index
+		for i := 0; i < len(ret); i++ {
+			if ret[i] == c {
+				ret = append(ret[:i], ret[i+1:]...)
+				i--
+			}
+		}
+	}
+
+	return ret
+}
+
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
 // Input will be colored with the parent Style.
