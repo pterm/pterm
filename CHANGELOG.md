@@ -6,6 +6,9 @@
 - **rgb:** made it possible to use RGB colors as background
 - **rgb:** made it possible to use RGB colors as background
 
+### Bug Fixes
+- **rgb:** fix Fade maxValue == current not displaying the last color
+
 
 <a name="v0.12.57"></a>
 ## [v0.12.57] - 2023-03-28
