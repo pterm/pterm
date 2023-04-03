@@ -353,9 +353,6 @@ func (l Logger) renderColorful(level LogLevel, msg string, args []LoggerArgument
 		}
 	}
 
-	if internal.GetStringMaxWidth(result) > l.MaxWidth {
-	}
-
 	return
 }
 
