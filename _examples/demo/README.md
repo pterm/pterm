@@ -24,7 +24,8 @@ import (
 // Speed the demo up, by setting this flag.
 // Usefull for debugging.
 // Example:
-//   go run main.go -speedup
+//
+//	go run main.go -speedup
 var speedup = flag.Bool("speedup", false, "Speed up the demo")
 var skipIntro = flag.Bool("skip-intro", false, "Skips the intro")
 var second = time.Second
@@ -40,6 +41,31 @@ func main() {
 		introScreen()
 		clear()
 	}
+
+	showcase("Structured Logging", 5, func() {
+		logger := pterm.DefaultLogger.
+			WithLevel(pterm.LogLevelTrace)
+
+		logger.Trace("Doing not so important stuff", logger.Args("priority", "super low"))
+
+		time.Sleep(time.Second * 3)
+
+		interstingStuff := map[string]any{
+			"when were crayons invented":  "1903",
+			"what is the meaning of life": 42,
+			"is this interesting":         true,
+		}
+		logger.Debug("This might be interesting", logger.ArgsFromMap(interstingStuff))
+		time.Sleep(time.Second * 3)
+
+		logger.Info("That was actually interesting", logger.Args("such", "wow"))
+		time.Sleep(time.Second * 3)
+		logger.Warn("Oh no, I see an error coming to us!", logger.Args("speed", 88, "measures", "mph"))
+		time.Sleep(time.Second * 3)
+		logger.Error("Damn, here it is!", logger.Args("error", "something went wrong"))
+		time.Sleep(time.Second * 3)
+		logger.Info("But what's really cool is, that you can print very long logs, and PTerm will automatically wrap them for you! Say goodbye to text, that has weird line breaks!", logger.Args("very", "long"))
+	})
 
 	showcase("Progress bar", 2, func() {
 		pb, _ := pterm.DefaultProgressbar.WithTotal(len(pseudoProgramList)).WithTitle("Installing stuff").Start()
@@ -99,28 +125,6 @@ func main() {
 		pterm.DefaultCenter.Println(boxedTable)
 	})
 
-	showcase("Default Prefix Printers", 5, func() {
-		// Enable debug messages.
-		pterm.EnableDebugMessages() // Temporarily set debug output to true, to display the debug printer.
-
-		pterm.Debug.Println("Hello, World!") // Print Debug.
-		time.Sleep(second / 2)
-		pterm.Info.Println("Hello, World!") // Print Info.
-		time.Sleep(second / 2)
-		pterm.Success.Println("Hello, World!") // Print Success.
-		time.Sleep(second / 2)
-		pterm.Warning.Println("Hello, World!") // Print Warning.
-		time.Sleep(second / 2)
-		pterm.Error.Println("Errors show the filename and linenumber inside the terminal!") // Print Error.
-		time.Sleep(second / 2)
-		pterm.Info.WithShowLineNumber().Println("Other PrefixPrinters can do that too!") // Print Error.
-		time.Sleep(second / 2)
-		// Temporarily set Fatal to false, so that the CI won't panic.
-		pterm.Fatal.WithFatal(false).Println("Hello, World!") // Print Fatal.
-
-		pterm.DisableDebugMessages() // Disable debug output again.
-	})
-
 	showcase("TrueColor Support", 7, func() {
 		from := pterm.NewRGB(0, 255, 255) // This RGB value is used as the gradients start point.
 		to := pterm.NewRGB(255, 0, 255)   // This RGB value is used as the gradients first point.
@@ -134,24 +138,6 @@ func main() {
 			fadeInfo += from.Fade(0, float32(len(str)), float32(i), to).Sprint(strs[i])
 		}
 		pterm.DefaultCenter.WithCenterEachLineSeparately().Println(fadeInfo)
-	})
-
-	showcase("Themes", 2, func() {
-		pterm.Info.Println("You can change the color theme of PTerm easily to fit your needs!\nThis is the default one:")
-		time.Sleep(second / 2)
-		// Print every value of the default theme with its own style.
-		v := reflect.ValueOf(pterm.ThemeDefault)
-		typeOfS := v.Type()
-
-		if typeOfS == reflect.TypeOf(pterm.Theme{}) {
-			for i := 0; i < v.NumField(); i++ {
-				field, ok := v.Field(i).Interface().(pterm.Style)
-				if ok {
-					field.Println(typeOfS.Field(i).Name)
-				}
-				time.Sleep(time.Millisecond * 250)
-			}
-		}
 	})
 
 	showcase("Fully Customizale", 2, func() {
@@ -200,6 +186,24 @@ func main() {
 			WithTopRightCornerString("╚").
 			Sprintln(text))
 		area.Stop()
+	})
+
+	showcase("Themes", 2, func() {
+		pterm.Info.Println("You can change the color theme of PTerm easily to fit your needs!\nThis is the default one:")
+		time.Sleep(second / 2)
+		// Print every value of the default theme with its own style.
+		v := reflect.ValueOf(pterm.ThemeDefault)
+		typeOfS := v.Type()
+
+		if typeOfS == reflect.TypeOf(pterm.Theme{}) {
+			for i := 0; i < v.NumField(); i++ {
+				field, ok := v.Field(i).Interface().(pterm.Style)
+				if ok {
+					field.Println(typeOfS.Field(i).Name)
+				}
+				time.Sleep(time.Millisecond * 250)
+			}
+		}
 	})
 
 	showcase("And much more!", 3, func() {

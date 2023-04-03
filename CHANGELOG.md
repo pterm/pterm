@@ -2,6 +2,11 @@
 ## [Unreleased]
 
 ### Features
+- **logger:** implemented structured logging
+- **logger:** implemented structured logging
+- **logger:** implemented structured logging
+- **logger:** added logger
+- **logger:** create logger
 - **rgb:** made it possible to use RGB colors as background
 - **rgb:** made it possible to use RGB colors as background
 - **rgb:** made it possible to use RGB colors as background

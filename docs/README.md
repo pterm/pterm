@@ -94,9 +94,9 @@ go get github.com/pterm/pterm
 | Area <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/area) |Barchart <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/barchart) |Basictext <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/basictext) |Bigtext <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/bigtext) |Box <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/box) |
 | Bulletlist <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/bulletlist) |Center <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/center) |Coloring <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/coloring) |Demo <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/demo) |Header <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/header) |
 | Interactive confirm <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/interactive_confirm) |Interactive continue <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/interactive_continue) |Interactive multiselect <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/interactive_multiselect) |Interactive select <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/interactive_select) |Interactive textinput <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/interactive_textinput) |
-| Panel <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/panel) |Paragraph <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/paragraph) |Prefix <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/prefix) |Progressbar <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/progressbar) |Section <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/section) |
-| Spinner <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/spinner) |Style <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/style) |Table <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/table) |Theme <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/theme) |Tree <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/tree) |
- |  |  |  |  | 
+| Logger <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/logger) |Panel <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/panel) |Paragraph <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/paragraph) |Prefix <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/prefix) |Progressbar <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/progressbar) |
+| Section <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/section) |Spinner <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/spinner) |Style <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/style) |Table <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/table) |Theme <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/theme) |
+| Tree <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/tree) | |  |  |  | 
 <!-- printers:end -->
 
 
@@ -1205,7 +1205,8 @@ import (
 // Speed the demo up, by setting this flag.
 // Usefull for debugging.
 // Example:
-//   go run main.go -speedup
+//
+//	go run main.go -speedup
 var speedup = flag.Bool("speedup", false, "Speed up the demo")
 var skipIntro = flag.Bool("skip-intro", false, "Skips the intro")
 var second = time.Second
@@ -1221,6 +1222,31 @@ func main() {
 		introScreen()
 		clear()
 	}
+
+	showcase("Structured Logging", 5, func() {
+		logger := pterm.DefaultLogger.
+			WithLevel(pterm.LogLevelTrace)
+
+		logger.Trace("Doing not so important stuff", logger.Args("priority", "super low"))
+
+		time.Sleep(time.Second * 3)
+
+		interstingStuff := map[string]any{
+			"when were crayons invented":  "1903",
+			"what is the meaning of life": 42,
+			"is this interesting":         true,
+		}
+		logger.Debug("This might be interesting", logger.ArgsFromMap(interstingStuff))
+		time.Sleep(time.Second * 3)
+
+		logger.Info("That was actually interesting", logger.Args("such", "wow"))
+		time.Sleep(time.Second * 3)
+		logger.Warn("Oh no, I see an error coming to us!", logger.Args("speed", 88, "measures", "mph"))
+		time.Sleep(time.Second * 3)
+		logger.Error("Damn, here it is!", logger.Args("error", "something went wrong"))
+		time.Sleep(time.Second * 3)
+		logger.Info("But what's really cool is, that you can print very long logs, and PTerm will automatically wrap them for you! Say goodbye to text, that has weird line breaks!", logger.Args("very", "long"))
+	})
 
 	showcase("Progress bar", 2, func() {
 		pb, _ := pterm.DefaultProgressbar.WithTotal(len(pseudoProgramList)).WithTitle("Installing stuff").Start()
@@ -1280,28 +1306,6 @@ func main() {
 		pterm.DefaultCenter.Println(boxedTable)
 	})
 
-	showcase("Default Prefix Printers", 5, func() {
-		// Enable debug messages.
-		pterm.EnableDebugMessages() // Temporarily set debug output to true, to display the debug printer.
-
-		pterm.Debug.Println("Hello, World!") // Print Debug.
-		time.Sleep(second / 2)
-		pterm.Info.Println("Hello, World!") // Print Info.
-		time.Sleep(second / 2)
-		pterm.Success.Println("Hello, World!") // Print Success.
-		time.Sleep(second / 2)
-		pterm.Warning.Println("Hello, World!") // Print Warning.
-		time.Sleep(second / 2)
-		pterm.Error.Println("Errors show the filename and linenumber inside the terminal!") // Print Error.
-		time.Sleep(second / 2)
-		pterm.Info.WithShowLineNumber().Println("Other PrefixPrinters can do that too!") // Print Error.
-		time.Sleep(second / 2)
-		// Temporarily set Fatal to false, so that the CI won't panic.
-		pterm.Fatal.WithFatal(false).Println("Hello, World!") // Print Fatal.
-
-		pterm.DisableDebugMessages() // Disable debug output again.
-	})
-
 	showcase("TrueColor Support", 7, func() {
 		from := pterm.NewRGB(0, 255, 255) // This RGB value is used as the gradients start point.
 		to := pterm.NewRGB(255, 0, 255)   // This RGB value is used as the gradients first point.
@@ -1315,24 +1319,6 @@ func main() {
 			fadeInfo += from.Fade(0, float32(len(str)), float32(i), to).Sprint(strs[i])
 		}
 		pterm.DefaultCenter.WithCenterEachLineSeparately().Println(fadeInfo)
-	})
-
-	showcase("Themes", 2, func() {
-		pterm.Info.Println("You can change the color theme of PTerm easily to fit your needs!\nThis is the default one:")
-		time.Sleep(second / 2)
-		// Print every value of the default theme with its own style.
-		v := reflect.ValueOf(pterm.ThemeDefault)
-		typeOfS := v.Type()
-
-		if typeOfS == reflect.TypeOf(pterm.Theme{}) {
-			for i := 0; i < v.NumField(); i++ {
-				field, ok := v.Field(i).Interface().(pterm.Style)
-				if ok {
-					field.Println(typeOfS.Field(i).Name)
-				}
-				time.Sleep(time.Millisecond * 250)
-			}
-		}
 	})
 
 	showcase("Fully Customizale", 2, func() {
@@ -1381,6 +1367,24 @@ func main() {
 			WithTopRightCornerString("╚").
 			Sprintln(text))
 		area.Stop()
+	})
+
+	showcase("Themes", 2, func() {
+		pterm.Info.Println("You can change the color theme of PTerm easily to fit your needs!\nThis is the default one:")
+		time.Sleep(second / 2)
+		// Print every value of the default theme with its own style.
+		v := reflect.ValueOf(pterm.ThemeDefault)
+		typeOfS := v.Type()
+
+		if typeOfS == reflect.TypeOf(pterm.Theme{}) {
+			for i := 0; i < v.NumField(); i++ {
+				field, ok := v.Field(i).Interface().(pterm.Style)
+				if ok {
+					field.Println(typeOfS.Field(i).Name)
+				}
+				time.Sleep(time.Millisecond * 250)
+			}
+		}
 	})
 
 	showcase("And much more!", 3, func() {
@@ -1770,6 +1774,207 @@ func main() {
 	result, _ := pterm.DefaultInteractiveTextInput.WithMultiLine().Show() // Text input with multi line enabled
 	pterm.Println()                                                       // Blank line
 	pterm.Info.Printfln("You answered: %s", result)
+}
+
+```
+
+</details>
+
+### logger/custom-key-styles
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/logger/custom-key-styles/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	logger := pterm.DefaultLogger.WithLevel(pterm.LogLevelTrace) // Only show logs with a level of Trace or higher.
+
+	// Overwrite all key styles with a new map
+	logger = logger.WithKeyStyles(map[string]pterm.Style{
+		"priority": *pterm.NewStyle(pterm.FgRed),
+	})
+
+	// The priority key should now be red
+	logger.Info("The priority key should now be red", logger.Args("priority", "low", "foo", "bar"))
+
+	// Append a key style to the exisiting ones
+	logger.AppendKeyStyle("foo", *pterm.NewStyle(pterm.FgBlue))
+
+	// The foo key should now be blue
+	logger.Info("The foo key should now be blue", logger.Args("priority", "low", "foo", "bar"))
+}
+
+```
+
+</details>
+
+### logger/default
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/logger/default/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	logger := pterm.DefaultLogger.WithLevel(pterm.LogLevelTrace) // Only show logs with a level of Trace or higher.
+
+	logger.Trace("Doing not so important stuff", logger.Args("priority", "super low"))
+
+	// You can also use the `ArgsFromMap` function to create a `Args` object from a map.
+	interstingStuff := map[string]any{
+		"when were crayons invented":  "1903",
+		"what is the meaning of life": 42,
+		"is this interesting":         true,
+	}
+	logger.Debug("This might be interesting", logger.ArgsFromMap(interstingStuff))
+
+	logger.Info("That was actually interesting", logger.Args("such", "wow"))
+	logger.Warn("Oh no, I see an error coming to us!", logger.Args("speed", 88, "measures", "mph"))
+	logger.Error("Damn, here it is!", logger.Args("error", "something went wrong"))
+	logger.Info("But what's really cool is, that you can print very long logs, and PTerm will automatically wrap them for you! Say goodbye to text, that has weird line breaks!", logger.Args("very", "long"))
+	logger.Fatal("Oh no, this process is getting killed!", logger.Args("fatal", true))
+}
+
+```
+
+</details>
+
+### logger/demo
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/logger/demo/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"github.com/pterm/pterm"
+	"time"
+)
+
+func main() {
+	logger := pterm.DefaultLogger.
+		WithLevel(pterm.LogLevelTrace)
+
+	logger.Trace("Doing not so important stuff", logger.Args("priority", "super low"))
+
+	sleep()
+
+	interstingStuff := map[string]any{
+		"when were crayons invented":  "1903",
+		"what is the meaning of life": 42,
+		"is this interesting":         true,
+	}
+	logger.Debug("This might be interesting", logger.ArgsFromMap(interstingStuff))
+	sleep()
+
+	logger.Info("That was actually interesting", logger.Args("such", "wow"))
+	sleep()
+	logger.Warn("Oh no, I see an error coming to us!", logger.Args("speed", 88, "measures", "mph"))
+	sleep()
+	logger.Error("Damn, here it is!", logger.Args("error", "something went wrong"))
+	sleep()
+	logger.Info("But what's really cool is, that you can print very long logs, and PTerm will automatically wrap them for you! Say goodbye to text, that has weird line breaks!", logger.Args("very", "long"))
+	sleep()
+	logger.Fatal("Oh no, this process is getting killed!", logger.Args("fatal", true))
+}
+
+func sleep() {
+	time.Sleep(time.Second * 3)
+}
+
+```
+
+</details>
+
+### logger/json
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/logger/json/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	logger := pterm.DefaultLogger.
+		WithLevel(pterm.LogLevelTrace).       // Only show logs with a level of Trace or higher.
+		WithFormatter(pterm.LogFormatterJSON) // ! Make the logger print JSON logs.
+
+	logger.Trace("Doing not so important stuff", logger.Args("priority", "super low"))
+
+	// You can also use the `ArgsFromMap` function to create a `Args` object from a map.
+	interstingStuff := map[string]any{
+		"when were crayons invented":  "1903",
+		"what is the meaning of life": 42,
+		"is this interesting":         true,
+	}
+	logger.Debug("This might be interesting", logger.ArgsFromMap(interstingStuff))
+
+	logger.Info("That was actually interesting", logger.Args("such", "wow"))
+	logger.Warn("Oh no, I see an error coming to us!", logger.Args("speed", 88, "measures", "mph"))
+	logger.Error("Damn, here it is!", logger.Args("error", "something went wrong"))
+	logger.Info("But what's really cool is, that you can print very long logs, and PTerm will automatically wrap them for you! Say goodbye to text, that has weird line breaks!", logger.Args("very", "long"))
+	logger.Fatal("Oh no, this process is getting killed!", logger.Args("fatal", true))
+}
+
+```
+
+</details>
+
+### logger/with-caller
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/logger/with-caller/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	logger := pterm.DefaultLogger.
+		WithLevel(pterm.LogLevelTrace). // Only show logs with a level of Trace or higher.
+		WithCaller()                    // ! Show the caller of the log function.
+
+	logger.Trace("Doing not so important stuff", logger.Args("priority", "super low"))
+
+	// You can also use the `ArgsFromMap` function to create a `Args` object from a map.
+	interstingStuff := map[string]any{
+		"when were crayons invented":  "1903",
+		"what is the meaning of life": 42,
+		"is this interesting":         true,
+	}
+	logger.Debug("This might be interesting", logger.ArgsFromMap(interstingStuff))
+
+	logger.Info("That was actually interesting", logger.Args("such", "wow"))
+	logger.Warn("Oh no, I see an error coming to us!", logger.Args("speed", 88, "measures", "mph"))
+	logger.Error("Damn, here it is!", logger.Args("error", "something went wrong"))
+	logger.Info("But what's really cool is, that you can print very long logs, and PTerm will automatically wrap them for you! Say goodbye to text, that has weird line breaks!", logger.Args("very", "long"))
+	logger.Fatal("Oh no, this process is getting killed!", logger.Args("fatal", true))
 }
 
 ```
