@@ -3,7 +3,9 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	logger := pterm.DefaultLogger.WithLevel(pterm.LogLevelTrace) // Only show logs with a level of Trace or higher.
+	logger := pterm.DefaultLogger.
+		WithLevel(pterm.LogLevelTrace).       // Only show logs with a level of Trace or higher.
+		WithFormatter(pterm.LogFormatterJSON) // ! Make the logger print JSON logs.
 
 	logger.Trace("Doing not so important stuff", logger.Args("priority", "super low"))
 

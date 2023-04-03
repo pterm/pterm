@@ -15,6 +15,7 @@ import (
 
 type LogLevel int
 
+// Style returns the style of the log level.
 func (l LogLevel) Style() Style {
 	baseStyle := NewStyle(Bold)
 	switch l {
@@ -78,6 +79,8 @@ const (
 	LogLevelPrint
 )
 
+// LogFormatter is the log formatter.
+// Can be either LogFormatterColorful or LogFormatterJSON.
 type LogFormatter int
 
 const (
@@ -96,10 +99,9 @@ var DefaultLogger = Logger{
 	TimeFormat: "2006-01-02 15:04:05",
 	MaxWidth:   80,
 	KeyStyles: map[string]Style{
-		"error": *FgRed.ToStyle(),
-		"err":   *FgRed.ToStyle(),
-		"fatal": *FgRed.ToStyle(),
-		"info":  *FgGreen.ToStyle(),
+		"error":  *NewStyle(FgRed, Bold),
+		"err":    *NewStyle(FgRed, Bold),
+		"caller": *NewStyle(FgGray, Bold),
 	},
 }
 
@@ -173,6 +175,12 @@ func (l Logger) WithTimeFormat(format string) *Logger {
 // WithKeyStyles sets the style for a specific key.
 func (l Logger) WithKeyStyles(styles map[string]Style) *Logger {
 	l.KeyStyles = styles
+	return &l
+}
+
+// WithMaxWidth sets the maximum width of the logger.
+func (l Logger) WithMaxWidth(width int) *Logger {
+	l.MaxWidth = width
 	return &l
 }
 
@@ -296,18 +304,26 @@ func (l Logger) renderColorful(level LogLevel, msg string, args []LoggerArgument
 
 	result += msg
 
+	if l.ShowCaller {
+		path, line := l.getCallerInfo()
+		args = append(args, LoggerArgument{
+			Key:   "caller",
+			Value: FgGray.Sprintf("%s:%d", path, line),
+		})
+	}
+
 	arguments := make([]string, len(args))
 
 	// add arguments
 	if len(args) > 0 {
 		for i, arg := range args {
 			if style, ok := l.KeyStyles[arg.Key]; ok {
-				arguments[i] = style.Sprintf("%s=", arg.Key)
+				arguments[i] = style.Sprintf("%s: ", arg.Key)
 			} else {
-				arguments[i] = level.Style().Sprintf("%s=", arg.Key)
+				arguments[i] = level.Style().Sprintf("%s: ", arg.Key)
 			}
 
-			arguments[i] += Sprintf("%q", Sprint(arg.Value))
+			arguments[i] += Sprintf("%s", Sprint(arg.Value))
 		}
 	}
 
