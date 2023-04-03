@@ -298,7 +298,7 @@ func (l Logger) renderColorful(level LogLevel, msg string, args []LoggerArgument
 	if internal.GetStringMaxWidth(msg) > remainingWidth {
 		argumentsInNewLine = true
 		msg = DefaultParagraph.WithMaxWidth(remainingWidth).Sprint(msg)
-		padding := len(time.Time{}.Format(l.TimeFormat) + " ")
+		padding := len(time.Now().Format(l.TimeFormat) + " ")
 		msg = strings.ReplaceAll(msg, "\n", "\n"+strings.Repeat(" ", padding)+"  │   ")
 	}
 
