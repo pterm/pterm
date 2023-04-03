@@ -95,6 +95,53 @@ func main() {
 			os.WriteFile("./docs/docs/putils.md", []byte(putilsReadme), 0600)
 		})
 
+		do("Geneating Printers Table", currentLevel, func(currentLevel int) {
+			// get features located in "_examples/*"
+			files, _ := os.ReadDir("./_examples/")
+
+			var allPrinters []string
+			for _, file := range files {
+				if file.Name() == "README.md" {
+					continue
+				}
+
+				allPrinters = append(allPrinters, file.Name())
+			}
+
+			// generate table
+			tableContent := "| Feature | Feature | Feature | Feature | Feature |\n| :-------: | :-------: | :-------: | :-------: | :-------: |\n"
+			for i, feature := range allPrinters {
+				// the table should contain 5 columns. Each cell is a feature.
+				// Make multiple rows, if there are more than 4 features.
+				// A link to the examples should be included in every cell.
+				// Format: "[Example](https://github.com/pterm/pterm/tree/master/_examples/FEATURE)"
+				if i%5 == 0 {
+					tableContent += "| "
+				}
+				name := strings.ToUpper(string(feature[0])) + feature[1:]
+				name = strings.ReplaceAll(name, "_", " ")
+				tableContent += fmt.Sprintf("%s <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/%s) |", name, feature)
+				if (i+1)%5 == 0 {
+					tableContent += "\n"
+				}
+
+				// fill left over cells with empty strings if in the last row
+				if i == len(allPrinters)-1 {
+					tableContent += strings.Repeat(" | ", 5-(i+1)%5)
+				}
+			}
+
+			// read readme
+			readme, _ := os.ReadFile("./README.md")
+
+			// replace table in readme
+			readmeString := string(readme)
+			readmeString = writeBetween("printers", readmeString, "\n"+tableContent+"\n")
+
+			// write readme
+			os.WriteFile("./README.md", []byte(readmeString), 0600)
+		})
+
 		var readmeExamples string
 		do("Generating Examples", currentLevel, func(currentLevel int) {
 			files, _ := os.ReadDir("./_examples/")

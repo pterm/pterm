@@ -74,38 +74,33 @@ Make sure to run this command inside your project, when you're using go modules 
 go get github.com/pterm/pterm
 ```
 
-If you want to create a CLI tool, make sure to check out our [cli-template](https://github.com/pterm/cli-template),
-which features automatic website generation, automatic deployments, a custom CI-System and much more!
-
 ## ⭐ Main Features
 
-|Feature|Description|
-|-------|-----------|
-|🪀 Easy to use |Our first priority is to keep PTerm as easy to use as possible.<br> With many [examples](#-examples) for each individual component, getting started with PTerm is extremely easy.<br> All components are similar in design and implement interfaces to simplify mixing individual components together.|
-|🤹‍♀️ Cross-Platform |We take special precautions to ensure that PTerm works on as many operating systems and terminals as possible.<br> Whether it's `Windows CMD`, `macOS iTerm2` or in the backend (for example inside a `GitHub Action` or other CI systems), PTerm **guarantees** beautiful output!|
-|🧪 Well tested |PTerm has a 100% test coverage, which means that every line of code inside PTerm gets tested automatically<br>We test PTerm continuously. However, since a human cannot test everything all the time, we have our own test system with which we currently run <!-- unittestcount2:start -->**`28774`**<!-- unittestcount2:end -->automated tests to ensure that PTerm has no bugs. |
-|✨ Consistent Colors|PTerm uses the [ANSI color scheme](https://en.wikipedia.org/wiki/ANSI_escape_code#3/4_bit) which is widely used by terminals to ensure consistent colors in different terminal themes.<br>If that's not enough, PTerm can be used to access the full RGB color scheme (16 million colors) in terminals that support `TrueColor`.|
-|📚 Component system|PTerm consists of many components, called `Printers`, which can be used individually or together to generate pretty console output.|
-|🛠 Configurable|PTerm can be used by without any configuration. However, you can easily configure each component with little code, so everyone has the freedom to design their own terminal output.|
-|✏ Documentation |To view the official documentation of the latest release, you can go to the automatically generated page of [pkg.go.dev](https://pkg.go.dev/github.com/pterm/pterm#section-documentation) This documentation is very technical and includes every method that can be used in PTerm.<br>**For an easy start we recommend that you take a look at the [examples section](#-examples).** Here you can see pretty much every feature of PTerm with example code. The animations of the examples are automatically updated as soon as something changes in PTerm.|
-
-<div align="center">
+| Feature          | Description                                         |
+|------------------|-----------------------------------------------------|
+| 🪀 Easy to use    | PTerm emphasizes ease of use, with [examples](#-examples) and consistent component design. |
+| 🤹‍♀️ Cross-Platform | PTerm works on various OS and terminals, including `Windows CMD`, `macOS iTerm2`, and in CI systems like `GitHub Actions`. |
+| 🧪 Well tested    | A high test coverage and <!-- unittestcount2:start -->`28774`<!-- unittestcount2:end --> automated tests ensure PTerm's reliability. |
+| ✨ Consistent Colors | PTerm uses the [ANSI color scheme](https://en.wikipedia.org/wiki/ANSI_escape_code#3/4_bit) for uniformity and supports `TrueColor` for advanced terminals. |
+| 📚 Component system | PTerm's flexible `Printers` can be used individually or combined to generate beautiful console output. |
+| 🛠 Configurable   | PTerm is ready to use without configuration but allows easy customization for unique terminal output. |
+| ✏ Documentation  | Access comprehensive docs on [pkg.go.dev](https://pkg.go.dev/github.com/pterm/pterm#section-documentation) and view practical examples in the [examples section](#-examples). |
 
 ### Printers (Components)
 
-|Feature|Examples| - |Feature|Examples|
-|-------|--------|---|-----|--------|
-|Bar Charts|[Examples](https://github.com/pterm/pterm/tree/master/_examples/barchart)|-|RGB|[Examples](https://github.com/pterm/pterm/tree/master/_examples/coloring)|
-|BigText|[Examples](https://github.com/pterm/pterm/tree/master/_examples/bigtext)|-|Sections|[Examples](https://github.com/pterm/pterm/tree/master/_examples/section)|
-|Box|[Examples](https://github.com/pterm/pterm/tree/master/_examples/box)|-|Spinners|[Examples](https://github.com/pterm/pterm/tree/master/_examples/spinner)|
-|Bullet Lists|[Examples](https://github.com/pterm/pterm/tree/master/_examples/bulletlist)|-|Trees|[Examples](https://github.com/pterm/pterm/tree/master/_examples/tree)|
-|Centered|[Examples](https://github.com/pterm/pterm/tree/master/_examples/center)|-|Theming|[Examples](https://github.com/pterm/pterm/tree/master/_examples/theme)|
-|Colors|[Examples](https://github.com/pterm/pterm/tree/master/_examples/coloring)|-|Tables|[Examples](https://github.com/pterm/pterm/tree/master/_examples/table)|
-|Headers|[Examples](https://github.com/pterm/pterm/tree/master/_examples/header)|-|Styles|[Examples](https://github.com/pterm/pterm/tree/master/_examples/style)|
-|Panels|[Examples](https://github.com/pterm/pterm/tree/master/_examples/panel)|-|Area|[Examples](https://github.com/pterm/pterm/tree/master/_examples/area)|
-|Paragraphs|[Examples](https://github.com/pterm/pterm/tree/master/_examples/paragraph)|-|||
-|Prefixes|[Examples](https://github.com/pterm/pterm/tree/master/_examples/prefix)|-|||
-|Progress Bars|[Examples](https://github.com/pterm/pterm/tree/master/_examples/progressbar)|-|||
+<!-- printers:start -->
+| Feature | Feature | Feature | Feature | Feature |
+| :-------: | :-------: | :-------: | :-------: | :-------: |
+| Area <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/area) |Barchart <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/barchart) |Basictext <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/basictext) |Bigtext <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/bigtext) |Box <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/box) |
+| Bulletlist <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/bulletlist) |Center <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/center) |Coloring <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/coloring) |Demo <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/demo) |Header <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/header) |
+| Interactive confirm <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/interactive_confirm) |Interactive continue <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/interactive_continue) |Interactive multiselect <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/interactive_multiselect) |Interactive select <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/interactive_select) |Interactive textinput <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/interactive_textinput) |
+| Panel <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/panel) |Paragraph <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/paragraph) |Prefix <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/prefix) |Progressbar <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/progressbar) |Section <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/section) |
+| Spinner <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/spinner) |Style <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/style) |Table <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/table) |Theme <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/theme) |Tree <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/tree) |
+ |  |  |  |  | 
+<!-- printers:end -->
+
+
+<div align="center">
 
 ### 🦸‍♂️ Supporters
 
