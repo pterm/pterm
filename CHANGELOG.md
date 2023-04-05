@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+
+<a name="v0.12.58"></a>
+## [v0.12.58] - 2023-04-03
 ### Features
 - **logger:** implemented structured logging
 - **logger:** implemented structured logging
@@ -1150,7 +1153,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.57...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.58...HEAD
+[v0.12.58]: https://github.com/pterm/pterm/compare/v0.12.57...v0.12.58
 [v0.12.57]: https://github.com/pterm/pterm/compare/v0.12.56...v0.12.57
 [v0.12.56]: https://github.com/pterm/pterm/compare/v0.12.55...v0.12.56
 [v0.12.55]: https://github.com/pterm/pterm/compare/v0.12.54...v0.12.55
