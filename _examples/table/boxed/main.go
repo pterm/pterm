@@ -10,5 +10,6 @@ func main() {
 		{"Paul", "Dean", "augue@velitAliquam.co.uk", ""},
 		{"Callie", "Mckay", "nunc.sed@est.com", "这是一个测试, haha!"},
 		{"Libby", "Camacho", "lobortis@semper.com", "just a test, hey!"},
+		{"张", "小宝", "zhang@example.com", ""},
 	}).Render()
 }
