@@ -7,8 +7,8 @@ func main() {
 	// Data can also be generated and inserted later.
 	pterm.DefaultTable.WithHasHeader().WithRightAlignment().WithData(pterm.TableData{
 		{"Firstname", "Lastname", "Email", "Note"},
-		{"Paul", "Dean", "nisi.dictum.augue@velitAliquam.co.uk", ""},
+		{"Paul", "Dean", "dictum.augue@velitAliquam.co.uk", ""},
 		{"Callie", "Mckay", "egestas.nunc.sed@est.com", "这是一个测试, haha!"},
-		{"Libby", "Camacho", "aliquet.lobortis@semper.com", "just a test, hey!"},
+		{"Libby", "Camacho", "lobortis@semper.com", "just a test!"},
 	}).Render()
 }
