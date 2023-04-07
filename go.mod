@@ -9,7 +9,7 @@ require (
 	github.com/gookit/color v1.5.3
 	github.com/lithammer/fuzzysearch v1.1.5
 	github.com/mattn/go-runewidth v0.0.14
-	golang.org/x/term v0.6.0
+	golang.org/x/term v0.7.0
 	golang.org/x/text v0.9.0
 )
 
@@ -21,5 +21,5 @@ require (
 	github.com/rivo/uniseg v0.4.4 // indirect
 	github.com/sergi/go-diff v1.2.0 // indirect
 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
-	golang.org/x/sys v0.6.0 // indirect
+	golang.org/x/sys v0.7.0 // indirect
 )
