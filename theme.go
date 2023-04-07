@@ -30,6 +30,9 @@ var (
 		TableStyle:              Style{FgDefault},
 		TableHeaderStyle:        Style{FgLightCyan},
 		TableSeparatorStyle:     Style{FgGray},
+		HeatmapStyle:            Style{FgDefault},
+		HeatmapHeaderStyle:      Style{FgLightCyan},
+		HeatmapSeparatorStyle:   Style{FgDefault},
 		SectionStyle:            Style{Bold, FgYellow},
 		BulletListTextStyle:     Style{FgDefault},
 		BulletListBulletStyle:   Style{FgGray},
@@ -81,6 +84,9 @@ type Theme struct {
 	TableStyle              Style
 	TableHeaderStyle        Style
 	TableSeparatorStyle     Style
+	HeatmapStyle            Style
+	HeatmapHeaderStyle      Style
+	HeatmapSeparatorStyle   Style
 	SectionStyle            Style
 	BulletListTextStyle     Style
 	BulletListBulletStyle   Style
