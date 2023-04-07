@@ -93,6 +93,7 @@ func TestProgressbarPrinter_GenericStop(t *testing.T) {
 func TestProgressbarPrinter_GetElapsedTime(t *testing.T) {
 	p := pterm.DefaultProgressbar
 	p.Start()
+	time.Sleep(300 * time.Millisecond)
 	p.Stop()
 	testza.AssertNotZero(t, p.GetElapsedTime())
 }
@@ -254,9 +255,9 @@ func TestProgressbarPrinter_OutputToWriters(t *testing.T) {
 			stderr, err := testza.CaptureStderr(func(w io.Writer) error {
 				pb, err := pterm.DefaultProgressbar.WithShowTitle(true).WithTitle("Hello world").WithWriter(os.Stderr).Start()
 				testza.AssertNoError(t, err)
-				time.Sleep(time.Second) // Required otherwise the goroutine doesn't run and the text isn't outputted.
+				time.Sleep(500 * time.Millisecond) // Required otherwise the goroutine doesn't run and the text isn't outputted.
 				testCase.action(pb)
-				time.Sleep(time.Second) // Required otherwise the goroutine doesn't run and the text isn't updated.
+				time.Sleep(500 * time.Millisecond) // Required otherwise the goroutine doesn't run and the text isn't updated.
 				return nil
 			})
 
