@@ -24,8 +24,7 @@ func TestProgressbarPrinter_Add_With(t *testing.T) {
 	w := pterm.GetTerminalWidth()
 	h := pterm.GetTerminalHeight()
 	pterm.SetForcedTerminalSize(1, 1)
-	p := &pterm.ProgressbarPrinter{}
-	p.WithTotal(2000)
+	p := pterm.DefaultProgressbar.WithTotal(2000)
 	p.Add(1337)
 	testza.AssertEqual(t, 1337, p.Current)
 	p.Stop()
@@ -34,8 +33,7 @@ func TestProgressbarPrinter_Add_With(t *testing.T) {
 
 func TestProgressbarPrinter_AddWithNoStyle(t *testing.T) {
 	proxyToDevNull()
-	p := &pterm.ProgressbarPrinter{}
-	p.WithTotal(2000)
+	p := pterm.ProgressbarPrinter{}.WithTotal(2000)
 	p.Add(1337)
 	testza.AssertEqual(t, 1337, p.Current)
 	p.Stop()
@@ -99,8 +97,7 @@ func TestProgressbarPrinter_GetElapsedTime(t *testing.T) {
 }
 
 func TestProgressbarPrinter_Increment(t *testing.T) {
-	p := pterm.ProgressbarPrinter{}
-	p.WithTotal(2000)
+	p := pterm.DefaultProgressbar.WithTotal(2000)
 	p.Increment()
 	testza.AssertEqual(t, 1, p.Current)
 }
@@ -121,8 +118,7 @@ func TestProgressbarPrinter_WithCurrent(t *testing.T) {
 }
 
 func TestProgressbarPrinter_WithDelay(t *testing.T) {
-	p := pterm.ProgressbarPrinter{}
-	p.WithDelay(1 * time.Second)
+	p := pterm.DefaultProgressbar.WithDelay(1 * time.Second)
 
 	testza.AssertEqual(t, 1*time.Second, p.Delay)
 }
@@ -228,23 +224,46 @@ func TestProgressbarPrinter_UpdateTitle(t *testing.T) {
 }
 
 func TestProgressbarPrinter_WithWriter(t *testing.T) {
-	p := &pterm.ProgressbarPrinter{}
+	p := pterm.ProgressbarPrinter{}
 	s := os.Stderr
-	p.WithWriter(s)
-	p2 := &pterm.ProgressbarPrinter{}
+	p2 := p.WithWriter(s)
 
-	testza.AssertEqual(t, s, p.Writer)
-	testza.AssertZero(t, p2.Writer)
+	testza.AssertEqual(t, s, p2.Writer)
+	testza.AssertZero(t, p.Writer)
 }
 
 func TestProgressbarPrinter_OutputToWriters(t *testing.T) {
 	testCases := map[string]struct {
-		action                func(*pterm.ProgressbarPrinter)
-		expectOutputToContain string
+		pb                       *pterm.ProgressbarPrinter
+		action                   func(*pterm.ProgressbarPrinter)
+		expectOutputToContain    string
+		expectOutputNotToContain string
 	}{
 		"ExpectUpdatedTitleToBeWrittenToStderr": {
+			pb: pterm.DefaultProgressbar.WithShowTitle(true).WithTitle("Hello world"),
 			action: func(pb *pterm.ProgressbarPrinter) {
 				pb.UpdateTitle("Updated text")
+			},
+			expectOutputToContain: "Updated text",
+		},
+		"ExpectedBarNotToUpdateWhenShowElapsedTimeIsFalse": {
+			pb: pterm.DefaultProgressbar.
+				WithShowElapsedTime(false).
+				WithShowTitle(true).
+				WithTitle("Hello world"),
+			action: func(pb *pterm.ProgressbarPrinter) {
+				pb.UpdateTitle("Updated text")
+			},
+			expectOutputNotToContain: "Updated text",
+		},
+		"ExpectedBarToUpdateWhenShowElapsedTimeIsFalse": {
+			pb: pterm.DefaultProgressbar.
+				WithShowElapsedTime(false).
+				WithShowTitle(true).
+				WithTitle("Hello world"),
+			action: func(pb *pterm.ProgressbarPrinter) {
+				pb.UpdateTitle("Updated text")
+				pb.Add(1)
 			},
 			expectOutputToContain: "Updated text",
 		},
@@ -253,17 +272,21 @@ func TestProgressbarPrinter_OutputToWriters(t *testing.T) {
 	for testTitle, testCase := range testCases {
 		t.Run(testTitle, func(t *testing.T) {
 			stderr, err := testza.CaptureStderr(func(w io.Writer) error {
-				pb, err := pterm.DefaultProgressbar.WithShowTitle(true).WithTitle("Hello world").WithWriter(os.Stderr).Start()
+				pb, err := testCase.pb.WithWriter(os.Stderr).Start()
 				testza.AssertNoError(t, err)
-				time.Sleep(200 * time.Millisecond) // Required otherwise the goroutine doesn't run and the text isn't outputted.
+				time.Sleep(time.Second) // Required otherwise the goroutine doesn't run and the text isn't outputted.
 				testCase.action(pb)
-				time.Sleep(200 * time.Millisecond) // Required otherwise the goroutine doesn't run and the text isn't updated.
+				time.Sleep(time.Second) // Required otherwise the goroutine doesn't run and the text isn't updated.
 				return nil
 			})
 
 			testza.AssertNoError(t, err)
 			testza.AssertContains(t, stderr, "Hello world")
-			testza.AssertContains(t, stderr, testCase.expectOutputToContain)
+			if testCase.expectOutputToContain != "" {
+				testza.AssertContains(t, stderr, testCase.expectOutputToContain)
+			} else {
+				testza.AssertNotContains(t, stderr, testCase.expectOutputNotToContain)
+			}
 		})
 	}
 }

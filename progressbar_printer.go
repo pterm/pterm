@@ -56,6 +56,7 @@ type ProgressbarPrinter struct {
 	BarStyle   *Style
 
 	IsActive bool
+	update   bool
 
 	startedAt time.Time
 
@@ -63,107 +64,107 @@ type ProgressbarPrinter struct {
 }
 
 // WithTitle sets the name of the ProgressbarPrinter.
-func (p *ProgressbarPrinter) WithTitle(name string) *ProgressbarPrinter {
+func (p ProgressbarPrinter) WithTitle(name string) *ProgressbarPrinter {
 	p.Title = name
-	return p
+	return &p
 }
 
 // WithMaxWidth sets the maximum width of the ProgressbarPrinter.
 // If the terminal is smaller than the given width, the terminal width will be used instead.
 // If the width is set to zero, or below, the terminal width will be used.
-func (p *ProgressbarPrinter) WithMaxWidth(maxWidth int) *ProgressbarPrinter {
+func (p ProgressbarPrinter) WithMaxWidth(maxWidth int) *ProgressbarPrinter {
 	p.MaxWidth = maxWidth
-	return p
+	return &p
 }
 
 // WithTotal sets the total value of the ProgressbarPrinter.
-func (p *ProgressbarPrinter) WithTotal(total int) *ProgressbarPrinter {
+func (p ProgressbarPrinter) WithTotal(total int) *ProgressbarPrinter {
 	p.Total = total
-	return p
+	return &p
 }
 
 // WithCurrent sets the current value of the ProgressbarPrinter.
-func (p *ProgressbarPrinter) WithCurrent(current int) *ProgressbarPrinter {
+func (p ProgressbarPrinter) WithCurrent(current int) *ProgressbarPrinter {
 	p.Current = current
-	return p
+	return &p
 }
 
 // WithDelay add a delay to the ProgressbarPrinter.
-func (p *ProgressbarPrinter) WithDelay(delay time.Duration) *ProgressbarPrinter {
+func (p ProgressbarPrinter) WithDelay(delay time.Duration) *ProgressbarPrinter {
 	p.Delay = delay
-	return p
+	return &p
 }
 
 // WithBarCharacter sets the bar character of the ProgressbarPrinter.
-func (p *ProgressbarPrinter) WithBarCharacter(char string) *ProgressbarPrinter {
+func (p ProgressbarPrinter) WithBarCharacter(char string) *ProgressbarPrinter {
 	p.BarCharacter = char
-	return p
+	return &p
 }
 
 // WithLastCharacter sets the last character of the ProgressbarPrinter.
-func (p *ProgressbarPrinter) WithLastCharacter(char string) *ProgressbarPrinter {
+func (p ProgressbarPrinter) WithLastCharacter(char string) *ProgressbarPrinter {
 	p.LastCharacter = char
-	return p
+	return &p
 }
 
 // WithElapsedTimeRoundingFactor sets the rounding factor of the elapsed time.
-func (p *ProgressbarPrinter) WithElapsedTimeRoundingFactor(duration time.Duration) *ProgressbarPrinter {
+func (p ProgressbarPrinter) WithElapsedTimeRoundingFactor(duration time.Duration) *ProgressbarPrinter {
 	p.ElapsedTimeRoundingFactor = duration
-	return p
+	return &p
 }
 
 // WithShowElapsedTime sets if the elapsed time should be displayed in the ProgressbarPrinter.
-func (p *ProgressbarPrinter) WithShowElapsedTime(b ...bool) *ProgressbarPrinter {
+func (p ProgressbarPrinter) WithShowElapsedTime(b ...bool) *ProgressbarPrinter {
 	p.ShowElapsedTime = internal.WithBoolean(b)
-	return p
+	return &p
 }
 
 // WithShowCount sets if the total and current count should be displayed in the ProgressbarPrinter.
-func (p *ProgressbarPrinter) WithShowCount(b ...bool) *ProgressbarPrinter {
+func (p ProgressbarPrinter) WithShowCount(b ...bool) *ProgressbarPrinter {
 	p.ShowCount = internal.WithBoolean(b)
-	return p
+	return &p
 }
 
 // WithShowTitle sets if the title should be displayed in the ProgressbarPrinter.
-func (p *ProgressbarPrinter) WithShowTitle(b ...bool) *ProgressbarPrinter {
+func (p ProgressbarPrinter) WithShowTitle(b ...bool) *ProgressbarPrinter {
 	p.ShowTitle = internal.WithBoolean(b)
-	return p
+	return &p
 }
 
 // WithShowPercentage sets if the completed percentage should be displayed in the ProgressbarPrinter.
-func (p *ProgressbarPrinter) WithShowPercentage(b ...bool) *ProgressbarPrinter {
+func (p ProgressbarPrinter) WithShowPercentage(b ...bool) *ProgressbarPrinter {
 	p.ShowPercentage = internal.WithBoolean(b)
-	return p
+	return &p
 }
 
 // WithTitleStyle sets the style of the title.
-func (p *ProgressbarPrinter) WithTitleStyle(style *Style) *ProgressbarPrinter {
+func (p ProgressbarPrinter) WithTitleStyle(style *Style) *ProgressbarPrinter {
 	p.TitleStyle = style
-	return p
+	return &p
 }
 
 // WithBarStyle sets the style of the bar.
-func (p *ProgressbarPrinter) WithBarStyle(style *Style) *ProgressbarPrinter {
+func (p ProgressbarPrinter) WithBarStyle(style *Style) *ProgressbarPrinter {
 	p.BarStyle = style
-	return p
+	return &p
 }
 
 // WithRemoveWhenDone sets if the ProgressbarPrinter should be removed when it is done.
-func (p *ProgressbarPrinter) WithRemoveWhenDone(b ...bool) *ProgressbarPrinter {
+func (p ProgressbarPrinter) WithRemoveWhenDone(b ...bool) *ProgressbarPrinter {
 	p.RemoveWhenDone = internal.WithBoolean(b)
-	return p
+	return &p
 }
 
 // WithBarFiller sets the filler character for the ProgressbarPrinter.
-func (p *ProgressbarPrinter) WithBarFiller(char string) *ProgressbarPrinter {
+func (p ProgressbarPrinter) WithBarFiller(char string) *ProgressbarPrinter {
 	p.BarFiller = char
-	return p
+	return &p
 }
 
 // WithWriter sets the custom Writer.
-func (p *ProgressbarPrinter) WithWriter(writer io.Writer) *ProgressbarPrinter {
+func (p ProgressbarPrinter) WithWriter(writer io.Writer) *ProgressbarPrinter {
 	p.Writer = writer
-	return p
+	return &p
 }
 
 // Increment current value by one.
@@ -185,6 +186,7 @@ func (p *ProgressbarPrinter) Add(count int) *ProgressbarPrinter {
 	}
 
 	p.Current += count
+	p.update = true
 
 	if p.Current > p.Total {
 		p.Current = p.Total
@@ -199,6 +201,8 @@ func (p *ProgressbarPrinter) Start(title ...interface{}) (*ProgressbarPrinter, e
 		Fprintln(p.Writer, p.Title)
 	}
 	p.IsActive = true
+	p.update = true
+
 	if len(title) != 0 {
 		p.Title = Sprint(title...)
 	}
@@ -207,6 +211,12 @@ func (p *ProgressbarPrinter) Start(title ...interface{}) (*ProgressbarPrinter, e
 
 	go func() {
 		for p.IsActive {
+			if !p.ShowElapsedTime && !p.update {
+				continue
+			}
+
+			p.update = false
+
 			if p.TitleStyle == nil {
 				p.TitleStyle = NewStyle()
 			}
@@ -251,6 +261,7 @@ func (p *ProgressbarPrinter) Start(title ...interface{}) (*ProgressbarPrinter, e
 			}
 			if p.ShowElapsedTime {
 				after += "| " + p.parseElapsedTime()
+				p.update = true
 			}
 
 			barMaxLength := width - len(RemoveColorFromString(before)) - len(RemoveColorFromString(after)) - 1
@@ -269,7 +280,6 @@ func (p *ProgressbarPrinter) Start(title ...interface{}) (*ProgressbarPrinter, e
 			}
 
 			if !RawOutput {
-				fClearLine(p.Writer)
 				Fprinto(p.Writer, before+bar+after)
 				time.Sleep(p.Delay)
 			}
