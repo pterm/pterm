@@ -59,6 +59,17 @@ func TestProgressbarPrinter_AddTotalEqualsCurrent(t *testing.T) {
 	testza.AssertFalse(t, p.IsActive)
 }
 
+func TestProgressbarPrinter_AddTotalLessThanCurrent(t *testing.T) {
+	proxyToDevNull()
+	p := pterm.DefaultProgressbar.WithTotal(1)
+	p.Start()
+	p.Add(2)
+	testza.AssertEqual(t, 1, p.Current)
+	testza.AssertTrue(t, p.IsActive)
+	p.Stop()
+	testza.AssertFalse(t, p.IsActive)
+}
+
 func TestProgressbarPrinter_RemoveWhenDone(t *testing.T) {
 	proxyToDevNull()
 	p := &pterm.ProgressbarPrinter{}
