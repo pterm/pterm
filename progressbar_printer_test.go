@@ -239,11 +239,11 @@ func TestProgressbarPrinter_WithOutMaxWidth(t *testing.T) {
 func TestProgressbarPrinter_WithMaxWidthMoreThanTerminal(t *testing.T) {
 	w := pterm.GetTerminalWidth()
 	h := pterm.GetTerminalHeight()
+	pterm.SetForcedTerminalSize(1, 1)
 	p := pterm.ProgressbarPrinter{}
 	p2 := p.WithTotal(1).WithMaxWidth(300)
 	p2.Add(1)
 	p2.Start()
-	pterm.SetForcedTerminalSize(1, 1)
 
 	pterm.SetForcedTerminalSize(w, h)
 }
