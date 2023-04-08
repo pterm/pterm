@@ -197,6 +197,13 @@ func TestProgressbarPrinter_WithTitle(t *testing.T) {
 	testza.AssertEqual(t, "test", p2.Title)
 }
 
+func TestProgressbarPrinter_WithStartTitle(t *testing.T) {
+	p := pterm.ProgressbarPrinter{}
+	p2, _ := p.Start("test")
+
+	testza.AssertEqual(t, "test", p2.Title)
+}
+
 func TestProgressbarPrinter_WithTitleStyle(t *testing.T) {
 	s := pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold)
 	p := pterm.ProgressbarPrinter{}
@@ -217,6 +224,28 @@ func TestProgressbarPrinter_WithMaxWidth(t *testing.T) {
 	p2 := p.WithMaxWidth(1337)
 
 	testza.AssertEqual(t, 1337, p2.MaxWidth)
+}
+
+func TestProgressbarPrinter_WithOutMaxWidth(t *testing.T) {
+	w := pterm.GetTerminalWidth()
+	h := pterm.GetTerminalHeight()
+	pterm.SetForcedTerminalSize(1, 1)
+	p := pterm.ProgressbarPrinter{}
+	p2 := p.WithTotal(1)
+	p2.Start()
+	pterm.SetForcedTerminalSize(w, h)
+}
+
+func TestProgressbarPrinter_WithMaxWidthMoreThanTerminal(t *testing.T) {
+	w := pterm.GetTerminalWidth()
+	h := pterm.GetTerminalHeight()
+	p := pterm.ProgressbarPrinter{}
+	p2 := p.WithTotal(1).WithMaxWidth(300)
+	p2.Add(1)
+	p2.Start()
+	pterm.SetForcedTerminalSize(1, 1)
+
+	pterm.SetForcedTerminalSize(w, h)
 }
 
 func TestProgressbarPrinter_WithBarFiller(t *testing.T) {
@@ -257,7 +286,7 @@ func TestProgressbarPrinter_OutputToWriters(t *testing.T) {
 			},
 			expectOutputToContain: "Updated text",
 		},
-		"ExpectedBarNotToUpdateWhenShowElapsedTimeIsFalse": {
+		"ExpectUpdatedTitleNotToBeWrittenToStderrWithShowElapsedTimeIsFalse": {
 			pb: pterm.DefaultProgressbar.
 				WithShowElapsedTime(false).
 				WithShowTitle(true).
@@ -267,7 +296,7 @@ func TestProgressbarPrinter_OutputToWriters(t *testing.T) {
 			},
 			expectOutputNotToContain: "Updated text",
 		},
-		"ExpectedBarToUpdateWhenShowElapsedTimeIsFalse": {
+		"ExpectUpdatedTitleToBeWrittenToStderrWithShowElapsedTimeIsFalseAfterAdd": {
 			pb: pterm.DefaultProgressbar.
 				WithShowElapsedTime(false).
 				WithShowTitle(true).
