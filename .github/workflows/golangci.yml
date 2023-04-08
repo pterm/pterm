@@ -1,16 +1,21 @@
-name: Code analysis
 
-on: [pull_request]
+
+name: golangci-lint
+on: [ push, pull_request ]
 jobs:
-  golangci-lint:
+  golangci:
+    if: "!contains(github.event.head_commit.message, 'autoupdate')"
+    name: lint
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code into the Go module directory
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
         with:
-          fetch-depth: 0
-      - name: Linting with golangci-lint
-        uses: reviewdog/action-golangci-lint@v2
+          go-version: 1.18
+
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v3
         with:
-          github_token: ${{ secrets.ACCESS_TOKEN }}
-          reporter: github-pr-review
+          version: latest
