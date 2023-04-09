@@ -60,8 +60,8 @@ func TestHeatmapPrinter_SRender(t *testing.T) {
 	testza.AssertNoError(t, err)
 	testza.AssertNotNil(t, content)
 
-	// With
-	printer = pterm.DefaultHeatmap.WithAxisData(hd).WithData(d).WithSeparatorStyle(nil)
+	// WithRGB
+	printer = pterm.DefaultHeatmap.WithAxisData(hd).WithData(d).WithRGB(true)
 	content, err = printer.Srender()
 
 	testza.AssertNoError(t, err)
