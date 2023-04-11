@@ -18,6 +18,105 @@ type RGB struct {
 	Background bool
 }
 
+type RGBStyle struct {
+	Opts   []Color
+	Fg, Bg RGB
+
+	hasBg bool
+}
+
+func NewRGBStyle(foreground RGB, background ...RGB) RGBStyle {
+	var s RGBStyle
+	s.Fg = foreground
+	if len(background) > 0 {
+		s.Bg = background[0]
+		s.hasBg = true
+	}
+	return s
+}
+
+func (p RGBStyle) AddOptions(opts ...Color) RGBStyle {
+	p.Opts = append(p.Opts, opts...)
+	return p
+}
+
+func (p RGBStyle) Print(a ...interface{}) *TextPrinter {
+	Print(p.Sprint(a...))
+	tp := TextPrinter(p)
+	return &tp
+}
+
+func (p RGBStyle) Println(a ...interface{}) *TextPrinter {
+	Println(p.Sprint(a...))
+	tp := TextPrinter(p)
+	return &tp
+}
+
+func (p RGBStyle) Printf(format string, a ...interface{}) *TextPrinter {
+	Printf(format, p.Sprint(a...))
+	tp := TextPrinter(p)
+	return &tp
+}
+
+func (p RGBStyle) Printfln(format string, a ...interface{}) *TextPrinter {
+	Printf(format, p.Sprint(a...))
+	tp := TextPrinter(p)
+	return &tp
+}
+
+func (p RGBStyle) PrintOnError(a ...interface{}) *TextPrinter {
+	for _, arg := range a {
+		if err, ok := arg.(error); ok {
+			if err != nil {
+				p.Println(err)
+			}
+		}
+	}
+
+	tp := TextPrinter(p)
+	return &tp
+}
+
+func (p RGBStyle) PrintOnErrorf(format string, a ...interface{}) *TextPrinter {
+	for _, arg := range a {
+		if err, ok := arg.(error); ok {
+			if err != nil {
+				p.Println(fmt.Errorf(format, err))
+			}
+		}
+	}
+
+	tp := TextPrinter(p)
+	return &tp
+}
+
+func (p RGBStyle) Sprint(a ...interface{}) string {
+	var rgbStyle *color.RGBStyle
+	if !p.hasBg {
+		rgbStyle = color.NewRGBStyle(color.RGB(p.Fg.R, p.Fg.G, p.Fg.B))
+	} else {
+		rgbStyle = color.NewRGBStyle(color.RGB(p.Fg.R, p.Fg.G, p.Fg.B), color.RGB(p.Bg.R, p.Bg.G, p.Bg.B))
+	}
+	if len(p.Opts) > 0 {
+		for _, opt := range p.Opts {
+			rgbStyle.AddOpts(color.Color(opt))
+		}
+	}
+	return rgbStyle.Sprint(a...)
+}
+
+func (p RGBStyle) Sprintln(a ...interface{}) string {
+	return p.Sprint(a...) + "\n"
+}
+
+func (p RGBStyle) Sprintf(format string, a ...interface{}) string {
+	return fmt.Sprintf(format, p.Sprint(a...))
+}
+
+func (p RGBStyle) Sprintfln(format string, a ...interface{}) string {
+	return fmt.Sprintf(format, p.Sprint(a...)) + "\n"
+}
+
 // GetValues returns the RGB values separately.
 func (p RGB) GetValues() (r, g, b uint8) {
 	return p.R, p.G, p.B
@@ -159,4 +258,12 @@ func (p RGB) PrintOnErrorf(format string, a ...interface{}) *TextPrinter {
 
 	tp := TextPrinter(p)
 	return &tp
+}
+
+func (p RGB) ToRGBStyle() RGBStyle {
+	if p.Background {
+		return RGBStyle{Bg: p}
+	}
+
+	return RGBStyle{Fg: p}
 }
