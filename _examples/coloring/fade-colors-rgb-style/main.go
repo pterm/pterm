@@ -35,19 +35,23 @@ func main() {
 		fade2 += pterm.NewRGBStyle(black, purple.Fade(0, float32(len(str)), float32(i), red)).Sprint(strs[i])
 	}
 
+	// Print string.
 	pterm.Println(fade2)
 
 	str = "Styles can also be applied. For example: Bold or Italic."
 	strs = strings.Split(str, "")
 	var fade3 string // String which will be used to print.
+
 	bold := 0
 	boldStr := strings.Split("Bold", "")
 	italic := 0
 	italicStr := strings.Split("Italic", "")
+
 	// For loop over the range of the string length.
 	for i := 0; i < len(str); i++ {
 		// Append faded letter to info string.
 		s := pterm.NewRGBStyle(white.Fade(0, float32(len(str)), float32(i), green), red.Fade(0, float32(len(str)), float32(i), black))
+
 		// if the next letters are "Bold", then add the style "Bold".
 		// else if the next letters are "Italic", then add the style "Italic".
 		if bold < len(boldStr) && i+len(boldStr) <= len(strs) {
@@ -64,5 +68,6 @@ func main() {
 		fade3 += s.Sprint(strs[i])
 	}
 
+	// Print string.
 	pterm.Println(fade3)
 }

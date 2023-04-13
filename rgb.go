@@ -25,6 +25,7 @@ type RGBStyle struct {
 	hasBg bool
 }
 
+// NewRGBStyle returns a new RGBStyle.
 func NewRGBStyle(foreground RGB, background ...RGB) RGBStyle {
 	var s RGBStyle
 	s.Fg = foreground
@@ -35,35 +36,55 @@ func NewRGBStyle(foreground RGB, background ...RGB) RGBStyle {
 	return s
 }
 
+// AddOptions adds options to the RGBStyle.
 func (p RGBStyle) AddOptions(opts ...Color) RGBStyle {
 	p.Opts = append(p.Opts, opts...)
 	return p
 }
 
+// GetValues returns the foreground, background and options of the RGBStyle.
+func (p RGBStyle) GetValues() (RGB, RGB, []Color) {
+	return p.Fg, p.Bg, p.Opts
+}
+
+// Print formats using the default formats for its operands and writes to standard output.
+// Spaces are added between operands when neither is a string.
+// It returns the number of bytes written and any write error encountered.
 func (p RGBStyle) Print(a ...interface{}) *TextPrinter {
 	Print(p.Sprint(a...))
 	tp := TextPrinter(p)
 	return &tp
 }
 
+// Println formats using the default formats for its operands and writes to standard output.
+// Spaces are always added between operands and a newline is appended.
+// It returns the number of bytes written and any write error encountered.
 func (p RGBStyle) Println(a ...interface{}) *TextPrinter {
 	Println(p.Sprint(a...))
 	tp := TextPrinter(p)
 	return &tp
 }
 
+// Printf formats according to a format specifier and writes to standard output.
+// It returns the number of bytes written and any write error encountered.
 func (p RGBStyle) Printf(format string, a ...interface{}) *TextPrinter {
 	Printf(format, p.Sprint(a...))
 	tp := TextPrinter(p)
 	return &tp
 }
 
+// Printfln formats according to a format specifier and writes to standard output.
+// Spaces are always added between operands and a newline is appended.
+// It returns the number of bytes written and any write error encountered.
 func (p RGBStyle) Printfln(format string, a ...interface{}) *TextPrinter {
 	Printf(format, p.Sprint(a...))
 	tp := TextPrinter(p)
 	return &tp
 }
 
+// PrintOnError prints every error which is not nil.
+// If every error is nil, nothing will be printed.
+// This can be used for simple error checking.
 func (p RGBStyle) PrintOnError(a ...interface{}) *TextPrinter {
 	for _, arg := range a {
 		if err, ok := arg.(error); ok {
@@ -77,6 +98,9 @@ func (p RGBStyle) PrintOnError(a ...interface{}) *TextPrinter {
 	return &tp
 }
 
+// PrintOnErrorf wraps every error which is not nil and prints it.
+// If every error is nil, nothing will be printed.
+// This can be used for simple error checking.
 func (p RGBStyle) PrintOnErrorf(format string, a ...interface{}) *TextPrinter {
 	for _, arg := range a {
 		if err, ok := arg.(error); ok {
@@ -90,6 +114,8 @@ func (p RGBStyle) PrintOnErrorf(format string, a ...interface{}) *TextPrinter {
 	return &tp
 }
 
+// Sprint formats using the default formats for its operands and returns the resulting string.
+// Spaces are added between operands when neither is a string.
 func (p RGBStyle) Sprint(a ...interface{}) string {
 	var rgbStyle *color.RGBStyle
 	if !p.hasBg {
@@ -105,14 +131,19 @@ func (p RGBStyle) Sprint(a ...interface{}) string {
 	return rgbStyle.Sprint(a...)
 }
 
+// Sprintln formats using the default formats for its operands and returns the resulting string.
+// Spaces are always added between operands and a newline is appended.
 func (p RGBStyle) Sprintln(a ...interface{}) string {
 	return p.Sprint(a...) + "\n"
 }
 
+// Sprintf formats according to a format specifier and returns the resulting string.
 func (p RGBStyle) Sprintf(format string, a ...interface{}) string {
 	return fmt.Sprintf(format, p.Sprint(a...))
 }
 
+// Sprintfln formats according to a format specifier and returns the resulting string.
+// Spaces are always added between operands and a newline is appended.
 func (p RGBStyle) Sprintfln(format string, a ...interface{}) string {
 	return fmt.Sprintf(format, p.Sprint(a...)) + "\n"
 }
