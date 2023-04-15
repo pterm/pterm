@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Features
+- add optional mask to InteractiveTextInputPrinter
+
 
 <a name="v0.12.58"></a>
 ## [v0.12.58] - 2023-04-03
