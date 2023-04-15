@@ -15,6 +15,7 @@ var (
 	DefaultInteractiveTextInput = InteractiveTextInputPrinter{
 		DefaultText: "Input text",
 		TextStyle:   &ThemeDefault.PrimaryStyle,
+		Mask:        "",
 	}
 )
 
@@ -23,6 +24,7 @@ type InteractiveTextInputPrinter struct {
 	TextStyle   *Style
 	DefaultText string
 	MultiLine   bool
+	Mask        string
 
 	input      []string
 	cursorXPos int
@@ -45,6 +47,12 @@ func (p InteractiveTextInputPrinter) WithTextStyle(style *Style) *InteractiveTex
 // WithMultiLine sets the multi line flag.
 func (p InteractiveTextInputPrinter) WithMultiLine(multiLine ...bool) *InteractiveTextInputPrinter {
 	p.MultiLine = internal.WithBoolean(multiLine)
+	return &p
+}
+
+// WithMask sets the mask.
+func (p InteractiveTextInputPrinter) WithMask(mask string) *InteractiveTextInputPrinter {
+	p.Mask = mask
 	return &p
 }
 
@@ -200,6 +208,7 @@ func (p InteractiveTextInputPrinter) updateArea(area *AreaPrinter) string {
 		p.cursorYPos = 0
 	}
 	areaText := p.text
+
 	for i, s := range p.input {
 		if i < len(p.input)-1 {
 			areaText += s + "\n"
@@ -207,6 +216,11 @@ func (p InteractiveTextInputPrinter) updateArea(area *AreaPrinter) string {
 			areaText += s
 		}
 	}
+
+	if p.Mask != "" {
+		areaText = p.text + strings.Repeat(p.Mask, internal.GetStringMaxWidth(areaText)-internal.GetStringMaxWidth(p.text))
+	}
+
 	if p.cursorXPos+internal.GetStringMaxWidth(p.input[p.cursorYPos]) < 1 {
 		p.cursorXPos = -internal.GetStringMaxWidth(p.input[p.cursorYPos])
 	}
