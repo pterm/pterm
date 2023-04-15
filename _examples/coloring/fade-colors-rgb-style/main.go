@@ -17,25 +17,21 @@ func main() {
 	str := "RGB colors only work in Terminals which support TrueColor."
 	strs := strings.Split(str, "")
 	var fadeInfo string // String which will be used to print.
-	// For loop over the range of the string length.
 	for i := 0; i < len(str); i++ {
 		// Append faded letter to info string.
 		fadeInfo += pterm.NewRGBStyle(white.Fade(0, float32(len(str)), float32(i), purple), grey.Fade(0, float32(len(str)), float32(i), black)).Sprint(strs[i])
 	}
 
-	// Print info.
 	pterm.Info.Println(fadeInfo)
 
 	str = "The background and foreground colors can be customized individually."
 	strs = strings.Split(str, "")
 	var fade2 string // String which will be used to print info.
-	// For loop over the range of the string length.
 	for i := 0; i < len(str); i++ {
 		// Append faded letter to info string.
 		fade2 += pterm.NewRGBStyle(black, purple.Fade(0, float32(len(str)), float32(i), red)).Sprint(strs[i])
 	}
 
-	// Print string.
 	pterm.Println(fade2)
 
 	str = "Styles can also be applied. For example: Bold or Italic."
@@ -47,7 +43,6 @@ func main() {
 	italic := 0
 	italicStr := strings.Split("Italic", "")
 
-	// For loop over the range of the string length.
 	for i := 0; i < len(str); i++ {
 		// Append faded letter to info string.
 		s := pterm.NewRGBStyle(white.Fade(0, float32(len(str)), float32(i), green), red.Fade(0, float32(len(str)), float32(i), black))
@@ -68,6 +63,5 @@ func main() {
 		fade3 += s.Sprint(strs[i])
 	}
 
-	// Print string.
 	pterm.Println(fade3)
 }

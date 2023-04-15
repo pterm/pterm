@@ -19,18 +19,20 @@ type RGB struct {
 }
 
 type RGBStyle struct {
-	Opts   []Color
-	Fg, Bg RGB
+	Options                []Color
+	Foreground, Background RGB
 
 	hasBg bool
 }
 
 // NewRGBStyle returns a new RGBStyle.
+// The foreground color is required, the background color is optional.
+// The colors will be set as is, ignoring the RGB.Background property.
 func NewRGBStyle(foreground RGB, background ...RGB) RGBStyle {
 	var s RGBStyle
-	s.Fg = foreground
+	s.Foreground = foreground
 	if len(background) > 0 {
-		s.Bg = background[0]
+		s.Background = background[0]
 		s.hasBg = true
 	}
 	return s
@@ -38,13 +40,13 @@ func NewRGBStyle(foreground RGB, background ...RGB) RGBStyle {
 
 // AddOptions adds options to the RGBStyle.
 func (p RGBStyle) AddOptions(opts ...Color) RGBStyle {
-	p.Opts = append(p.Opts, opts...)
+	p.Options = append(p.Options, opts...)
 	return p
 }
 
 // GetValues returns the foreground, background and options of the RGBStyle.
 func (p RGBStyle) GetValues() (RGB, RGB, []Color) {
-	return p.Fg, p.Bg, p.Opts
+	return p.Foreground, p.Background, p.Options
 }
 
 // Print formats using the default formats for its operands and writes to standard output.
@@ -119,12 +121,12 @@ func (p RGBStyle) PrintOnErrorf(format string, a ...interface{}) *TextPrinter {
 func (p RGBStyle) Sprint(a ...interface{}) string {
 	var rgbStyle *color.RGBStyle
 	if !p.hasBg {
-		rgbStyle = color.NewRGBStyle(color.RGB(p.Fg.R, p.Fg.G, p.Fg.B))
+		rgbStyle = color.NewRGBStyle(color.RGB(p.Foreground.R, p.Foreground.G, p.Foreground.B))
 	} else {
-		rgbStyle = color.NewRGBStyle(color.RGB(p.Fg.R, p.Fg.G, p.Fg.B), color.RGB(p.Bg.R, p.Bg.G, p.Bg.B))
+		rgbStyle = color.NewRGBStyle(color.RGB(p.Foreground.R, p.Foreground.G, p.Foreground.B), color.RGB(p.Background.R, p.Background.G, p.Background.B))
 	}
-	if len(p.Opts) > 0 {
-		for _, opt := range p.Opts {
+	if len(p.Options) > 0 {
+		for _, opt := range p.Options {
 			rgbStyle.AddOpts(color.Color(opt))
 		}
 	}
@@ -293,8 +295,8 @@ func (p RGB) PrintOnErrorf(format string, a ...interface{}) *TextPrinter {
 
 func (p RGB) ToRGBStyle() RGBStyle {
 	if p.Background {
-		return RGBStyle{Bg: p}
+		return RGBStyle{Background: p}
 	}
 
-	return RGBStyle{Fg: p}
+	return RGBStyle{Foreground: p}
 }
