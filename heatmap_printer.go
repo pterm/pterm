@@ -1,6 +1,7 @@
 package pterm
 
 import (
+	"bytes"
 	"errors"
 	"io"
 	"math"
@@ -198,7 +199,7 @@ func (p HeatmapPrinter) Srender() (string, error) {
 		p.AxisStyle = NewStyle()
 	}
 
-	var ret string
+	var buffer bytes.Buffer
 	xAmount := len(p.Data[0]) - 1
 	yAmount := len(p.Data) - 1
 	p.minValue, p.maxValue = minMaxFloat32(p.Data)
@@ -237,20 +238,20 @@ func (p HeatmapPrinter) Srender() (string, error) {
 	}
 
 	if p.Boxed {
-		ret += p.SeparatorStyle.Sprint(p.BottomRightCornerSeparator)
+		buffer.WriteString(p.SeparatorStyle.Sprint(p.BottomRightCornerSeparator))
 		for i := 0; i < xAmount+1; i++ {
-			ret += strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), lineLength)
+			buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), lineLength))
 			if i < xAmount {
-				ret += p.SeparatorStyle.Sprint(p.TSeparator)
+				buffer.WriteString(p.SeparatorStyle.Sprint(p.TSeparator))
 			}
 		}
-		ret += p.SeparatorStyle.Sprint(p.BottomLeftCornerSeparator)
-		ret += "\n"
+		buffer.WriteString(p.SeparatorStyle.Sprint(p.BottomLeftCornerSeparator))
+		buffer.WriteString("\n")
 	}
 
 	for i, datum := range p.Data {
 		if p.Boxed {
-			ret += p.SeparatorStyle.Sprint(p.VerticalSeparator)
+			buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
 		}
 		for j, f := range datum {
 			if j == 0 && p.HasHeader {
@@ -258,9 +259,9 @@ func (p HeatmapPrinter) Srender() (string, error) {
 				if len(ct) < lineLength {
 					ct += strings.Repeat(" ", lineLength-len(ct))
 				}
-				ret += p.AxisStyle.Sprint(ct)
+				buffer.WriteString(p.AxisStyle.Sprint(ct))
 				if p.Grid {
-					ret += p.SeparatorStyle.Sprint(p.VerticalSeparator)
+					buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
 				}
 			}
 			var ct string
@@ -279,25 +280,25 @@ func (p HeatmapPrinter) Srender() (string, error) {
 					complimentary := NewRGB(internal.Complementary(rgb.R, rgb.G, rgb.B))
 					rgbStyle = NewRGBStyle(complimentary, rgb)
 				}
-				ret += rgbStyle.Sprint(ct)
+				buffer.WriteString(rgbStyle.Sprint(ct))
 			} else {
 				color := getColor(p.minValue, p.maxValue, f, p.Colors...)
 				fgColor := p.TextColor
 				if p.ComplementColor {
 					fgColor = colorComplement[color]
 				}
-				ret += fgColor.Sprint(color.Sprintf(ct))
+				buffer.WriteString(fgColor.Sprint(color.Sprintf(ct)))
 			}
 			if j < xAmount {
 				if !p.Boxed && p.HasHeader && j == xAmount-1 {
 					continue
 				}
 				if p.Grid {
-					ret += p.SeparatorStyle.Sprint(p.VerticalSeparator)
+					buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
 				}
 			}
 			if p.Boxed && !p.HasHeader && j == xAmount {
-				ret += p.SeparatorStyle.Sprint(p.VerticalSeparator)
+				buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
 			}
 		}
 
@@ -305,58 +306,58 @@ func (p HeatmapPrinter) Srender() (string, error) {
 			if p.HasHeader && i == yAmount-1 {
 				continue
 			}
-			ret += "\n"
+			buffer.WriteString("\n")
 			if p.Boxed {
-				ret += p.SeparatorStyle.Sprint(p.LSeparator)
+				buffer.WriteString(p.SeparatorStyle.Sprint(p.LSeparator))
 			}
 			if p.Grid {
 				for i := 0; i < xAmount+1; i++ {
-					ret += strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), lineLength)
+					buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), lineLength))
 					if i < xAmount {
-						ret += p.SeparatorStyle.Sprint(p.TCrossSeparator)
+						buffer.WriteString(p.SeparatorStyle.Sprint(p.TCrossSeparator))
 					}
 				}
 			}
 			if p.Boxed {
-				ret += p.SeparatorStyle.Sprint(p.LReverseSeparator)
+				buffer.WriteString(p.SeparatorStyle.Sprint(p.LReverseSeparator))
 			}
 			if p.Grid {
-				ret += "\n"
+				buffer.WriteString("\n")
 			}
 		}
 	}
 
 	if p.HasHeader {
-		ret += "\n"
+		buffer.WriteString("\n")
 		if p.Boxed {
-			ret += p.SeparatorStyle.Sprint(p.LSeparator)
+			buffer.WriteString(p.SeparatorStyle.Sprint(p.LSeparator))
 		}
 		if p.Grid {
 			for i := 0; i < xAmount+1; i++ {
-				ret += strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), lineLength)
+				buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), lineLength))
 				if i < xAmount {
-					ret += p.SeparatorStyle.Sprint(p.TCrossSeparator)
+					buffer.WriteString(p.SeparatorStyle.Sprint(p.TCrossSeparator))
 				}
 			}
 		}
 		if p.Boxed {
-			ret += p.SeparatorStyle.Sprint(p.LReverseSeparator)
+			buffer.WriteString(p.SeparatorStyle.Sprint(p.LReverseSeparator))
 		}
 		if p.Grid {
-			ret += "\n"
+			buffer.WriteString("\n")
 		}
 		for j, f := range p.Axis.XAxis {
 			if j == 0 {
 				if p.Boxed {
-					ret += p.SeparatorStyle.Sprint(p.VerticalSeparator)
+					buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
 				}
 				ct := internal.CenterText(" ", lineLength)
 				if len(ct) < lineLength {
 					ct += strings.Repeat(" ", lineLength-len(ct))
 				}
-				ret += p.AxisStyle.Sprint(ct)
+				buffer.WriteString(p.AxisStyle.Sprint(ct))
 				if p.Grid {
-					ret += p.SeparatorStyle.Sprint(p.VerticalSeparator)
+					buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
 				}
 			}
 			var ct string
@@ -364,33 +365,33 @@ func (p HeatmapPrinter) Srender() (string, error) {
 			if len(ct) < lineLength {
 				ct += strings.Repeat(" ", lineLength-len(ct))
 			}
-			ret += p.AxisStyle.Sprint(ct)
+			buffer.WriteString(p.AxisStyle.Sprint(ct))
 
 			if j < xAmount {
 				if !p.Boxed && j == xAmount-1 {
 					continue
 				}
 				if p.Grid {
-					ret += p.SeparatorStyle.Sprint(p.VerticalSeparator)
+					buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
 				}
 			}
 		}
 	}
 
 	if p.Boxed {
-		ret += "\n"
-		ret += p.SeparatorStyle.Sprint(p.TopRightCornerSeparator)
+		buffer.WriteString("\n")
+		buffer.WriteString(p.SeparatorStyle.Sprint(p.TopRightCornerSeparator))
 		for i := 0; i < xAmount+1; i++ {
-			ret += strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), lineLength)
+			buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), lineLength))
 			if i < xAmount {
-				ret += p.SeparatorStyle.Sprint(p.TReverseSeparator)
+				buffer.WriteString(p.SeparatorStyle.Sprint(p.TReverseSeparator))
 			}
 		}
-		ret += p.SeparatorStyle.Sprint(p.TopLeftCornerSeparator)
+		buffer.WriteString(p.SeparatorStyle.Sprint(p.TopLeftCornerSeparator))
 	}
-	ret += "\n"
+	buffer.WriteString("\n")
 
-	return ret, nil
+	return buffer.String(), nil
 }
 
 func getColor(min float32, max float32, current float32, colors ...Color) Color {
