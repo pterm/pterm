@@ -26,7 +26,9 @@ var DefaultHeatmap = HeatmapPrinter{
 	TCrossSeparator:            "┼",
 	Boxed:                      true,
 	Grid:                       true,
+	TextRGB:                    RGB{0, 0, 0, false},
 	RGBRange:                   []RGB{{R: 255, G: 0, B: 0, Background: true}, {R: 255, G: 165, B: 0, Background: true}, {R: 0, G: 255, B: 0, Background: true}},
+	TextColor:                  FgBlack,
 	Colors:                     []Color{BgRed, BgLightRed, BgYellow, BgLightYellow, BgLightGreen, BgGreen},
 
 	IsRGB: false,
@@ -61,14 +63,37 @@ type HeatmapPrinter struct {
 	Boxed                      bool
 	Grid                       bool
 	OnlyColoredCells           bool
+	ComplementColor            bool
 	CellSize                   int
 	Colors                     []Color
+	TextColor                  Color
 	IsRGB                      bool
 	RGBRange                   []RGB
+	TextRGB                    RGB
 	Writer                     io.Writer
 
 	minValue float32
 	maxValue float32
+}
+
+var colorComplement = map[Color]Color{
+	BgBlack:        FgLightWhite,
+	BgRed:          FgCyan,
+	BgGreen:        FgMagenta,
+	BgYellow:       FgBlue,
+	BgBlue:         FgYellow,
+	BgMagenta:      FgGreen,
+	BgCyan:         FgRed,
+	BgWhite:        FgBlack,
+	BgDefault:      FgBlack,
+	BgDarkGray:     FgLightWhite,
+	BgLightRed:     FgLightCyan,
+	BgLightGreen:   FgLightMagenta,
+	BgLightYellow:  FgLightBlue,
+	BgLightBlue:    FgLightYellow,
+	BgLightMagenta: FgLightGreen,
+	BgLightCyan:    FgLightRed,
+	BgLightWhite:   FgBlack,
 }
 
 // WithAxisData returns a new HeatmapPrinter, where the first line and row are headers.
@@ -93,6 +118,22 @@ func (p HeatmapPrinter) WithSeparatorStyle(style *Style) *HeatmapPrinter {
 // WithData returns a new HeatmapPrinter with specific Data.
 func (p HeatmapPrinter) WithData(data [][]float32) *HeatmapPrinter {
 	p.Data = data
+	return &p
+}
+
+// WithTextColor returns a new HeatmapPrinter with a specific TextColor.
+func (p HeatmapPrinter) WithTextColor(color Color) *HeatmapPrinter {
+	p.TextColor = color
+	p.IsRGB = false
+	p.ComplementColor = false
+	return &p
+}
+
+// WithTextRGB returns a new HeatmapPrinter with a specific TextRGB.
+func (p HeatmapPrinter) WithTextRGB(rgb RGB) *HeatmapPrinter {
+	p.TextRGB = rgb
+	p.IsRGB = true
+	p.ComplementColor = false
 	return &p
 }
 
@@ -122,6 +163,12 @@ func (p HeatmapPrinter) WithRGB(b ...bool) *HeatmapPrinter {
 func (p HeatmapPrinter) WithOnlyColoredCells(b ...bool) *HeatmapPrinter {
 	b2 := internal.WithBoolean(b)
 	p.OnlyColoredCells = b2
+	return &p
+}
+
+// WithComplementColor returns a new HeatmapPrinter with complement color.
+func (p HeatmapPrinter) WithComplementColor(b ...bool) *HeatmapPrinter {
+	p.ComplementColor = internal.WithBoolean(b)
 	return &p
 }
 
@@ -227,10 +274,19 @@ func (p HeatmapPrinter) Srender() (string, error) {
 			}
 			if p.IsRGB {
 				rgb := p.RGBRange[0].Fade(p.minValue, p.maxValue, f, p.RGBRange[1:]...)
-				ret += rgb.Sprint(ct)
+				rgbStyle := NewRGBStyle(p.TextRGB, rgb)
+				if p.ComplementColor {
+					complimentary := NewRGB(internal.Complementary(rgb.R, rgb.G, rgb.B))
+					rgbStyle = NewRGBStyle(complimentary, rgb)
+				}
+				ret += rgbStyle.Sprint(ct)
 			} else {
 				color := getColor(p.minValue, p.maxValue, f, p.Colors...)
-				ret += color.Sprintf(ct)
+				fgColor := p.TextColor
+				if p.ComplementColor {
+					fgColor = colorComplement[color]
+				}
+				ret += fgColor.Sprint(color.Sprintf(ct))
 			}
 			if j < xAmount {
 				if !p.Boxed && p.HasHeader && j == xAmount-1 {
