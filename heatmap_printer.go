@@ -419,10 +419,10 @@ func (p HeatmapPrinter) Srender() (string, error) {
 		}
 		buffer.WriteString(p.SeparatorStyle.Sprint(p.TopLeftCornerSeparator))
 	}
-	buffer.WriteString("\n")
-	buffer.WriteString("\n")
 
 	if p.Legend {
+		buffer.WriteString("\n")
+		buffer.WriteString("\n")
 		if p.Boxed {
 			buffer.WriteString(p.SeparatorStyle.Sprint(p.BottomRightCornerSeparator))
 			var xValue int

@@ -69,4 +69,7 @@ func main() {
 
 	table2 = pterm.DefaultHeatmap.WithData(data).WithCellSize(3).WithGrid(false).WithAxisData(headerData).WithOnlyColoredCells().WithLegendOnlyColoredCells()
 	table2.Render()
+
+	table2 = pterm.DefaultHeatmap.WithData(data).WithCellSize(3).WithGrid(false).WithAxisData(headerData).WithOnlyColoredCells().WithLegend(false)
+	table2.Render()
 }
