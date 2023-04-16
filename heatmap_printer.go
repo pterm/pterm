@@ -27,12 +27,15 @@ var DefaultHeatmap = HeatmapPrinter{
 	TCrossSeparator:            "┼",
 	Boxed:                      true,
 	Grid:                       true,
+	Legend:                     true,
 	TextRGB:                    RGB{0, 0, 0, false},
 	RGBRange:                   []RGB{{R: 255, G: 0, B: 0, Background: true}, {R: 255, G: 165, B: 0, Background: true}, {R: 0, G: 255, B: 0, Background: true}},
 	TextColor:                  FgBlack,
 	Colors:                     []Color{BgRed, BgLightRed, BgYellow, BgLightYellow, BgLightGreen, BgGreen},
 
 	IsRGB: false,
+
+	rgbLegendValue: 11,
 }
 
 // HeatmapData is the type that contains the data of a HeatmapPrinter.
@@ -64,7 +67,9 @@ type HeatmapPrinter struct {
 	Boxed                      bool
 	Grid                       bool
 	OnlyColoredCells           bool
+	LegendOnlyColoredCells     bool
 	ComplementColor            bool
+	Legend                     bool
 	CellSize                   int
 	Colors                     []Color
 	TextColor                  Color
@@ -75,6 +80,8 @@ type HeatmapPrinter struct {
 
 	minValue float32
 	maxValue float32
+
+	rgbLegendValue int
 }
 
 var colorComplement = map[Color]Color{
@@ -167,9 +174,25 @@ func (p HeatmapPrinter) WithOnlyColoredCells(b ...bool) *HeatmapPrinter {
 	return &p
 }
 
+// WithLegendOnlyColoredCells returns a new HeatmapPrinter with legend with only colored cells.
+func (p HeatmapPrinter) WithLegendOnlyColoredCells(b ...bool) *HeatmapPrinter {
+	b2 := internal.WithBoolean(b)
+	p.LegendOnlyColoredCells = b2
+	if b2 {
+		p.Legend = true
+	}
+	return &p
+}
+
 // WithComplementColor returns a new HeatmapPrinter with complement color.
 func (p HeatmapPrinter) WithComplementColor(b ...bool) *HeatmapPrinter {
 	p.ComplementColor = internal.WithBoolean(b)
+	return &p
+}
+
+// WithLegend returns a new HeatmapPrinter with a legend.
+func (p HeatmapPrinter) WithLegend(b ...bool) *HeatmapPrinter {
+	p.Legend = internal.WithBoolean(b)
 	return &p
 }
 
@@ -267,11 +290,18 @@ func (p HeatmapPrinter) Srender() (string, error) {
 			var ct string
 			if p.OnlyColoredCells {
 				ct = internal.CenterText(" ", lineLength)
+				if len(ct) < lineLength {
+
+				}
 			} else {
 				ct = internal.CenterText(Sprintf("%v", f), lineLength)
 			}
 			if len(ct) < lineLength {
-				ct += strings.Repeat(" ", lineLength-len(ct))
+				if len(Sprintf("%v", f)) == 1 {
+					ct += strings.Repeat(" ", lineLength-len(ct))
+				} else {
+					ct = strings.Repeat(" ", lineLength-len(ct)) + ct
+				}
 			}
 			if p.IsRGB {
 				rgb := p.RGBRange[0].Fade(p.minValue, p.maxValue, f, p.RGBRange[1:]...)
@@ -390,8 +420,150 @@ func (p HeatmapPrinter) Srender() (string, error) {
 		buffer.WriteString(p.SeparatorStyle.Sprint(p.TopLeftCornerSeparator))
 	}
 	buffer.WriteString("\n")
+	buffer.WriteString("\n")
+
+	if p.Legend {
+		if p.Boxed {
+			buffer.WriteString(p.SeparatorStyle.Sprint(p.BottomRightCornerSeparator))
+			var xValue int
+			if p.IsRGB {
+				xValue = len(p.RGBRange)
+				if xValue < p.rgbLegendValue {
+					xValue = p.rgbLegendValue
+				}
+			} else {
+				xValue = len(p.Colors)
+			}
+			for i := 0; i < xValue+1; i++ {
+				if i == 0 {
+					firstLength := len("Legend")
+					buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), firstLength))
+				} else {
+					buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), lineLength))
+				}
+				if i < xValue && !p.LegendOnlyColoredCells || i == 0 {
+					buffer.WriteString(p.SeparatorStyle.Sprint(p.TSeparator))
+				}
+			}
+			buffer.WriteString(p.SeparatorStyle.Sprint(p.BottomLeftCornerSeparator))
+			buffer.WriteString("\n")
+			buffer.WriteString(p.SeparatorStyle.Sprintf("%s", p.VerticalSeparator))
+		}
+		buffer.WriteString(p.AxisStyle.Sprint("Legend"))
+		if p.Grid {
+			buffer.WriteString(p.SeparatorStyle.Sprintf("%s", p.VerticalSeparator))
+		} else {
+			buffer.WriteString(" ")
+		}
+
+		if p.IsRGB {
+			steps := len(p.RGBRange)
+			if steps < p.rgbLegendValue {
+				steps = p.rgbLegendValue
+			}
+			if p.LegendOnlyColoredCells {
+				steps *= lineLength
+			}
+			for i := 0; i < steps; i++ {
+				// the first color is the min value and the last color is the max value
+				var f float32
+				if i == 0 {
+					f = p.minValue
+				} else if i == steps-1 {
+					f = p.maxValue
+				} else {
+					f = p.minValue + (p.maxValue-p.minValue)*float32(i)/float32(steps-1)
+				}
+				rgb := p.RGBRange[0].Fade(p.minValue, p.maxValue, f, p.RGBRange[1:]...)
+				rgbStyle := NewRGBStyle(p.TextRGB, rgb)
+				if p.ComplementColor {
+					complimentary := NewRGB(internal.Complementary(rgb.R, rgb.G, rgb.B))
+					rgbStyle = NewRGBStyle(complimentary, rgb)
+				}
+				if p.LegendOnlyColoredCells {
+					buffer.WriteString(rgbStyle.Sprint(centerAndShorten(f, 1, p.LegendOnlyColoredCells)))
+				} else {
+					buffer.WriteString(rgbStyle.Sprint(centerAndShorten(f, lineLength, p.LegendOnlyColoredCells)))
+				}
+				if p.Grid && i < steps-1 && !p.LegendOnlyColoredCells {
+					buffer.WriteString(p.SeparatorStyle.Sprintf("%s", p.VerticalSeparator))
+				}
+			}
+		} else {
+			for i, color := range p.Colors {
+				// the first color is the min value and the last color is the max value
+				var f float32
+				if i == 0 {
+					f = p.minValue
+				} else if i == len(p.Colors)-1 {
+					f = p.maxValue
+				} else {
+					f = p.minValue + (p.maxValue-p.minValue)*float32(i)/float32(len(p.Colors)-1)
+				}
+				fgColor := p.TextColor
+				if p.ComplementColor {
+					fgColor = colorComplement[color]
+				}
+				buffer.WriteString(fgColor.Sprint(color.Sprint(centerAndShorten(f, lineLength, p.LegendOnlyColoredCells))))
+				if p.Grid && i < len(p.Colors)-1 && !p.LegendOnlyColoredCells {
+					buffer.WriteString(p.SeparatorStyle.Sprintf("%s", p.VerticalSeparator))
+				}
+			}
+		}
+		if p.Boxed {
+			buffer.WriteString(p.SeparatorStyle.Sprintf("%s", p.VerticalSeparator))
+			buffer.WriteString("\n")
+			buffer.WriteString(p.SeparatorStyle.Sprint(p.TopRightCornerSeparator))
+			var xValue int
+			if p.IsRGB {
+				xValue = len(p.RGBRange)
+				if xValue < p.rgbLegendValue {
+					xValue = p.rgbLegendValue
+				}
+			} else {
+				xValue = len(p.Colors)
+			}
+			for i := 0; i < xValue+1; i++ {
+				if i == 0 {
+					firstLength := len("Legend")
+					buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), firstLength))
+				} else {
+					buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), lineLength))
+				}
+				if i < xValue && !p.LegendOnlyColoredCells || i == 0 {
+					buffer.WriteString(p.SeparatorStyle.Sprint(p.TReverseSeparator))
+				}
+			}
+			buffer.WriteString(p.SeparatorStyle.Sprint(p.TopLeftCornerSeparator))
+		}
+		buffer.WriteString("\n")
+	}
 
 	return buffer.String(), nil
+}
+
+func centerAndShorten(f float32, lineLength int, onlyColor bool) string {
+	value := ""
+	if !onlyColor {
+		value = Sprintf("%.2v", f)
+	}
+	if len(value) > lineLength {
+		value = value[:lineLength]
+		if strings.HasSuffix(value, ".") {
+			value = Sprintf("%.1v", f)
+			lineLength = len(value)
+		}
+	}
+	ct := internal.CenterText(value, lineLength)
+	if len(ct) < lineLength {
+		if len(Sprintf("%v", f)) == 1 {
+			ct += strings.Repeat(" ", lineLength-len(ct))
+		} else {
+			ct = strings.Repeat(" ", lineLength-len(ct)) + ct
+		}
+	}
+
+	return ct
 }
 
 func getColor(min float32, max float32, current float32, colors ...Color) Color {
