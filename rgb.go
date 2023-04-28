@@ -44,11 +44,6 @@ func (p RGBStyle) AddOptions(opts ...Color) RGBStyle {
 	return p
 }
 
-// GetValues returns the foreground, background and options of the RGBStyle.
-func (p RGBStyle) GetValues() (RGB, RGB, []Color) {
-	return p.Foreground, p.Background, p.Options
-}
-
 // Print formats using the default formats for its operands and writes to standard output.
 // Spaces are added between operands when neither is a string.
 // It returns the number of bytes written and any write error encountered.
