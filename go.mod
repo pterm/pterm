@@ -7,7 +7,7 @@ require (
 	atomicgo.dev/keyboard v0.2.9
 	github.com/MarvinJWendt/testza v0.5.2
 	github.com/gookit/color v1.5.3
-	github.com/lithammer/fuzzysearch v1.1.5
+	github.com/lithammer/fuzzysearch v1.1.6
 	github.com/mattn/go-runewidth v0.0.14
 	golang.org/x/term v0.6.0
 	golang.org/x/text v0.9.0
