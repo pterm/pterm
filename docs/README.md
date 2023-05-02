@@ -35,6 +35,10 @@
 <img src="https://img.shields.io/badge/platform-windows%20%7C%20macos%20%7C%20linux-informational?style=for-the-badge" alt="Downloads">
 </a>
 
+ <a href="https://marvin.ws/twitter">
+        <img src="https://img.shields.io/badge/Twitter-%40MarvinJWendt-1DA1F2?logo=twitter&style=for-the-badge"/>
+    </a>
+
 <br/>
 <br/>
 
