@@ -66,6 +66,13 @@ func TestProgressbarPrinter_RemoveWhenDone(t *testing.T) {
 	testza.AssertFalse(t, p.IsActive)
 }
 
+func TestProgressbarPrinter_StartWithTitle(t *testing.T) {
+	p := pterm.DefaultProgressbar
+	p2, _ := p.Start("Title")
+	testza.AssertEqual(t, "Title", p2.Title)
+	p.Stop()
+}
+
 func TestProgressbarPrinter_GenericStart(t *testing.T) {
 	p := pterm.DefaultProgressbar
 	p.GenericStart()
