@@ -15,6 +15,7 @@ require (
 
 require (
 	atomicgo.dev/assert v0.0.2 // indirect
+	atomicgo.dev/schedule v0.0.2 // indirect
 	github.com/containerd/console v1.0.3 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.3 // indirect
