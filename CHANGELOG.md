@@ -2,6 +2,9 @@
 ## [Unreleased]
 
 ### Features
+- **progressbar:** various progressbar improvements
+- **progressbar:** various progressbar improvements
+- **progressbar:** various progressbar improvements
 - **rgb:** added RGBStyle
 
 ### Test
