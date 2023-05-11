@@ -228,11 +228,9 @@ func (p *ProgressbarPrinter) updateProgress() *ProgressbarPrinter {
 		barFiller = strings.Repeat(p.BarFiller, barMaxLength-barCurrentLength)
 	}
 
-	var bar string
+	bar := barFiller
 	if barCurrentLength > 0 {
-		bar = p.BarStyle.Sprint(strings.Repeat(p.BarCharacter, barCurrentLength)+p.LastCharacter) + barFiller
-	} else {
-		bar = ""
+		bar = p.BarStyle.Sprint(strings.Repeat(p.BarCharacter, barCurrentLength)+p.LastCharacter) + bar
 	}
 
 	if !RawOutput {
