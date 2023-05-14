@@ -2,9 +2,10 @@ package pterm
 
 import (
 	"encoding/csv"
-	"github.com/pterm/pterm/internal"
 	"io"
 	"strings"
+
+	"github.com/pterm/pterm/internal"
 )
 
 // DefaultTable contains standards, which can be used to print a TablePrinter.
@@ -183,8 +184,8 @@ func (p TablePrinter) Srender() (string, error) {
 			c.lines = strings.Split(cRaw, "\n")
 			c.height = len(c.lines)
 			for _, l := range c.lines {
-				if internal.GetStringMaxWidth(l) > c.width {
-					c.width = internal.GetStringMaxWidth(l)
+				if maxWidth := internal.GetStringMaxWidth(l); maxWidth > c.width {
+					c.width = maxWidth
 				}
 			}
 			r.cells = append(r.cells, c)
@@ -262,7 +263,7 @@ func (p TablePrinter) renderRow(t table, r row) string {
 			}
 
 			if i < len(c.lines) {
-				s += strings.TrimSpace(c.lines[i])
+				s += c.lines[i]
 			}
 
 			if j < len(r.cells)-1 {
