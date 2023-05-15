@@ -3,7 +3,6 @@ package pterm_test
 import (
 	"errors"
 	"io"
-	"os"
 	"testing"
 
 	"github.com/MarvinJWendt/testza"
@@ -11,12 +10,8 @@ import (
 	"github.com/pterm/pterm"
 )
 
-func TestCenterPrinter_WithCenterEachLineSeparately(t *testing.T) {
-	p := pterm.CenterPrinter{}
-	p2 := p.WithCenterEachLineSeparately()
-
-	testza.AssertTrue(t, p2.CenterEachLineSeparately)
-	testza.AssertFalse(t, p.CenterEachLineSeparately)
+func TestCenterPrinter_WithMethods(t *testing.T) {
+	testWithMethods(t, pterm.CenterPrinter{})
 }
 
 func TestCenterPrinterPrintMethods(t *testing.T) {
@@ -137,27 +132,4 @@ func TestCenterPrinterPrintMethodsCenterSeparately(t *testing.T) {
 			return p.Sprintln(a)
 		})
 	})
-}
-
-func TestCenterPrinter_SprintLineLongerThanTerminal(t *testing.T) {
-	p := pterm.DefaultCenter
-	p2 := p.Sprint("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-
-	testza.AssertContains(t, p2, "a")
-}
-
-func TestCenterPrinter_SprintLineLongerThanTerminalWithCenterEachLineSeparately(t *testing.T) {
-	p := pterm.DefaultCenter
-	p2 := p.WithCenterEachLineSeparately().Sprint("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-
-	testza.AssertContains(t, p2, "a")
-}
-
-func TestCenterPrinter_WithWriter(t *testing.T) {
-	p := pterm.CenterPrinter{}
-	s := os.Stderr
-	p2 := p.WithWriter(s)
-
-	testza.AssertEqual(t, s, p2.Writer)
-	testza.AssertZero(t, p.Writer)
 }

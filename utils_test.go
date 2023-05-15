@@ -1,14 +1,19 @@
 package pterm_test
 
 import (
+	"atomicgo.dev/keyboard/keys"
 	"bytes"
+	"encoding/csv"
 	"fmt"
-	"io"
-	"os"
-	"testing"
-
 	"github.com/MarvinJWendt/testza"
 	"github.com/pterm/pterm"
+	"io"
+	"math/rand"
+	"os"
+	"reflect"
+	"strings"
+	"testing"
+	"time"
 )
 
 var printables = []interface{}{"Hello, World!", 1337, true, false, -1337, 'c', 1.5, "\\", "%s"}
@@ -220,4 +225,236 @@ func readStdout() string {
 
 func proxyToDevNull() {
 	pterm.SetDefaultOutput(os.NewFile(0, os.DevNull))
+}
+
+// testWithMethods calls all methods of a struct starting with "With"
+// and checks if the corresponding option has changed.
+func testWithMethods(t *testing.T, inputStruct any, blacklist ...string) {
+	value := reflect.ValueOf(inputStruct)
+	typeOf := value.Type()
+
+	for i := 0; i < value.NumMethod(); i++ {
+		method := typeOf.Method(i)
+
+		// Check if method is blacklisted
+		if strings.Contains(strings.Join(blacklist, ","), method.Name) {
+			continue
+		}
+
+		if strings.HasPrefix(method.Name, "With") {
+			t.Run(method.Name, func(t *testing.T) {
+				// Check if method starts with 'With'
+				// Check if method has at least one input parameter
+				if method.Type.NumIn() >= 2 { // 2 because the first input is always the receiver
+					optionName := method.Name[4:]
+					var oldOptionValue any
+					if reflect.Indirect(value).FieldByName(optionName).IsValid() {
+						oldOptionValue = reflect.Indirect(value).FieldByName(optionName).Interface()
+					}
+
+					params := make([]reflect.Value, 0, method.Type.NumIn()-1)
+					isVariadic := method.Type.IsVariadic()
+
+					for j := 1; j < method.Type.NumIn(); j++ {
+						paramType := method.Type.In(j)
+						if isVariadic && j == method.Type.NumIn()-1 {
+							// If it's a variadic function, the last parameter is a slice
+							paramType = paramType.Elem()
+						}
+
+						var param reflect.Value
+						switch paramType.Kind() {
+						case reflect.String:
+							param = reflect.ValueOf("helloworld")
+						case reflect.Float32:
+							param = reflect.ValueOf(1.0)
+						case reflect.Float64:
+							param = reflect.ValueOf(1.0)
+						case reflect.Int64:
+							switch paramType {
+							case reflect.TypeOf(time.Duration(0)):
+								param = reflect.ValueOf(time.Second)
+							default:
+								param = reflect.ValueOf(1)
+							}
+						case reflect.Int:
+							switch paramType {
+							case reflect.TypeOf(pterm.LogFormatter(0)):
+								param = reflect.ValueOf(pterm.LogFormatter(1))
+							case reflect.TypeOf(pterm.LogLevel(0)):
+								param = reflect.ValueOf(pterm.LogLevel(1))
+							case reflect.TypeOf(keys.KeyCode(0)):
+								param = reflect.ValueOf(keys.Enter)
+							default:
+								param = reflect.ValueOf(1)
+							}
+						case reflect.Bool:
+							param = reflect.ValueOf(!oldOptionValue.(bool))
+						case reflect.Map:
+							switch paramType {
+							case reflect.TypeOf(map[string]string{}):
+								param = reflect.ValueOf(map[string]string{"a": "b", "c": "d"})
+							case reflect.TypeOf(map[string]pterm.Style{}):
+								param = reflect.ValueOf(map[string]pterm.Style{"a": pterm.Style{pterm.FgRed}})
+							}
+						case reflect.Slice:
+							switch paramType {
+							case reflect.TypeOf(pterm.Style{}):
+								param = reflect.ValueOf(pterm.Style{pterm.FgRed})
+							case reflect.TypeOf([]string{}):
+								param = reflect.ValueOf([]string{"helloworld", "helloworld", "helloworld"})
+							case reflect.TypeOf([][]string{}):
+								param = reflect.ValueOf([][]string{{"helloworld", "helloworld", "helloworld"}, {"helloworld", "helloworld", "helloworld"}})
+							case reflect.TypeOf([]bool{}):
+								param = reflect.ValueOf([]bool{true})
+							case reflect.TypeOf([]pterm.Bar{}):
+								param = reflect.ValueOf(pterm.Bars{
+									{"a", 1, pterm.NewStyle(), pterm.NewStyle()},
+									{"b", 2, pterm.NewStyle(), pterm.NewStyle()},
+									{"c", 3, pterm.NewStyle(), pterm.NewStyle()},
+									{"d", 4, pterm.NewStyle(), pterm.NewStyle()},
+								})
+							case reflect.TypeOf(pterm.Bars{}):
+								param = reflect.ValueOf(pterm.Bars{
+									{"a", 1, pterm.NewStyle(), pterm.NewStyle()},
+									{"b", 2, pterm.NewStyle(), pterm.NewStyle()},
+									{"c", 3, pterm.NewStyle(), pterm.NewStyle()},
+									{"d", 4, pterm.NewStyle(), pterm.NewStyle()},
+								})
+							case reflect.TypeOf(pterm.Letters{}):
+								param = reflect.ValueOf(pterm.Letters{
+									{"a", pterm.NewStyle(), pterm.NewRGB(255, 0, 0)},
+									{"b", pterm.NewStyle(), pterm.NewRGB(0, 255, 0)},
+									{"c", pterm.NewStyle(), pterm.NewRGB(0, 0, 255)},
+								})
+							case reflect.TypeOf(pterm.Panels{}):
+								param = reflect.ValueOf(pterm.Panels{
+									[]pterm.Panel{
+										{Data: "a"},
+										{Data: "b"},
+										{Data: "c"},
+									},
+								})
+							case reflect.TypeOf([]pterm.BulletListItem{}):
+								param = reflect.ValueOf([]pterm.BulletListItem{
+									{1, "a", pterm.NewStyle(), "b", pterm.NewStyle()},
+								})
+							}
+						case reflect.Pointer:
+							switch paramType {
+							case reflect.TypeOf(&pterm.Style{}):
+								param = reflect.ValueOf(pterm.NewStyle(pterm.FgRed))
+							case reflect.TypeOf(&csv.Reader{}):
+								param = reflect.ValueOf(csv.NewReader(strings.NewReader("a,b,c\n1,2,3\n4,5,6\nx,y,z")))
+							case reflect.TypeOf(&pterm.Checkmark{}):
+								param = reflect.ValueOf(&pterm.Checkmark{Checked: "yes", Unchecked: "no"})
+							}
+						case reflect.Interface:
+							t.Skipf("Cannot check With method %s, because it has an interface parameter.", method.Name)
+						case reflect.Struct:
+							switch paramType {
+							case reflect.TypeOf(pterm.TableData{}):
+								param = reflect.ValueOf(pterm.TableData{
+									{"a", "b", "c"},
+									{"1", "2", "3"},
+									{"4", "5", "6"},
+									{"x", "y", "z"},
+								})
+							case reflect.TypeOf(pterm.Checkmark{}):
+								param = reflect.ValueOf(pterm.Checkmark{Checked: "yes", Unchecked: "no"})
+							case reflect.TypeOf(pterm.BoxPrinter{}):
+								param = reflect.ValueOf(pterm.DefaultBox)
+							case reflect.TypeOf(pterm.Prefix{}):
+								param = reflect.ValueOf(pterm.Prefix{
+									Text:  "asd",
+									Style: pterm.NewStyle(),
+								})
+							case reflect.TypeOf(pterm.Scope{}):
+								param = reflect.ValueOf(pterm.Scope{
+									Text:  "asd",
+									Style: pterm.NewStyle(),
+								})
+							case reflect.TypeOf(pterm.TreeNode{}):
+								param = reflect.ValueOf(pterm.TreeNode{
+									Text:     "asd",
+									Children: []pterm.TreeNode{},
+								})
+							}
+
+						default:
+							// Unsupported type, log error and skip this method
+							t.Logf("Unsupported parameter type %s for method %s, skipping", paramType, method.Name)
+							continue
+						}
+
+						params = append(params, param)
+					}
+
+					func() {
+						defer func() {
+							if r := recover(); r != nil {
+								t.Errorf("Panic occurred while calling method %s: %v", method.Name, r)
+							}
+						}()
+
+						results := value.Method(i).Call(params)
+						if len(results) > 0 {
+							newStruct := results[0]
+							inputStruct = newStruct.Interface()
+
+							newOptionValue := reflect.Indirect(newStruct).FieldByName(optionName).Interface()
+							if reflect.DeepEqual(oldOptionValue, newOptionValue) {
+								t.Errorf("Option %s did not change after calling method %s (old: %s, new: %s)", optionName, method.Name, oldOptionValue, newOptionValue)
+							}
+						}
+					}()
+				}
+			})
+		}
+
+	}
+}
+
+// generateRandomValue generates a random value of the specified type.
+func generateRandomValue(t reflect.Type) any {
+	switch t.Kind() {
+	case reflect.String:
+		return "random_string"
+	case reflect.Float32, reflect.Float64:
+		return rand.Float32() * 100
+	case reflect.Int:
+		return rand.Intn(100)
+	case reflect.Bool:
+		return true
+	case reflect.Slice:
+		if t == reflect.TypeOf([]string{}) {
+			return []string{"random_string_1", "random_string_2"}
+		} else if t == reflect.TypeOf([]int{}) {
+			return []int{1, 2, 3}
+		} else if t == reflect.TypeOf([]float32{}) {
+			return []float32{1.1, 2.2, 3.3}
+		} else if t == reflect.TypeOf([]float64{}) {
+			return []float64{1.1, 2.2, 3.3}
+		} else if t == reflect.TypeOf([]bool{}) {
+			return true
+		}
+	case reflect.Struct:
+		if t == reflect.TypeOf(pterm.TableData{}) {
+			return pterm.TableData{
+				{"Firstname", "Lastname", "Email"},
+				{"Paul", "Dean", "nisi.dictum.augue@velitAliquam.co.uk"},
+				{"Callie", "Mckay", "egestas.nunc.sed@est.com"},
+				{"Libby", "Camacho", "aliquet.lobortis@semper.com"},
+			}
+		} else if t == reflect.TypeOf(csv.Reader{}) {
+			return csv.NewReader(strings.NewReader(`Firstname,Lastname,Email
+Paul,Dean,nisi.dictum.augue@velitAliquam.co.uk
+Callie,Mckay,egestas.nunc.sed@est.com
+Libby,Camacho,aliquet.lobortis@semper.com`))
+		}
+
+		panic(pterm.Sprintfln("struct type (%s) not implemented in utils_test.go", t.String()))
+	}
+
+	return nil
 }

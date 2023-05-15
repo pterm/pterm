@@ -3,7 +3,6 @@ package pterm_test
 import (
 	"errors"
 	"io"
-	"os"
 	"testing"
 
 	"github.com/MarvinJWendt/testza"
@@ -14,6 +13,10 @@ import (
 func TestHeaderPrinterNilPrint(t *testing.T) {
 	p := pterm.HeaderPrinter{}
 	p.Println("Hello, World!")
+}
+
+func TestHeaderPrinter_WithMethods(t *testing.T) {
+	testWithMethods(t, pterm.HeaderPrinter{})
 }
 
 func TestHeaderPrinterPrintMethods(t *testing.T) {
@@ -101,57 +104,4 @@ func TestHeaderPrinterPrintMethods(t *testing.T) {
 		})
 		testza.AssertZero(t, result)
 	})
-}
-
-func TestHeaderPrinter_WithBackgroundStyle(t *testing.T) {
-	s := pterm.NewStyle(pterm.FgRed, pterm.BgGray, pterm.Bold)
-	p := pterm.HeaderPrinter{}
-	p2 := p.WithBackgroundStyle(s)
-
-	testza.AssertEqual(t, s, p2.BackgroundStyle)
-}
-
-func TestHeaderPrinter_WithFullWidth(t *testing.T) {
-	p := pterm.HeaderPrinter{}
-	p2 := p.WithFullWidth()
-
-	testza.AssertEqual(t, true, p2.FullWidth)
-}
-
-func TestHeaderPrinter_WithFullWidthToLongForTerminal(t *testing.T) {
-	p := pterm.HeaderPrinter{}
-	p2 := p.WithFullWidth().Sprint("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-
-	testza.AssertContains(t, p2, "a")
-}
-
-func TestHeaderPrinter_ToLongForTerminal(t *testing.T) {
-	p := pterm.HeaderPrinter{}
-	p2 := p.Sprint("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-
-	testza.AssertContains(t, p2, "a")
-}
-
-func TestHeaderPrinter_WithMargin(t *testing.T) {
-	p := pterm.HeaderPrinter{}
-	p2 := p.WithMargin(1337)
-
-	testza.AssertEqual(t, 1337, p2.Margin)
-}
-
-func TestHeaderPrinter_WithTextStyle(t *testing.T) {
-	s := pterm.NewStyle(pterm.FgRed, pterm.BgGray, pterm.Bold)
-	p := pterm.HeaderPrinter{}
-	p2 := p.WithTextStyle(s)
-
-	testza.AssertEqual(t, s, p2.TextStyle)
-}
-
-func TestHeaderPrinter_WithWriter(t *testing.T) {
-	p := pterm.HeaderPrinter{}
-	s := os.Stderr
-	p2 := p.WithWriter(s)
-
-	testza.AssertEqual(t, s, p2.Writer)
-	testza.AssertZero(t, p.Writer)
 }

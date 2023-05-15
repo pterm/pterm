@@ -10,6 +10,10 @@ import (
 	"github.com/pterm/pterm"
 )
 
+func TestInteractiveContinuePrinter_WithMethods(t *testing.T) {
+	testWithMethods(t, pterm.InteractiveContinuePrinter{}, "WithDefaultValue", "WithDefaultValueIndex", "WithHandles")
+}
+
 func TestInteractiveContinuePrinter_Show_yes(t *testing.T) {
 	go func() {
 		keyboard.SimulateKeyPress('y')
@@ -29,11 +33,6 @@ func TestInteractiveContinuePrinter_Show_no(t *testing.T) {
 	}()
 	result, _ := pterm.DefaultInteractiveContinue.Show()
 	testza.AssertEqual(t, result, "no")
-}
-
-func TestInteractiveContinuePrinter_WithDefaultValueIndes(t *testing.T) {
-	p := pterm.DefaultInteractiveContinue.WithDefaultValueIndex(1)
-	testza.AssertEqual(t, p.DefaultValueIndex, 1)
 }
 
 func TestInteractiveContinuePrinter_WithDefaultValue_yes(t *testing.T) {
@@ -72,17 +71,6 @@ func TestInteractiveContinuePrinter_WithShowShortHandles(t *testing.T) {
 	}()
 	result, _ := p.Show()
 	testza.AssertEqual(t, result, "no")
-}
-
-func TestInteractiveContinuePrinter_WithOptionsStyle(t *testing.T) {
-	style := pterm.NewStyle(pterm.FgRed)
-	p := pterm.DefaultInteractiveContinue.WithOptionsStyle(style)
-	testza.AssertEqual(t, p.OptionsStyle, style)
-}
-
-func TestInteractiveContinuePrinter_WithOptions(t *testing.T) {
-	p := pterm.DefaultInteractiveContinue.WithOptions([]string{"next", "stop", "continue"})
-	testza.AssertEqual(t, p.Options, []string{"next", "stop", "continue"})
 }
 
 func TestInteractiveContinuePrinter_WithHandles(t *testing.T) {
@@ -131,11 +119,6 @@ func TestInteractiveContinuePrinter_WithHandles(t *testing.T) {
 	testza.AssertEqual(t, result, "no")
 }
 
-func TestInteractiveContinuePrinter_WithDefaultText(t *testing.T) {
-	p := pterm.DefaultInteractiveContinue.WithDefaultText("default")
-	testza.AssertEqual(t, p.DefaultText, "default")
-}
-
 func TestInteractiveContinuePrinter_CustomAnswers(t *testing.T) {
 	p := pterm.DefaultInteractiveContinue.WithOptions([]string{"next", "stop", "continue"})
 	tests := []struct {
@@ -168,16 +151,4 @@ func TestInteractiveContinuePrinter_CustomAnswers(t *testing.T) {
 			testza.AssertEqual(t, result, tc.expected)
 		})
 	}
-}
-
-func TestInteractiveContinuePrinter_WithSuffixStyle(t *testing.T) {
-	style := pterm.NewStyle(pterm.FgRed)
-	p := pterm.DefaultInteractiveContinue.WithSuffixStyle(style)
-	testza.AssertEqual(t, p.SuffixStyle, style)
-}
-
-func TestInteractiveContinuePrinter_WithTextStyle(t *testing.T) {
-	style := pterm.NewStyle(pterm.FgRed)
-	p := pterm.DefaultInteractiveContinue.WithTextStyle(style)
-	testza.AssertEqual(t, p.TextStyle, style)
 }

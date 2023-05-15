@@ -3,7 +3,6 @@ package pterm_test
 import (
 	"errors"
 	"io"
-	"os"
 	"testing"
 
 	"github.com/MarvinJWendt/testza"
@@ -15,6 +14,10 @@ func TestBasicTextPrinterNilPrint(t *testing.T) {
 	proxyToDevNull()
 	p := pterm.BasicTextPrinter{}
 	p.Println("Hello, World!")
+}
+
+func TestBasicTextPrinter_WithMethods(t *testing.T) {
+	testWithMethods(t, pterm.BasicTextPrinter{})
 }
 
 func TestBasicTextPrinterPrintMethods(t *testing.T) {
@@ -95,21 +98,4 @@ func TestBasicTextPrinterPrintMethods(t *testing.T) {
 		})
 		testza.AssertZero(t, result)
 	})
-}
-
-func TestBasicTextPrinter_WithStyle(t *testing.T) {
-	s := pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold)
-	p := pterm.BasicTextPrinter{}
-	p2 := p.WithStyle(s)
-
-	testza.AssertEqual(t, s, p2.Style)
-}
-
-func TestBasicTextPrinter_WithWriter(t *testing.T) {
-	p := pterm.BasicTextPrinter{}
-	s := os.Stderr
-	p2 := p.WithWriter(s)
-
-	testza.AssertEqual(t, s, p2.Writer)
-	testza.AssertZero(t, p.Writer)
 }

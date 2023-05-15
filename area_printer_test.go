@@ -18,6 +18,10 @@ func TestAreaPrinter_NilPrint(t *testing.T) {
 	os.Stdout = originalStdout // Restore original os.Stdout
 }
 
+func TestAreaPrinter_WithMethods(t *testing.T) {
+	testWithMethods(t, pterm.AreaPrinter{})
+}
+
 func TestAreaPrinter_GenericStart(t *testing.T) {
 	originalStdout := os.Stdout
 	os.Stdout = os.NewFile(0, os.DevNull) // Set os.Stdout to DevNull to hide output from cursor.Area
@@ -86,30 +90,6 @@ func TestAreaPrinter_GetContent(t *testing.T) {
 	}
 
 	a.Stop()
-
-	os.Stdout = originalStdout // Restore original os.Stdout
-}
-
-func TestAreaPrinter_WithRemoveWhenDone(t *testing.T) {
-	originalStdout := os.Stdout
-	os.Stdout = os.NewFile(0, os.DevNull) // Set os.Stdout to DevNull to hide output from cursor.Area
-
-	p := pterm.AreaPrinter{}
-	p2 := p.WithRemoveWhenDone()
-
-	testza.AssertTrue(t, p2.RemoveWhenDone)
-
-	os.Stdout = originalStdout // Restore original os.Stdout
-}
-
-func TestAreaPrinter_WithFullscreen(t *testing.T) {
-	originalStdout := os.Stdout
-	os.Stdout = os.NewFile(0, os.DevNull) // Set os.Stdout to DevNull to hide output from cursor.Area
-
-	p := pterm.AreaPrinter{}
-	p2 := p.WithFullscreen()
-
-	testza.AssertTrue(t, p2.Fullscreen)
 
 	os.Stdout = originalStdout // Restore original os.Stdout
 }

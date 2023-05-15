@@ -3,7 +3,6 @@ package pterm_test
 import (
 	"errors"
 	"io"
-	"os"
 	"testing"
 
 	"github.com/MarvinJWendt/testza"
@@ -14,6 +13,10 @@ import (
 func TestSectionPrinterNilPrint(t *testing.T) {
 	p := pterm.SectionPrinter{}
 	p.Println("Hello, World!")
+}
+
+func TestSectionPrinter_WithMethods(t *testing.T) {
+	testWithMethods(t, pterm.SectionPrinter{})
 }
 
 func TestSectionPrinterPrintMethods(t *testing.T) {
@@ -94,54 +97,4 @@ func TestSectionPrinterPrintMethods(t *testing.T) {
 		})
 		testza.AssertZero(t, result)
 	})
-}
-
-func TestSectionPrinter_WithBottomPadding(t *testing.T) {
-	p := pterm.SectionPrinter{}
-	p2 := p.WithBottomPadding(1337)
-
-	testza.AssertEqual(t, 1337, p2.BottomPadding)
-	testza.AssertZero(t, p.BottomPadding)
-}
-
-func TestSectionPrinter_WithLevel(t *testing.T) {
-	p := pterm.SectionPrinter{}
-	p2 := p.WithLevel(1337)
-
-	testza.AssertEqual(t, 1337, p2.Level)
-	testza.AssertZero(t, p.Level)
-}
-
-func TestSectionPrinter_WithStyle(t *testing.T) {
-	p := pterm.SectionPrinter{}
-	s := pterm.NewStyle(pterm.FgRed, pterm.BgRed, pterm.Bold)
-	p2 := p.WithStyle(s)
-
-	testza.AssertEqual(t, s, p2.Style)
-	testza.AssertZero(t, p.Style)
-}
-
-func TestSectionPrinter_WithTopPadding(t *testing.T) {
-	p := pterm.SectionPrinter{}
-	p2 := p.WithTopPadding(1337)
-
-	testza.AssertEqual(t, 1337, p2.TopPadding)
-	testza.AssertZero(t, p.TopPadding)
-}
-
-func TestSectionPrinter_WithIndentCharacter(t *testing.T) {
-	p := pterm.SectionPrinter{}
-	p2 := p.WithIndentCharacter("#")
-
-	testza.AssertEqual(t, "#", p2.IndentCharacter)
-	testza.AssertZero(t, p.IndentCharacter)
-}
-
-func TestSectionPrinter_WithWriter(t *testing.T) {
-	p := pterm.SectionPrinter{}
-	s := os.Stderr
-	p2 := p.WithWriter(s)
-
-	testza.AssertEqual(t, s, p2.Writer)
-	testza.AssertZero(t, p.Writer)
 }
