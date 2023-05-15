@@ -36,6 +36,7 @@ type InteractiveConfirmPrinter struct {
 	RejectText   string
 	RejectStyle  *Style
 	SuffixStyle  *Style
+	OnExitFunc   func()
 }
 
 // WithDefaultText sets the default text.
@@ -86,6 +87,12 @@ func (p InteractiveConfirmPrinter) WithSuffixStyle(style *Style) *InteractiveCon
 	return &p
 }
 
+// OnExit sets the function to execute on exit of the input reader
+func (p InteractiveConfirmPrinter) OnExit(exitFunc func()) *InteractiveConfirmPrinter {
+	p.OnExitFunc = exitFunc
+	return &p
+}
+
 // Show shows the confirm prompt.
 //
 // Example:
@@ -95,7 +102,7 @@ func (p InteractiveConfirmPrinter) WithSuffixStyle(style *Style) *InteractiveCon
 func (p InteractiveConfirmPrinter) Show(text ...string) (bool, error) {
 	// should be the first defer statement to make sure it is executed last
 	// and all the needed cleanup can be done before
-	cancel, exit := internal.NewCancelationSignal()
+	cancel, exit := internal.NewCancelationSignal(p.OnExitFunc)
 	defer exit()
 
 	var result bool

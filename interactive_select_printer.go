@@ -36,6 +36,7 @@ type InteractiveSelectPrinter struct {
 	MaxHeight     int
 	Selector      string
 	SelectorStyle *Style
+	OnExitFunc    func()
 
 	selectedOption        int
 	result                string
@@ -71,11 +72,17 @@ func (p InteractiveSelectPrinter) WithMaxHeight(maxHeight int) *InteractiveSelec
 	return &p
 }
 
+// OnExit sets the function to execute on exit of the input reader
+func (p InteractiveSelectPrinter) OnExit(exitFunc func()) *InteractiveSelectPrinter {
+	p.OnExitFunc = exitFunc
+	return &p
+}
+
 // Show shows the interactive select menu and returns the selected entry.
 func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 	// should be the first defer statement to make sure it is executed last
 	// and all the needed cleanup can be done before
-	cancel, exit := internal.NewCancelationSignal()
+	cancel, exit := internal.NewCancelationSignal(p.OnExitFunc)
 	defer exit()
 
 	if len(text) == 0 || Sprint(text[0]) == "" {

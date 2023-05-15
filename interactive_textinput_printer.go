@@ -25,6 +25,7 @@ type InteractiveTextInputPrinter struct {
 	DefaultText string
 	MultiLine   bool
 	Mask        string
+	OnExitFunc  func()
 
 	input      []string
 	cursorXPos int
@@ -56,11 +57,17 @@ func (p InteractiveTextInputPrinter) WithMask(mask string) *InteractiveTextInput
 	return &p
 }
 
+// OnExit sets the function to execute on exit of the input reader
+func (p InteractiveTextInputPrinter) OnExit(exitFunc func()) *InteractiveTextInputPrinter {
+	p.OnExitFunc = exitFunc
+	return &p
+}
+
 // Show shows the interactive select menu and returns the selected entry.
 func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	// should be the first defer statement to make sure it is executed last
 	// and all the needed cleanup can be done before
-	cancel, exit := internal.NewCancelationSignal()
+	cancel, exit := internal.NewCancelationSignal(p.OnExitFunc)
 	defer exit()
 
 	var areaText string
