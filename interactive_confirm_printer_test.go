@@ -1,6 +1,7 @@
 package pterm_test
 
 import (
+	"reflect"
 	"testing"
 
 	"atomicgo.dev/keyboard"
@@ -125,4 +126,15 @@ func TestInteractiveConfirmPrinter_WithTextStyle(t *testing.T) {
 	style := pterm.NewStyle(pterm.FgRed)
 	p := pterm.DefaultInteractiveConfirm.WithTextStyle(style)
 	testza.AssertEqual(t, p.TextStyle, style)
+}
+
+func TestInteractiveConfirmPrinter_OnExit(t *testing.T) {
+	// OnExit function defaults to nil
+	pd := pterm.InteractiveConfirmPrinter{}
+	testza.AssertNil(t, pd.OnExitFunc)
+
+	// Verify OnExit is set
+	exitfunc := func() {}
+	p := pterm.DefaultInteractiveConfirm.OnExit(exitfunc)
+	testza.AssertEqual(t, reflect.ValueOf(p.OnExitFunc).Pointer(), reflect.ValueOf(exitfunc).Pointer())
 }

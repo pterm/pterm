@@ -1,6 +1,7 @@
 package pterm_test
 
 import (
+	"reflect"
 	"testing"
 
 	"atomicgo.dev/keyboard"
@@ -40,4 +41,15 @@ func TestInteractiveTextInputPrinter_WithMask(t *testing.T) {
 	}()
 	result, _ := pterm.DefaultInteractiveTextInput.WithMask("*").Show()
 	testza.AssertEqual(t, result, "abc")
+}
+
+func TestInteractiveTextInputPrinter_OnExit(t *testing.T) {
+	// OnExit function defaults to nil
+	pd := pterm.InteractiveTextInputPrinter{}
+	testza.AssertNil(t, pd.OnExitFunc)
+
+	// Verify OnExit is set
+	exitfunc := func() {}
+	p := pterm.DefaultInteractiveTextInput.OnExit(exitfunc)
+	testza.AssertEqual(t, reflect.ValueOf(p.OnExitFunc).Pointer(), reflect.ValueOf(exitfunc).Pointer())
 }

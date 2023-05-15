@@ -1,6 +1,7 @@
 package pterm_test
 
 import (
+	"reflect"
 	"testing"
 
 	"atomicgo.dev/keyboard"
@@ -48,4 +49,15 @@ func TestInteractiveSelectPrinter_WithOptions(t *testing.T) {
 func TestInteractiveSelectPrinter_WithMaxHeight(t *testing.T) {
 	p := pterm.DefaultInteractiveSelect.WithMaxHeight(1337)
 	testza.AssertEqual(t, p.MaxHeight, 1337)
+}
+
+func TestInteractiveSelectPrinter_OnExit(t *testing.T) {
+	// OnExit function defaults to nil
+	pd := pterm.InteractiveSelectPrinter{}
+	testza.AssertNil(t, pd.OnExitFunc)
+
+	// Verify OnExit is set
+	exitfunc := func() {}
+	p := pterm.DefaultInteractiveSelect.OnExit(exitfunc)
+	testza.AssertEqual(t, reflect.ValueOf(p.OnExitFunc).Pointer(), reflect.ValueOf(exitfunc).Pointer())
 }

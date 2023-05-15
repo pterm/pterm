@@ -1,6 +1,7 @@
 package pterm_test
 
 import (
+	"reflect"
 	"testing"
 
 	"atomicgo.dev/keyboard"
@@ -65,4 +66,15 @@ func TestInteractiveMultiselectPrinter_WithKeyConfirm(t *testing.T) {
 func TestInteractiveMultiselectPrinter_WithCheckmark(t *testing.T) {
 	p := pterm.DefaultInteractiveMultiselect.WithCheckmark(&pterm.Checkmark{Checked: "+", Unchecked: "-"}).WithOptions([]string{"a", "b", "c"})
 	testza.AssertEqual(t, p.Checkmark, &pterm.Checkmark{Checked: "+", Unchecked: "-"})
+}
+
+func TestInteractiveMultiselectPrinter_OnExit(t *testing.T) {
+	// OnExit function defaults to nil
+	pd := pterm.InteractiveMultiselectPrinter{}
+	testza.AssertNil(t, pd.OnExitFunc)
+
+	// Verify OnExit is set
+	exitfunc := func() {}
+	p := pterm.DefaultInteractiveMultiselect.OnExit(exitfunc)
+	testza.AssertEqual(t, reflect.ValueOf(p.OnExitFunc).Pointer(), reflect.ValueOf(exitfunc).Pointer())
 }
