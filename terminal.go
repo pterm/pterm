@@ -56,7 +56,7 @@ func GetTerminalSize() (width, height int, err error) {
 	return w, h, err
 }
 
-// setForcedTerminalSize turns off terminal size autodetection. Usuful for unified tests.
+// SetForcedTerminalSize forces the printers to use a specific terminal size.
 func SetForcedTerminalSize(width int, height int) {
 	forcedTerminalWidth = width
 	forcedTerminalHeight = height

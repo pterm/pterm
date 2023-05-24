@@ -8,7 +8,6 @@ import (
 	"github.com/MarvinJWendt/testza"
 	"github.com/pterm/pterm"
 	"io"
-	"math/rand"
 	"os"
 	"reflect"
 	"strings"
@@ -22,6 +21,7 @@ var terminalHeight = 60
 
 func TestMain(m *testing.M) {
 	pterm.SetForcedTerminalSize(terminalWidth, terminalHeight)
+	os.Stderr = os.NewFile(0, os.DevNull)
 	setupStdoutCapture()
 	exitVal := m.Run()
 	teardownStdoutCapture()
@@ -415,46 +415,13 @@ func testWithMethods(t *testing.T, inputStruct any, blacklist ...string) {
 	}
 }
 
-// generateRandomValue generates a random value of the specified type.
-func generateRandomValue(t reflect.Type) any {
-	switch t.Kind() {
-	case reflect.String:
-		return "random_string"
-	case reflect.Float32, reflect.Float64:
-		return rand.Float32() * 100
-	case reflect.Int:
-		return rand.Intn(100)
-	case reflect.Bool:
-		return true
-	case reflect.Slice:
-		if t == reflect.TypeOf([]string{}) {
-			return []string{"random_string_1", "random_string_2"}
-		} else if t == reflect.TypeOf([]int{}) {
-			return []int{1, 2, 3}
-		} else if t == reflect.TypeOf([]float32{}) {
-			return []float32{1.1, 2.2, 3.3}
-		} else if t == reflect.TypeOf([]float64{}) {
-			return []float64{1.1, 2.2, 3.3}
-		} else if t == reflect.TypeOf([]bool{}) {
-			return true
-		}
-	case reflect.Struct:
-		if t == reflect.TypeOf(pterm.TableData{}) {
-			return pterm.TableData{
-				{"Firstname", "Lastname", "Email"},
-				{"Paul", "Dean", "nisi.dictum.augue@velitAliquam.co.uk"},
-				{"Callie", "Mckay", "egestas.nunc.sed@est.com"},
-				{"Libby", "Camacho", "aliquet.lobortis@semper.com"},
-			}
-		} else if t == reflect.TypeOf(csv.Reader{}) {
-			return csv.NewReader(strings.NewReader(`Firstname,Lastname,Email
-Paul,Dean,nisi.dictum.augue@velitAliquam.co.uk
-Callie,Mckay,egestas.nunc.sed@est.com
-Libby,Camacho,aliquet.lobortis@semper.com`))
-		}
-
-		panic(pterm.Sprintfln("struct type (%s) not implemented in utils_test.go", t.String()))
+func printerTest(t *testing.T, f func()) {
+	teardownStdoutCapture()
+	f()
+	setupStdoutCapture()
+	f()
+	err := testza.SnapshotCreateOrValidate(t, t.Name(), outBuf.String())
+	if err != nil {
+		panic(err)
 	}
-
-	return nil
 }
