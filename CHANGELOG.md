@@ -2,6 +2,12 @@
 ## [Unreleased]
 
 ### Bug Fixes
+- fixed not being able to add a custom graceful shutdown
+
+
+<a name="v0.12.61"></a>
+## [v0.12.61] - 2023-05-14
+### Bug Fixes
 - **table:** fixed table when a column contained a whitespace at the start or end
 
 
@@ -1177,7 +1183,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.60...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.61...HEAD
+[v0.12.61]: https://github.com/pterm/pterm/compare/v0.12.60...v0.12.61
 [v0.12.60]: https://github.com/pterm/pterm/compare/v0.12.59...v0.12.60
 [v0.12.59]: https://github.com/pterm/pterm/compare/v0.12.58...v0.12.59
 [v0.12.58]: https://github.com/pterm/pterm/compare/v0.12.57...v0.12.58
