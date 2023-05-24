@@ -38,8 +38,6 @@ func init() {
 	go func() {
 		for range c {
 			cursor.Show()
-
-			os.Exit(0)
 		}
 	}()
 }
