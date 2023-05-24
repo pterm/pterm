@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Bug Fixes
+- fixed not being able to add a custom graceful shutdown
+
 
 <a name="v0.12.61"></a>
 ## [v0.12.61] - 2023-05-14
