@@ -19,6 +19,7 @@ jobs:
 
       - name: Set up Go 1.x
         uses: actions/setup-go@v4
+        cache-dependency-path: go.sum
         with:
           go-version: 1.19
         id: go
