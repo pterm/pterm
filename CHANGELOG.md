@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+
+<a name="v0.12.62"></a>
+## [v0.12.62] - 2023-05-24
 ### Bug Fixes
 - fixed not being able to add a custom graceful shutdown
 
@@ -1183,7 +1186,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.61...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.62...HEAD
+[v0.12.62]: https://github.com/pterm/pterm/compare/v0.12.61...v0.12.62
 [v0.12.61]: https://github.com/pterm/pterm/compare/v0.12.60...v0.12.61
 [v0.12.60]: https://github.com/pterm/pterm/compare/v0.12.59...v0.12.60
 [v0.12.59]: https://github.com/pterm/pterm/compare/v0.12.58...v0.12.59
