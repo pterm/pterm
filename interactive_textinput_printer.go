@@ -21,11 +21,11 @@ var (
 
 // InteractiveTextInputPrinter is a printer for interactive select menus.
 type InteractiveTextInputPrinter struct {
-	TextStyle   *Style
-	DefaultText string
-	MultiLine   bool
-	Mask        string
-	OnExitFunc  func()
+	TextStyle       *Style
+	DefaultText     string
+	MultiLine       bool
+	Mask            string
+	OnInterruptFunc func()
 
 	input      []string
 	cursorXPos int
@@ -57,9 +57,9 @@ func (p InteractiveTextInputPrinter) WithMask(mask string) *InteractiveTextInput
 	return &p
 }
 
-// OnExit sets the function to execute on exit of the input reader
-func (p InteractiveTextInputPrinter) OnExit(exitFunc func()) *InteractiveTextInputPrinter {
-	p.OnExitFunc = exitFunc
+// OnInterrupt sets the function to execute on exit of the input reader
+func (p InteractiveTextInputPrinter) OnInterrupt(exitFunc func()) *InteractiveTextInputPrinter {
+	p.OnInterruptFunc = exitFunc
 	return &p
 }
 
@@ -67,7 +67,7 @@ func (p InteractiveTextInputPrinter) OnExit(exitFunc func()) *InteractiveTextInp
 func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	// should be the first defer statement to make sure it is executed last
 	// and all the needed cleanup can be done before
-	cancel, exit := internal.NewCancelationSignal(p.OnExitFunc)
+	cancel, exit := internal.NewCancelationSignal(p.OnInterruptFunc)
 	defer exit()
 
 	var areaText string

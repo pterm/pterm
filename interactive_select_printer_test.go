@@ -51,13 +51,13 @@ func TestInteractiveSelectPrinter_WithMaxHeight(t *testing.T) {
 	testza.AssertEqual(t, p.MaxHeight, 1337)
 }
 
-func TestInteractiveSelectPrinter_OnExit(t *testing.T) {
-	// OnExit function defaults to nil
+func TestInteractiveSelectPrinter_OnInterrupt(t *testing.T) {
+	// OnInterrupt function defaults to nil
 	pd := pterm.InteractiveSelectPrinter{}
-	testza.AssertNil(t, pd.OnExitFunc)
+	testza.AssertNil(t, pd.OnInterruptFunc)
 
-	// Verify OnExit is set
+	// Verify OnInterrupt is set
 	exitfunc := func() {}
-	p := pterm.DefaultInteractiveSelect.OnExit(exitfunc)
-	testza.AssertEqual(t, reflect.ValueOf(p.OnExitFunc).Pointer(), reflect.ValueOf(exitfunc).Pointer())
+	p := pterm.DefaultInteractiveSelect.OnInterrupt(exitfunc)
+	testza.AssertEqual(t, reflect.ValueOf(p.OnInterruptFunc).Pointer(), reflect.ValueOf(exitfunc).Pointer())
 }

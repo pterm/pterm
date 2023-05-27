@@ -28,15 +28,15 @@ var (
 
 // InteractiveSelectPrinter is a printer for interactive select menus.
 type InteractiveSelectPrinter struct {
-	TextStyle     *Style
-	DefaultText   string
-	Options       []string
-	OptionStyle   *Style
-	DefaultOption string
-	MaxHeight     int
-	Selector      string
-	SelectorStyle *Style
-	OnExitFunc    func()
+	TextStyle       *Style
+	DefaultText     string
+	Options         []string
+	OptionStyle     *Style
+	DefaultOption   string
+	MaxHeight       int
+	Selector        string
+	SelectorStyle   *Style
+	OnInterruptFunc func()
 
 	selectedOption        int
 	result                string
@@ -72,9 +72,9 @@ func (p InteractiveSelectPrinter) WithMaxHeight(maxHeight int) *InteractiveSelec
 	return &p
 }
 
-// OnExit sets the function to execute on exit of the input reader
-func (p InteractiveSelectPrinter) OnExit(exitFunc func()) *InteractiveSelectPrinter {
-	p.OnExitFunc = exitFunc
+// OnInterrupt sets the function to execute on exit of the input reader
+func (p InteractiveSelectPrinter) OnInterrupt(exitFunc func()) *InteractiveSelectPrinter {
+	p.OnInterruptFunc = exitFunc
 	return &p
 }
 
@@ -82,7 +82,7 @@ func (p InteractiveSelectPrinter) OnExit(exitFunc func()) *InteractiveSelectPrin
 func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 	// should be the first defer statement to make sure it is executed last
 	// and all the needed cleanup can be done before
-	cancel, exit := internal.NewCancelationSignal(p.OnExitFunc)
+	cancel, exit := internal.NewCancelationSignal(p.OnInterruptFunc)
 	defer exit()
 
 	if len(text) == 0 || Sprint(text[0]) == "" {
