@@ -2,6 +2,7 @@ package pterm
 
 import (
 	"fmt"
+	"io"
 	"strings"
 
 	"github.com/gookit/color"
@@ -209,6 +210,45 @@ func (c Color) Printfln(format string, a ...interface{}) *TextPrinter {
 	return &tp
 }
 
+// Fprintln formats using the default formats for its operands and writes to the provided io.Writer.
+// Spaces are always added between operands and a newline is appended.
+// It returns the number of bytes written and any write error encountered.
+// Input will be colored with the parent Color.
+func (c Color) Fprintln(w io.Writer, a ...interface{}) *TextPrinter {
+	Fprint(w, c.Sprintln(a...))
+	tc := TextPrinter(c)
+	return &tc
+}
+
+// Fprint formats using the default formats for its operands and writes to the provided io.Writer.
+// Spaces are added between operands when neither is a string.
+// It returns the number of bytes written and any write error encountered.
+// Input will be colored with the parent Color.
+func (c Color) Fprint(w io.Writer, a ...interface{}) *TextPrinter {
+	Fprint(w, c.Sprint(a...))
+	tc := TextPrinter(c)
+	return &tc
+}
+
+// Fprintf formats according to a format specifier and writes to the provided io.Writer.
+// It returns the number of bytes written and any write error encountered.
+// Input will be colored with the parent Color.
+func (c Color) Fprintf(w io.Writer, format string, a ...interface{}) *TextPrinter {
+	Fprint(w, c.Sprintf(format, a...))
+	tc := TextPrinter(c)
+	return &tc
+}
+
+// Fprintfln formats according to a format specifier and writes to the provided io.Writer.
+// Spaces are always added between operands and a newline is appended.
+// It returns the number of bytes written and any write error encountered.
+// Input will be colored with the parent Color.
+func (c Color) Fprintfln(w io.Writer, format string, a ...interface{}) *TextPrinter {
+	Fprint(w, c.Sprintfln(format, a...))
+	tp := TextPrinter(c)
+	return &tp
+}
+
 // PrintOnError prints every error which is not nil.
 // If every error is nil, nothing will be printed.
 // This can be used for simple error checking.
@@ -355,6 +395,37 @@ func (s Style) Printf(format string, a ...interface{}) {
 // Input will be colored with the parent Style.
 func (s Style) Printfln(format string, a ...interface{}) {
 	Print(s.Sprintfln(format, a...))
+}
+
+// Fprint formats using the default formats for its operands and writes to standard output.
+// Spaces are added between operands when neither is a string.
+// It returns the number of bytes written and any write error encountered.
+// Input will be colored with the parent Style.
+func (s Style) Fprint(w io.Writer, a ...interface{}) {
+	Fprint(w, s.Sprint(a...))
+}
+
+// Fprintln formats using the default formats for its operands and writes to standard output.
+// Spaces are always added between operands and a newline is appended.
+// It returns the number of bytes written and any write error encountered.
+// Input will be colored with the parent Style.
+func (s Style) Fprintln(w io.Writer, a ...interface{}) {
+	Fprintln(w, s.Sprint(a...))
+}
+
+// Fprintf formats according to a format specifier and writes to standard output.
+// It returns the number of bytes written and any write error encountered.
+// Input will be colored with the parent Style.
+func (s Style) Fprintf(w io.Writer, format string, a ...interface{}) {
+	Fprint(w, s.Sprintf(format, a...))
+}
+
+// Fprintfln formats according to a format specifier and writes to standard output.
+// Spaces are always added between operands and a newline is appended.
+// It returns the number of bytes written and any write error encountered.
+// Input will be colored with the parent Style.
+func (s Style) Fprintfln(w io.Writer, format string, a ...interface{}) {
+	Fprint(w, s.Sprintfln(format, a...))
 }
 
 // Code convert to code string. returns like "32;45;3".
