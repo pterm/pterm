@@ -76,7 +76,7 @@ package main
 import (
 	"time"
 
-	"github.com/pterm/pterm"
+	"github.com/pterm/pterm/putils"
 )
 
 func main() {
@@ -85,7 +85,7 @@ func main() {
 
 	area, _ := pterm.DefaultArea.WithCenter().Start() // Start the Area printer, with the Center option.
 	for i := 0; i < 10; i++ {
-		str, _ := pterm.DefaultBigText.WithLetters(pterm.NewLettersFromString(time.Now().Format("15:04:05"))).Srender() // Save current time in str.
+		str, _ := pterm.DefaultBigText.WithLetters(putils.LettersFromString(time.Now().Format("15:04:05"))).Srender() // Save current time in str.
 		area.Update(str)                                                                                                // Update Area contents.
 		time.Sleep(time.Second)
 	}

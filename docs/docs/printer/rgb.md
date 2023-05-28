@@ -23,7 +23,7 @@ pterm.NewRGB(178, 44, 199).Println("This text is printed with a custom RGB!")
 |Function|Description|
 |--------|-----------|
 |[NewRGB](https://pkg.go.dev/github.com/pterm/pterm#RGB.NewRGB)|NewRGB returns a new RGB.|
-|[NewRGBFromHEX](https://pkg.go.dev/github.com/pterm/pterm#RGB.NewRGBFromHEX)|NewRGBFromHEX converts a HEX and returns a new RGB.|
+|[RGBFromHEX](https://pkg.go.dev/github.com/pterm/pterm/putils#RGBFromHEX)|RGBFromHEX converts a HEX and returns a new RGB. If the hex code is not valid it returns pterm.ErrHexCodeIsInvalid.|
 |[Fade](https://pkg.go.dev/github.com/pterm/pterm#RGB.Fade)|Fade fades one RGB value (over other RGB values) to another RGB value, by giving the function a minimum, maximum and current value.|
 |[GetValues](https://pkg.go.dev/github.com/pterm/pterm#RGB.GetValues)|GetValues returns the RGB values separately.|
 

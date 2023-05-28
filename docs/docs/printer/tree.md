@@ -14,7 +14,7 @@ Replace all of the following strings with the current printer.
 ### Basic usage
 
 ```go
-pterm.DefaultTree.WithRoot(pterm.NewTreeFromLeveledList(pterm.LeveledList{pterm.LeveledListItem{Level: 0, Text: "Hello, World!"}})).Render()
+pterm.DefaultTree.WithRoot(putils.TreeFromLeveledList(pterm.LeveledList{pterm.LeveledListItem{Level: 0, Text: "Hello, World!"}})).Render()
 ```
 
 ### Options

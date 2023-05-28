@@ -14,7 +14,7 @@ Replace all of the following strings with the current printer.
 ### Basic usage
 
 ```go
-pterm.DefaultBigText.WithLetters(pterm.NewLettersFromString("Hello")).Render()
+pterm.DefaultBigText.WithLetters(putils.LettersFromString("Hello")).Render()
 ```
 
 ### Options

@@ -208,7 +208,7 @@ package main
 import (
 	"time"
 
-	"github.com/pterm/pterm"
+	"github.com/pterm/pterm/putils"
 )
 
 func main() {
@@ -217,7 +217,7 @@ func main() {
 
 	area, _ := pterm.DefaultArea.WithCenter().Start() // Start the Area printer, with the Center option.
 	for i := 0; i < 10; i++ {
-		str, _ := pterm.DefaultBigText.WithLetters(pterm.NewLettersFromString(time.Now().Format("15:04:05"))).Srender() // Save current time in str.
+		str, _ := pterm.DefaultBigText.WithLetters(putils.LettersFromString(time.Now().Format("15:04:05"))).Srender() // Save current time in str.
 		area.Update(str)                                                                                                // Update Area contents.
 		time.Sleep(time.Second)
 	}
@@ -955,13 +955,13 @@ func main() {
 ```go
 package main
 
-import "github.com/pterm/pterm"
+import "github.com/pterm/pterm/putils"
 
 func main() {
 	pterm.DefaultCenter.Println("This text is centered!\nIt centeres the whole block by default.\nIn that way you can do stuff like this:")
 
 	// Generate BigLetters
-	s, _ := pterm.DefaultBigText.WithLetters(pterm.NewLettersFromString("PTerm")).Srender()
+	s, _ := pterm.DefaultBigText.WithLetters(putils.LettersFromString("PTerm")).Srender()
 	pterm.DefaultCenter.Println(s) // Print BigLetters with the default CenterPrinter
 
 	pterm.DefaultCenter.WithCenterEachLineSeparately().Println("This text is centered!\nBut each line is\ncentered\nseparately")

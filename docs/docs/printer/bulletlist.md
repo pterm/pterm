@@ -21,8 +21,8 @@ pterm.DefaultBulletList.WithItems([]pterm.BulletListItem{{Level: 0, Text: "Level
 
 | Function                                                                                                                                   | Description                                                                                                                            |
 | ------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
-| [NewBulletListFromString(s string, padding string)](https://pkg.go.dev/github.com/pterm/pterm#TemplatePrinter.NewBulletListFromString)     | NewBulletListFromString returns a BulletListPrinter with Text using the NewTreeListItemFromString method, splitting after return (\n). |
-| [NewBulletListFromStrings(s []string, padding string)](https://pkg.go.dev/github.com/pterm/pterm#TemplatePrinter.NewBulletListFromStrings) | NewBulletListFromStrings returns a BulletListPrinter with Text using the NewTreeListItemFromString method.                             |
+| [BulletListFromString(s string, padding string)](https://pkg.go.dev/github.com/pterm/pterm/putils#BulletListFromString)     | BulletListFromString returns a BulletListPrinter with Text using the NewTreeListItemFromString method, splitting after return (\n). |
+| [BulletListFromStrings(s []string, padding string)](https://pkg.go.dev/github.com/pterm/pterm/putils#BulletListFromStrings) | BulletListFromStrings returns a BulletListPrinter with Text using the NewTreeListItemFromString method.                             |
 
 ### Options
 

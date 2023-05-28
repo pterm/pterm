@@ -14,7 +14,7 @@ go get -u github.com/pterm/pterm
 ```go
 package main
 
-import "github.com/pterm/pterm"
+import "github.com/pterm/pterm/putils"
 
 func main() {
 	// Create a new header as a fork from pterm.DefaultHeader.
@@ -34,7 +34,7 @@ func main() {
 	//          │              ┌ Set the Letters option
 	//          │              │                   ┌ Generate Letters from string
 	//          │              │                   │                            ┌ Render output to the console
-	_ = pterm.DefaultBigText.WithLetters(pterm.NewLettersFromString("Hello")).Render()
+	_ = pterm.DefaultBigText.WithLetters(putils.LettersFromString("Hello")).Render()
 
 	// ┌──────────────────────────────────────────────────────────┐
 	// │There are many more features, which are waiting for you :)│

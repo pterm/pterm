@@ -17,7 +17,9 @@ pterm.BulletListItem{}.WithText("Hello, World").WithLevel(0)
 
 |Function|Description|
 |--------|-----------|
-|[NewBulletListItemFromString(text string, padding string)](https://pkg.go.dev/github.com/pterm/pterm#TemplatePrinter.NewBulletListItemFromString)|NewBulletListItemFromString returns a BulletListItem with a Text. The padding is counted in the Text to define the Level of the ListItem.|
+|[BulletListItemFromString(text string, padding string)](https://pkg.go.dev/github.com/pterm/pterm/putils#BulletListItemFromString)| BulletListItemFromString returns a BulletListItem with a Text. The padding is counted in the Text to define the Level of the ListItem.
+
+.|
 
 ### Options
 
