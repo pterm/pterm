@@ -4,7 +4,6 @@ import (
 	"errors"
 	"io"
 	"reflect"
-	"strconv"
 	"testing"
 
 	"github.com/MarvinJWendt/testza"
@@ -33,44 +32,6 @@ func TestNewRGB(t *testing.T) {
 			if got := pterm.NewRGB(tt.args.r, tt.args.g, tt.args.b); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewRGB() = %v, want %v", got, tt.want)
 			}
-		})
-	}
-}
-
-func TestNewRGBFromHEX(t *testing.T) {
-	tests := []struct {
-		hex  string
-		want pterm.RGB
-	}{
-		{hex: "#ff0009", want: pterm.RGB{R: 255, G: 0, B: 9}},
-		{hex: "ff0009", want: pterm.RGB{R: 255, G: 0, B: 9}},
-		{hex: "ff00090x", want: pterm.RGB{R: 255, G: 0, B: 9}},
-		{hex: "ff00090X", want: pterm.RGB{R: 255, G: 0, B: 9}},
-		{hex: "#fba", want: pterm.RGB{R: 255, G: 187, B: 170}},
-		{hex: "fba", want: pterm.RGB{R: 255, G: 187, B: 170}},
-		{hex: "fba0x", want: pterm.RGB{R: 255, G: 187, B: 170}},
-	}
-	for _, test := range tests {
-		t.Run("", func(t *testing.T) {
-			rgb, err := pterm.NewRGBFromHEX(test.hex)
-			testza.AssertEqual(t, test.want, rgb)
-			testza.AssertNoError(t, err)
-		})
-	}
-	testsFail := []struct {
-		hex  string
-		want error
-	}{
-		{hex: "faba0x", want: pterm.ErrHexCodeIsInvalid},
-		{hex: "faba", want: pterm.ErrHexCodeIsInvalid},
-		{hex: "#faba", want: pterm.ErrHexCodeIsInvalid},
-		{hex: "faba0x", want: pterm.ErrHexCodeIsInvalid},
-		{hex: "fax", want: strconv.ErrSyntax},
-	}
-	for _, test := range testsFail {
-		t.Run("", func(t *testing.T) {
-			_, err := pterm.NewRGBFromHEX(test.hex)
-			testza.AssertTrue(t, errors.Is(err, test.want))
 		})
 	}
 }

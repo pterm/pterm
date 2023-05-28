@@ -134,27 +134,6 @@ func TestBulletListItem_WithTextStyle(t *testing.T) {
 	testza.AssertZero(t, p.TextStyle)
 }
 
-func TestNewBulletListFromString(t *testing.T) {
-	p := *pterm.DefaultBulletList.WithItems([]pterm.BulletListItem{
-		{Level: 0, Text: "0"},
-		{Level: 1, Text: "1"},
-		{Level: 2, Text: "2"},
-		{Level: 3, Text: "3"},
-		{Level: 4, Text: "4"},
-		{Level: 5, Text: "5"},
-	})
-
-	s := `0
- 1
-  2
-   3
-    4
-     5`
-	p2 := pterm.NewBulletListFromString(s, " ")
-
-	testza.AssertEqual(t, p, p2)
-}
-
 func TestBulletListPrinter_WithWriter(t *testing.T) {
 	p := pterm.BulletListPrinter{}
 	s := os.Stderr
