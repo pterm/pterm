@@ -1,7 +1,7 @@
 <a name="unreleased"></a>
 ## [Unreleased]
-
-
+### Code Refactoring
+- Remove deprecated file
 <a name="v0.12.62"></a>
 ## [v0.12.62] - 2023-05-24
 ### Bug Fixes
