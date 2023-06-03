@@ -52,7 +52,10 @@ type InteractiveMultiselectPrinter struct {
 	displayedOptionsStart int
 	displayedOptionsEnd   int
 
-	KeySelect  keys.KeyCode
+	// KeySelect is the select key. It cannot be keys.Space when Filter is enabled.
+	KeySelect keys.KeyCode
+
+	// KeyConfirm is the confirm key. It cannot be keys.Space when Filter is enabled.
 	KeyConfirm keys.KeyCode
 }
 
@@ -87,12 +90,14 @@ func (p InteractiveMultiselectPrinter) WithFilter(filter bool) *InteractiveMulti
 }
 
 // WithKeySelect sets the confirm key
+// It cannot be keys.Space when Filter is enabled.
 func (p InteractiveMultiselectPrinter) WithKeySelect(keySelect keys.KeyCode) *InteractiveMultiselectPrinter {
 	p.KeySelect = keySelect
 	return &p
 }
 
 // WithKeyConfirm sets the confirm key
+// It cannot be keys.Space when Filter is enabled.
 func (p InteractiveMultiselectPrinter) WithKeyConfirm(keyConfirm keys.KeyCode) *InteractiveMultiselectPrinter {
 	p.KeyConfirm = keyConfirm
 	return &p
