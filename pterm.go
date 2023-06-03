@@ -83,8 +83,4 @@ func RecalculateTerminalSize() {
 	DefaultBarChart.Width = GetTerminalWidth() * 2 / 3
 	DefaultBarChart.Height = GetTerminalHeight() * 2 / 3
 	DefaultParagraph.MaxWidth = GetTerminalWidth()
-
-	if true {
-		// TODO remove
-	}
 }
