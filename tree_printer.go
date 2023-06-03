@@ -124,7 +124,7 @@ func (p TreePrinter) Srender() (string, error) {
 
 	var result string
 	if p.Root.Text != "" {
-		result += p.Root.Text + "\n"
+		result += p.TextStyle.Sprint(p.Root.Text) + "\n"
 	}
 	result += walkOverTree(p.Root.Children, p, "")
 	return result, nil
