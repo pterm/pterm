@@ -11,3 +11,8 @@ jobs:
           fetch-depth: 0
       - name: Linting with golangci-lint
         uses: reviewdog/action-golangci-lint@v2
+        with:
+          github_token: ${{ secrets.ACCESS_TOKEN }}
+          reporter: github-pr-review
+        run: |
+          reviewdog -reporter=github-pr-review -runners=golint,govet
