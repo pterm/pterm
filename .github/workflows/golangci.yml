@@ -1,3 +1,5 @@
+name: Code analysis
+
 on: [pull_request]
 jobs:
   golangci-lint:
