@@ -68,13 +68,13 @@ func TestInteractiveMultiselectPrinter_WithCheckmark(t *testing.T) {
 	testza.AssertEqual(t, p.Checkmark, &pterm.Checkmark{Checked: "+", Unchecked: "-"})
 }
 
-func TestInteractiveMultiselectPrinter_OnInterrupt(t *testing.T) {
+func TestInteractiveMultiselectPrinter_WithOnInterruptFunc(t *testing.T) {
 	// OnInterrupt function defaults to nil
 	pd := pterm.InteractiveMultiselectPrinter{}
 	testza.AssertNil(t, pd.OnInterruptFunc)
 
 	// Verify OnInterrupt is set
 	exitfunc := func() {}
-	p := pterm.DefaultInteractiveMultiselect.OnInterrupt(exitfunc)
+	p := pterm.DefaultInteractiveMultiselect.WithOnInterruptFunc(exitfunc)
 	testza.AssertEqual(t, reflect.ValueOf(p.OnInterruptFunc).Pointer(), reflect.ValueOf(exitfunc).Pointer())
 }

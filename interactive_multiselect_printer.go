@@ -111,7 +111,7 @@ func (p InteractiveMultiselectPrinter) WithCheckmark(checkmark *Checkmark) *Inte
 }
 
 // OnInterrupt sets the function to execute on exit of the input reader
-func (p InteractiveMultiselectPrinter) OnInterrupt(exitFunc func()) *InteractiveMultiselectPrinter {
+func (p InteractiveMultiselectPrinter) WithOnInterruptFunc(exitFunc func()) *InteractiveMultiselectPrinter {
 	p.OnInterruptFunc = exitFunc
 	return &p
 }

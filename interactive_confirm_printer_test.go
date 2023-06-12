@@ -128,13 +128,13 @@ func TestInteractiveConfirmPrinter_WithTextStyle(t *testing.T) {
 	testza.AssertEqual(t, p.TextStyle, style)
 }
 
-func TestInteractiveConfirmPrinter_OnInterrupt(t *testing.T) {
+func TestInteractiveConfirmPrinter_WithOnInterruptFunc(t *testing.T) {
 	// OnInterrupt function defaults to nil
 	pd := pterm.InteractiveConfirmPrinter{}
 	testza.AssertNil(t, pd.OnInterruptFunc)
 
 	// Verify OnInterrupt is set
 	exitfunc := func() {}
-	p := pterm.DefaultInteractiveConfirm.OnInterrupt(exitfunc)
+	p := pterm.DefaultInteractiveConfirm.WithOnInterruptFunc(exitfunc)
 	testza.AssertEqual(t, reflect.ValueOf(p.OnInterruptFunc).Pointer(), reflect.ValueOf(exitfunc).Pointer())
 }

@@ -43,13 +43,13 @@ func TestInteractiveTextInputPrinter_WithMask(t *testing.T) {
 	testza.AssertEqual(t, result, "abc")
 }
 
-func TestInteractiveTextInputPrinter_OnInterrupt(t *testing.T) {
+func TestInteractiveTextInputPrinter_WithOnInterruptFunc(t *testing.T) {
 	// OnInterrupt function defaults to nil
 	pd := pterm.InteractiveTextInputPrinter{}
 	testza.AssertNil(t, pd.OnInterruptFunc)
 
 	// Verify OnInterrupt is set
 	exitfunc := func() {}
-	p := pterm.DefaultInteractiveTextInput.OnInterrupt(exitfunc)
+	p := pterm.DefaultInteractiveTextInput.WithOnInterruptFunc(exitfunc)
 	testza.AssertEqual(t, reflect.ValueOf(p.OnInterruptFunc).Pointer(), reflect.ValueOf(exitfunc).Pointer())
 }

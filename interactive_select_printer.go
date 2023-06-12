@@ -73,7 +73,7 @@ func (p InteractiveSelectPrinter) WithMaxHeight(maxHeight int) *InteractiveSelec
 }
 
 // OnInterrupt sets the function to execute on exit of the input reader
-func (p InteractiveSelectPrinter) OnInterrupt(exitFunc func()) *InteractiveSelectPrinter {
+func (p InteractiveSelectPrinter) WithOnInterruptFunc(exitFunc func()) *InteractiveSelectPrinter {
 	p.OnInterruptFunc = exitFunc
 	return &p
 }

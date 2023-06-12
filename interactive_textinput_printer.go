@@ -58,7 +58,7 @@ func (p InteractiveTextInputPrinter) WithMask(mask string) *InteractiveTextInput
 }
 
 // OnInterrupt sets the function to execute on exit of the input reader
-func (p InteractiveTextInputPrinter) OnInterrupt(exitFunc func()) *InteractiveTextInputPrinter {
+func (p InteractiveTextInputPrinter) WithOnInterruptFunc(exitFunc func()) *InteractiveTextInputPrinter {
 	p.OnInterruptFunc = exitFunc
 	return &p
 }

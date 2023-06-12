@@ -88,7 +88,7 @@ func (p InteractiveConfirmPrinter) WithSuffixStyle(style *Style) *InteractiveCon
 }
 
 // OnInterrupt sets the function to execute on exit of the input reader
-func (p InteractiveConfirmPrinter) OnInterrupt(exitFunc func()) *InteractiveConfirmPrinter {
+func (p InteractiveConfirmPrinter) WithOnInterruptFunc(exitFunc func()) *InteractiveConfirmPrinter {
 	p.OnInterruptFunc = exitFunc
 	return &p
 }
