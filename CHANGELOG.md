@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Bug Fixes
+- **box:** fixed wrong title length calculation
+
 
 <a name="v0.12.62"></a>
 ## [v0.12.62] - 2023-05-24
