@@ -59,7 +59,7 @@ func (p AreaPrinter) WithWriter(w io.Writer) *AreaPrinter {
 // Can be used live.
 func (p *AreaPrinter) Update(text ...interface{}) {
 	if p.area == nil {
-            p.area = cursor.NewArea() // When supported by area: .WithWriter(p.Writer)
+		p.area = cursor.NewArea().WithWriter(p.Writer)
 	}
 	str := Sprint(text...)
 	p.content = str

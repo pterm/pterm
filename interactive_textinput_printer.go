@@ -85,7 +85,7 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	}
 
 	if p.MultiLine {
-		areaText = p.TextStyle.Sprintfln("%s %s :", text[0], ThemeDefault.SecondaryStyle.Sprint("[Press tab to submit]"))
+		areaText = p.TextStyle.Sprintfln("%s %s:", text[0], ThemeDefault.SecondaryStyle.Sprint("[Press tab to submit]"))
 	} else {
 		areaText = p.TextStyle.Sprintf("%s: ", text[0])
 	}
@@ -127,7 +127,6 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 				p.input = append(p.input, appendAfterY...)
 				p.cursorYPos++
 				p.cursorXPos = -internal.GetStringMaxWidth(p.input[p.cursorYPos])
-				cursor.Down(1)
 				cursor.StartOfLine()
 			} else {
 				return true, nil
