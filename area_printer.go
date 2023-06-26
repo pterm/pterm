@@ -1,7 +1,6 @@
 package pterm
 
 import (
-	"io"
 	"strings"
 
 	"atomicgo.dev/cursor"
@@ -18,7 +17,7 @@ type AreaPrinter struct {
 	RemoveWhenDone bool
 	Fullscreen     bool
 	Center         bool
-	Writer         io.Writer
+	Writer         cursor.Writer
 
 	content  string
 	isActive bool
@@ -50,7 +49,7 @@ func (p AreaPrinter) WithCenter(b ...bool) *AreaPrinter {
 }
 
 // WithCenter centers the AreaPrinter content to the terminal.
-func (p AreaPrinter) WithWriter(w io.Writer) *AreaPrinter {
+func (p AreaPrinter) WithWriter(w cursor.Writer) *AreaPrinter {
 	p.Writer = w
 	return &p
 }
@@ -59,7 +58,9 @@ func (p AreaPrinter) WithWriter(w io.Writer) *AreaPrinter {
 // Can be used live.
 func (p *AreaPrinter) Update(text ...interface{}) {
 	if p.area == nil {
-		p.area = cursor.NewArea().WithWriter(p.Writer)
+		// cursor := cursor.NewArea().WithWriter(p.Writer.(cursor.Writer))
+		cursor := cursor.NewArea().WithWriter(p.Writer)
+		p.area = &cursor
 	}
 	str := Sprint(text...)
 	p.content = str
@@ -93,7 +94,8 @@ func (p *AreaPrinter) Update(text ...interface{}) {
 func (p *AreaPrinter) Start(text ...interface{}) (*AreaPrinter, error) {
 	p.isActive = true
 	str := Sprint(text...)
-	p.area = cursor.NewArea().WithWriter(p.Writer)
+	cursor := cursor.NewArea().WithWriter(p.Writer)
+	p.area = &cursor
 
 	p.Update(str)
 

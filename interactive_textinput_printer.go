@@ -60,7 +60,7 @@ func (p InteractiveTextInputPrinter) WithMask(mask string) *InteractiveTextInput
 }
 
 // WithWriter sets the custom Writer.
-func (p InteractiveTextInputPrinter) WithWriter(writer io.Writer) *InteractiveTextInputPrinter {
+func (p InteractiveTextInputPrinter) WithWriter(writer cursor.Writer) *InteractiveTextInputPrinter {
 	p.Writer = writer
 	return &p
 }
