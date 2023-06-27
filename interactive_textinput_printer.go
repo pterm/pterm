@@ -1,7 +1,6 @@
 package pterm
 
 import (
-	"io"
 	"strings"
 
 	"atomicgo.dev/cursor"
