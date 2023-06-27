@@ -96,7 +96,7 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 		return "", err
 	}
 
-	cursor.Up(1)
+	// cursor.Up(1)
 	cursor.StartOfLine()
 	if !p.MultiLine {
 		cursor.Right(len(RemoveColorFromString(areaText)))
@@ -240,11 +240,10 @@ func (p InteractiveTextInputPrinter) updateArea(area *AreaPrinter) string {
 	}
 
 	cursor.StartOfLine()
-
 	area.Update(areaText)
-	cursor.Up(len(p.input) - p.cursorYPos)
 	cursor.StartOfLine()
 	if p.MultiLine {
+		cursor.Up(len(p.input) - p.cursorYPos - 1)
 		cursor.Right(internal.GetStringMaxWidth(p.input[p.cursorYPos]) + p.cursorXPos)
 	} else {
 		cursor.Right(internal.GetStringMaxWidth(areaText) + p.cursorXPos)
