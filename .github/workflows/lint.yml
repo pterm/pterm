@@ -1,6 +1,7 @@
 name: Code analysis
 
 on: [pull_request]
+
 jobs:
   golangci-lint:
     runs-on: ubuntu-latest
@@ -14,3 +15,5 @@ jobs:
         with:
           github_token: ${{ secrets.ACCESS_TOKEN }}
           reporter: github-pr-review
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.ACCESS_TOKEN }}
