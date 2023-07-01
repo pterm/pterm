@@ -81,8 +81,8 @@ func (p InteractiveSelectPrinter) WithOnInterruptFunc(exitFunc func()) *Interact
 }
 
 // WithFilter sets the Filter option
-func (p InteractiveSelectPrinter) WithFilter(filter bool) *InteractiveSelectPrinter {
-	p.Filter = filter
+func (p InteractiveSelectPrinter) WithFilter(b ...bool) *InteractiveSelectPrinter {
+	p.Filter = internal.WithBoolean(b)
 	return &p
 }
 
