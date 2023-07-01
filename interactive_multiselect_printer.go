@@ -32,16 +32,17 @@ var (
 
 // InteractiveMultiselectPrinter is a printer for interactive multiselect menus.
 type InteractiveMultiselectPrinter struct {
-	DefaultText    string
-	TextStyle      *Style
-	Options        []string
-	OptionStyle    *Style
-	DefaultOptions []string
-	MaxHeight      int
-	Selector       string
-	SelectorStyle  *Style
-	Filter         bool
-	Checkmark      *Checkmark
+	DefaultText     string
+	TextStyle       *Style
+	Options         []string
+	OptionStyle     *Style
+	DefaultOptions  []string
+	MaxHeight       int
+	Selector        string
+	SelectorStyle   *Style
+	Filter          bool
+	Checkmark       *Checkmark
+	OnInterruptFunc func()
 
 	selectedOption        int
 	selectedOptions       []int
@@ -109,11 +110,17 @@ func (p InteractiveMultiselectPrinter) WithCheckmark(checkmark *Checkmark) *Inte
 	return &p
 }
 
+// OnInterrupt sets the function to execute on exit of the input reader
+func (p InteractiveMultiselectPrinter) WithOnInterruptFunc(exitFunc func()) *InteractiveMultiselectPrinter {
+	p.OnInterruptFunc = exitFunc
+	return &p
+}
+
 // Show shows the interactive multiselect menu and returns the selected entry.
 func (p *InteractiveMultiselectPrinter) Show(text ...string) ([]string, error) {
 	// should be the first defer statement to make sure it is executed last
 	// and all the needed cleanup can be done before
-	cancel, exit := internal.NewCancelationSignal()
+	cancel, exit := internal.NewCancelationSignal(p.OnInterruptFunc)
 	defer exit()
 
 	if len(text) == 0 || Sprint(text[0]) == "" {
