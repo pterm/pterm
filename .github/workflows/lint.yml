@@ -1,0 +1,20 @@
+name: Code Analysis
+
+on: [ push, pull_request ]
+
+jobs:
+  lint:
+    if: "!contains(github.event.head_commit.message, 'autoupdate')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 'stable'
+
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: latest

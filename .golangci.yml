@@ -28,7 +28,6 @@ linters:
     - gosec
     - govet
     - ineffassign
-    - interfacer
     - unconvert
     - gosimple
     - godox
