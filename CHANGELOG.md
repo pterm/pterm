@@ -4,6 +4,9 @@
 ### Bug Fixes
 - **box:** fixed wrong title length calculation
 
+### Code Refactoring
+- use WithBoolean on multiselect printer
+
 
 <a name="v0.12.62"></a>
 ## [v0.12.62] - 2023-05-24
