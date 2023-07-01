@@ -61,3 +61,8 @@ func TestInteractiveSelectPrinter_WithOnInterruptFunc(t *testing.T) {
 	p := pterm.DefaultInteractiveSelect.WithOnInterruptFunc(exitfunc)
 	testza.AssertEqual(t, reflect.ValueOf(p.OnInterruptFunc).Pointer(), reflect.ValueOf(exitfunc).Pointer())
 }
+
+func TestInteractiveSelectPrinter_WithFilter(t *testing.T) {
+	p := pterm.DefaultInteractiveSelect.WithFilter(false)
+	testza.AssertEqual(t, p.Filter, false)
+}
