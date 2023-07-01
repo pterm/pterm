@@ -85,8 +85,8 @@ func (p InteractiveMultiselectPrinter) WithMaxHeight(maxHeight int) *Interactive
 }
 
 // WithFilter sets the Filter option
-func (p InteractiveMultiselectPrinter) WithFilter(filter bool) *InteractiveMultiselectPrinter {
-	p.Filter = filter
+func (p InteractiveMultiselectPrinter) WithFilter(b ...bool) *InteractiveMultiselectPrinter {
+	p.Filter = internal.WithBoolean(b)
 	return &p
 }
 
