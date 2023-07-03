@@ -1,11 +1,16 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Features
+- add filter option for `select`
+
 ### Bug Fixes
 - **box:** fixed wrong title length calculation
 
 ### Code Refactoring
 - use WithBoolean on multiselect printer
+- use WithBoolean on multiselect printer
+- use WithBoolean method on WithFilter method of select printer
 
 
 <a name="v0.12.62"></a>
