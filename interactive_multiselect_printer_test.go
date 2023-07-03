@@ -78,3 +78,16 @@ func TestInteractiveMultiselectPrinter_WithOnInterruptFunc(t *testing.T) {
 	p := pterm.DefaultInteractiveMultiselect.WithOnInterruptFunc(exitfunc)
 	testza.AssertEqual(t, reflect.ValueOf(p.OnInterruptFunc).Pointer(), reflect.ValueOf(exitfunc).Pointer())
 }
+
+func TestInteractiveMultiselectPrinter_GetDefaultSelectedOptions(t *testing.T) {
+	go func() {
+		keyboard.SimulateKeyPress(keys.Enter)
+		keyboard.SimulateKeyPress(keys.Down)
+		keyboard.SimulateKeyPress(keys.Down)
+		keyboard.SimulateKeyPress(keys.Enter)
+		keyboard.SimulateKeyPress(keys.Tab)
+	}()
+	ims := pterm.DefaultInteractiveMultiselect.WithOptions([]string{"a", "b", "c"})
+	ims.Show()
+	testza.AssertEqual(t, ims.GetSelectedOptions(), []int{0, 2})
+}
