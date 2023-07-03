@@ -23,6 +23,7 @@ var (
 		MaxHeight:     5,
 		Selector:      ">",
 		SelectorStyle: &ThemeDefault.SecondaryStyle,
+		Filter:        true,
 	}
 )
 
@@ -37,6 +38,7 @@ type InteractiveSelectPrinter struct {
 	Selector        string
 	SelectorStyle   *Style
 	OnInterruptFunc func()
+	Filter          bool
 
 	selectedOption        int
 	result                string
@@ -75,6 +77,12 @@ func (p InteractiveSelectPrinter) WithMaxHeight(maxHeight int) *InteractiveSelec
 // OnInterrupt sets the function to execute on exit of the input reader
 func (p InteractiveSelectPrinter) WithOnInterruptFunc(exitFunc func()) *InteractiveSelectPrinter {
 	p.OnInterruptFunc = exitFunc
+	return &p
+}
+
+// WithFilter sets the Filter option
+func (p InteractiveSelectPrinter) WithFilter(b ...bool) *InteractiveSelectPrinter {
+	p.Filter = internal.WithBoolean(b)
 	return &p
 }
 
@@ -149,14 +157,16 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 
 		switch key {
 		case keys.RuneKey:
-			// Fuzzy search for options
-			// append to fuzzy search string
-			p.fuzzySearchString += keyInfo.String()
-			p.selectedOption = 0
-			p.displayedOptionsStart = 0
-			p.displayedOptionsEnd = maxHeight
-			p.displayedOptions = append([]string{}, p.fuzzySearchMatches[:maxHeight]...)
-			area.Update(p.renderSelectMenu())
+			if p.Filter {
+				// Fuzzy search for options
+				// append to fuzzy search string
+				p.fuzzySearchString += keyInfo.String()
+				p.selectedOption = 0
+				p.displayedOptionsStart = 0
+				p.displayedOptionsEnd = maxHeight
+				p.displayedOptions = append([]string{}, p.fuzzySearchMatches[:maxHeight]...)
+				area.Update(p.renderSelectMenu())
+			}
 		case keys.Space:
 			p.fuzzySearchString += " "
 			p.selectedOption = 0
@@ -252,7 +262,11 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 
 func (p *InteractiveSelectPrinter) renderSelectMenu() string {
 	var content string
-	content += Sprintf("%s %s: %s\n", p.text, p.SelectorStyle.Sprint("[type to search]"), p.fuzzySearchString)
+	if p.Filter {
+		content += Sprintf("%s %s: %s\n", p.text, p.SelectorStyle.Sprint("[type to search]"), p.fuzzySearchString)
+	} else {
+		content += Sprintf("%s:\n", p.text)
+	}
 
 	// find options that match fuzzy search string
 	rankedResults := fuzzy.RankFindFold(p.fuzzySearchString, p.Options)
