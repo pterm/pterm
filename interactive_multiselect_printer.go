@@ -116,6 +116,11 @@ func (p InteractiveMultiselectPrinter) WithOnInterruptFunc(exitFunc func()) *Int
 	return &p
 }
 
+// GetSelectedOptions returns selectedOptions.
+func (p InteractiveMultiselectPrinter) GetSelectedOptions() []int {
+	return p.selectedOptions
+}
+
 // Show shows the interactive multiselect menu and returns the selected entry.
 func (p *InteractiveMultiselectPrinter) Show(text ...string) ([]string, error) {
 	// should be the first defer statement to make sure it is executed last
