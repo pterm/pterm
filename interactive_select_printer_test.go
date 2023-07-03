@@ -66,3 +66,14 @@ func TestInteractiveSelectPrinter_WithFilter(t *testing.T) {
 	p := pterm.DefaultInteractiveSelect.WithFilter(false)
 	testza.AssertEqual(t, p.Filter, false)
 }
+
+func TestInteractiveSelectPrinter_GetSelectedOption(t *testing.T) {
+	go func() {
+		keyboard.SimulateKeyPress(keys.Down)
+		keyboard.SimulateKeyPress(keys.Down)
+		keyboard.SimulateKeyPress(keys.Enter)
+	}()
+	is := pterm.DefaultInteractiveSelect.WithOptions([]string{"a", "b", "c"})
+	is.Show()
+	testza.AssertEqual(t, is.GetSelectedOption(), 2)
+}
