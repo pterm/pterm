@@ -86,6 +86,14 @@ func (p InteractiveSelectPrinter) WithFilter(b ...bool) *InteractiveSelectPrinte
 	return &p
 }
 
+// WithDefaultSelectedOption sets selectedOption.
+// This method is like WithDefaultOption but it get option by index not string.
+func (p InteractiveSelectPrinter) WithDefaultSelectedOption(selectedOption int) *InteractiveSelectPrinter {
+	p.selectedOption = selectedOption
+	p.DefaultOption = ""
+	return &p
+}
+
 // GetSelectedOption returns selectedOption.
 func (p InteractiveSelectPrinter) GetSelectedOption() int {
 	return p.selectedOption
