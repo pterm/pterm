@@ -77,3 +77,34 @@ func TestInteractiveSelectPrinter_GetSelectedOption(t *testing.T) {
 	is.Show()
 	testza.AssertEqual(t, is.GetSelectedOption(), 2)
 }
+
+func TestInteractiveSelectPrinter_WithDefaultSelectedOption(t *testing.T) {
+	// Check selectedOption value
+	p := pterm.DefaultInteractiveSelect.WithDefaultSelectedOption(2)
+	testza.AssertEqual(t, p.GetSelectedOption(), 2)
+
+	// Check behavior
+	go func() {
+		keyboard.SimulateKeyPress(keys.Up)
+		keyboard.SimulateKeyPress(keys.Up)
+		keyboard.SimulateKeyPress(keys.Enter)
+	}()
+	result, _ := pterm.DefaultInteractiveSelect.WithOptions([]string{"a", "b", "c"}).WithDefaultSelectedOption(2).Show()
+	testza.AssertEqual(t, result, "a")
+
+	// Check default values both with index and string
+	go func() {
+		keyboard.SimulateKeyPress(keys.Up)
+		keyboard.SimulateKeyPress(keys.Enter)
+	}()
+	result, _ = pterm.DefaultInteractiveSelect.WithOptions([]string{"a", "b", "c"}).WithDefaultSelectedOption(2).WithDefaultOption("b").Show()
+	testza.AssertEqual(t, result, "a")
+
+	go func() {
+		keyboard.SimulateKeyPress(keys.Up)
+		keyboard.SimulateKeyPress(keys.Up)
+		keyboard.SimulateKeyPress(keys.Enter)
+	}()
+	result, _ = pterm.DefaultInteractiveSelect.WithOptions([]string{"a", "b", "c"}).WithDefaultOption("b").WithDefaultSelectedOption(2).Show()
+	testza.AssertEqual(t, result, "a")
+}
