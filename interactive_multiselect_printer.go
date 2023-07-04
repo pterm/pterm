@@ -153,7 +153,7 @@ func (p *InteractiveMultiselectPrinter) Show(text ...string) ([]string, error) {
 	p.displayedOptionsEnd = maxHeight
 
 	for _, option := range p.DefaultOptions {
-		p.selectOption(option)
+		p.selectOption(p.findOptionByText(option))
 	}
 
 	area, err := DefaultArea.Start(p.renderSelectMenu())
@@ -189,7 +189,7 @@ func (p *InteractiveMultiselectPrinter) Show(text ...string) ([]string, error) {
 		case p.KeySelect:
 			if len(p.fuzzySearchMatches) > 0 {
 				// Select option if not already selected
-				p.selectOption(p.fuzzySearchMatches[p.selectedOption])
+				p.selectOption(p.selectedOption)
 			}
 			area.Update(p.renderSelectMenu())
 		case keys.RuneKey:
@@ -317,9 +317,9 @@ func (p InteractiveMultiselectPrinter) findOptionByText(text string) int {
 	return -1
 }
 
-func (p *InteractiveMultiselectPrinter) isSelected(optionText string) bool {
+func (p *InteractiveMultiselectPrinter) isSelected(option int) bool {
 	for _, selectedOption := range p.selectedOptions {
-		if p.Options[selectedOption] == optionText {
+		if selectedOption == option {
 			return true
 		}
 	}
@@ -327,18 +327,18 @@ func (p *InteractiveMultiselectPrinter) isSelected(optionText string) bool {
 	return false
 }
 
-func (p *InteractiveMultiselectPrinter) selectOption(optionText string) {
-	if p.isSelected(optionText) {
+func (p *InteractiveMultiselectPrinter) selectOption(option int) {
+	if p.isSelected(option) {
 		// Remove from selected options
 		for i, selectedOption := range p.selectedOptions {
-			if p.Options[selectedOption] == optionText {
+			if selectedOption == option {
 				p.selectedOptions = append(p.selectedOptions[:i], p.selectedOptions[i+1:]...)
 				break
 			}
 		}
 	} else {
 		// Add to selected options
-		p.selectedOptions = append(p.selectedOptions, p.findOptionByText(optionText))
+		p.selectedOptions = append(p.selectedOptions, option)
 	}
 }
 
@@ -370,7 +370,7 @@ func (p *InteractiveMultiselectPrinter) renderSelectMenu() string {
 			continue
 		}
 		var checkmark string
-		if p.isSelected(option) {
+		if p.isSelected(i) {
 			checkmark = fmt.Sprintf("[%s]", p.Checkmark.Checked)
 		} else {
 			checkmark = fmt.Sprintf("[%s]", p.Checkmark.Unchecked)
