@@ -91,3 +91,22 @@ func TestInteractiveMultiselectPrinter_GetDefaultSelectedOptions(t *testing.T) {
 	ims.Show()
 	testza.AssertEqual(t, ims.GetSelectedOptions(), []int{0, 2})
 }
+
+func TestInteractiveMultiselectPrinter_Show_Duplicated(t *testing.T) {
+	go func() {
+		keyboard.SimulateKeyPress(keys.Enter)
+		keyboard.SimulateKeyPress(keys.Down)
+		keyboard.SimulateKeyPress(keys.Down)
+		keyboard.SimulateKeyPress(keys.Enter)
+		keyboard.SimulateKeyPress(keys.Down)
+		keyboard.SimulateKeyPress(keys.Down)
+		keyboard.SimulateKeyPress(keys.Enter)
+		keyboard.SimulateKeyPress(keys.Tab)
+	}()
+	p := pterm.DefaultInteractiveMultiselect.
+		WithOptions([]string{"a", "a", "a", "a", "a", "a"})
+	r, _ := p.Show()
+
+	testza.AssertEqual(t, p.GetSelectedOptions(), []int{0, 2, 4})
+	testza.AssertEqual(t, r, []string{"a", "a", "a"})
+}
