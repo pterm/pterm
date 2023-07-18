@@ -5,6 +5,7 @@
 - add filter option for `select`
 
 ### Bug Fixes
+- fixed area on Windows
 - **box:** fixed wrong title length calculation
 
 ### Code Refactoring

@@ -1,7 +1,5 @@
 atomicgo.dev/assert v0.0.2 h1:FiKeMiZSgRrZsPo9qn/7vmr7mCsh5SZyXY4YGYiYwrg=
 atomicgo.dev/assert v0.0.2/go.mod h1:ut4NcI3QDdJtlmAxQULOmA13Gz6e2DWbSAS8RUOmNYQ=
-atomicgo.dev/cursor v0.1.2 h1:zLIcqxTFymd9Uv2gloPEv5YfnnCkJ4SCdPlYm5374pA=
-atomicgo.dev/cursor v0.1.2/go.mod h1:Lr4ZJB3U7DfPPOkbH7/6TOtJ4vFGHlgj1nc+n900IpU=
 atomicgo.dev/cursor v0.1.3 h1:w8GcylMdZRyFzvDiGm3wy3fhZYYT7BwaqNjUFHxo0NU=
 atomicgo.dev/cursor v0.1.3/go.mod h1:Lr4ZJB3U7DfPPOkbH7/6TOtJ4vFGHlgj1nc+n900IpU=
 atomicgo.dev/keyboard v0.2.9 h1:tOsIid3nlPLZ3lwgG8KZMp/SFmr7P0ssEN5JUsm78K8=
