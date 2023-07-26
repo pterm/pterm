@@ -25,7 +25,7 @@ type InteractiveTextInputPrinter struct {
 	DefaultText     string
 	MultiLine       bool
 	Mask            string
-	Writer          io.Writer
+	Writer          cursor.Writer
 	OnInterruptFunc func()
 
 	input      []string
