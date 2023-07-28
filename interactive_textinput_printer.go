@@ -141,7 +141,6 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 				p.input[p.cursorYPos-1] += p.input[p.cursorYPos]
 				appendAfterY := append([]string{}, p.input[p.cursorYPos+1:]...)
 				p.input = append(p.input[:p.cursorYPos], appendAfterY...)
-				p.cursorXPos = 0
 				p.cursorYPos--
 			}
 		case keys.Delete:
@@ -150,9 +149,9 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 				p.cursorXPos++
 			} else if p.cursorYPos < len(p.input)-1 {
 				p.input[p.cursorYPos] += p.input[p.cursorYPos+1]
+				p.cursorXPos = -len(p.input[p.cursorYPos+1])
 				appendAfterY := append([]string{}, p.input[p.cursorYPos+2:]...)
 				p.input = append(p.input[:p.cursorYPos+1], appendAfterY...)
-				p.cursorXPos = 0
 			}
 		case keys.CtrlC:
 			cancel()
@@ -238,14 +237,13 @@ func (p InteractiveTextInputPrinter) updateArea(area *AreaPrinter) string {
 		p.cursorXPos = -internal.GetStringMaxWidth(p.input[p.cursorYPos])
 	}
 
-	cursor.StartOfLine()
-	area.Update(areaText)
-	cursor.StartOfLine()
+	area.area.Update(areaText)
+	area.area.StartOfLine()
 	if p.MultiLine {
-		cursor.Up(len(p.input) - p.cursorYPos - 1)
-		cursor.Right(internal.GetStringMaxWidth(p.input[p.cursorYPos]) + p.cursorXPos)
+		area.area.Up(len(p.input) - p.cursorYPos - 1)
+		area.area.Move(internal.GetStringMaxWidth(p.input[p.cursorYPos])+p.cursorXPos, 0)
 	} else {
-		cursor.Right(internal.GetStringMaxWidth(areaText) + p.cursorXPos)
+		area.area.Move(internal.GetStringMaxWidth(areaText)+p.cursorXPos, 0)
 	}
 	return areaText
 }
