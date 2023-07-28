@@ -110,6 +110,11 @@ func (p SpinnerPrinter) WithWriter(writer io.Writer) *SpinnerPrinter {
 	return &p
 }
 
+// SetWriter sets the custom Writer.
+func (p *SpinnerPrinter) SetWriter(writer io.Writer) {
+	p.Writer = writer
+}
+
 // UpdateText updates the message of the active SpinnerPrinter.
 // Can be used live.
 func (s *SpinnerPrinter) UpdateText(text string) {
