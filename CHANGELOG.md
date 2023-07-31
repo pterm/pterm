@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+
+<a name="v0.12.63"></a>
+## [v0.12.63] - 2023-07-18
 ### Features
 - add filter option for `select`
 
@@ -1198,7 +1201,8 @@ removed `Header` and put it's content directly into `HeaderPrinter`
 - initial commit
 
 
-[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.62...HEAD
+[Unreleased]: https://github.com/pterm/pterm/compare/v0.12.63...HEAD
+[v0.12.63]: https://github.com/pterm/pterm/compare/v0.12.62...v0.12.63
 [v0.12.62]: https://github.com/pterm/pterm/compare/v0.12.61...v0.12.62
 [v0.12.61]: https://github.com/pterm/pterm/compare/v0.12.60...v0.12.61
 [v0.12.60]: https://github.com/pterm/pterm/compare/v0.12.59...v0.12.60
