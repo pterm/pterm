@@ -69,7 +69,6 @@ func (p InteractiveTextInputPrinter) WithDelimiter(delimiter string) *Interactiv
 	return &p
 }
 
-
 // Show shows the interactive select menu and returns the selected entry.
 func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	// should be the first defer statement to make sure it is executed last
