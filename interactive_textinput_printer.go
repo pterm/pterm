@@ -90,7 +90,7 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	}
 
 	if p.MultiLine {
-		areaText = p.TextStyle.Sprintfln("%s %s %s", text[0], ThemeDefault.SecondaryStyle.Sprint("[Press tab to submit]"), p.Delimiter)
+		areaText = p.TextStyle.Sprintfln("%s %s%s", text[0], ThemeDefault.SecondaryStyle.Sprint("[Press tab to submit]"), p.Delimiter)
 	} else {
 		areaText = p.TextStyle.Sprintf("%s%s", text[0], p.Delimiter)
 	}
