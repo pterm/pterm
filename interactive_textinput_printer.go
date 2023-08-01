@@ -10,19 +10,19 @@ import (
 	"github.com/pterm/pterm/internal"
 )
 
-var (
-	// DefaultInteractiveTextInput is the default InteractiveTextInput printer.
-	DefaultInteractiveTextInput = InteractiveTextInputPrinter{
-		DefaultText: "Input text",
-		TextStyle:   &ThemeDefault.PrimaryStyle,
-		Mask:        "",
-	}
-)
+// DefaultInteractiveTextInput is the default InteractiveTextInput printer.
+var DefaultInteractiveTextInput = InteractiveTextInputPrinter{
+	DefaultText: "Input text",
+	Delimiter:   ": ",
+	TextStyle:   &ThemeDefault.PrimaryStyle,
+	Mask:        "",
+}
 
 // InteractiveTextInputPrinter is a printer for interactive select menus.
 type InteractiveTextInputPrinter struct {
 	TextStyle       *Style
 	DefaultText     string
+	Delimiter       string
 	MultiLine       bool
 	Mask            string
 	Writer          cursor.Writer
@@ -70,6 +70,12 @@ func (p InteractiveTextInputPrinter) WithOnInterruptFunc(exitFunc func()) *Inter
 	return &p
 }
 
+// WithDelimiter sets the delimiter between the message and the input.
+func (p InteractiveTextInputPrinter) WithDelimiter(delimiter string) *InteractiveTextInputPrinter {
+	p.Delimiter = delimiter
+	return &p
+}
+
 // Show shows the interactive select menu and returns the selected entry.
 func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	// should be the first defer statement to make sure it is executed last
@@ -84,9 +90,9 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	}
 
 	if p.MultiLine {
-		areaText = p.TextStyle.Sprintfln("%s %s:", text[0], ThemeDefault.SecondaryStyle.Sprint("[Press tab to submit]"))
+		areaText = p.TextStyle.Sprintfln("%s %s %s", text[0], ThemeDefault.SecondaryStyle.Sprint("[Press tab to submit]"), p.Delimiter)
 	} else {
-		areaText = p.TextStyle.Sprintf("%s: ", text[0])
+		areaText = p.TextStyle.Sprintf("%s%s", text[0], p.Delimiter)
 	}
 	p.text = areaText
 	area, err := DefaultArea.WithWriter(p.Writer).Start(areaText)

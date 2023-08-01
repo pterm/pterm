@@ -66,6 +66,11 @@ func TestInteractiveConfirmPrinter_WithDefaultText(t *testing.T) {
 	testza.AssertEqual(t, p.DefaultText, "default")
 }
 
+func TestInteractiveConfirmPrinter_WithDelimiter(t *testing.T) {
+	p := pterm.DefaultInteractiveConfirm.WithDelimiter(">>")
+	testza.AssertEqual(t, p.Delimiter, ">>")
+}
+
 func TestInteractiveConfirmPrinter_WithRejectStyle(t *testing.T) {
 	style := pterm.NewStyle(pterm.FgRed)
 	p := pterm.DefaultInteractiveConfirm.WithRejectStyle(style)
