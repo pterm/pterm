@@ -141,7 +141,6 @@ func TestInteractiveContinuePrinter_WithDelimiter(t *testing.T) {
 	testza.AssertEqual(t, p.Delimiter, ">>")
 }
 
-
 func TestInteractiveContinuePrinter_CustomAnswers(t *testing.T) {
 	p := pterm.DefaultInteractiveContinue.WithOptions([]string{"next", "stop", "continue"})
 	tests := []struct {

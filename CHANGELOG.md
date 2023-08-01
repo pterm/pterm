@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Features
+- add custom delimiters to select printers ([#545](https://github.com/pterm/pterm/issues/545))
+
 
 <a name="v0.12.63"></a>
 ## [v0.12.63] - 2023-07-18
