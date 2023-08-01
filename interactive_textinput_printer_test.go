@@ -16,6 +16,11 @@ func TestInteractiveTextInputPrinter_WithDefaultText(t *testing.T) {
 	testza.AssertEqual(t, p.DefaultText, "default")
 }
 
+func TestInteractiveTextInputPrinter_WithDelimiter(t *testing.T) {
+	p := pterm.DefaultInteractiveTextInput.WithDelimiter(">>")
+	testza.AssertEqual(t, p.Delimiter, ">>")
+}
+
 func TestInteractiveTextInputPrinter_WithMultiLine_true(t *testing.T) {
 	p := pterm.DefaultInteractiveTextInput.WithMultiLine()
 	testza.AssertTrue(t, p.MultiLine)

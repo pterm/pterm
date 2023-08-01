@@ -23,6 +23,7 @@ var (
 		RejectText:   "No",
 		RejectStyle:  &ThemeDefault.ErrorMessageStyle,
 		SuffixStyle:  &ThemeDefault.SecondaryStyle,
+		Delimiter: ": ",
 	}
 )
 
@@ -30,6 +31,7 @@ var (
 type InteractiveConfirmPrinter struct {
 	DefaultValue    bool
 	DefaultText     string
+	Delimiter string
 	TextStyle       *Style
 	ConfirmText     string
 	ConfirmStyle    *Style
@@ -93,6 +95,12 @@ func (p InteractiveConfirmPrinter) WithOnInterruptFunc(exitFunc func()) *Interac
 	return &p
 }
 
+// WithDelimiter sets the delimiter between the message and the input.
+func (p InteractiveConfirmPrinter) WithDelimiter(delimiter string) *InteractiveConfirmPrinter {
+	p.Delimiter = delimiter
+	return &p
+}
+
 // Show shows the confirm prompt.
 //
 // Example:
@@ -111,7 +119,7 @@ func (p InteractiveConfirmPrinter) Show(text ...string) (bool, error) {
 		text = []string{p.DefaultText}
 	}
 
-	p.TextStyle.Print(text[0] + " " + p.getSuffix() + ": ")
+	p.TextStyle.Print(text[0] + " " + p.getSuffix() + p.Delimiter)
 	y, n := p.getShortHandles()
 
 	var interrupted bool
