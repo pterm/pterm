@@ -2,6 +2,7 @@ package pterm
 
 import (
 	"fmt"
+	"io"
 	"strings"
 
 	"atomicgo.dev/cursor"
@@ -37,6 +38,7 @@ type InteractiveConfirmPrinter struct {
 	RejectText      string
 	RejectStyle     *Style
 	SuffixStyle     *Style
+	Writer          io.Writer
 	OnInterruptFunc func()
 }
 
@@ -88,6 +90,12 @@ func (p InteractiveConfirmPrinter) WithSuffixStyle(style *Style) *InteractiveCon
 	return &p
 }
 
+// WithWriter sets the custom Writer.
+func (p InteractiveConfirmPrinter) WithWriter(writer io.Writer) *InteractiveConfirmPrinter {
+	p.Writer = writer
+	return &p
+}
+
 // OnInterrupt sets the function to execute on exit of the input reader
 func (p InteractiveConfirmPrinter) WithOnInterruptFunc(exitFunc func()) *InteractiveConfirmPrinter {
 	p.OnInterruptFunc = exitFunc
@@ -133,23 +141,23 @@ func (p InteractiveConfirmPrinter) Show(text ...string) (bool, error) {
 		case keys.RuneKey:
 			switch char {
 			case y:
-				p.ConfirmStyle.Print(p.ConfirmText)
-				Println()
+				p.ConfirmStyle.Fprint(p.Writer, p.ConfirmText)
+				Fprintln(p.Writer)
 				result = true
 				return true, nil
 			case n:
-				p.RejectStyle.Print(p.RejectText)
-				Println()
+				p.RejectStyle.Fprint(p.Writer, p.RejectText)
+				Fprintln(p.Writer)
 				result = false
 				return true, nil
 			}
 		case keys.Enter:
 			if p.DefaultValue {
-				p.ConfirmStyle.Print(p.ConfirmText)
+				p.ConfirmStyle.Fprint(p.Writer, p.ConfirmText)
 			} else {
-				p.RejectStyle.Print(p.RejectText)
+				p.RejectStyle.Fprint(p.Writer, p.RejectText)
 			}
-			Println()
+			Fprintln(p.Writer)
 			result = p.DefaultValue
 			return true, nil
 		case keys.CtrlC:

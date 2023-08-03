@@ -25,6 +25,7 @@ type InteractiveTextInputPrinter struct {
 	Delimiter       string
 	MultiLine       bool
 	Mask            string
+	Writer          cursor.Writer
 	OnInterruptFunc func()
 
 	input      []string
@@ -57,6 +58,12 @@ func (p InteractiveTextInputPrinter) WithMask(mask string) *InteractiveTextInput
 	return &p
 }
 
+// WithWriter sets the custom Writer.
+func (p InteractiveTextInputPrinter) WithWriter(writer cursor.Writer) *InteractiveTextInputPrinter {
+	p.Writer = writer
+	return &p
+}
+
 // OnInterrupt sets the function to execute on exit of the input reader
 func (p InteractiveTextInputPrinter) WithOnInterruptFunc(exitFunc func()) *InteractiveTextInputPrinter {
 	p.OnInterruptFunc = exitFunc
@@ -83,18 +90,18 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	}
 
 	if p.MultiLine {
-		areaText = p.TextStyle.Sprintfln("%s %s %s", text[0], ThemeDefault.SecondaryStyle.Sprint("[Press tab to submit]"), p.Delimiter)
+		areaText = p.TextStyle.Sprintfln("%s %s%s", text[0], ThemeDefault.SecondaryStyle.Sprint("[Press tab to submit]"), p.Delimiter)
 	} else {
 		areaText = p.TextStyle.Sprintf("%s%s", text[0], p.Delimiter)
 	}
 	p.text = areaText
-	area, err := DefaultArea.Start(areaText)
+	area, err := DefaultArea.WithWriter(p.Writer).Start(areaText)
 	defer area.Stop()
 	if err != nil {
 		return "", err
 	}
 
-	cursor.Up(1)
+	// cursor.Up(1)
 	cursor.StartOfLine()
 	if !p.MultiLine {
 		cursor.Right(len(RemoveColorFromString(areaText)))
@@ -125,7 +132,6 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 				p.input = append(p.input, appendAfterY...)
 				p.cursorYPos++
 				p.cursorXPos = -internal.GetStringMaxWidth(p.input[p.cursorYPos])
-				cursor.Down(1)
 				cursor.StartOfLine()
 			} else {
 				return true, nil
@@ -141,7 +147,6 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 				p.input[p.cursorYPos-1] += p.input[p.cursorYPos]
 				appendAfterY := append([]string{}, p.input[p.cursorYPos+1:]...)
 				p.input = append(p.input[:p.cursorYPos], appendAfterY...)
-				p.cursorXPos = 0
 				p.cursorYPos--
 			}
 		case keys.Delete:
@@ -150,9 +155,9 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 				p.cursorXPos++
 			} else if p.cursorYPos < len(p.input)-1 {
 				p.input[p.cursorYPos] += p.input[p.cursorYPos+1]
+				p.cursorXPos = -len(p.input[p.cursorYPos+1])
 				appendAfterY := append([]string{}, p.input[p.cursorYPos+2:]...)
 				p.input = append(p.input[:p.cursorYPos+1], appendAfterY...)
-				p.cursorXPos = 0
 			}
 		case keys.CtrlC:
 			cancel()
@@ -203,7 +208,7 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	}
 
 	// Add new line
-	Println()
+	Fprintln(p.Writer)
 
 	for i, s := range p.input {
 		if i < len(p.input)-1 {
@@ -238,14 +243,13 @@ func (p InteractiveTextInputPrinter) updateArea(area *AreaPrinter) string {
 		p.cursorXPos = -internal.GetStringMaxWidth(p.input[p.cursorYPos])
 	}
 
-	cursor.StartOfLine()
-	area.Update(areaText)
-	cursor.Up(len(p.input) - p.cursorYPos)
-	cursor.StartOfLine()
+	area.area.Update(areaText)
+	area.area.StartOfLine()
 	if p.MultiLine {
-		cursor.Right(internal.GetStringMaxWidth(p.input[p.cursorYPos]) + p.cursorXPos)
+		area.area.Up(len(p.input) - p.cursorYPos - 1)
+		area.area.Move(internal.GetStringMaxWidth(p.input[p.cursorYPos])+p.cursorXPos, 0)
 	} else {
-		cursor.Right(internal.GetStringMaxWidth(areaText) + p.cursorXPos)
+		area.area.Move(internal.GetStringMaxWidth(areaText)+p.cursorXPos, 0)
 	}
 	return areaText
 }
