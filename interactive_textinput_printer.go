@@ -122,7 +122,6 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 				p.input = append(p.input, appendAfterY...)
 				p.cursorYPos++
 				p.cursorXPos = -internal.GetStringMaxWidth(p.input[p.cursorYPos])
-				cursor.Down(1)
 				cursor.StartOfLine()
 			} else {
 				return true, nil
@@ -235,7 +234,6 @@ func (p InteractiveTextInputPrinter) updateArea(area *cursor.Area) string {
 		p.cursorXPos = -internal.GetStringMaxWidth(p.input[p.cursorYPos])
 	}
 
-	area.StartOfLine()
 	area.Update(areaText)
 	area.Top()
 	area.Down(p.cursorYPos + 1)
