@@ -2,6 +2,7 @@
 ## [Unreleased]
 
 ### Bug Fixes
+- buggy basic text input ([#551](https://github.com/pterm/pterm/issues/551))
 - **textinput:** fixed buggy behavior ([#550](https://github.com/pterm/pterm/issues/550))
 
 
