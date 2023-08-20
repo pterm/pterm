@@ -10,19 +10,19 @@ import (
 	"github.com/pterm/pterm/internal"
 )
 
-var (
-	// DefaultInteractiveTextInput is the default InteractiveTextInput printer.
-	DefaultInteractiveTextInput = InteractiveTextInputPrinter{
-		DefaultText: "Input text",
-		TextStyle:   &ThemeDefault.PrimaryStyle,
-		Mask:        "",
-	}
-)
+// DefaultInteractiveTextInput is the default InteractiveTextInput printer.
+var DefaultInteractiveTextInput = InteractiveTextInputPrinter{
+	DefaultText: "Input text",
+	Delimiter:   ": ",
+	TextStyle:   &ThemeDefault.PrimaryStyle,
+	Mask:        "",
+}
 
 // InteractiveTextInputPrinter is a printer for interactive select menus.
 type InteractiveTextInputPrinter struct {
 	TextStyle       *Style
 	DefaultText     string
+	Delimiter       string
 	MultiLine       bool
 	Mask            string
 	OnInterruptFunc func()
@@ -57,9 +57,15 @@ func (p InteractiveTextInputPrinter) WithMask(mask string) *InteractiveTextInput
 	return &p
 }
 
-// OnInterrupt sets the function to execute on exit of the input reader
+// WithOnInterruptFunc sets the function to execute on exit of the input reader
 func (p InteractiveTextInputPrinter) WithOnInterruptFunc(exitFunc func()) *InteractiveTextInputPrinter {
 	p.OnInterruptFunc = exitFunc
+	return &p
+}
+
+// WithDelimiter sets the delimiter between the message and the input.
+func (p InteractiveTextInputPrinter) WithDelimiter(delimiter string) *InteractiveTextInputPrinter {
+	p.Delimiter = delimiter
 	return &p
 }
 
@@ -77,24 +83,20 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	}
 
 	if p.MultiLine {
-		areaText = p.TextStyle.Sprintfln("%s %s :", text[0], ThemeDefault.SecondaryStyle.Sprint("[Press tab to submit]"))
+		areaText = p.TextStyle.Sprintfln("%s %s %s", text[0], ThemeDefault.SecondaryStyle.Sprint("[Press tab to submit]"), p.Delimiter)
 	} else {
-		areaText = p.TextStyle.Sprintf("%s: ", text[0])
+		areaText = p.TextStyle.Sprintf("%s%s", text[0], p.Delimiter)
 	}
 	p.text = areaText
-	area, err := DefaultArea.Start(areaText)
-	defer area.Stop()
-	if err != nil {
-		return "", err
-	}
+	area := cursor.NewArea()
+	area.Update(areaText)
+	area.StartOfLine()
 
-	cursor.Up(1)
-	cursor.StartOfLine()
 	if !p.MultiLine {
 		cursor.Right(len(RemoveColorFromString(areaText)))
 	}
 
-	err = keyboard.Listen(func(key keys.Key) (stop bool, err error) {
+	err := keyboard.Listen(func(key keys.Key) (stop bool, err error) {
 		if !p.MultiLine {
 			p.cursorYPos = 0
 		}
@@ -105,6 +107,7 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 		switch key.Code {
 		case keys.Tab:
 			if p.MultiLine {
+				area.Bottom()
 				return true, nil
 			}
 		case keys.Enter:
@@ -119,7 +122,6 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 				p.input = append(p.input, appendAfterY...)
 				p.cursorYPos++
 				p.cursorXPos = -internal.GetStringMaxWidth(p.input[p.cursorYPos])
-				cursor.Down(1)
 				cursor.StartOfLine()
 			} else {
 				return true, nil
@@ -188,7 +190,7 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 			}
 		}
 
-		p.updateArea(area)
+		p.updateArea(&area)
 
 		return false, nil
 	})
@@ -210,7 +212,7 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	return strings.ReplaceAll(areaText, p.text, ""), nil
 }
 
-func (p InteractiveTextInputPrinter) updateArea(area *AreaPrinter) string {
+func (p InteractiveTextInputPrinter) updateArea(area *cursor.Area) string {
 	if !p.MultiLine {
 		p.cursorYPos = 0
 	}
@@ -232,10 +234,10 @@ func (p InteractiveTextInputPrinter) updateArea(area *AreaPrinter) string {
 		p.cursorXPos = -internal.GetStringMaxWidth(p.input[p.cursorYPos])
 	}
 
-	cursor.StartOfLine()
 	area.Update(areaText)
-	cursor.Up(len(p.input) - p.cursorYPos)
-	cursor.StartOfLine()
+	area.Top()
+	area.Down(p.cursorYPos + 1)
+	area.StartOfLine()
 	if p.MultiLine {
 		cursor.Right(internal.GetStringMaxWidth(p.input[p.cursorYPos]) + p.cursorXPos)
 	} else {
