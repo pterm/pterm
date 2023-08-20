@@ -40,6 +40,8 @@ func (p *MultiPrinter) getString() string {
 	var buffer bytes.Buffer
 	for _, b := range p.buffers {
 		s := b.String()
+		parts := strings.Split(s, "\r") // only get the last override
+		s = parts[len(parts)-1]
 		s = strings.Trim(s, "\n\r")
 		buffer.WriteString(s)
 		buffer.WriteString("\n")
