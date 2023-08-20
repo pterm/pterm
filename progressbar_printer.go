@@ -18,23 +18,21 @@ import (
 // Generally, there should only be one active ProgressbarPrinter at a time.
 var ActiveProgressBarPrinters []*ProgressbarPrinter
 
-var (
-	// DefaultProgressbar is the default ProgressbarPrinter.
-	DefaultProgressbar = ProgressbarPrinter{
-		Total:                     100,
-		BarCharacter:              "█",
-		LastCharacter:             "█",
-		ElapsedTimeRoundingFactor: time.Second,
-		BarStyle:                  &ThemeDefault.ProgressbarBarStyle,
-		TitleStyle:                &ThemeDefault.ProgressbarTitleStyle,
-		ShowTitle:                 true,
-		ShowCount:                 true,
-		ShowPercentage:            true,
-		ShowElapsedTime:           true,
-		BarFiller:                 Gray("█"),
-		MaxWidth:                  80,
-	}
-)
+// DefaultProgressbar is the default ProgressbarPrinter.
+var DefaultProgressbar = ProgressbarPrinter{
+	Total:                     100,
+	BarCharacter:              "█",
+	LastCharacter:             "█",
+	ElapsedTimeRoundingFactor: time.Second,
+	BarStyle:                  &ThemeDefault.ProgressbarBarStyle,
+	TitleStyle:                &ThemeDefault.ProgressbarTitleStyle,
+	ShowTitle:                 true,
+	ShowCount:                 true,
+	ShowPercentage:            true,
+	ShowElapsedTime:           true,
+	BarFiller:                 Gray("█"),
+	MaxWidth:                  80,
+}
 
 // ProgressbarPrinter shows a progress animation in the terminal.
 type ProgressbarPrinter struct {
