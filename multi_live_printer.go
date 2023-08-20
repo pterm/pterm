@@ -10,7 +10,7 @@ import (
 )
 
 var DefaultMultiPrinter = MultiPrinter{
-	Printers:    []LivePrinter{},
+	printers:    []LivePrinter{},
 	Writer:      os.Stdout,
 	UpdateDelay: time.Millisecond * 200,
 
@@ -20,17 +20,29 @@ var DefaultMultiPrinter = MultiPrinter{
 
 type MultiPrinter struct {
 	IsActive    bool
-	Printers    []LivePrinter
 	Writer      io.Writer
 	UpdateDelay time.Duration
 
-	buffers []*bytes.Buffer
-	area    AreaPrinter
+	printers []LivePrinter
+	buffers  []*bytes.Buffer
+	area     AreaPrinter
 }
 
 // SetWriter sets the writer for the AreaPrinter.
 func (p *MultiPrinter) SetWriter(writer io.Writer) {
 	p.Writer = writer
+}
+
+// WithWriter returns a fork of the MultiPrinter with a new writer.
+func (p MultiPrinter) WithWriter(writer io.Writer) *MultiPrinter {
+	p.Writer = writer
+	return &p
+}
+
+// WithUpdateDelay returns a fork of the MultiPrinter with a new update delay.
+func (p MultiPrinter) WithUpdateDelay(delay time.Duration) *MultiPrinter {
+	p.UpdateDelay = delay
+	return &p
 }
 
 func (p *MultiPrinter) NewWriter() io.Writer {
@@ -64,7 +76,7 @@ func (p *MultiPrinter) getString() string {
 
 func (p *MultiPrinter) Start() (*MultiPrinter, error) {
 	p.IsActive = true
-	for _, printer := range p.Printers {
+	for _, printer := range p.printers {
 		printer.GenericStart()
 	}
 
@@ -83,7 +95,7 @@ func (p *MultiPrinter) Start() (*MultiPrinter, error) {
 
 func (p *MultiPrinter) Stop() (*MultiPrinter, error) {
 	p.IsActive = false
-	for _, printer := range p.Printers {
+	for _, printer := range p.printers {
 		printer.GenericStop()
 	}
 	time.Sleep(time.Millisecond * 20)
