@@ -258,6 +258,8 @@ func (p *ProgressbarPrinter) Add(count int) *ProgressbarPrinter {
 	p.updateProgress()
 
 	if p.Current >= p.Total {
+		p.Total = p.Current
+		p.updateProgress()
 		p.Stop()
 	}
 	return p
@@ -279,8 +281,9 @@ func (p ProgressbarPrinter) Start(title ...interface{}) (*ProgressbarPrinter, er
 	p.updateProgress()
 
 	if p.ShowElapsedTime {
-		p.rerenderTask = schedule.Every(time.Second, func() {
+		p.rerenderTask = schedule.Every(time.Second, func() bool {
 			p.updateProgress()
+			return true
 		})
 	}
 

@@ -8,8 +8,6 @@ import (
 func main() {
 	multi := pterm.DefaultMultiPrinter
 
-	spinner1, _ := pterm.DefaultSpinner.WithWriter(multi.NewWriter()).Start("Spinner 1")
-	spinner2, _ := pterm.DefaultSpinner.WithWriter(multi.NewWriter()).Start("Spinner 2")
 	pb1, _ := pterm.DefaultProgressbar.WithTotal(100).WithWriter(multi.NewWriter()).Start("Progressbar 1")
 	pb2, _ := pterm.DefaultProgressbar.WithTotal(100).WithWriter(multi.NewWriter()).Start("Progressbar 2")
 	pb3, _ := pterm.DefaultProgressbar.WithTotal(100).WithWriter(multi.NewWriter()).Start("Progressbar 3")
@@ -36,14 +34,6 @@ func main() {
 
 		if i%3 == 0 {
 			pb5.Increment()
-		}
-
-		if i%50 == 0 {
-			spinner1.Success("Spinner 1 is done!")
-		}
-
-		if i%60 == 0 {
-			spinner2.Fail("Spinner 2 failed!")
 		}
 
 		time.Sleep(time.Millisecond * 50)

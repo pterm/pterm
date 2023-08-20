@@ -120,10 +120,8 @@ func (p *SpinnerPrinter) SetWriter(writer io.Writer) {
 func (s *SpinnerPrinter) UpdateText(text string) {
 	s.Text = text
 	if !RawOutput {
-		fClearLine(s.Writer)
 		Fprinto(s.Writer, s.Style.Sprint(s.currentSequence)+" "+s.MessageStyle.Sprint(s.Text))
-	}
-	if RawOutput {
+	} else {
 		Fprintln(s.Writer, s.Text)
 	}
 }
@@ -157,7 +155,6 @@ func (s SpinnerPrinter) Start(text ...interface{}) (*SpinnerPrinter, error) {
 				if s.ShowTimer {
 					timer = " (" + time.Since(s.startedAt).Round(s.TimerRoundingFactor).String() + ")"
 				}
-				fClearLine(s.Writer)
 				Fprinto(s.Writer, s.Style.Sprint(seq)+" "+s.MessageStyle.Sprint(s.Text)+s.TimerStyle.Sprint(timer))
 				s.currentSequence = seq
 				time.Sleep(s.Delay)

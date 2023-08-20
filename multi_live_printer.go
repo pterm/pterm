@@ -1,6 +1,7 @@
 package pterm
 
 import (
+	"atomicgo.dev/schedule"
 	"bytes"
 	"io"
 	"os"
@@ -9,16 +10,19 @@ import (
 )
 
 var DefaultMultiPrinter = MultiPrinter{
-	Printers: []LivePrinter{},
-	Writer:   os.Stdout,
+	Printers:    []LivePrinter{},
+	Writer:      os.Stdout,
+	UpdateDelay: time.Millisecond * 200,
 
 	buffers: []*bytes.Buffer{},
 	area:    DefaultArea,
 }
 
 type MultiPrinter struct {
-	Printers []LivePrinter
-	Writer   io.Writer
+	IsActive    bool
+	Printers    []LivePrinter
+	Writer      io.Writer
+	UpdateDelay time.Duration
 
 	buffers []*bytes.Buffer
 	area    AreaPrinter
@@ -40,8 +44,17 @@ func (p *MultiPrinter) getString() string {
 	var buffer bytes.Buffer
 	for _, b := range p.buffers {
 		s := b.String()
+		s = strings.Trim(s, "\n")
+
 		parts := strings.Split(s, "\r") // only get the last override
 		s = parts[len(parts)-1]
+
+		// check if s is empty, if so get one part before, repeat until not empty
+		for s == "" {
+			parts = parts[:len(parts)-1]
+			s = parts[len(parts)-1]
+		}
+
 		s = strings.Trim(s, "\n\r")
 		buffer.WriteString(s)
 		buffer.WriteString("\n")
@@ -50,26 +63,33 @@ func (p *MultiPrinter) getString() string {
 }
 
 func (p *MultiPrinter) Start() (*MultiPrinter, error) {
+	p.IsActive = true
 	for _, printer := range p.Printers {
 		printer.GenericStart()
 	}
 
-	go func() {
-		ticker := time.NewTicker(time.Millisecond * 100)
-
-		for range ticker.C {
-			p.area.Update(p.getString())
+	schedule.Every(p.UpdateDelay, func() bool {
+		if !p.IsActive {
+			return false
 		}
-	}()
+
+		p.area.Update(p.getString())
+
+		return true
+	})
 
 	return p, nil
 }
 
 func (p *MultiPrinter) Stop() (*MultiPrinter, error) {
+	p.IsActive = false
 	for _, printer := range p.Printers {
 		printer.GenericStop()
 	}
+	time.Sleep(time.Millisecond * 20)
+	p.area.Update(p.getString())
 	p.area.Stop()
+
 	return p, nil
 }
 
