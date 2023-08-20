@@ -95,7 +95,7 @@ func main() {
 			os.WriteFile("./docs/docs/putils.md", []byte(putilsReadme), 0600)
 		})
 
-		do("Geneating Printers Table", currentLevel, func(currentLevel int) {
+		do("Geneating printers Table", currentLevel, func(currentLevel int) {
 			// get features located in "_examples/*"
 			files, _ := os.ReadDir("./_examples/")
 

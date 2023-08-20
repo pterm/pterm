@@ -1,5 +1,7 @@
 package pterm
 
+import "io"
+
 // LivePrinter is a printer which can update it's output live.
 type LivePrinter interface {
 	// GenericStart runs Start, but returns a LivePrinter.
@@ -11,4 +13,6 @@ type LivePrinter interface {
 	// This is used for the interface LivePrinter.
 	// You most likely want to use Stop instead of this in your program.
 	GenericStop() (*LivePrinter, error)
+
+	SetWriter(writer io.Writer)
 }
