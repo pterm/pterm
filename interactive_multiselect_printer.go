@@ -240,7 +240,7 @@ func (p *InteractiveMultiselectPrinter) Show(text ...string) ([]string, error) {
 				p.selectedOptions = append(p.selectedOptions, i)
 			}
 			area.Update(p.renderSelectMenu())
-		case keys.Up:
+		case keys.Up, keys.CtrlP:
 			if len(p.fuzzySearchMatches) == 0 {
 				return false, nil
 			}
@@ -263,7 +263,7 @@ func (p *InteractiveMultiselectPrinter) Show(text ...string) ([]string, error) {
 			}
 
 			area.Update(p.renderSelectMenu())
-		case keys.Down:
+		case keys.Down, keys.CtrlN:
 			if len(p.fuzzySearchMatches) == 0 {
 				return false, nil
 			}
