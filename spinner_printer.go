@@ -110,15 +110,18 @@ func (p SpinnerPrinter) WithWriter(writer io.Writer) *SpinnerPrinter {
 	return &p
 }
 
+// SetWriter sets the custom Writer.
+func (p *SpinnerPrinter) SetWriter(writer io.Writer) {
+	p.Writer = writer
+}
+
 // UpdateText updates the message of the active SpinnerPrinter.
 // Can be used live.
 func (s *SpinnerPrinter) UpdateText(text string) {
 	s.Text = text
 	if !RawOutput {
-		fClearLine(s.Writer)
 		Fprinto(s.Writer, s.Style.Sprint(s.currentSequence)+" "+s.MessageStyle.Sprint(s.Text))
-	}
-	if RawOutput {
+	} else {
 		Fprintln(s.Writer, s.Text)
 	}
 }
@@ -152,7 +155,6 @@ func (s SpinnerPrinter) Start(text ...interface{}) (*SpinnerPrinter, error) {
 				if s.ShowTimer {
 					timer = " (" + time.Since(s.startedAt).Round(s.TimerRoundingFactor).String() + ")"
 				}
-				fClearLine(s.Writer)
 				Fprinto(s.Writer, s.Style.Sprint(seq)+" "+s.MessageStyle.Sprint(s.Text)+s.TimerStyle.Sprint(timer))
 				s.currentSequence = seq
 				time.Sleep(s.Delay)
@@ -182,8 +184,8 @@ func (s *SpinnerPrinter) Stop() error {
 // This is used for the interface LivePrinter.
 // You most likely want to use Start instead of this in your program.
 func (s *SpinnerPrinter) GenericStart() (*LivePrinter, error) {
-	_, _ = s.Start()
-	lp := LivePrinter(s)
+	p2, _ := s.Start()
+	lp := LivePrinter(p2)
 	return &lp, nil
 }
 

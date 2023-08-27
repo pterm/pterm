@@ -1,6 +1,7 @@
 package pterm
 
 import (
+	"io"
 	"strings"
 
 	"atomicgo.dev/cursor"
@@ -45,6 +46,11 @@ func (p AreaPrinter) WithFullscreen(b ...bool) *AreaPrinter {
 func (p AreaPrinter) WithCenter(b ...bool) *AreaPrinter {
 	p.Center = internal.WithBoolean(b)
 	return &p
+}
+
+// SetWriter sets the writer for the AreaPrinter.
+func (p *AreaPrinter) SetWriter(writer io.Writer) {
+
 }
 
 // Update overwrites the content of the AreaPrinter.
