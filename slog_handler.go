@@ -10,6 +10,7 @@ type SlogHandler struct {
 	attrs  []slog.Attr
 }
 
+// Enabled returns true if the given level is enabled.
 func (s *SlogHandler) Enabled(ctx context.Context, level slog.Level) bool {
 	switch level {
 	case slog.LevelDebug:
@@ -24,6 +25,7 @@ func (s *SlogHandler) Enabled(ctx context.Context, level slog.Level) bool {
 	return false
 }
 
+// Handle handles the given record.
 func (s *SlogHandler) Handle(ctx context.Context, record slog.Record) error {
 	level := record.Level
 	message := record.Message
@@ -61,6 +63,7 @@ func (s *SlogHandler) Handle(ctx context.Context, record slog.Record) error {
 	return nil
 }
 
+// WithAttrs returns a new handler with the given attributes.
 func (s *SlogHandler) WithAttrs(attrs []slog.Attr) slog.Handler {
 	newS := *s
 	newS.attrs = attrs
@@ -73,6 +76,7 @@ func (s *SlogHandler) WithGroup(name string) slog.Handler {
 	return s
 }
 
+// NewSlogHandler returns a new logging handler that can be intrgrated with log/slog.
 func NewSlogHandler(logger *Logger) *SlogHandler {
 	return &SlogHandler{logger: logger}
 }
