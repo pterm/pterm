@@ -6,7 +6,7 @@ import (
 )
 
 type SlogHandler struct {
-	logger Logger
+	logger *Logger
 	attrs  []slog.Attr
 }
 
@@ -67,15 +67,12 @@ func (s *SlogHandler) WithAttrs(attrs []slog.Attr) slog.Handler {
 	return &newS
 }
 
+// WithGroup is not yet supported.
 func (s *SlogHandler) WithGroup(name string) slog.Handler {
-	// You can add additional handling here if your logger supports grouping
+	// Grouping is not yet supported by pterm.
 	return s
 }
 
-func NewSlogHandler(logger Logger, opts *slog.HandlerOptions) *SlogHandler {
-	if opts == nil {
-		opts = &slog.HandlerOptions{}
-	}
-
+func NewSlogHandler(logger *Logger) *SlogHandler {
 	return &SlogHandler{logger: logger}
 }
