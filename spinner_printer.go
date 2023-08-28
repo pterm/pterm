@@ -193,8 +193,8 @@ func (s *SpinnerPrinter) GenericStart() (*LivePrinter, error) {
 // This is used for the interface LivePrinter.
 // You most likely want to use Stop instead of this in your program.
 func (s *SpinnerPrinter) GenericStop() (*LivePrinter, error) {
-	_, _ = s.Stop()
-	lp := LivePrinter(s)
+	s2, _ := s.Stop()
+	lp := LivePrinter(s2)
 	return &lp, nil
 }
 
