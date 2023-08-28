@@ -210,7 +210,7 @@ func (s *SpinnerPrinter) Info(message ...interface{}) {
 	}
 	fClearLine(s.Writer)
 	Fprinto(s.Writer, s.InfoPrinter.Sprint(message...))
-	_, _ = s.Stop()
+	s.Stop()
 }
 
 // Success displays the success printer.
@@ -225,7 +225,7 @@ func (s *SpinnerPrinter) Success(message ...interface{}) {
 	}
 	fClearLine(s.Writer)
 	Fprinto(s.Writer, s.SuccessPrinter.Sprint(message...))
-	_, _ = s.Stop()
+	s.Stop()
 }
 
 // Fail displays the fail printer.
@@ -240,7 +240,7 @@ func (s *SpinnerPrinter) Fail(message ...interface{}) {
 	}
 	fClearLine(s.Writer)
 	Fprinto(s.Writer, s.FailPrinter.Sprint(message...))
-	_, _ = s.Stop()
+	s.Stop()
 }
 
 // Warning displays the warning printer.
@@ -255,5 +255,5 @@ func (s *SpinnerPrinter) Warning(message ...interface{}) {
 	}
 	fClearLine(s.Writer)
 	Fprinto(s.Writer, s.WarningPrinter.Sprint(message...))
-	_, _ = s.Stop()
+	s.Stop()
 }
