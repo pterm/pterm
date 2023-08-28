@@ -14,15 +14,11 @@ func init() {
 	if os.Getenv("CI") == "true" {
 		go func() {
 			time.Sleep(time.Second)
-			keyboard.SimulateKeyPress(keys.Down)
+			keyboard.SimulateKeyPress("j")
 			time.Sleep(time.Millisecond * 100)
-			keyboard.SimulateKeyPress(keys.Space)
 
-			time.Sleep(time.Millisecond * 300)
-
-			keyboard.SimulateKeyPress(keys.Down)
+			keyboard.SimulateKeyPress("j")
 			time.Sleep(time.Millisecond * 100)
-			keyboard.SimulateKeyPress(keys.Space)
 
 			time.Sleep(time.Millisecond * 300)
 			keyboard.SimulateKeyPress(keys.Enter)

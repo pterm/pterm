@@ -78,3 +78,33 @@ func TestInteractiveMultiselectPrinter_WithOnInterruptFunc(t *testing.T) {
 	p := pterm.DefaultInteractiveMultiselect.WithOnInterruptFunc(exitfunc)
 	testza.AssertEqual(t, reflect.ValueOf(p.OnInterruptFunc).Pointer(), reflect.ValueOf(exitfunc).Pointer())
 }
+
+func TestInteractiveMultiselectPrinter_WithKeyDown(t *testing.T) {
+	p := pterm.DefaultInteractiveMultiselect.WithKeyDown("j").WithOptions([]string{"a", "b", "c"})
+	testza.AssertEqual(t, p.KeyDown, "j")
+}
+
+func TestInteractiveMultiselectPrinter_WithKeyUp(t *testing.T) {
+	p := pterm.DefaultInteractiveMultiselect.WithKeyUp("k").WithOptions([]string{"a", "b", "c"})
+	testza.AssertEqual(t, p.KeyUp, "k")
+}
+
+func TestInteractiveMultiselectPrinter_WithKeyLeft(t *testing.T) {
+	p := pterm.DefaultInteractiveMultiselect.WithKeyLeft("h").WithOptions([]string{"a", "b", "c"})
+	testza.AssertEqual(t, p.KeyLeft, "h")
+}
+
+func TestInteractiveMultiselectPrinter_WithKeyRight(t *testing.T) {
+	p := pterm.DefaultInteractiveMultiselect.WithKeyRight("l").WithOptions([]string{"a", "b", "c"})
+	testza.AssertEqual(t, p.KeyRight, "l")
+}
+
+func TestInteractiveMultiselectPrinter_WithKeyToggleFilter(t *testing.T) {
+	p := pterm.DefaultInteractiveMultiselect.WithKeyToggleFilter(keys.CtrlF).WithOptions([]string{"a", "b", "c"})
+	testza.AssertEqual(t, p.KeyToggleFilter, keys.CtrlF)
+}
+
+func TestInteractiveMultiselectPrinter_WithToggleFilter(t *testing.T) {
+	p := pterm.DefaultInteractiveMultiselect.WithToggleFilter(true).WithOptions([]string{"a", "b", "c"})
+	testza.AssertEqual(t, p.ToggleFilter, true)
+}
