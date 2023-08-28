@@ -166,9 +166,9 @@ func (s SpinnerPrinter) Start(text ...interface{}) (*SpinnerPrinter, error) {
 
 // Stop terminates the SpinnerPrinter immediately.
 // The SpinnerPrinter will not resolve into anything.
-func (s *SpinnerPrinter) Stop() error {
+func (s *SpinnerPrinter) Stop() (*SpinnerPrinter, error) {
 	if !s.IsActive {
-		return nil
+		return s, nil
 	}
 	s.IsActive = false
 	if s.RemoveWhenDone {
@@ -177,7 +177,7 @@ func (s *SpinnerPrinter) Stop() error {
 	} else {
 		Fprintln(s.Writer)
 	}
-	return nil
+	return s, nil
 }
 
 // GenericStart runs Start, but returns a LivePrinter.
@@ -193,7 +193,7 @@ func (s *SpinnerPrinter) GenericStart() (*LivePrinter, error) {
 // This is used for the interface LivePrinter.
 // You most likely want to use Stop instead of this in your program.
 func (s *SpinnerPrinter) GenericStop() (*LivePrinter, error) {
-	_ = s.Stop()
+	_, _ = s.Stop()
 	lp := LivePrinter(s)
 	return &lp, nil
 }
@@ -210,7 +210,7 @@ func (s *SpinnerPrinter) Info(message ...interface{}) {
 	}
 	fClearLine(s.Writer)
 	Fprinto(s.Writer, s.InfoPrinter.Sprint(message...))
-	_ = s.Stop()
+	_, _ = s.Stop()
 }
 
 // Success displays the success printer.
@@ -225,7 +225,7 @@ func (s *SpinnerPrinter) Success(message ...interface{}) {
 	}
 	fClearLine(s.Writer)
 	Fprinto(s.Writer, s.SuccessPrinter.Sprint(message...))
-	_ = s.Stop()
+	_, _ = s.Stop()
 }
 
 // Fail displays the fail printer.
@@ -240,7 +240,7 @@ func (s *SpinnerPrinter) Fail(message ...interface{}) {
 	}
 	fClearLine(s.Writer)
 	Fprinto(s.Writer, s.FailPrinter.Sprint(message...))
-	_ = s.Stop()
+	_, _ = s.Stop()
 }
 
 // Warning displays the warning printer.
@@ -255,5 +255,5 @@ func (s *SpinnerPrinter) Warning(message ...interface{}) {
 	}
 	fClearLine(s.Writer)
 	Fprinto(s.Writer, s.WarningPrinter.Sprint(message...))
-	_ = s.Stop()
+	_, _ = s.Stop()
 }
