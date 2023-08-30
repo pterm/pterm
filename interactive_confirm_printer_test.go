@@ -3,6 +3,7 @@ package pterm_test
 import (
 	"reflect"
 	"testing"
+	"time"
 
 	"atomicgo.dev/keyboard"
 	"atomicgo.dev/keyboard/keys"
@@ -50,6 +51,15 @@ func TestInteractiveConfirmPrinter_WithDefaultValue_true(t *testing.T) {
 	testza.AssertTrue(t, result)
 }
 
+func TestInteractiveConfirmPrinter_WithInterrupt(t *testing.T) {
+	go func() {
+		keyboard.SimulateKeyPress(keys.CtrlC)
+	}()
+	p := pterm.DefaultInteractiveConfirm.WithDefaultValue(true)
+	result, _ := p.Show()
+	testza.AssertTrue(t, result)
+}
+
 func TestInteractiveConfirmPrinter_WithConfirmStyle(t *testing.T) {
 	style := pterm.NewStyle(pterm.FgRed)
 	p := pterm.DefaultInteractiveConfirm.WithConfirmStyle(style)
@@ -80,6 +90,11 @@ func TestInteractiveConfirmPrinter_WithRejectStyle(t *testing.T) {
 func TestInteractiveConfirmPrinter_WithRejectText(t *testing.T) {
 	p := pterm.DefaultInteractiveConfirm.WithRejectText("reject")
 	testza.AssertEqual(t, p.RejectText, "reject")
+}
+
+func TestInteractiveConfirmPrinter_WithTimeout(t *testing.T) {
+	p := pterm.DefaultInteractiveConfirm.WithTimeout(3 * time.Second)
+	testza.AssertEqual(t, p.Timeout, 3*time.Second)
 }
 
 func TestInteractiveConfirmPrinter_CustomAnswers(t *testing.T) {
@@ -142,4 +157,19 @@ func TestInteractiveConfirmPrinter_WithOnInterruptFunc(t *testing.T) {
 	exitfunc := func() {}
 	p := pterm.DefaultInteractiveConfirm.WithOnInterruptFunc(exitfunc)
 	testza.AssertEqual(t, reflect.ValueOf(p.OnInterruptFunc).Pointer(), reflect.ValueOf(exitfunc).Pointer())
+}
+
+func TestInteractiveConfirmPrinter_ConfirmWithTimeout(t *testing.T) {
+	p := pterm.DefaultInteractiveConfirm.WithTimeout(150 * time.Millisecond)
+	result, _ := p.Show()
+	testza.AssertEqual(t, result, p.DefaultValue)
+}
+
+func TestInteractiveConfirmPrinter_ConfirmBeforeTimeout(t *testing.T) {
+	p := pterm.DefaultInteractiveConfirm.WithTimeout(150 * time.Millisecond)
+	go func() {
+		keyboard.SimulateKeyPress('Y')
+	}()
+	result, _ := p.Show()
+	testza.AssertEqual(t, result, true)
 }

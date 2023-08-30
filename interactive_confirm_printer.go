@@ -1,8 +1,8 @@
 package pterm
 
 import (
-	"fmt"
 	"strings"
+	"time"
 
 	"atomicgo.dev/cursor"
 	"atomicgo.dev/keyboard"
@@ -38,6 +38,7 @@ type InteractiveConfirmPrinter struct {
 	RejectStyle     *Style
 	SuffixStyle     *Style
 	OnInterruptFunc func()
+	Timeout         time.Duration
 }
 
 // WithDefaultText sets the default text.
@@ -58,13 +59,13 @@ func (p InteractiveConfirmPrinter) WithTextStyle(style *Style) *InteractiveConfi
 	return &p
 }
 
-// WithConfirmText sets the confirm text.
+// WithConfirmText sets the confirmation text.
 func (p InteractiveConfirmPrinter) WithConfirmText(text string) *InteractiveConfirmPrinter {
 	p.ConfirmText = text
 	return &p
 }
 
-// WithConfirmStyle sets the confirm style.
+// WithConfirmStyle sets the confirmation style.
 func (p InteractiveConfirmPrinter) WithConfirmStyle(style *Style) *InteractiveConfirmPrinter {
 	p.ConfirmStyle = style
 	return &p
@@ -88,7 +89,7 @@ func (p InteractiveConfirmPrinter) WithSuffixStyle(style *Style) *InteractiveCon
 	return &p
 }
 
-// OnInterrupt sets the function to execute on exit of the input reader
+// WithOnInterruptFunc sets the function to execute on exit of the input reader.
 func (p InteractiveConfirmPrinter) WithOnInterruptFunc(exitFunc func()) *InteractiveConfirmPrinter {
 	p.OnInterruptFunc = exitFunc
 	return &p
@@ -100,7 +101,13 @@ func (p InteractiveConfirmPrinter) WithDelimiter(delimiter string) *InteractiveC
 	return &p
 }
 
-// Show shows the confirm prompt.
+// WithTimeout sets the timeout to wait before confirming with the default value.
+func (p InteractiveConfirmPrinter) WithTimeout(timeout time.Duration) *InteractiveConfirmPrinter {
+	p.Timeout = timeout
+	return &p
+}
+
+// Show shows the confirmation prompt.
 //
 // Example:
 //
@@ -112,8 +119,6 @@ func (p InteractiveConfirmPrinter) Show(text ...string) (bool, error) {
 	cancel, exit := internal.NewCancelationSignal(p.OnInterruptFunc)
 	defer exit()
 
-	var result bool
-
 	if len(text) == 0 || text[0] == "" {
 		text = []string{p.DefaultText}
 	}
@@ -121,51 +126,64 @@ func (p InteractiveConfirmPrinter) Show(text ...string) (bool, error) {
 	p.TextStyle.Print(text[0] + " " + p.getSuffix() + p.Delimiter)
 	y, n := p.getShortHandles()
 
-	var interrupted bool
-	err := keyboard.Listen(func(keyInfo keys.Key) (stop bool, err error) {
-		key := keyInfo.Code
-		char := strings.ToLower(keyInfo.String())
-		if err != nil {
-			return false, fmt.Errorf("failed to get key: %w", err)
-		}
+	resultChan := make(chan bool)
 
-		switch key {
-		case keys.RuneKey:
-			switch char {
-			case y:
-				p.ConfirmStyle.Print(p.ConfirmText)
+	var interrupted bool
+	go func() {
+		_ = keyboard.Listen(func(keyInfo keys.Key) (stop bool, err error) {
+			key := keyInfo.Code
+			char := strings.ToLower(keyInfo.String())
+
+			switch key {
+			case keys.RuneKey:
+				switch char {
+				case y:
+					p.ConfirmStyle.Print(p.ConfirmText)
+					Println()
+					resultChan <- true
+					return true, nil
+				case n:
+					p.RejectStyle.Print(p.RejectText)
+					Println()
+					resultChan <- false
+					return true, nil
+				}
+			case keys.Enter:
+				if p.DefaultValue {
+					p.ConfirmStyle.Print(p.ConfirmText)
+				} else {
+					p.RejectStyle.Print(p.RejectText)
+				}
 				Println()
-				result = true
+				resultChan <- p.DefaultValue
 				return true, nil
-			case n:
-				p.RejectStyle.Print(p.RejectText)
-				Println()
-				result = false
+			case keys.CtrlC:
+				cancel()
+				interrupted = true
+				resultChan <- p.DefaultValue
 				return true, nil
 			}
-		case keys.Enter:
-			if p.DefaultValue {
-				p.ConfirmStyle.Print(p.ConfirmText)
-			} else {
-				p.RejectStyle.Print(p.RejectText)
-			}
-			Println()
-			result = p.DefaultValue
-			return true, nil
-		case keys.CtrlC:
-			cancel()
-			interrupted = true
-			return true, nil
+			return false, nil
+		})
+		if !interrupted {
+			cursor.StartOfLine()
 		}
-		return false, nil
-	})
-	if !interrupted {
-		cursor.StartOfLine()
+	}()
+
+	if p.Timeout > 0 {
+		select {
+		case <-time.After(p.Timeout):
+			return p.DefaultValue, nil
+		case result := <-resultChan:
+			return result, nil
+		}
+	} else {
+		result := <-resultChan
+		return result, nil
 	}
-	return result, err
 }
 
-// getShortHandles returns the short hand answers for the confirmation prompt
+// getShortHandles returns the shorthand answers for the confirmation prompt.
 func (p InteractiveConfirmPrinter) getShortHandles() (string, string) {
 	y := strings.ToLower(string([]rune(p.ConfirmText)[0]))
 	n := strings.ToLower(string([]rune(p.RejectText)[0]))
@@ -173,7 +191,7 @@ func (p InteractiveConfirmPrinter) getShortHandles() (string, string) {
 	return y, n
 }
 
-// getSuffix returns the confirmation prompt suffix
+// getSuffix returns the confirmation prompt suffix.
 func (p InteractiveConfirmPrinter) getSuffix() string {
 	y, n := p.getShortHandles()
 	if p.DefaultValue {
