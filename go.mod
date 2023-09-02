@@ -1,6 +1,6 @@
 module github.com/pterm/pterm
 
-go 1.18
+go 1.21
 
 require (
 	atomicgo.dev/cursor v0.2.0
