@@ -44,8 +44,8 @@
 
 <a href="https://github.com/pterm/pterm/tree/master/_examples/demo/demo" style="text-decoration: none">
 <img src="https://raw.githubusercontent.com/pterm/pterm/master/_examples/demo/demo/animation.svg" alt="PTerm">
-<p align="center">Show Demo Code</p>
 </a>
+<p align="center"><a href="https://github.com/pterm/pterm/tree/master/_examples/demo/demo" >Show Demo Code</p></p>
 
 </p>
 
@@ -92,6 +92,8 @@ go get github.com/pterm/pterm
 
 ### Printers (Components)
 
+<div align="center">
+
 <!-- printers:start -->
 | Feature | Feature | Feature | Feature | Feature |
 | :-------: | :-------: | :-------: | :-------: | :-------: |
@@ -103,14 +105,17 @@ go get github.com/pterm/pterm
 | Table <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/table) |Theme <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/theme) |Tree <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/tree) | |  | 
 <!-- printers:end -->
 
+</div>
+
+---
 
 <div align="center">
 
-### 🦸‍♂️ Supporters
+### 🦸‍♂️ Sponsors
 
-|-|User|💸|
-|---|---|---|
-|![Jens Lauterbach](https://avatars.githubusercontent.com/u/1292368?s=25)|[@jenslauterbach](https://github.com/jenslauterbach)|25$|
+<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg" />
+
+---
 
 </div>
 
