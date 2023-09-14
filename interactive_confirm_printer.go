@@ -1,6 +1,7 @@
 package pterm
 
 import (
+	"io"
 	"strings"
 	"time"
 
@@ -15,30 +16,34 @@ import (
 // Pressing "y" will return true, "n" will return false.
 // Pressing enter without typing "y" or "n" will return the configured default value (by default set to "no").
 var DefaultInteractiveConfirm = InteractiveConfirmPrinter{
-	DefaultValue: false,
-	DefaultText:  "Please confirm",
-	TextStyle:    &ThemeDefault.PrimaryStyle,
-	ConfirmText:  "Yes",
-	ConfirmStyle: &ThemeDefault.SuccessMessageStyle,
-	RejectText:   "No",
-	RejectStyle:  &ThemeDefault.ErrorMessageStyle,
-	SuffixStyle:  &ThemeDefault.SecondaryStyle,
-	Delimiter:    ": ",
+	DefaultValue:      false,
+	DefaultText:       "Please confirm",
+	TextStyle:         &ThemeDefault.PrimaryStyle,
+	ConfirmText:       "Yes",
+	ConfirmStyle:      &ThemeDefault.SuccessMessageStyle,
+	RejectText:        "No",
+	RejectStyle:       &ThemeDefault.ErrorMessageStyle,
+	SuffixStyle:       &ThemeDefault.SecondaryStyle,
+	Delimiter:         ": ",
+	TimeoutTimerStyle: &ThemeDefault.TimerStyle,
 }
 
 // InteractiveConfirmPrinter is a printer for interactive confirm prompts.
 type InteractiveConfirmPrinter struct {
-	DefaultValue    bool
-	DefaultText     string
-	Delimiter       string
-	TextStyle       *Style
-	ConfirmText     string
-	ConfirmStyle    *Style
-	RejectText      string
-	RejectStyle     *Style
-	SuffixStyle     *Style
-	OnInterruptFunc func()
-	Timeout         time.Duration
+	DefaultValue      bool
+	DefaultText       string
+	Delimiter         string
+	TextStyle         *Style
+	ConfirmText       string
+	ConfirmStyle      *Style
+	RejectText        string
+	RejectStyle       *Style
+	SuffixStyle       *Style
+	OnInterruptFunc   func()
+	Timeout           time.Duration
+	TimeoutTimerStyle *Style
+
+	Writer io.Writer
 }
 
 // WithDefaultText sets the default text.
@@ -101,9 +106,21 @@ func (p InteractiveConfirmPrinter) WithDelimiter(delimiter string) *InteractiveC
 	return &p
 }
 
+// WithWriter sets the custom Writer.
+func (p InteractiveConfirmPrinter) WithWriter(writer io.Writer) *InteractiveConfirmPrinter {
+	p.Writer = writer
+	return &p
+}
+
 // WithTimeout sets the timeout to wait before confirming with the default value.
 func (p InteractiveConfirmPrinter) WithTimeout(timeout time.Duration) *InteractiveConfirmPrinter {
 	p.Timeout = timeout
+	return &p
+}
+
+// WithTimeoutTimerStyle adds a style to the InteractiveConfirmPrinter timeout timer.
+func (p InteractiveConfirmPrinter) WithTimeoutTimerStyle(style *Style) *InteractiveConfirmPrinter {
+	p.TimeoutTimerStyle = style
 	return &p
 }
 
@@ -123,7 +140,13 @@ func (p InteractiveConfirmPrinter) Show(text ...string) (bool, error) {
 		text = []string{p.DefaultText}
 	}
 
-	p.TextStyle.Print(text[0] + " " + p.getSuffix() + p.Delimiter)
+	var timer string
+	if p.Timeout > 0 {
+		timer = "[" + p.Timeout.String() + "] "
+	}
+
+	Fprinto(p.Writer, p.TimeoutTimerStyle.Sprint(timer), p.TextStyle.Sprint(text[0]+" "+p.getSuffix()+p.Delimiter))
+
 	y, n := p.getShortHandles()
 
 	resultChan := make(chan bool)
@@ -171,11 +194,31 @@ func (p InteractiveConfirmPrinter) Show(text ...string) (bool, error) {
 	}()
 
 	if p.Timeout > 0 {
-		select {
-		case <-time.After(p.Timeout):
-			return p.DefaultValue, nil
-		case result := <-resultChan:
-			return result, nil
+		tick := time.NewTicker(time.Second)
+		remaining := p.Timeout
+		for {
+			select {
+			case <-tick.C:
+				remaining -= 1 * time.Second
+				timeoutText := "[" + remaining.String() + "] "
+				Fprinto(p.Writer, p.TimeoutTimerStyle.Sprint(timeoutText), p.TextStyle.Sprint(text[0]+" "+p.getSuffix()+p.Delimiter))
+
+				if remaining <= 0 {
+					var ans string
+					if p.DefaultValue {
+						ans = p.ConfirmStyle.Sprint(p.ConfirmText)
+					} else {
+						ans = p.RejectStyle.Sprint(p.RejectText)
+					}
+
+					ans += p.TimeoutTimerStyle.Sprint(" (timeout)")
+
+					Fprinto(p.Writer, p.TimeoutTimerStyle.Sprint(timeoutText), p.TextStyle.Sprint(text[0]+" "+p.getSuffix()+p.Delimiter, ans))
+					return p.DefaultValue, nil
+				}
+			case result := <-resultChan:
+				return result, nil
+			}
 		}
 	} else {
 		result := <-resultChan

@@ -1,6 +1,7 @@
 package pterm_test
 
 import (
+	"os"
 	"reflect"
 	"testing"
 	"time"
@@ -148,6 +149,23 @@ func TestInteractiveConfirmPrinter_WithTextStyle(t *testing.T) {
 	testza.AssertEqual(t, p.TextStyle, style)
 }
 
+func TestInteractiveConfirmPrinter_WithWriter(t *testing.T) {
+	p := pterm.InteractiveConfirmPrinter{}
+	s := os.Stderr
+	p2 := p.WithWriter(s)
+
+	testza.AssertEqual(t, s, p2.Writer)
+	testza.AssertZero(t, p.Writer)
+}
+
+func TestInteractiveConfirmPrinter_WithTimerStyle(t *testing.T) {
+	s := pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold)
+	p := pterm.InteractiveConfirmPrinter{}
+	p2 := p.WithTimeoutTimerStyle(s)
+
+	testza.AssertEqual(t, s, p2.TimeoutTimerStyle)
+}
+
 func TestInteractiveConfirmPrinter_WithOnInterruptFunc(t *testing.T) {
 	// OnInterrupt function defaults to nil
 	pd := pterm.InteractiveConfirmPrinter{}
@@ -160,16 +178,17 @@ func TestInteractiveConfirmPrinter_WithOnInterruptFunc(t *testing.T) {
 }
 
 func TestInteractiveConfirmPrinter_ConfirmWithTimeout(t *testing.T) {
-	p := pterm.DefaultInteractiveConfirm.WithTimeout(150 * time.Millisecond)
+	p := pterm.DefaultInteractiveConfirm.WithTimeout(150 * time.Millisecond).WithDefaultValue(true)
 	result, _ := p.Show()
 	testza.AssertEqual(t, result, p.DefaultValue)
 }
 
 func TestInteractiveConfirmPrinter_ConfirmBeforeTimeout(t *testing.T) {
-	p := pterm.DefaultInteractiveConfirm.WithTimeout(150 * time.Millisecond)
+	p := pterm.DefaultInteractiveConfirm.WithTimeout(10 * time.Second)
 	go func() {
+		time.Sleep(3 * time.Second)
 		keyboard.SimulateKeyPress('Y')
 	}()
 	result, _ := p.Show()
-	testza.AssertEqual(t, result, true)
+	testza.AssertEqual(t, true, result)
 }
