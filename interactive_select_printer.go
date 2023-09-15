@@ -15,15 +15,19 @@ import (
 var (
 	// DefaultInteractiveSelect is the default InteractiveSelect printer.
 	DefaultInteractiveSelect = InteractiveSelectPrinter{
-		TextStyle:     &ThemeDefault.PrimaryStyle,
-		DefaultText:   "Please select an option",
-		Options:       []string{},
-		OptionStyle:   &ThemeDefault.DefaultText,
-		DefaultOption: "",
-		MaxHeight:     5,
-		Selector:      ">",
-		SelectorStyle: &ThemeDefault.SecondaryStyle,
-		Filter:        true,
+		TextStyle:       &ThemeDefault.PrimaryStyle,
+		DefaultText:     "Please select an option",
+		Options:         []string{},
+		OptionStyle:     &ThemeDefault.DefaultText,
+		DefaultOption:   "",
+		MaxHeight:       5,
+		Selector:        ">",
+		SelectorStyle:   &ThemeDefault.SecondaryStyle,
+		Filter:          true,
+		ToggleFilter:    false,
+		KeyUp:           keys.Up,
+		KeyDown:         keys.Down,
+		KeyToggleFilter: keys.CtrlF,
 	}
 )
 
@@ -39,6 +43,10 @@ type InteractiveSelectPrinter struct {
 	SelectorStyle   *Style
 	OnInterruptFunc func()
 	Filter          bool
+	ToggleFilter    bool
+	KeyUp           any
+	KeyDown         any
+	KeyToggleFilter any
 
 	selectedOption        int
 	result                string
@@ -71,6 +79,30 @@ func (p InteractiveSelectPrinter) WithDefaultOption(option string) *InteractiveS
 // WithMaxHeight sets the maximum height of the select menu.
 func (p InteractiveSelectPrinter) WithMaxHeight(maxHeight int) *InteractiveSelectPrinter {
 	p.MaxHeight = maxHeight
+	return &p
+}
+
+// WithKeyUp sets the up key
+func (p InteractiveSelectPrinter) WithKeyUp(keyUp any) *InteractiveSelectPrinter {
+	p.KeyUp = keyUp
+	return &p
+}
+
+// WithKeyDown sets the down key
+func (p InteractiveSelectPrinter) WithKeyDown(keyDown any) *InteractiveSelectPrinter {
+	p.KeyDown = keyDown
+	return &p
+}
+
+// WithKeyToggleFilter sets the down key
+func (p InteractiveSelectPrinter) WithKeyToggleFilter(keyToggleFilter any) *InteractiveSelectPrinter {
+	p.KeyToggleFilter = keyToggleFilter
+	return &p
+}
+
+// WithToggleFilter sets the checkmark
+func (p InteractiveSelectPrinter) WithToggleFilter(b ...bool) *InteractiveSelectPrinter {
+	p.ToggleFilter = internal.WithBoolean(b)
 	return &p
 }
 
@@ -147,7 +179,7 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 	defer cursor.Show()
 
 	err = keyboard.Listen(func(keyInfo keys.Key) (stop bool, err error) {
-		key := keyInfo.Code
+		keyMatcher := KeyMatcher{value: keyInfo}
 
 		if p.MaxHeight > len(p.fuzzySearchMatches) {
 			maxHeight = len(p.fuzzySearchMatches)
@@ -155,8 +187,9 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 			maxHeight = p.MaxHeight
 		}
 
-		switch key {
-		case keys.RuneKey:
+		filterToggled := p.ToggleFilter && p.Filter
+		toggleDisabled := !p.ToggleFilter
+		if keyMatcher.Equal(keys.RuneKey) && (toggleDisabled || filterToggled) {
 			if p.Filter {
 				// Fuzzy search for options
 				// append to fuzzy search string
@@ -165,13 +198,23 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 				p.displayedOptionsStart = 0
 				p.displayedOptionsEnd = maxHeight
 				p.displayedOptions = append([]string{}, p.fuzzySearchMatches[:maxHeight]...)
-				area.Update(p.renderSelectMenu())
 			}
-		case keys.Space:
+			area.Update(p.renderSelectMenu())
+			return false, nil
+		}
+
+		if p.ToggleFilter && keyMatcher.Equal(p.KeyToggleFilter) {
+			p.Filter = !p.Filter
+			area.Update(p.renderSelectMenu())
+			return false, nil
+		}
+
+		switch {
+		case keyMatcher.Equal(keys.Space) && p.Filter:
 			p.fuzzySearchString += " "
 			p.selectedOption = 0
 			area.Update(p.renderSelectMenu())
-		case keys.Backspace:
+		case keyMatcher.Equal(keys.Backspace) && p.Filter:
 			// Remove last character from fuzzy search string
 			if len(p.fuzzySearchString) > 0 {
 				// Handle UTF-8 characters
@@ -196,7 +239,7 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 			p.displayedOptions = append([]string{}, p.fuzzySearchMatches[p.displayedOptionsStart:p.displayedOptionsEnd]...)
 
 			area.Update(p.renderSelectMenu())
-		case keys.Up:
+		case keyMatcher.Equal(p.KeyUp):
 			if len(p.fuzzySearchMatches) == 0 {
 				return false, nil
 			}
@@ -219,7 +262,7 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 			}
 
 			area.Update(p.renderSelectMenu())
-		case keys.Down:
+		case keyMatcher.Equal(p.KeyDown):
 			if len(p.fuzzySearchMatches) == 0 {
 				return false, nil
 			}
@@ -239,10 +282,10 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 			}
 
 			area.Update(p.renderSelectMenu())
-		case keys.CtrlC:
+		case keyMatcher.Equal(keys.CtrlC):
 			cancel()
 			return true, nil
-		case keys.Enter:
+		case keyMatcher.Equal(keys.Enter):
 			if len(p.fuzzySearchMatches) == 0 {
 				return false, nil
 			}
@@ -301,6 +344,15 @@ func (p *InteractiveSelectPrinter) renderSelectMenu() string {
 			content += Sprintf("  %s\n", p.OptionStyle.Sprint(option))
 		}
 	}
+
+	help := fmt.Sprintf("%s: %s | %s/%s: %s", keys.Enter, Bold.Sprint("confirm"), p.KeyDown, p.KeyUp, Bold.Sprint("Down/Up"))
+	if p.ToggleFilter {
+		help += fmt.Sprintf(" | %s: %s", p.KeyToggleFilter, Bold.Sprint("toggle filter"))
+	}
+	if p.Filter {
+		help += fmt.Sprintf(" | type to %s", Bold.Sprint("filter"))
+	}
+	content += ThemeDefault.SecondaryStyle.Sprintfln(help)
 
 	return content
 }

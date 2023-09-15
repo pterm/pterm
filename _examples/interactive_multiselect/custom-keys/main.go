@@ -14,10 +14,16 @@ func main() {
 		options = append(options, fmt.Sprintf("Option %d", i))
 	}
 
-	printer := pterm.DefaultInteractiveMultiselect.WithOptions(options)
+	printer := pterm.DefaultInteractiveMultiselect.
+		WithOptions(options).
+		WithKeySelect("x").
+		WithKeyDown("j").
+		WithKeyUp("k").
+		WithKeyLeft("h").
+		WithKeyRight("l").
+		WithToggleFilter()
 	printer.Filter = false
 	printer.KeyConfirm = keys.Enter
-	printer.KeySelect = keys.Space
 	selectedOptions, _ := printer.Show()
 	pterm.Info.Printfln("Selected options: %s", pterm.Green(selectedOptions))
 }

@@ -15,18 +15,24 @@ import (
 var (
 	// DefaultInteractiveMultiselect is the default InteractiveMultiselect printer.
 	DefaultInteractiveMultiselect = InteractiveMultiselectPrinter{
-		TextStyle:      &ThemeDefault.PrimaryStyle,
-		DefaultText:    "Please select your options",
-		Options:        []string{},
-		OptionStyle:    &ThemeDefault.DefaultText,
-		DefaultOptions: []string{},
-		MaxHeight:      5,
-		Selector:       ">",
-		SelectorStyle:  &ThemeDefault.SecondaryStyle,
-		Filter:         true,
-		KeySelect:      keys.Enter,
-		KeyConfirm:     keys.Tab,
-		Checkmark:      &ThemeDefault.Checkmark,
+		TextStyle:       &ThemeDefault.PrimaryStyle,
+		DefaultText:     "Please select your options",
+		Options:         []string{},
+		OptionStyle:     &ThemeDefault.DefaultText,
+		DefaultOptions:  []string{},
+		MaxHeight:       5,
+		Selector:        ">",
+		SelectorStyle:   &ThemeDefault.SecondaryStyle,
+		Filter:          true,
+		ToggleFilter:    false,
+		KeySelect:       keys.Enter,
+		KeyConfirm:      keys.Tab,
+		KeyUp:           keys.Up,
+		KeyDown:         keys.Down,
+		KeyLeft:         keys.Left,
+		KeyRight:        keys.Right,
+		KeyToggleFilter: keys.CtrlF,
+		Checkmark:       &ThemeDefault.Checkmark,
 	}
 )
 
@@ -41,6 +47,7 @@ type InteractiveMultiselectPrinter struct {
 	Selector        string
 	SelectorStyle   *Style
 	Filter          bool
+	ToggleFilter    bool
 	Checkmark       *Checkmark
 	OnInterruptFunc func()
 
@@ -53,11 +60,29 @@ type InteractiveMultiselectPrinter struct {
 	displayedOptionsStart int
 	displayedOptionsEnd   int
 
+	// Keys below can be a KeyCode or string (e.g. "j", "ctrl+j", etc)
+	// Must have the filter disabled to use RuneKeys for keybinds
+
 	// KeySelect is the select key. It cannot be keys.Space when Filter is enabled.
-	KeySelect keys.KeyCode
+	KeySelect any
 
 	// KeyConfirm is the confirm key. It cannot be keys.Space when Filter is enabled.
-	KeyConfirm keys.KeyCode
+	KeyConfirm any
+
+	// KeyUp is up key
+	KeyUp any
+
+	// KeyDown is the down key
+	KeyDown any
+
+	// KeyLeft is the left key
+	KeyLeft any
+
+	// KeyRight is the right key
+	KeyRight any
+
+	// KeyRight is the filter toggle key
+	KeyToggleFilter any
 }
 
 // WithOptions sets the options.
@@ -92,15 +117,51 @@ func (p InteractiveMultiselectPrinter) WithFilter(b ...bool) *InteractiveMultise
 
 // WithKeySelect sets the confirm key
 // It cannot be keys.Space when Filter is enabled.
-func (p InteractiveMultiselectPrinter) WithKeySelect(keySelect keys.KeyCode) *InteractiveMultiselectPrinter {
+func (p InteractiveMultiselectPrinter) WithKeySelect(keySelect any) *InteractiveMultiselectPrinter {
 	p.KeySelect = keySelect
 	return &p
 }
 
 // WithKeyConfirm sets the confirm key
 // It cannot be keys.Space when Filter is enabled.
-func (p InteractiveMultiselectPrinter) WithKeyConfirm(keyConfirm keys.KeyCode) *InteractiveMultiselectPrinter {
+func (p InteractiveMultiselectPrinter) WithKeyConfirm(keyConfirm any) *InteractiveMultiselectPrinter {
 	p.KeyConfirm = keyConfirm
+	return &p
+}
+
+// WithKeyUp sets the up key
+func (p InteractiveMultiselectPrinter) WithKeyUp(keyUp any) *InteractiveMultiselectPrinter {
+	p.KeyUp = keyUp
+	return &p
+}
+
+// WithKeyDown sets the down key
+func (p InteractiveMultiselectPrinter) WithKeyDown(keyDown any) *InteractiveMultiselectPrinter {
+	p.KeyDown = keyDown
+	return &p
+}
+
+// WithKeyLeft sets the down key
+func (p InteractiveMultiselectPrinter) WithKeyLeft(keyLeft any) *InteractiveMultiselectPrinter {
+	p.KeyLeft = keyLeft
+	return &p
+}
+
+// WithKeyRight sets the down key
+func (p InteractiveMultiselectPrinter) WithKeyRight(keyRight any) *InteractiveMultiselectPrinter {
+	p.KeyRight = keyRight
+	return &p
+}
+
+// WithKeyToggleFilter sets the down key
+func (p InteractiveMultiselectPrinter) WithKeyToggleFilter(keyToggleFilter any) *InteractiveMultiselectPrinter {
+	p.KeyToggleFilter = keyToggleFilter
+	return &p
+}
+
+// WithToggleFilter sets the checkmark
+func (p InteractiveMultiselectPrinter) WithToggleFilter(b ...bool) *InteractiveMultiselectPrinter {
+	p.ToggleFilter = internal.WithBoolean(b)
 	return &p
 }
 
@@ -166,7 +227,7 @@ func (p *InteractiveMultiselectPrinter) Show(text ...string) ([]string, error) {
 	cursor.Hide()
 	defer cursor.Show()
 	err = keyboard.Listen(func(keyInfo keys.Key) (stop bool, err error) {
-		key := keyInfo.Code
+		keyMatcher := KeyMatcher{value: keyInfo}
 
 		if p.MaxHeight > len(p.fuzzySearchMatches) {
 			maxHeight = len(p.fuzzySearchMatches)
@@ -174,20 +235,9 @@ func (p *InteractiveMultiselectPrinter) Show(text ...string) ([]string, error) {
 			maxHeight = p.MaxHeight
 		}
 
-		switch key {
-		case p.KeyConfirm:
-			if len(p.fuzzySearchMatches) == 0 {
-				return false, nil
-			}
-			area.Update(p.renderFinishedMenu())
-			return true, nil
-		case p.KeySelect:
-			if len(p.fuzzySearchMatches) > 0 {
-				// Select option if not already selected
-				p.selectOption(p.fuzzySearchMatches[p.selectedOption])
-			}
-			area.Update(p.renderSelectMenu())
-		case keys.RuneKey:
+		filterToggled := p.ToggleFilter && p.Filter
+		toggleDisabled := !p.ToggleFilter
+		if keyMatcher.Equal(keys.RuneKey) && (toggleDisabled || filterToggled) {
 			if p.Filter {
 				// Fuzzy search for options
 				// append to fuzzy search string
@@ -198,13 +248,33 @@ func (p *InteractiveMultiselectPrinter) Show(text ...string) ([]string, error) {
 				p.displayedOptions = append([]string{}, p.fuzzySearchMatches[:maxHeight]...)
 			}
 			area.Update(p.renderSelectMenu())
-		case keys.Space:
-			if p.Filter {
-				p.fuzzySearchString += " "
-				p.selectedOption = 0
-				area.Update(p.renderSelectMenu())
+			return false, nil
+		}
+
+		if p.ToggleFilter && keyMatcher.Equal(p.KeyToggleFilter) {
+			p.Filter = !p.Filter
+			area.Update(p.renderSelectMenu())
+			return false, nil
+		}
+
+		switch {
+		case keyMatcher.Equal(p.KeyConfirm):
+			if len(p.fuzzySearchMatches) == 0 {
+				return false, nil
 			}
-		case keys.Backspace:
+			area.Update(p.renderFinishedMenu())
+			return true, nil
+		case keyMatcher.Equal(p.KeySelect):
+			if len(p.fuzzySearchMatches) > 0 {
+				// Select option if not already selected
+				p.selectOption(p.fuzzySearchMatches[p.selectedOption])
+			}
+			area.Update(p.renderSelectMenu())
+		case keyMatcher.Equal(keys.Space) && p.Filter:
+			p.fuzzySearchString += " "
+			p.selectedOption = 0
+			area.Update(p.renderSelectMenu())
+		case keyMatcher.Equal(keys.Backspace) && p.Filter:
 			// Remove last character from fuzzy search string
 			if len(p.fuzzySearchString) > 0 {
 				// Handle UTF-8 characters
@@ -229,18 +299,18 @@ func (p *InteractiveMultiselectPrinter) Show(text ...string) ([]string, error) {
 			p.displayedOptions = append([]string{}, p.fuzzySearchMatches[p.displayedOptionsStart:p.displayedOptionsEnd]...)
 
 			area.Update(p.renderSelectMenu())
-		case keys.Left:
+		case keyMatcher.Equal(p.KeyLeft):
 			// Unselect all options
 			p.selectedOptions = []int{}
 			area.Update(p.renderSelectMenu())
-		case keys.Right:
+		case keyMatcher.Equal(p.KeyRight):
 			// Select all options
 			p.selectedOptions = []int{}
 			for i := 0; i < len(p.Options); i++ {
 				p.selectedOptions = append(p.selectedOptions, i)
 			}
 			area.Update(p.renderSelectMenu())
-		case keys.Up:
+		case keyMatcher.Equal(p.KeyUp):
 			if len(p.fuzzySearchMatches) == 0 {
 				return false, nil
 			}
@@ -263,7 +333,7 @@ func (p *InteractiveMultiselectPrinter) Show(text ...string) ([]string, error) {
 			}
 
 			area.Update(p.renderSelectMenu())
-		case keys.Down:
+		case keyMatcher.Equal(p.KeyDown):
 			if len(p.fuzzySearchMatches) == 0 {
 				return false, nil
 			}
@@ -283,7 +353,7 @@ func (p *InteractiveMultiselectPrinter) Show(text ...string) ([]string, error) {
 			}
 
 			area.Update(p.renderSelectMenu())
-		case keys.CtrlC:
+		case keyMatcher.Equal(keys.CtrlC):
 			cancel()
 			return true, nil
 		}
@@ -377,9 +447,12 @@ func (p *InteractiveMultiselectPrinter) renderSelectMenu() string {
 		}
 	}
 
-	help := fmt.Sprintf("%s: %s | %s: %s | left: %s | right: %s", p.KeySelect, Bold.Sprint("select"), p.KeyConfirm, Bold.Sprint("confirm"), Bold.Sprint("none"), Bold.Sprint("all"))
+	help := fmt.Sprintf("%s: %s | %s: %s | %s/%s: %s | %s: %s | %s: %s", p.KeySelect, Bold.Sprint("select"), p.KeyConfirm, Bold.Sprint("confirm"), p.KeyDown, p.KeyUp, Bold.Sprint("Down/Up"), p.KeyLeft, Bold.Sprint("none"), p.KeyRight, Bold.Sprint("all"))
+	if p.ToggleFilter {
+		help += fmt.Sprintf(" | %s: %s", p.KeyToggleFilter, Bold.Sprint("toggle filter"))
+	}
 	if p.Filter {
-		help += fmt.Sprintf("| type to %s", Bold.Sprint("filter"))
+		help += fmt.Sprintf(" | type to %s", Bold.Sprint("filter"))
 	}
 	content += ThemeDefault.SecondaryStyle.Sprintfln(help)
 
