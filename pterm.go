@@ -7,11 +7,7 @@
 package pterm
 
 import (
-	"atomicgo.dev/cursor"
 	"github.com/gookit/color"
-	"os"
-	"os/signal"
-	"syscall"
 )
 
 var (
@@ -30,16 +26,6 @@ var (
 
 func init() {
 	color.ForceColor()
-
-	// Make the cursor visible when the program stops
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt)
-	signal.Notify(c, syscall.SIGTERM)
-	go func() {
-		for range c {
-			cursor.Show()
-		}
-	}()
 }
 
 // EnableOutput enables the output of PTerm.
