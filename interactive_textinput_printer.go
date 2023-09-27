@@ -239,10 +239,6 @@ func (p InteractiveTextInputPrinter) updateArea(area *cursor.Area) string {
 		}
 	}
 
-	av := internal.GetStringMaxWidth(areaText)
-	vv := internal.GetStringMaxWidth(p.text)
-
-	_ = av + vv
 	if p.Mask != "" {
 		areaText = p.text + strings.Repeat(p.Mask, internal.GetStringMaxWidth(areaText)-internal.GetStringMaxWidth(p.text))
 	}
