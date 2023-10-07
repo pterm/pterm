@@ -32,16 +32,17 @@ var (
 
 // InteractiveMultiselectPrinter is a printer for interactive multiselect menus.
 type InteractiveMultiselectPrinter struct {
-	DefaultText    string
-	TextStyle      *Style
-	Options        []string
-	OptionStyle    *Style
-	DefaultOptions []string
-	MaxHeight      int
-	Selector       string
-	SelectorStyle  *Style
-	Filter         bool
-	Checkmark      *Checkmark
+	DefaultText     string
+	TextStyle       *Style
+	Options         []string
+	OptionStyle     *Style
+	DefaultOptions  []string
+	MaxHeight       int
+	Selector        string
+	SelectorStyle   *Style
+	Filter          bool
+	Checkmark       *Checkmark
+	OnInterruptFunc func()
 
 	selectedOption        int
 	selectedOptions       []int
@@ -52,7 +53,10 @@ type InteractiveMultiselectPrinter struct {
 	displayedOptionsStart int
 	displayedOptionsEnd   int
 
-	KeySelect  keys.KeyCode
+	// KeySelect is the select key. It cannot be keys.Space when Filter is enabled.
+	KeySelect keys.KeyCode
+
+	// KeyConfirm is the confirm key. It cannot be keys.Space when Filter is enabled.
 	KeyConfirm keys.KeyCode
 }
 
@@ -81,18 +85,20 @@ func (p InteractiveMultiselectPrinter) WithMaxHeight(maxHeight int) *Interactive
 }
 
 // WithFilter sets the Filter option
-func (p InteractiveMultiselectPrinter) WithFilter(filter bool) *InteractiveMultiselectPrinter {
-	p.Filter = filter
+func (p InteractiveMultiselectPrinter) WithFilter(b ...bool) *InteractiveMultiselectPrinter {
+	p.Filter = internal.WithBoolean(b)
 	return &p
 }
 
 // WithKeySelect sets the confirm key
+// It cannot be keys.Space when Filter is enabled.
 func (p InteractiveMultiselectPrinter) WithKeySelect(keySelect keys.KeyCode) *InteractiveMultiselectPrinter {
 	p.KeySelect = keySelect
 	return &p
 }
 
 // WithKeyConfirm sets the confirm key
+// It cannot be keys.Space when Filter is enabled.
 func (p InteractiveMultiselectPrinter) WithKeyConfirm(keyConfirm keys.KeyCode) *InteractiveMultiselectPrinter {
 	p.KeyConfirm = keyConfirm
 	return &p
@@ -104,11 +110,17 @@ func (p InteractiveMultiselectPrinter) WithCheckmark(checkmark *Checkmark) *Inte
 	return &p
 }
 
+// OnInterrupt sets the function to execute on exit of the input reader
+func (p InteractiveMultiselectPrinter) WithOnInterruptFunc(exitFunc func()) *InteractiveMultiselectPrinter {
+	p.OnInterruptFunc = exitFunc
+	return &p
+}
+
 // Show shows the interactive multiselect menu and returns the selected entry.
 func (p *InteractiveMultiselectPrinter) Show(text ...string) ([]string, error) {
 	// should be the first defer statement to make sure it is executed last
 	// and all the needed cleanup can be done before
-	cancel, exit := internal.NewCancelationSignal()
+	cancel, exit := internal.NewCancelationSignal(p.OnInterruptFunc)
 	defer exit()
 
 	if len(text) == 0 || Sprint(text[0]) == "" {
@@ -228,7 +240,7 @@ func (p *InteractiveMultiselectPrinter) Show(text ...string) ([]string, error) {
 				p.selectedOptions = append(p.selectedOptions, i)
 			}
 			area.Update(p.renderSelectMenu())
-		case keys.Up:
+		case keys.Up, keys.CtrlP:
 			if len(p.fuzzySearchMatches) == 0 {
 				return false, nil
 			}
@@ -251,7 +263,7 @@ func (p *InteractiveMultiselectPrinter) Show(text ...string) ([]string, error) {
 			}
 
 			area.Update(p.renderSelectMenu())
-		case keys.Down:
+		case keys.Down, keys.CtrlN:
 			if len(p.fuzzySearchMatches) == 0 {
 				return false, nil
 			}

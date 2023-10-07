@@ -1,6 +1,7 @@
 package pterm_test
 
 import (
+	"reflect"
 	"testing"
 
 	"atomicgo.dev/keyboard"
@@ -13,6 +14,11 @@ import (
 func TestInteractiveTextInputPrinter_WithDefaultText(t *testing.T) {
 	p := pterm.DefaultInteractiveTextInput.WithDefaultText("default")
 	testza.AssertEqual(t, p.DefaultText, "default")
+}
+
+func TestInteractiveTextInputPrinter_WithDelimiter(t *testing.T) {
+	p := pterm.DefaultInteractiveTextInput.WithDelimiter(">>")
+	testza.AssertEqual(t, p.Delimiter, ">>")
 }
 
 func TestInteractiveTextInputPrinter_WithMultiLine_true(t *testing.T) {
@@ -40,4 +46,15 @@ func TestInteractiveTextInputPrinter_WithMask(t *testing.T) {
 	}()
 	result, _ := pterm.DefaultInteractiveTextInput.WithMask("*").Show()
 	testza.AssertEqual(t, result, "abc")
+}
+
+func TestInteractiveTextInputPrinter_WithOnInterruptFunc(t *testing.T) {
+	// OnInterrupt function defaults to nil
+	pd := pterm.InteractiveTextInputPrinter{}
+	testza.AssertNil(t, pd.OnInterruptFunc)
+
+	// Verify OnInterrupt is set
+	exitfunc := func() {}
+	p := pterm.DefaultInteractiveTextInput.WithOnInterruptFunc(exitfunc)
+	testza.AssertEqual(t, reflect.ValueOf(p.OnInterruptFunc).Pointer(), reflect.ValueOf(exitfunc).Pointer())
 }

@@ -1,8 +1,11 @@
 package pterm
 
 import (
+	"atomicgo.dev/cursor"
+	"atomicgo.dev/schedule"
+	"fmt"
 	"io"
-	"strconv"
+	"math"
 	"strings"
 	"time"
 
@@ -15,23 +18,21 @@ import (
 // Generally, there should only be one active ProgressbarPrinter at a time.
 var ActiveProgressBarPrinters []*ProgressbarPrinter
 
-var (
-	// DefaultProgressbar is the default ProgressbarPrinter.
-	DefaultProgressbar = ProgressbarPrinter{
-		Total:                     100,
-		BarCharacter:              "█",
-		LastCharacter:             "█",
-		ElapsedTimeRoundingFactor: time.Second,
-		BarStyle:                  &ThemeDefault.ProgressbarBarStyle,
-		TitleStyle:                &ThemeDefault.ProgressbarTitleStyle,
-		ShowTitle:                 true,
-		ShowCount:                 true,
-		ShowPercentage:            true,
-		ShowElapsedTime:           true,
-		BarFiller:                 " ",
-		MaxWidth:                  80,
-	}
-)
+// DefaultProgressbar is the default ProgressbarPrinter.
+var DefaultProgressbar = ProgressbarPrinter{
+	Total:                     100,
+	BarCharacter:              "█",
+	LastCharacter:             "█",
+	ElapsedTimeRoundingFactor: time.Second,
+	BarStyle:                  &ThemeDefault.ProgressbarBarStyle,
+	TitleStyle:                &ThemeDefault.ProgressbarTitleStyle,
+	ShowTitle:                 true,
+	ShowCount:                 true,
+	ShowPercentage:            true,
+	ShowElapsedTime:           true,
+	BarFiller:                 Gray("█"),
+	MaxWidth:                  80,
+}
 
 // ProgressbarPrinter shows a progress animation in the terminal.
 type ProgressbarPrinter struct {
@@ -55,7 +56,8 @@ type ProgressbarPrinter struct {
 
 	IsActive bool
 
-	startedAt time.Time
+	startedAt    time.Time
+	rerenderTask *schedule.Task
 
 	Writer io.Writer
 }
@@ -158,6 +160,11 @@ func (p ProgressbarPrinter) WithWriter(writer io.Writer) *ProgressbarPrinter {
 	return &p
 }
 
+// SetWriter sets the custom Writer.
+func (p *ProgressbarPrinter) SetWriter(writer io.Writer) {
+	p.Writer = writer
+}
+
 // Increment current value by one.
 func (p *ProgressbarPrinter) Increment() *ProgressbarPrinter {
 	p.Add(1)
@@ -173,6 +180,14 @@ func (p *ProgressbarPrinter) UpdateTitle(title string) *ProgressbarPrinter {
 
 // This is the update logic, renders the progressbar
 func (p *ProgressbarPrinter) updateProgress() *ProgressbarPrinter {
+	Fprinto(p.Writer, p.getString())
+	return p
+}
+
+func (p *ProgressbarPrinter) getString() string {
+	if !p.IsActive {
+		return ""
+	}
 	if p.TitleStyle == nil {
 		p.TitleStyle = NewStyle()
 	}
@@ -180,7 +195,7 @@ func (p *ProgressbarPrinter) updateProgress() *ProgressbarPrinter {
 		p.BarStyle = NewStyle()
 	}
 	if p.Total == 0 {
-		return nil
+		return ""
 	}
 
 	var before string
@@ -195,25 +210,20 @@ func (p *ProgressbarPrinter) updateProgress() *ProgressbarPrinter {
 		width = p.MaxWidth
 	}
 
-	currentPercentage := int(internal.PercentageRound(float64(int64(p.Total)), float64(int64(p.Current))))
-
-	decoratorCount := Gray("[") + LightWhite(p.Current) + Gray("/") + LightWhite(p.Total) + Gray("]")
-
-	decoratorCurrentPercentage := color.RGB(NewRGB(255, 0, 0).Fade(0, float32(p.Total), float32(p.Current), NewRGB(0, 255, 0)).GetValues()).
-		Sprint(strconv.Itoa(currentPercentage) + "%")
-
-	decoratorTitle := p.TitleStyle.Sprint(p.Title)
-
 	if p.ShowTitle {
-		before += decoratorTitle + " "
+		before += p.TitleStyle.Sprint(p.Title) + " "
 	}
 	if p.ShowCount {
-		before += decoratorCount + " "
+		padding := 1 + int(math.Log10(float64(p.Total)))
+		before += Gray("[") + LightWhite(fmt.Sprintf("%0*d", padding, p.Current)) + Gray("/") + LightWhite(p.Total) + Gray("]") + " "
 	}
 
 	after += " "
 
 	if p.ShowPercentage {
+		currentPercentage := int(internal.PercentageRound(float64(int64(p.Total)), float64(int64(p.Current))))
+		decoratorCurrentPercentage := color.RGB(NewRGB(255, 0, 0).Fade(0, float32(p.Total), float32(p.Current), NewRGB(0, 255, 0)).GetValues()).
+			Sprintf("%3d%%", currentPercentage)
 		after += decoratorCurrentPercentage + " "
 	}
 	if p.ShowElapsedTime {
@@ -228,17 +238,12 @@ func (p *ProgressbarPrinter) updateProgress() *ProgressbarPrinter {
 		barFiller = strings.Repeat(p.BarFiller, barMaxLength-barCurrentLength)
 	}
 
-	var bar string
+	bar := barFiller
 	if barCurrentLength > 0 {
-		bar = p.BarStyle.Sprint(strings.Repeat(p.BarCharacter, barCurrentLength)+p.LastCharacter) + barFiller
-	} else {
-		bar = ""
+		bar = p.BarStyle.Sprint(strings.Repeat(p.BarCharacter, barCurrentLength)+p.LastCharacter) + bar
 	}
 
-	if !RawOutput {
-		Fprinto(p.Writer, before+bar+after)
-	}
-	return p
+	return before + bar + after
 }
 
 // Add to current value.
@@ -251,6 +256,8 @@ func (p *ProgressbarPrinter) Add(count int) *ProgressbarPrinter {
 	p.updateProgress()
 
 	if p.Current >= p.Total {
+		p.Total = p.Current
+		p.updateProgress()
 		p.Stop()
 	}
 	return p
@@ -258,6 +265,7 @@ func (p *ProgressbarPrinter) Add(count int) *ProgressbarPrinter {
 
 // Start the ProgressbarPrinter.
 func (p ProgressbarPrinter) Start(title ...interface{}) (*ProgressbarPrinter, error) {
+	cursor.Hide()
 	if RawOutput && p.ShowTitle {
 		Fprintln(p.Writer, p.Title)
 	}
@@ -270,11 +278,23 @@ func (p ProgressbarPrinter) Start(title ...interface{}) (*ProgressbarPrinter, er
 
 	p.updateProgress()
 
+	if p.ShowElapsedTime {
+		p.rerenderTask = schedule.Every(time.Second, func() bool {
+			p.updateProgress()
+			return true
+		})
+	}
+
 	return &p, nil
 }
 
 // Stop the ProgressbarPrinter.
 func (p *ProgressbarPrinter) Stop() (*ProgressbarPrinter, error) {
+	if p.rerenderTask != nil && p.rerenderTask.IsActive() {
+		p.rerenderTask.Stop()
+	}
+	cursor.Show()
+
 	if !p.IsActive {
 		return p, nil
 	}
@@ -291,7 +311,7 @@ func (p *ProgressbarPrinter) Stop() (*ProgressbarPrinter, error) {
 // GenericStart runs Start, but returns a LivePrinter.
 // This is used for the interface LivePrinter.
 // You most likely want to use Start instead of this in your program.
-func (p ProgressbarPrinter) GenericStart() (*LivePrinter, error) {
+func (p *ProgressbarPrinter) GenericStart() (*LivePrinter, error) {
 	p2, _ := p.Start()
 	lp := LivePrinter(p2)
 	return &lp, nil
@@ -300,7 +320,7 @@ func (p ProgressbarPrinter) GenericStart() (*LivePrinter, error) {
 // GenericStop runs Stop, but returns a LivePrinter.
 // This is used for the interface LivePrinter.
 // You most likely want to use Stop instead of this in your program.
-func (p ProgressbarPrinter) GenericStop() (*LivePrinter, error) {
+func (p *ProgressbarPrinter) GenericStop() (*LivePrinter, error) {
 	p2, _ := p.Stop()
 	lp := LivePrinter(p2)
 	return &lp, nil

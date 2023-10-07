@@ -63,7 +63,7 @@ func DisableStyling() {
 	DisableColor()
 }
 
-// RecalculateTerminalSize updates already initialized terminal dimensions. Has to be called after a termina resize to guarantee proper rendering. Applies only to new instances.
+// RecalculateTerminalSize updates already initialized terminal dimensions. Has to be called after a terminal resize to guarantee proper rendering. Applies only to new instances.
 func RecalculateTerminalSize() {
 	// keep in sync with DefaultBarChart
 	DefaultBarChart.Width = GetTerminalWidth() * 2 / 3

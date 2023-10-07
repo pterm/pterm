@@ -1,6 +1,7 @@
 package pterm_test
 
 import (
+	"reflect"
 	"testing"
 
 	"atomicgo.dev/keyboard"
@@ -30,6 +31,19 @@ func TestInteractiveMultiselectPrinter_Show_MaxHeightSlidingWindow(t *testing.T)
 	}()
 	result, _ := pterm.DefaultInteractiveMultiselect.WithOptions([]string{"a", "b", "c", "d", "e", "f"}).WithDefaultOptions([]string{"b"}).Show()
 	testza.AssertEqual(t, []string{"b", "e"}, result)
+}
+
+func TestInteractiveMultiselectPrinter_Show_AlternateNavigationKeys(t *testing.T) {
+	go func() {
+		keyboard.SimulateKeyPress(keys.CtrlN)
+		keyboard.SimulateKeyPress(keys.CtrlN)
+		keyboard.SimulateKeyPress(keys.CtrlN)
+		keyboard.SimulateKeyPress(keys.CtrlP)
+		keyboard.SimulateKeyPress(keys.Enter)
+		keyboard.SimulateKeyPress(keys.Tab)
+	}()
+	result, _ := pterm.DefaultInteractiveMultiselect.WithOptions([]string{"a", "b", "c", "d", "e"}).WithDefaultOptions([]string{"b"}).Show()
+	testza.AssertEqual(t, []string{"b", "c"}, result)
 }
 
 func TestInteractiveMultiselectPrinter_WithDefaultText(t *testing.T) {
@@ -65,4 +79,15 @@ func TestInteractiveMultiselectPrinter_WithKeyConfirm(t *testing.T) {
 func TestInteractiveMultiselectPrinter_WithCheckmark(t *testing.T) {
 	p := pterm.DefaultInteractiveMultiselect.WithCheckmark(&pterm.Checkmark{Checked: "+", Unchecked: "-"}).WithOptions([]string{"a", "b", "c"})
 	testza.AssertEqual(t, p.Checkmark, &pterm.Checkmark{Checked: "+", Unchecked: "-"})
+}
+
+func TestInteractiveMultiselectPrinter_WithOnInterruptFunc(t *testing.T) {
+	// OnInterrupt function defaults to nil
+	pd := pterm.InteractiveMultiselectPrinter{}
+	testza.AssertNil(t, pd.OnInterruptFunc)
+
+	// Verify OnInterrupt is set
+	exitfunc := func() {}
+	p := pterm.DefaultInteractiveMultiselect.WithOnInterruptFunc(exitfunc)
+	testza.AssertEqual(t, reflect.ValueOf(p.OnInterruptFunc).Pointer(), reflect.ValueOf(exitfunc).Pointer())
 }
