@@ -60,8 +60,8 @@ func TestHeatmapPrinter_SRender(t *testing.T) {
 	testza.AssertNoError(t, err)
 	testza.AssertNotNil(t, content)
 
-	// WithRGB
-	printer = pterm.DefaultHeatmap.WithAxisData(hd).WithData(d).WithRGB(true)
+	// WithEnableRGB
+	printer = pterm.DefaultHeatmap.WithAxisData(hd).WithData(d).WithEnableRGB(true)
 	content, err = printer.Srender()
 
 	testza.AssertNoError(t, err)
@@ -133,9 +133,9 @@ func TestHeatmapPrinter_WithoutGrid(t *testing.T) {
 
 func TestHeatmapPrinter_WithRGB(t *testing.T) {
 	h := pterm.HeatmapPrinter{}
-	h2 := h.WithRGB(true)
+	h2 := h.WithEnableRGB(true)
 
-	testza.AssertTrue(t, h2.IsRGB)
+	testza.AssertTrue(t, h2.EnableRGB)
 }
 
 func TestHeatmapPrinter_WithOnlyColoredCells(t *testing.T) {

@@ -20,8 +20,4 @@ func main() {
 
 	table := pterm.DefaultHeatmap.WithData(data).WithBoxed(false).WithAxisData(headerData).WithLegend(false)
 	table.Render()
-
-	pterm.Println("The following table has rgb (not supported by every terminal), axis data and a legend.\n")
-	table2 := pterm.DefaultHeatmap.WithData(data).WithBoxed(false).WithAxisData(headerData).WithRGB().WithLegend()
-	table2.Render()
 }

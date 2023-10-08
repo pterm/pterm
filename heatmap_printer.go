@@ -34,7 +34,7 @@ var DefaultHeatmap = HeatmapPrinter{
 	TextColor:                  FgBlack,
 	Colors:                     []Color{BgRed, BgLightRed, BgYellow, BgLightYellow, BgLightGreen, BgGreen},
 
-	IsRGB: false,
+	EnableRGB: false,
 
 	rgbLegendValue: 11,
 }
@@ -75,7 +75,7 @@ type HeatmapPrinter struct {
 	CellSize                   int
 	Colors                     []Color
 	TextColor                  Color
-	IsRGB                      bool
+	EnableRGB                  bool
 	RGBRange                   []RGB
 	TextRGB                    RGB
 	Writer                     io.Writer
@@ -134,7 +134,7 @@ func (p HeatmapPrinter) WithData(data [][]float32) *HeatmapPrinter {
 // WithTextColor returns a new HeatmapPrinter with a specific TextColor.
 func (p HeatmapPrinter) WithTextColor(color Color) *HeatmapPrinter {
 	p.TextColor = color
-	p.IsRGB = false
+	p.EnableRGB = false
 	p.ColorValueComplementarily = false
 	return &p
 }
@@ -142,7 +142,7 @@ func (p HeatmapPrinter) WithTextColor(color Color) *HeatmapPrinter {
 // WithTextRGB returns a new HeatmapPrinter with a specific TextRGB.
 func (p HeatmapPrinter) WithTextRGB(rgb RGB) *HeatmapPrinter {
 	p.TextRGB = rgb
-	p.IsRGB = true
+	p.EnableRGB = true
 	p.ColorValueComplementarily = false
 	return &p
 }
@@ -166,9 +166,9 @@ func (p HeatmapPrinter) WithGrid(b ...bool) *HeatmapPrinter {
 	return &p
 }
 
-// WithRGB returns a new HeatmapPrinter with RGB colors.
-func (p HeatmapPrinter) WithRGB(b ...bool) *HeatmapPrinter {
-	p.IsRGB = internal.WithBoolean(b)
+// WithEnableRGB returns a new HeatmapPrinter with RGB colors.
+func (p HeatmapPrinter) WithEnableRGB(b ...bool) *HeatmapPrinter {
+	p.EnableRGB = internal.WithBoolean(b)
 	return &p
 }
 
@@ -285,14 +285,14 @@ func (p HeatmapPrinter) WithTCrossSeparator(s string) *HeatmapPrinter {
 // WithRGBRange returns a new HeatmapPrinter with a specific RGBRange.
 func (p HeatmapPrinter) WithRGBRange(rgb ...RGB) *HeatmapPrinter {
 	p.RGBRange = rgb
-	p.IsRGB = true
+	p.EnableRGB = true
 	return &p
 }
 
 // WithColors returns a new HeatmapPrinter with a specific Colors.
 func (p HeatmapPrinter) WithColors(colors ...Color) *HeatmapPrinter {
 	p.Colors = colors
-	p.IsRGB = false
+	p.EnableRGB = false
 	return &p
 }
 
@@ -503,7 +503,7 @@ func (p HeatmapPrinter) renderData(buffer *bytes.Buffer, colWidth int, xAmount i
 					ct = strings.Repeat(" ", colWidth-len(ct)) + ct
 				}
 			}
-			if p.IsRGB {
+			if p.EnableRGB {
 				rgb := p.RGBRange[0].Fade(p.minValue, p.maxValue, f, p.RGBRange[1:]...)
 				rgbStyle := NewRGBStyle(p.TextRGB, rgb)
 				if p.ColorValueComplementarily {
@@ -565,7 +565,7 @@ func (p HeatmapPrinter) generateLegend(buffer *bytes.Buffer, legend string, lege
 	} else {
 		buffer.WriteString(" ")
 	}
-	if p.IsRGB {
+	if p.EnableRGB {
 		p.generateRGBLegend(buffer, legendColWidth)
 	} else {
 		p.generateColorLegend(buffer, legendColWidth)
@@ -658,7 +658,7 @@ func (p HeatmapPrinter) generateSeparatorRow(buffer *bytes.Buffer, legend string
 	steps *= 3
 
 	var xValue int
-	if p.IsRGB {
+	if p.EnableRGB {
 		xValue = len(p.RGBRange)
 		if xValue < p.rgbLegendValue {
 			xValue = p.rgbLegendValue
@@ -673,7 +673,7 @@ func (p HeatmapPrinter) generateSeparatorRow(buffer *bytes.Buffer, legend string
 			buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), firstLength))
 		} else {
 			if p.LegendOnlyColoredCells {
-				if p.IsRGB {
+				if p.EnableRGB {
 					buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), steps/(xValue)))
 				} else {
 					buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), legendColWidth))
