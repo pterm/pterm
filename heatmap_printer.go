@@ -25,6 +25,7 @@ var DefaultHeatmap = HeatmapPrinter{
 	LSeparator:                 "├",
 	LReverseSeparator:          "┤",
 	TCrossSeparator:            "┼",
+	LegendTag:                  "Legend",
 	Boxed:                      true,
 	Grid:                       true,
 	Legend:                     true,
@@ -61,6 +62,7 @@ type HeatmapPrinter struct {
 	LSeparator                 string
 	LReverseSeparator          string
 	TCrossSeparator            string
+	LegendTag                  string
 	SeparatorStyle             *Style
 	Data                       HeatmapData
 	Axis                       HeatmapAxis
@@ -68,7 +70,7 @@ type HeatmapPrinter struct {
 	Grid                       bool
 	OnlyColoredCells           bool
 	LegendOnlyColoredCells     bool
-	ComplementColor            bool
+	ColorValueComplementarily  bool
 	Legend                     bool
 	CellSize                   int
 	Colors                     []Color
@@ -133,7 +135,7 @@ func (p HeatmapPrinter) WithData(data [][]float32) *HeatmapPrinter {
 func (p HeatmapPrinter) WithTextColor(color Color) *HeatmapPrinter {
 	p.TextColor = color
 	p.IsRGB = false
-	p.ComplementColor = false
+	p.ColorValueComplementarily = false
 	return &p
 }
 
@@ -141,13 +143,16 @@ func (p HeatmapPrinter) WithTextColor(color Color) *HeatmapPrinter {
 func (p HeatmapPrinter) WithTextRGB(rgb RGB) *HeatmapPrinter {
 	p.TextRGB = rgb
 	p.IsRGB = true
-	p.ComplementColor = false
+	p.ColorValueComplementarily = false
 	return &p
 }
 
 // WithBoxed returns a new HeatmapPrinter with a box around the table.
 func (p HeatmapPrinter) WithBoxed(b ...bool) *HeatmapPrinter {
 	p.Boxed = internal.WithBoolean(b)
+	if p.Boxed && !p.Grid {
+		p.Grid = true
+	}
 	return &p
 }
 
@@ -186,7 +191,7 @@ func (p HeatmapPrinter) WithLegendOnlyColoredCells(b ...bool) *HeatmapPrinter {
 
 // WithComplementColor returns a new HeatmapPrinter with complement color.
 func (p HeatmapPrinter) WithComplementColor(b ...bool) *HeatmapPrinter {
-	p.ComplementColor = internal.WithBoolean(b)
+	p.ColorValueComplementarily = internal.WithBoolean(b)
 	return &p
 }
 
@@ -200,6 +205,94 @@ func (p HeatmapPrinter) WithLegend(b ...bool) *HeatmapPrinter {
 // This only works if there is no header and OnlyColoredCells == true!
 func (p HeatmapPrinter) WithCellSize(i int) *HeatmapPrinter {
 	p.CellSize = i
+	return &p
+}
+
+// WithLegendTag returns a new HeatmapPrinter with a specific legend tag.
+// This sets the Legend to true.
+func (p HeatmapPrinter) WithLegendTag(s string) *HeatmapPrinter {
+	p.LegendTag = s
+	p.Legend = true
+	return &p
+}
+
+// WithVerticalSeparator returns a new HeatmapPrinter with a specific VerticalSeparator.
+func (p HeatmapPrinter) WithVerticalSeparator(s string) *HeatmapPrinter {
+	p.VerticalSeparator = s
+	return &p
+}
+
+// WithTopRightCornerSeparator returns a new HeatmapPrinter with a specific TopRightCornerSeparator.
+func (p HeatmapPrinter) WithTopRightCornerSeparator(s string) *HeatmapPrinter {
+	p.TopRightCornerSeparator = s
+	return &p
+}
+
+// WithTopLeftCornerSeparator returns a new HeatmapPrinter with a specific TopLeftCornerSeparator.
+func (p HeatmapPrinter) WithTopLeftCornerSeparator(s string) *HeatmapPrinter {
+	p.TopLeftCornerSeparator = s
+	return &p
+}
+
+// WithBottomLeftCornerSeparator returns a new HeatmapPrinter with a specific BottomLeftCornerSeparator.
+func (p HeatmapPrinter) WithBottomLeftCornerSeparator(s string) *HeatmapPrinter {
+	p.BottomLeftCornerSeparator = s
+	return &p
+}
+
+// WithBottomRightCornerSeparator returns a new HeatmapPrinter with a specific BottomRightCornerSeparator.
+func (p HeatmapPrinter) WithBottomRightCornerSeparator(s string) *HeatmapPrinter {
+	p.BottomRightCornerSeparator = s
+	return &p
+}
+
+// WithHorizontalSeparator returns a new HeatmapPrinter with a specific HorizontalSeparator.
+func (p HeatmapPrinter) WithHorizontalSeparator(s string) *HeatmapPrinter {
+	p.HorizontalSeparator = s
+	return &p
+}
+
+// WithTSeparator returns a new HeatmapPrinter with a specific TSeparator.
+func (p HeatmapPrinter) WithTSeparator(s string) *HeatmapPrinter {
+	p.TSeparator = s
+	return &p
+}
+
+// WithTReverseSeparator returns a new HeatmapPrinter with a specific TReverseSeparator.
+func (p HeatmapPrinter) WithTReverseSeparator(s string) *HeatmapPrinter {
+	p.TReverseSeparator = s
+	return &p
+}
+
+// WithLSeparator returns a new HeatmapPrinter with a specific LSeparator.
+func (p HeatmapPrinter) WithLSeparator(s string) *HeatmapPrinter {
+	p.LSeparator = s
+	return &p
+}
+
+// WithLReverseSeparator returns a new HeatmapPrinter with a specific LReverseSeparator.
+func (p HeatmapPrinter) WithLReverseSeparator(s string) *HeatmapPrinter {
+	p.LReverseSeparator = s
+	return &p
+}
+
+// WithTCrossSeparator returns a new HeatmapPrinter with a specific TCrossSeparator.
+func (p HeatmapPrinter) WithTCrossSeparator(s string) *HeatmapPrinter {
+	p.TCrossSeparator = s
+	return &p
+}
+
+// WithRGBRange returns a new HeatmapPrinter with a specific RGBRange.
+func (p HeatmapPrinter) WithRGBRange(rgb ...RGB) *HeatmapPrinter {
+	p.RGBRange = rgb
+	p.IsRGB = true
+	return &p
+}
+
+// WithColors returns a new HeatmapPrinter with a specific Colors.
+func (p HeatmapPrinter) WithColors(colors ...Color) *HeatmapPrinter {
+	p.Colors = colors
+	p.IsRGB = false
 	return &p
 }
 
@@ -222,7 +315,7 @@ func (p HeatmapPrinter) Srender() (string, error) {
 		p.AxisStyle = NewStyle()
 	}
 
-	var buffer bytes.Buffer
+	buffer := bytes.NewBufferString("")
 	xAmount := len(p.Data[0]) - 1
 	yAmount := len(p.Data) - 1
 	p.minValue, p.maxValue = minMaxFloat32(p.Data)
@@ -235,52 +328,158 @@ func (p HeatmapPrinter) Srender() (string, error) {
 	}
 
 	if p.HasHeader {
-		var header string
-		for _, h := range p.Axis.XAxis {
-			header += h + "\n"
-		}
-		for _, h := range p.Axis.YAxis {
-			header += h + "\n"
-		}
-
-		if p.OnlyColoredCells {
-			data = header
-		} else {
-			data += header
-		}
-		xAmount++
-		yAmount++
-
-		p.Axis.YAxis = append(p.Axis.YAxis, "")
+		data, xAmount, yAmount = p.computeAxisData(data, xAmount, yAmount)
 	}
 
-	lineLength := internal.GetStringMaxWidth(data)
+	colWidth := internal.GetStringMaxWidth(data)
+	legendColWidth := colWidth + 2
 
-	if p.OnlyColoredCells && (p.CellSize > lineLength || !p.HasHeader) {
-		lineLength = p.CellSize
+	if p.OnlyColoredCells && (p.CellSize > colWidth || !p.HasHeader) {
+		colWidth = p.CellSize
 	}
 
 	if p.Boxed {
-		buffer.WriteString(p.SeparatorStyle.Sprint(p.BottomRightCornerSeparator))
-		for i := 0; i < xAmount+1; i++ {
-			buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), lineLength))
-			if i < xAmount {
-				buffer.WriteString(p.SeparatorStyle.Sprint(p.TSeparator))
-			}
-		}
-		buffer.WriteString(p.SeparatorStyle.Sprint(p.BottomLeftCornerSeparator))
-		buffer.WriteString("\n")
+		p.renderSeparatorRow(buffer, colWidth, xAmount, true)
 	}
 
+	p.renderData(buffer, colWidth, xAmount, yAmount)
+
+	if p.HasHeader {
+		p.renderHeader(buffer, colWidth, xAmount)
+	}
+
+	if p.Boxed {
+		p.renderSeparatorRow(buffer, colWidth, xAmount, false)
+	}
+
+	if p.Legend {
+		p.renderLegend(buffer, legendColWidth)
+	}
+
+	buffer.WriteString("\n")
+
+	return buffer.String(), nil
+}
+
+func (p HeatmapPrinter) computeAxisData(data string, xAmount, yAmount int) (string, int, int) {
+	var header string
+	for _, h := range p.Axis.XAxis {
+		header += h + "\n"
+	}
+	for _, h := range p.Axis.YAxis {
+		header += h + "\n"
+	}
+
+	if p.OnlyColoredCells {
+		data = header
+	} else {
+		data += header
+	}
+	xAmount++
+	yAmount++
+
+	p.Axis.YAxis = append(p.Axis.YAxis, "")
+
+	return data, xAmount, yAmount
+}
+
+func (p HeatmapPrinter) renderSeparatorRow(buffer *bytes.Buffer, colWidth, xAmount int, top bool) {
+	tSep := p.TReverseSeparator
+	rightSep := p.TopRightCornerSeparator
+	leftSep := p.TopLeftCornerSeparator
+
+	if top {
+		tSep = p.TSeparator
+		rightSep = p.BottomRightCornerSeparator
+		leftSep = p.BottomLeftCornerSeparator
+	} else {
+		buffer.WriteString("\n")
+	}
+	buffer.WriteString(p.SeparatorStyle.Sprint(rightSep))
+	for i := 0; i < xAmount+1; i++ {
+		buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), colWidth))
+		if i < xAmount {
+			buffer.WriteString(p.SeparatorStyle.Sprint(tSep))
+		}
+	}
+	buffer.WriteString(p.SeparatorStyle.Sprint(leftSep))
+
+	if top {
+		buffer.WriteString("\n")
+	}
+}
+
+func (p HeatmapPrinter) renderLegend(buffer *bytes.Buffer, legendColWidth int) {
+	buffer.WriteString("\n")
+	buffer.WriteString("\n")
+	if p.Boxed {
+		p.boxLegend(buffer, p.LegendTag, legendColWidth)
+	} else {
+		p.generateLegend(buffer, p.LegendTag, legendColWidth)
+	}
+}
+
+func (p HeatmapPrinter) renderHeader(buffer *bytes.Buffer, colWidth int, xAmount int) {
+	buffer.WriteString("\n")
+	if p.Boxed {
+		buffer.WriteString(p.SeparatorStyle.Sprint(p.LSeparator))
+	}
+	if p.Grid {
+		for i := 0; i < xAmount+1; i++ {
+			buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), colWidth))
+			if i < xAmount {
+				buffer.WriteString(p.SeparatorStyle.Sprint(p.TCrossSeparator))
+			}
+		}
+	}
+	if p.Boxed {
+		buffer.WriteString(p.SeparatorStyle.Sprint(p.LReverseSeparator))
+	}
+	if p.Grid {
+		buffer.WriteString("\n")
+	}
+	for j, f := range p.Axis.XAxis {
+		if j == 0 {
+			if p.Boxed {
+				buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
+			}
+			ct := internal.CenterText(" ", colWidth)
+			if len(ct) < colWidth {
+				ct += strings.Repeat(" ", colWidth-len(ct))
+			}
+			buffer.WriteString(p.AxisStyle.Sprint(ct))
+			if p.Grid {
+				buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
+			}
+		}
+		var ct string
+		ct = internal.CenterText(Sprintf("%v", f), colWidth)
+		if len(ct) < colWidth {
+			ct += strings.Repeat(" ", colWidth-len(ct))
+		}
+		buffer.WriteString(p.AxisStyle.Sprint(ct))
+
+		if j < xAmount {
+			if !p.Boxed && j == xAmount-1 {
+				continue
+			}
+			if p.Grid {
+				buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
+			}
+		}
+	}
+}
+
+func (p HeatmapPrinter) renderData(buffer *bytes.Buffer, colWidth int, xAmount int, yAmount int) {
 	for i, datum := range p.Data {
 		if p.Boxed {
 			buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
 		}
 		for j, f := range datum {
 			if j == 0 && p.HasHeader {
-				ct := internal.CenterText(p.Axis.YAxis[i], lineLength)
-				if len(ct) < lineLength {
-					ct += strings.Repeat(" ", lineLength-len(ct))
+				ct := internal.CenterText(p.Axis.YAxis[i], colWidth)
+				if len(ct) < colWidth {
+					ct += strings.Repeat(" ", colWidth-len(ct))
 				}
 				buffer.WriteString(p.AxisStyle.Sprint(ct))
 				if p.Grid {
@@ -289,24 +488,21 @@ func (p HeatmapPrinter) Srender() (string, error) {
 			}
 			var ct string
 			if p.OnlyColoredCells {
-				ct = internal.CenterText(" ", lineLength)
-				if len(ct) < lineLength {
-
-				}
+				ct = internal.CenterText(" ", colWidth)
 			} else {
-				ct = internal.CenterText(Sprintf("%v", f), lineLength)
+				ct = internal.CenterText(Sprintf("%v", f), colWidth)
 			}
-			if len(ct) < lineLength {
+			if len(ct) < colWidth {
 				if len(Sprintf("%v", f)) == 1 {
-					ct += strings.Repeat(" ", lineLength-len(ct))
+					ct += strings.Repeat(" ", colWidth-len(ct))
 				} else {
-					ct = strings.Repeat(" ", lineLength-len(ct)) + ct
+					ct = strings.Repeat(" ", colWidth-len(ct)) + ct
 				}
 			}
 			if p.IsRGB {
 				rgb := p.RGBRange[0].Fade(p.minValue, p.maxValue, f, p.RGBRange[1:]...)
 				rgbStyle := NewRGBStyle(p.TextRGB, rgb)
-				if p.ComplementColor {
+				if p.ColorValueComplementarily {
 					complimentary := NewRGB(internal.Complementary(rgb.R, rgb.G, rgb.B))
 					rgbStyle = NewRGBStyle(complimentary, rgb)
 				}
@@ -314,7 +510,7 @@ func (p HeatmapPrinter) Srender() (string, error) {
 			} else {
 				color := getColor(p.minValue, p.maxValue, f, p.Colors...)
 				fgColor := p.TextColor
-				if p.ComplementColor {
+				if p.ColorValueComplementarily {
 					fgColor = colorComplement[color]
 				}
 				buffer.WriteString(fgColor.Sprint(color.Sprintf(ct)))
@@ -342,7 +538,7 @@ func (p HeatmapPrinter) Srender() (string, error) {
 			}
 			if p.Grid {
 				for i := 0; i < xAmount+1; i++ {
-					buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), lineLength))
+					buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), colWidth))
 					if i < xAmount {
 						buffer.WriteString(p.SeparatorStyle.Sprint(p.TCrossSeparator))
 					}
@@ -356,190 +552,140 @@ func (p HeatmapPrinter) Srender() (string, error) {
 			}
 		}
 	}
+}
 
-	if p.HasHeader {
-		buffer.WriteString("\n")
-		if p.Boxed {
-			buffer.WriteString(p.SeparatorStyle.Sprint(p.LSeparator))
-		}
-		if p.Grid {
-			for i := 0; i < xAmount+1; i++ {
-				buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), lineLength))
-				if i < xAmount {
-					buffer.WriteString(p.SeparatorStyle.Sprint(p.TCrossSeparator))
-				}
-			}
-		}
-		if p.Boxed {
-			buffer.WriteString(p.SeparatorStyle.Sprint(p.LReverseSeparator))
-		}
-		if p.Grid {
-			buffer.WriteString("\n")
-		}
-		for j, f := range p.Axis.XAxis {
-			if j == 0 {
-				if p.Boxed {
-					buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
-				}
-				ct := internal.CenterText(" ", lineLength)
-				if len(ct) < lineLength {
-					ct += strings.Repeat(" ", lineLength-len(ct))
-				}
-				buffer.WriteString(p.AxisStyle.Sprint(ct))
-				if p.Grid {
-					buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
-				}
-			}
-			var ct string
-			ct = internal.CenterText(Sprintf("%v", f), lineLength)
-			if len(ct) < lineLength {
-				ct += strings.Repeat(" ", lineLength-len(ct))
-			}
-			buffer.WriteString(p.AxisStyle.Sprint(ct))
+func (p HeatmapPrinter) generateLegend(buffer *bytes.Buffer, legend string, legendColWidth int) {
+	buffer.WriteString(p.AxisStyle.Sprint(legend))
+	if p.Grid {
+		buffer.WriteString(p.SeparatorStyle.Sprintf("%s", p.VerticalSeparator))
+	} else {
+		buffer.WriteString(" ")
+	}
+	if p.IsRGB {
+		p.generateRGBLegend(buffer, legendColWidth)
+	} else {
+		p.generateColorLegend(buffer, legendColWidth)
+	}
+}
 
-			if j < xAmount {
-				if !p.Boxed && j == xAmount-1 {
-					continue
-				}
-				if p.Grid {
-					buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
-				}
-			}
+func (p HeatmapPrinter) generateColorLegend(buffer *bytes.Buffer, legendColWidth int) {
+	for i, color := range p.Colors {
+		// the first color is the min value and the last color is the max value
+		var f float32
+		if i == 0 {
+			f = p.minValue
+		} else if i == len(p.Colors)-1 {
+			f = p.maxValue
+		} else {
+			f = p.minValue + (p.maxValue-p.minValue)*float32(i)/float32(len(p.Colors)-1)
+		}
+		fgColor := p.TextColor
+		if p.ColorValueComplementarily {
+			fgColor = colorComplement[color]
+		}
+		buffer.WriteString(fgColor.Sprint(color.Sprint(centerAndShorten(f, legendColWidth, p.LegendOnlyColoredCells))))
+		if p.Grid && i < len(p.Colors)-1 && !p.LegendOnlyColoredCells {
+			buffer.WriteString(p.SeparatorStyle.Sprintf("%s", p.VerticalSeparator))
 		}
 	}
+}
 
-	if p.Boxed {
-		buffer.WriteString("\n")
-		buffer.WriteString(p.SeparatorStyle.Sprint(p.TopRightCornerSeparator))
-		for i := 0; i < xAmount+1; i++ {
-			buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), lineLength))
-			if i < xAmount {
+func (p HeatmapPrinter) generateRGBLegend(buffer *bytes.Buffer, legendColWidth int) {
+	steps := len(p.RGBRange)
+	if steps < p.rgbLegendValue {
+		steps = p.rgbLegendValue
+	}
+	if p.LegendOnlyColoredCells {
+		steps *= 3
+	}
+	for i := 0; i < steps; i++ {
+		// the first color is the min value and the last color is the max value
+		var f float32
+		if i == 0 {
+			f = p.minValue
+		} else if i == steps-1 {
+			f = p.maxValue
+		} else {
+			f = p.minValue + (p.maxValue-p.minValue)*float32(i)/float32(steps-1)
+		}
+		rgb := p.RGBRange[0].Fade(p.minValue, p.maxValue, f, p.RGBRange[1:]...)
+		rgbStyle := NewRGBStyle(p.TextRGB, rgb)
+		if p.ColorValueComplementarily {
+			complimentary := NewRGB(internal.Complementary(rgb.R, rgb.G, rgb.B))
+			rgbStyle = NewRGBStyle(complimentary, rgb)
+		}
+		if p.LegendOnlyColoredCells {
+			buffer.WriteString(rgbStyle.Sprint(centerAndShorten(f, 1, p.LegendOnlyColoredCells)))
+		} else {
+			buffer.WriteString(rgbStyle.Sprint(centerAndShorten(f, legendColWidth, p.LegendOnlyColoredCells)))
+		}
+		if p.Grid && i < steps-1 && !p.LegendOnlyColoredCells {
+			buffer.WriteString(p.SeparatorStyle.Sprintf("%s", p.VerticalSeparator))
+		}
+	}
+}
+
+func (p HeatmapPrinter) boxLegend(buffer *bytes.Buffer, legend string, legendColWidth int) {
+	buffer.WriteString(p.SeparatorStyle.Sprint(p.BottomRightCornerSeparator))
+
+	p.generateSeparatorRow(buffer, legend, legendColWidth, true)
+
+	buffer.WriteString(p.SeparatorStyle.Sprint(p.BottomLeftCornerSeparator))
+	buffer.WriteString("\n")
+	buffer.WriteString(p.SeparatorStyle.Sprintf("%s", p.VerticalSeparator))
+
+	p.generateLegend(buffer, legend, legendColWidth)
+
+	buffer.WriteString(p.SeparatorStyle.Sprintf("%s", p.VerticalSeparator))
+	buffer.WriteString("\n")
+
+	buffer.WriteString(p.SeparatorStyle.Sprint(p.TopRightCornerSeparator))
+
+	p.generateSeparatorRow(buffer, legend, legendColWidth, false)
+
+	buffer.WriteString(p.SeparatorStyle.Sprint(p.TopLeftCornerSeparator))
+}
+
+func (p HeatmapPrinter) generateSeparatorRow(buffer *bytes.Buffer, legend string, legendColWidth int, top bool) {
+	steps := len(p.RGBRange)
+	if steps < p.rgbLegendValue {
+		steps = p.rgbLegendValue
+	}
+	steps *= 3
+
+	var xValue int
+	if p.IsRGB {
+		xValue = len(p.RGBRange)
+		if xValue < p.rgbLegendValue {
+			xValue = p.rgbLegendValue
+		}
+	} else {
+		xValue = len(p.Colors)
+	}
+
+	for i := 0; i < xValue+1; i++ {
+		if i == 0 {
+			firstLength := len(legend)
+			buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), firstLength))
+		} else {
+			if p.LegendOnlyColoredCells {
+				if p.IsRGB {
+					buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), steps/(xValue)))
+				} else {
+					buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), legendColWidth))
+				}
+			} else {
+				buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), legendColWidth))
+			}
+		}
+		if i < xValue && !p.LegendOnlyColoredCells || i == 0 {
+			if top {
+				buffer.WriteString(p.SeparatorStyle.Sprint(p.TSeparator))
+			} else {
 				buffer.WriteString(p.SeparatorStyle.Sprint(p.TReverseSeparator))
 			}
 		}
-		buffer.WriteString(p.SeparatorStyle.Sprint(p.TopLeftCornerSeparator))
 	}
-
-	if p.Legend {
-		buffer.WriteString("\n")
-		buffer.WriteString("\n")
-		if p.Boxed {
-			buffer.WriteString(p.SeparatorStyle.Sprint(p.BottomRightCornerSeparator))
-			var xValue int
-			if p.IsRGB {
-				xValue = len(p.RGBRange)
-				if xValue < p.rgbLegendValue {
-					xValue = p.rgbLegendValue
-				}
-			} else {
-				xValue = len(p.Colors)
-			}
-			for i := 0; i < xValue+1; i++ {
-				if i == 0 {
-					firstLength := len("Legend")
-					buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), firstLength))
-				} else {
-					buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), lineLength))
-				}
-				if i < xValue && !p.LegendOnlyColoredCells || i == 0 {
-					buffer.WriteString(p.SeparatorStyle.Sprint(p.TSeparator))
-				}
-			}
-			buffer.WriteString(p.SeparatorStyle.Sprint(p.BottomLeftCornerSeparator))
-			buffer.WriteString("\n")
-			buffer.WriteString(p.SeparatorStyle.Sprintf("%s", p.VerticalSeparator))
-		}
-		buffer.WriteString(p.AxisStyle.Sprint("Legend"))
-		if p.Grid {
-			buffer.WriteString(p.SeparatorStyle.Sprintf("%s", p.VerticalSeparator))
-		} else {
-			buffer.WriteString(" ")
-		}
-
-		if p.IsRGB {
-			steps := len(p.RGBRange)
-			if steps < p.rgbLegendValue {
-				steps = p.rgbLegendValue
-			}
-			if p.LegendOnlyColoredCells {
-				steps *= lineLength
-			}
-			for i := 0; i < steps; i++ {
-				// the first color is the min value and the last color is the max value
-				var f float32
-				if i == 0 {
-					f = p.minValue
-				} else if i == steps-1 {
-					f = p.maxValue
-				} else {
-					f = p.minValue + (p.maxValue-p.minValue)*float32(i)/float32(steps-1)
-				}
-				rgb := p.RGBRange[0].Fade(p.minValue, p.maxValue, f, p.RGBRange[1:]...)
-				rgbStyle := NewRGBStyle(p.TextRGB, rgb)
-				if p.ComplementColor {
-					complimentary := NewRGB(internal.Complementary(rgb.R, rgb.G, rgb.B))
-					rgbStyle = NewRGBStyle(complimentary, rgb)
-				}
-				if p.LegendOnlyColoredCells {
-					buffer.WriteString(rgbStyle.Sprint(centerAndShorten(f, 1, p.LegendOnlyColoredCells)))
-				} else {
-					buffer.WriteString(rgbStyle.Sprint(centerAndShorten(f, lineLength, p.LegendOnlyColoredCells)))
-				}
-				if p.Grid && i < steps-1 && !p.LegendOnlyColoredCells {
-					buffer.WriteString(p.SeparatorStyle.Sprintf("%s", p.VerticalSeparator))
-				}
-			}
-		} else {
-			for i, color := range p.Colors {
-				// the first color is the min value and the last color is the max value
-				var f float32
-				if i == 0 {
-					f = p.minValue
-				} else if i == len(p.Colors)-1 {
-					f = p.maxValue
-				} else {
-					f = p.minValue + (p.maxValue-p.minValue)*float32(i)/float32(len(p.Colors)-1)
-				}
-				fgColor := p.TextColor
-				if p.ComplementColor {
-					fgColor = colorComplement[color]
-				}
-				buffer.WriteString(fgColor.Sprint(color.Sprint(centerAndShorten(f, lineLength, p.LegendOnlyColoredCells))))
-				if p.Grid && i < len(p.Colors)-1 && !p.LegendOnlyColoredCells {
-					buffer.WriteString(p.SeparatorStyle.Sprintf("%s", p.VerticalSeparator))
-				}
-			}
-		}
-		if p.Boxed {
-			buffer.WriteString(p.SeparatorStyle.Sprintf("%s", p.VerticalSeparator))
-			buffer.WriteString("\n")
-			buffer.WriteString(p.SeparatorStyle.Sprint(p.TopRightCornerSeparator))
-			var xValue int
-			if p.IsRGB {
-				xValue = len(p.RGBRange)
-				if xValue < p.rgbLegendValue {
-					xValue = p.rgbLegendValue
-				}
-			} else {
-				xValue = len(p.Colors)
-			}
-			for i := 0; i < xValue+1; i++ {
-				if i == 0 {
-					firstLength := len("Legend")
-					buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), firstLength))
-				} else {
-					buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), lineLength))
-				}
-				if i < xValue && !p.LegendOnlyColoredCells || i == 0 {
-					buffer.WriteString(p.SeparatorStyle.Sprint(p.TReverseSeparator))
-				}
-			}
-			buffer.WriteString(p.SeparatorStyle.Sprint(p.TopLeftCornerSeparator))
-		}
-		buffer.WriteString("\n")
-	}
-
-	return buffer.String(), nil
 }
 
 func centerAndShorten(f float32, lineLength int, onlyColor bool) string {
