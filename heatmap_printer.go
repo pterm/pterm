@@ -315,6 +315,10 @@ func (p HeatmapPrinter) Srender() (string, error) {
 		p.AxisStyle = NewStyle()
 	}
 
+	if RawOutput {
+		p.Legend = false
+	}
+
 	buffer := bytes.NewBufferString("")
 	xAmount := len(p.Data[0]) - 1
 	yAmount := len(p.Data) - 1
