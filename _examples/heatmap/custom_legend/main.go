@@ -21,6 +21,6 @@ func main() {
 	pterm.Info.Println("The following table has rgb (not supported by every terminal), axis data and a custom legend.")
 	pterm.Println()
 
-	table := pterm.DefaultHeatmap.WithData(data).WithBoxed(false).WithAxisData(headerData).WithEnableRGB().WithLegendTag("custom").WithLegendOnlyColoredCells()
+	table := pterm.DefaultHeatmap.WithData(data).WithBoxed(false).WithAxisData(headerData).WithEnableRGB().WithLegendLabel("custom").WithLegendOnlyColoredCells()
 	table.Render()
 }

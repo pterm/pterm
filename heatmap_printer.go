@@ -25,7 +25,7 @@ var DefaultHeatmap = HeatmapPrinter{
 	LSeparator:                 "├",
 	LReverseSeparator:          "┤",
 	TCrossSeparator:            "┼",
-	LegendTag:                  "Legend",
+	LegendLabel:                "Legend",
 	Boxed:                      true,
 	Grid:                       true,
 	Legend:                     true,
@@ -35,8 +35,6 @@ var DefaultHeatmap = HeatmapPrinter{
 	Colors:                     []Color{BgRed, BgLightRed, BgYellow, BgLightYellow, BgLightGreen, BgGreen},
 
 	EnableRGB: false,
-
-	rgbLegendValue: 11,
 }
 
 // HeatmapData is the type that contains the data of a HeatmapPrinter.
@@ -62,7 +60,7 @@ type HeatmapPrinter struct {
 	LSeparator                 string
 	LReverseSeparator          string
 	TCrossSeparator            string
-	LegendTag                  string
+	LegendLabel                string
 	SeparatorStyle             *Style
 	Data                       HeatmapData
 	Axis                       HeatmapAxis
@@ -70,7 +68,7 @@ type HeatmapPrinter struct {
 	Grid                       bool
 	OnlyColoredCells           bool
 	LegendOnlyColoredCells     bool
-	ColorValueComplementarily  bool
+	EnableComplementaryColor   bool
 	Legend                     bool
 	CellSize                   int
 	Colors                     []Color
@@ -86,7 +84,7 @@ type HeatmapPrinter struct {
 	rgbLegendValue int
 }
 
-var colorComplement = map[Color]Color{
+var complementaryColors = map[Color]Color{
 	BgBlack:        FgLightWhite,
 	BgRed:          FgCyan,
 	BgGreen:        FgMagenta,
@@ -132,20 +130,18 @@ func (p HeatmapPrinter) WithData(data [][]float32) *HeatmapPrinter {
 }
 
 // WithTextColor returns a new HeatmapPrinter with a specific TextColor.
-// This sets EnableRGB and ColorValueComplementarily to false.
+// This sets EnableComplementaryColor to false.
 func (p HeatmapPrinter) WithTextColor(color Color) *HeatmapPrinter {
 	p.TextColor = color
-	p.EnableRGB = false
-	p.ColorValueComplementarily = false
+	p.EnableComplementaryColor = false
 	return &p
 }
 
 // WithTextRGB returns a new HeatmapPrinter with a specific TextRGB.
-// This sets EnableRGB to true.
+// This sets EnableComplementaryColor to false.
 func (p HeatmapPrinter) WithTextRGB(rgb RGB) *HeatmapPrinter {
 	p.TextRGB = rgb
-	p.EnableRGB = true
-	p.ColorValueComplementarily = false
+	p.EnableComplementaryColor = false
 	return &p
 }
 
@@ -194,9 +190,9 @@ func (p HeatmapPrinter) WithLegendOnlyColoredCells(b ...bool) *HeatmapPrinter {
 	return &p
 }
 
-// WithComplementColor returns a new HeatmapPrinter with complement color.
-func (p HeatmapPrinter) WithComplementColor(b ...bool) *HeatmapPrinter {
-	p.ColorValueComplementarily = internal.WithBoolean(b)
+// WithEnableComplementaryColor returns a new HeatmapPrinter with complement color.
+func (p HeatmapPrinter) WithEnableComplementaryColor(b ...bool) *HeatmapPrinter {
+	p.EnableComplementaryColor = internal.WithBoolean(b)
 	return &p
 }
 
@@ -213,77 +209,11 @@ func (p HeatmapPrinter) WithCellSize(i int) *HeatmapPrinter {
 	return &p
 }
 
-// WithLegendTag returns a new HeatmapPrinter with a specific legend tag.
+// WithLegendLabel returns a new HeatmapPrinter with a specific legend tag.
 // This sets the Legend to true.
-func (p HeatmapPrinter) WithLegendTag(s string) *HeatmapPrinter {
-	p.LegendTag = s
+func (p HeatmapPrinter) WithLegendLabel(s string) *HeatmapPrinter {
+	p.LegendLabel = s
 	p.Legend = true
-	return &p
-}
-
-// WithVerticalSeparator returns a new HeatmapPrinter with a specific VerticalSeparator.
-func (p HeatmapPrinter) WithVerticalSeparator(s string) *HeatmapPrinter {
-	p.VerticalSeparator = s
-	return &p
-}
-
-// WithTopRightCornerSeparator returns a new HeatmapPrinter with a specific TopRightCornerSeparator.
-func (p HeatmapPrinter) WithTopRightCornerSeparator(s string) *HeatmapPrinter {
-	p.TopRightCornerSeparator = s
-	return &p
-}
-
-// WithTopLeftCornerSeparator returns a new HeatmapPrinter with a specific TopLeftCornerSeparator.
-func (p HeatmapPrinter) WithTopLeftCornerSeparator(s string) *HeatmapPrinter {
-	p.TopLeftCornerSeparator = s
-	return &p
-}
-
-// WithBottomLeftCornerSeparator returns a new HeatmapPrinter with a specific BottomLeftCornerSeparator.
-func (p HeatmapPrinter) WithBottomLeftCornerSeparator(s string) *HeatmapPrinter {
-	p.BottomLeftCornerSeparator = s
-	return &p
-}
-
-// WithBottomRightCornerSeparator returns a new HeatmapPrinter with a specific BottomRightCornerSeparator.
-func (p HeatmapPrinter) WithBottomRightCornerSeparator(s string) *HeatmapPrinter {
-	p.BottomRightCornerSeparator = s
-	return &p
-}
-
-// WithHorizontalSeparator returns a new HeatmapPrinter with a specific HorizontalSeparator.
-func (p HeatmapPrinter) WithHorizontalSeparator(s string) *HeatmapPrinter {
-	p.HorizontalSeparator = s
-	return &p
-}
-
-// WithTSeparator returns a new HeatmapPrinter with a specific TSeparator.
-func (p HeatmapPrinter) WithTSeparator(s string) *HeatmapPrinter {
-	p.TSeparator = s
-	return &p
-}
-
-// WithTReverseSeparator returns a new HeatmapPrinter with a specific TReverseSeparator.
-func (p HeatmapPrinter) WithTReverseSeparator(s string) *HeatmapPrinter {
-	p.TReverseSeparator = s
-	return &p
-}
-
-// WithLSeparator returns a new HeatmapPrinter with a specific LSeparator.
-func (p HeatmapPrinter) WithLSeparator(s string) *HeatmapPrinter {
-	p.LSeparator = s
-	return &p
-}
-
-// WithLReverseSeparator returns a new HeatmapPrinter with a specific LReverseSeparator.
-func (p HeatmapPrinter) WithLReverseSeparator(s string) *HeatmapPrinter {
-	p.LReverseSeparator = s
-	return &p
-}
-
-// WithTCrossSeparator returns a new HeatmapPrinter with a specific TCrossSeparator.
-func (p HeatmapPrinter) WithTCrossSeparator(s string) *HeatmapPrinter {
-	p.TCrossSeparator = s
 	return &p
 }
 
@@ -420,9 +350,9 @@ func (p HeatmapPrinter) renderLegend(buffer *bytes.Buffer, legendColWidth int) {
 	buffer.WriteString("\n")
 	buffer.WriteString("\n")
 	if p.Boxed {
-		p.boxLegend(buffer, p.LegendTag, legendColWidth)
+		p.boxLegend(buffer, p.LegendLabel, legendColWidth)
 	} else {
-		p.generateLegend(buffer, p.LegendTag, legendColWidth)
+		p.generateLegend(buffer, p.LegendLabel, legendColWidth)
 	}
 }
 
@@ -509,7 +439,7 @@ func (p HeatmapPrinter) renderData(buffer *bytes.Buffer, colWidth int, xAmount i
 			if p.EnableRGB {
 				rgb := p.RGBRange[0].Fade(p.minValue, p.maxValue, f, p.RGBRange[1:]...)
 				rgbStyle := NewRGBStyle(p.TextRGB, rgb)
-				if p.ColorValueComplementarily {
+				if p.EnableComplementaryColor {
 					complimentary := NewRGB(internal.Complementary(rgb.R, rgb.G, rgb.B))
 					rgbStyle = NewRGBStyle(complimentary, rgb)
 				}
@@ -517,8 +447,8 @@ func (p HeatmapPrinter) renderData(buffer *bytes.Buffer, colWidth int, xAmount i
 			} else {
 				color := getColor(p.minValue, p.maxValue, f, p.Colors...)
 				fgColor := p.TextColor
-				if p.ColorValueComplementarily {
-					fgColor = colorComplement[color]
+				if p.EnableComplementaryColor {
+					fgColor = complementaryColors[color]
 				}
 				buffer.WriteString(fgColor.Sprint(color.Sprintf(ct)))
 			}
@@ -587,8 +517,8 @@ func (p HeatmapPrinter) generateColorLegend(buffer *bytes.Buffer, legendColWidth
 			f = p.minValue + (p.maxValue-p.minValue)*float32(i)/float32(len(p.Colors)-1)
 		}
 		fgColor := p.TextColor
-		if p.ColorValueComplementarily {
-			fgColor = colorComplement[color]
+		if p.EnableComplementaryColor {
+			fgColor = complementaryColors[color]
 		}
 		buffer.WriteString(fgColor.Sprint(color.Sprint(centerAndShorten(f, legendColWidth, p.LegendOnlyColoredCells))))
 		if p.Grid && i < len(p.Colors)-1 && !p.LegendOnlyColoredCells {
@@ -598,6 +528,7 @@ func (p HeatmapPrinter) generateColorLegend(buffer *bytes.Buffer, legendColWidth
 }
 
 func (p HeatmapPrinter) generateRGBLegend(buffer *bytes.Buffer, legendColWidth int) {
+	p.rgbLegendValue = 11
 	steps := len(p.RGBRange)
 	if steps < p.rgbLegendValue {
 		steps = p.rgbLegendValue
@@ -617,7 +548,7 @@ func (p HeatmapPrinter) generateRGBLegend(buffer *bytes.Buffer, legendColWidth i
 		}
 		rgb := p.RGBRange[0].Fade(p.minValue, p.maxValue, f, p.RGBRange[1:]...)
 		rgbStyle := NewRGBStyle(p.TextRGB, rgb)
-		if p.ColorValueComplementarily {
+		if p.EnableComplementaryColor {
 			complimentary := NewRGB(internal.Complementary(rgb.R, rgb.G, rgb.B))
 			rgbStyle = NewRGBStyle(complimentary, rgb)
 		}
