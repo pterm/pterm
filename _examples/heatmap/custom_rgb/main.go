@@ -18,8 +18,9 @@ func main() {
 		YAxis: []string{"1", "2", "3", "4", "5"},
 	}
 
-	pterm.Println("The following table has rgb (not supported by every terminal), axis data and a legend.\n")
+	pterm.Info.Println("The following table has rgb (not supported by every terminal), axis data and a legend.")
+	pterm.Println()
 
-	table2 := pterm.DefaultHeatmap.WithData(data).WithBoxed(false).WithAxisData(headerData).WithRGBRange(pterm.NewRGB(0, 0, 255), pterm.NewRGB(255, 0, 0), pterm.NewRGB(0, 255, 0), pterm.NewRGB(255, 255, 0))
+	table2 := pterm.DefaultHeatmap.WithData(data).WithBoxed(false).WithAxisData(headerData).WithEnableRGB().WithRGBRange(pterm.NewRGB(0, 0, 255), pterm.NewRGB(255, 0, 0), pterm.NewRGB(0, 255, 0), pterm.NewRGB(255, 255, 0))
 	table2.Render()
 }

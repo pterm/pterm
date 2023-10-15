@@ -18,6 +18,6 @@ func main() {
 		YAxis: []string{"1", "2", "3", "4", "5"},
 	}
 
-	table := pterm.DefaultHeatmap.WithAxisData(headerData).WithData(data)
+	table := pterm.DefaultHeatmap.WithAxisData(headerData).WithData(data).WithEnableRGB()
 	table.Render()
 }

@@ -132,6 +132,7 @@ func (p HeatmapPrinter) WithData(data [][]float32) *HeatmapPrinter {
 }
 
 // WithTextColor returns a new HeatmapPrinter with a specific TextColor.
+// This sets EnableRGB and ColorValueComplementarily to false.
 func (p HeatmapPrinter) WithTextColor(color Color) *HeatmapPrinter {
 	p.TextColor = color
 	p.EnableRGB = false
@@ -140,6 +141,7 @@ func (p HeatmapPrinter) WithTextColor(color Color) *HeatmapPrinter {
 }
 
 // WithTextRGB returns a new HeatmapPrinter with a specific TextRGB.
+// This sets EnableRGB to true.
 func (p HeatmapPrinter) WithTextRGB(rgb RGB) *HeatmapPrinter {
 	p.TextRGB = rgb
 	p.EnableRGB = true
@@ -148,6 +150,7 @@ func (p HeatmapPrinter) WithTextRGB(rgb RGB) *HeatmapPrinter {
 }
 
 // WithBoxed returns a new HeatmapPrinter with a box around the table.
+// If set to true, Grid will be set to true too.
 func (p HeatmapPrinter) WithBoxed(b ...bool) *HeatmapPrinter {
 	p.Boxed = internal.WithBoolean(b)
 	if p.Boxed && !p.Grid {
@@ -157,6 +160,7 @@ func (p HeatmapPrinter) WithBoxed(b ...bool) *HeatmapPrinter {
 }
 
 // WithGrid returns a new HeatmapPrinter with a grid.
+// If set to false, Boxed will be set to false too.
 func (p HeatmapPrinter) WithGrid(b ...bool) *HeatmapPrinter {
 	b2 := internal.WithBoolean(b)
 	p.Grid = b2
@@ -180,6 +184,7 @@ func (p HeatmapPrinter) WithOnlyColoredCells(b ...bool) *HeatmapPrinter {
 }
 
 // WithLegendOnlyColoredCells returns a new HeatmapPrinter with legend with only colored cells.
+// This sets the Legend to true.
 func (p HeatmapPrinter) WithLegendOnlyColoredCells(b ...bool) *HeatmapPrinter {
 	b2 := internal.WithBoolean(b)
 	p.LegendOnlyColoredCells = b2
@@ -285,14 +290,12 @@ func (p HeatmapPrinter) WithTCrossSeparator(s string) *HeatmapPrinter {
 // WithRGBRange returns a new HeatmapPrinter with a specific RGBRange.
 func (p HeatmapPrinter) WithRGBRange(rgb ...RGB) *HeatmapPrinter {
 	p.RGBRange = rgb
-	p.EnableRGB = true
 	return &p
 }
 
 // WithColors returns a new HeatmapPrinter with a specific Colors.
 func (p HeatmapPrinter) WithColors(colors ...Color) *HeatmapPrinter {
 	p.Colors = colors
-	p.EnableRGB = false
 	return &p
 }
 
@@ -309,10 +312,10 @@ func (p HeatmapPrinter) Srender() (string, error) {
 	}
 
 	if p.SeparatorStyle == nil {
-		p.SeparatorStyle = NewStyle()
+		p.SeparatorStyle = DefaultHeatmap.SeparatorStyle
 	}
 	if p.AxisStyle == nil {
-		p.AxisStyle = NewStyle()
+		p.AxisStyle = DefaultHeatmap.AxisStyle
 	}
 
 	if RawOutput {
