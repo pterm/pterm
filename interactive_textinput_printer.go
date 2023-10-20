@@ -22,6 +22,7 @@ var DefaultInteractiveTextInput = InteractiveTextInputPrinter{
 type InteractiveTextInputPrinter struct {
 	TextStyle       *Style
 	DefaultText     string
+	DefaultValue    string
 	Delimiter       string
 	MultiLine       bool
 	Mask            string
@@ -36,6 +37,12 @@ type InteractiveTextInputPrinter struct {
 // WithDefaultText sets the default text.
 func (p InteractiveTextInputPrinter) WithDefaultText(text string) *InteractiveTextInputPrinter {
 	p.DefaultText = text
+	return &p
+}
+
+// WithDefaultValue sets the default value.
+func (p InteractiveTextInputPrinter) WithDefaultValue(value string) *InteractiveTextInputPrinter {
+	p.DefaultValue = value
 	return &p
 }
 
@@ -87,6 +94,7 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	} else {
 		areaText = p.TextStyle.Sprintf("%s%s", text[0], p.Delimiter)
 	}
+
 	p.text = areaText
 	area := cursor.NewArea()
 	area.Update(areaText)
@@ -94,6 +102,11 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 
 	if !p.MultiLine {
 		cursor.Right(len(RemoveColorFromString(areaText)))
+	}
+
+	if p.DefaultValue != "" {
+		p.input = append(p.input, p.DefaultValue)
+		p.updateArea(&area)
 	}
 
 	err := keyboard.Listen(func(key keys.Key) (stop bool, err error) {

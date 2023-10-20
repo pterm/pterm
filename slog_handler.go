@@ -2,6 +2,7 @@ package pterm
 
 import (
 	"context"
+
 	"log/slog"
 )
 
