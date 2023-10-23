@@ -15,6 +15,7 @@ import (
 
 func TestInteractiveConfirmPrinter_Show_yes(t *testing.T) {
 	go func() {
+		time.Sleep(200 * time.Millisecond)
 		keyboard.SimulateKeyPress('y')
 	}()
 	result, _ := pterm.DefaultInteractiveConfirm.Show()
@@ -23,6 +24,7 @@ func TestInteractiveConfirmPrinter_Show_yes(t *testing.T) {
 
 func TestInteractiveConfirmPrinter_Show_no(t *testing.T) {
 	go func() {
+		time.Sleep(200 * time.Millisecond)
 		keyboard.SimulateKeyPress('n')
 	}()
 	result, _ := pterm.DefaultInteractiveConfirm.Show()
