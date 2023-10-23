@@ -21,6 +21,16 @@ func TestInteractiveSelectPrinter_Show(t *testing.T) {
 	testza.AssertEqual(t, "d", result)
 }
 
+func TestInteractiveSelectPrinter_Show_Custom(t *testing.T) {
+	go func() {
+		keyboard.SimulateKeyPress(keys.Down)
+		keyboard.SimulateKeyPress(keys.Down)
+		keyboard.SimulateKeyPress(keys.Enter)
+	}()
+	result, _ := pterm.DefaultInteractiveSelect.WithOptions([]string{"a", "b", "c", "d", "e"}).WithCallbackInArea(func() { println("hello") }).WithDefaultOption("b").Show()
+	testza.AssertEqual(t, "d", result)
+}
+
 func TestInteractiveSelectPrinter_Show_MaxHeightSlidingWindow(t *testing.T) {
 	go func() {
 		keyboard.SimulateKeyPress(keys.Up)
