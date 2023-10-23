@@ -15,7 +15,7 @@ import (
 
 func TestInteractiveConfirmPrinter_Show_yes(t *testing.T) {
 	go func() {
-		time.Sleep(200 * time.Millisecond)
+		time.Sleep(500 * time.Millisecond)
 		keyboard.SimulateKeyPress('y')
 	}()
 	result, _ := pterm.DefaultInteractiveConfirm.Show()
@@ -24,7 +24,7 @@ func TestInteractiveConfirmPrinter_Show_yes(t *testing.T) {
 
 func TestInteractiveConfirmPrinter_Show_no(t *testing.T) {
 	go func() {
-		time.Sleep(200 * time.Millisecond)
+		time.Sleep(500 * time.Millisecond)
 		keyboard.SimulateKeyPress('n')
 	}()
 	result, _ := pterm.DefaultInteractiveConfirm.Show()
@@ -38,6 +38,7 @@ func TestInteractiveConfirmPrinter_WithDefaultValue(t *testing.T) {
 
 func TestInteractiveConfirmPrinter_WithDefaultValue_false(t *testing.T) {
 	go func() {
+		time.Sleep(500 * time.Millisecond)
 		keyboard.SimulateKeyPress(keys.Enter)
 	}()
 	p := pterm.DefaultInteractiveConfirm.WithDefaultValue(false)
@@ -47,6 +48,7 @@ func TestInteractiveConfirmPrinter_WithDefaultValue_false(t *testing.T) {
 
 func TestInteractiveConfirmPrinter_WithDefaultValue_true(t *testing.T) {
 	go func() {
+		time.Sleep(500 * time.Millisecond)
 		keyboard.SimulateKeyPress(keys.Enter)
 	}()
 	p := pterm.DefaultInteractiveConfirm.WithDefaultValue(true)
@@ -122,6 +124,7 @@ func TestInteractiveConfirmPrinter_CustomAnswers(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			go func() {
+				time.Sleep(500 * time.Millisecond)
 				keyboard.SimulateKeyPress(tc.key)
 			}()
 			result, _ := p.Show()
