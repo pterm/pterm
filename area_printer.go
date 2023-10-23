@@ -22,6 +22,9 @@ type AreaPrinter struct {
 	content  string
 	isActive bool
 
+	// An callback is executed in every area.Update
+	callback func()
+
 	area *cursor.Area
 }
 
@@ -34,6 +37,11 @@ func (p *AreaPrinter) GetContent() string {
 func (p AreaPrinter) WithRemoveWhenDone(b ...bool) *AreaPrinter {
 	p.RemoveWhenDone = internal.WithBoolean(b)
 	return &p
+}
+
+func (p *AreaPrinter) WithCallback(callback func()) *AreaPrinter {
+	p.callback = callback
+	return p
 }
 
 // WithFullscreen sets the AreaPrinter height the same height as the terminal, making it fullscreen.
@@ -62,6 +70,10 @@ func (p *AreaPrinter) Update(text ...interface{}) {
 	}
 	str := Sprint(text...)
 	p.content = str
+
+	if !(p.decorator == nil) {
+		p.decorator()
+	}
 
 	if p.Center {
 		str = DefaultCenter.Sprint(str)
