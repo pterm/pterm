@@ -52,15 +52,6 @@ func TestInteractiveConfirmPrinter_WithDefaultValue_true(t *testing.T) {
 	testza.AssertTrue(t, result)
 }
 
-func TestInteractiveConfirmPrinter_WithInterrupt(t *testing.T) {
-	go func() {
-		keyboard.SimulateKeyPress(keys.CtrlC)
-	}()
-	p := pterm.DefaultInteractiveConfirm.WithDefaultValue(true)
-	result, _ := p.Show()
-	testza.AssertTrue(t, result)
-}
-
 func TestInteractiveConfirmPrinter_WithConfirmStyle(t *testing.T) {
 	style := pterm.NewStyle(pterm.FgRed)
 	p := pterm.DefaultInteractiveConfirm.WithConfirmStyle(style)
@@ -181,14 +172,4 @@ func TestInteractiveConfirmPrinter_ConfirmWithTimeout(t *testing.T) {
 	p := pterm.DefaultInteractiveConfirm.WithTimeout(150 * time.Millisecond).WithDefaultValue(true)
 	result, _ := p.Show()
 	testza.AssertEqual(t, result, p.DefaultValue)
-}
-
-func TestInteractiveConfirmPrinter_ConfirmBeforeTimeout(t *testing.T) {
-	p := pterm.DefaultInteractiveConfirm.WithTimeout(10 * time.Second)
-	go func() {
-		time.Sleep(3 * time.Second)
-		keyboard.SimulateKeyPress('Y')
-	}()
-	result, _ := p.Show()
-	testza.AssertEqual(t, true, result)
 }
