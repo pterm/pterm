@@ -191,6 +191,8 @@ func (p InteractiveConfirmPrinter) Show(text ...string) (bool, error) {
 		if !interrupted {
 			cursor.StartOfLine()
 		}
+
+		return
 	}()
 
 	if p.Timeout > 0 {
