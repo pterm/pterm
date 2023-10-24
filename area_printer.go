@@ -39,6 +39,7 @@ func (p AreaPrinter) WithRemoveWhenDone(b ...bool) *AreaPrinter {
 	return &p
 }
 
+// WithCallback sets the callback in AreaPrinter to be executed in every area.Update(), making call by interaction
 func (p *AreaPrinter) WithCallback(callback func()) *AreaPrinter {
 	p.callback = callback
 	return p
@@ -71,8 +72,8 @@ func (p *AreaPrinter) Update(text ...interface{}) {
 	str := Sprint(text...)
 	p.content = str
 
-	if !(p.decorator == nil) {
-		p.decorator()
+	if !(p.callback == nil) {
+		p.callback()
 	}
 
 	if p.Center {
