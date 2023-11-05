@@ -528,7 +528,7 @@ func (p HeatmapPrinter) generateColorLegend(buffer *bytes.Buffer, legendColWidth
 }
 
 func (p HeatmapPrinter) generateRGBLegend(buffer *bytes.Buffer, legendColWidth int) {
-	p.rgbLegendValue = 11
+	p.rgbLegendValue = 10
 	steps := len(p.RGBRange)
 	if steps < p.rgbLegendValue {
 		steps = p.rgbLegendValue
@@ -585,7 +585,7 @@ func (p HeatmapPrinter) boxLegend(buffer *bytes.Buffer, legend string, legendCol
 }
 
 func (p HeatmapPrinter) generateSeparatorRow(buffer *bytes.Buffer, legend string, legendColWidth int, top bool) {
-	p.rgbLegendValue = 11
+	p.rgbLegendValue = 10
 	steps := len(p.RGBRange)
 	if steps < p.rgbLegendValue {
 		steps = p.rgbLegendValue
