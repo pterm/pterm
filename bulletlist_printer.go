@@ -116,10 +116,18 @@ func (l BulletListPrinter) Srender() (string, error) {
 				item.BulletStyle = l.BulletStyle
 			}
 		}
-		if item.Bullet == "" {
-			ret += strings.Repeat(" ", item.Level) + item.BulletStyle.Sprint(l.Bullet) + " " + item.TextStyle.Sprint(item.Text) + "\n"
-		} else {
-			ret += strings.Repeat(" ", item.Level) + item.BulletStyle.Sprint(item.Bullet) + " " + item.TextStyle.Sprint(item.Text) + "\n"
+
+		split := strings.Split(item.Text, "\n")
+		for i, line := range split {
+			if i == 0 {
+				if item.Bullet == "" {
+					ret += strings.Repeat(" ", item.Level) + item.BulletStyle.Sprint(l.Bullet) + " " + item.TextStyle.Sprint(line) + "\n"
+				} else {
+					ret += strings.Repeat(" ", item.Level) + item.BulletStyle.Sprint(item.Bullet) + " " + item.TextStyle.Sprint(line) + "\n"
+				}
+			} else {
+				ret += strings.Repeat(" ", item.Level) + strings.Repeat(" ", len(item.Bullet)) + "  " + item.TextStyle.Sprint(line) + "\n"
+			}
 		}
 	}
 	return ret, nil
