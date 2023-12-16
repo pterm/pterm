@@ -146,7 +146,7 @@ func main() {
 			pterm.Info.Println("Writing printers to website")
 			websiteIndex, _ := os.ReadFile("./docs/index.html")
 			websiteIndexString := string(websiteIndex)
-			
+
 			// Write as li elements, which contain a link to the example. (https://github.com/pterm/pterm/tree/master/_examples/{name})
 			var links []string
 			for _, printer := range allPrinters {
@@ -240,12 +240,6 @@ func main() {
 
 			pterm.Info.Println("Writing README")
 			err = os.WriteFile("./README.md", []byte(newReadmeContent), 0600)
-			if err != nil {
-				log.Panic(err)
-			}
-
-			pterm.Info.Println("Writing README for https://pterm.sh")
-			err = os.WriteFile("./docs/README.md", []byte(newReadmeContent), 0600)
 			if err != nil {
 				log.Panic(err)
 			}
