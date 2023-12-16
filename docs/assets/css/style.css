@@ -1,3 +1,7 @@
+h1 {
+    margin-bottom: 1rem !important;
+}
+
 h1::before {
     content: "# ";
     color: #a8a8a8;
@@ -29,8 +33,7 @@ main {
 
 header {
     max-width: 100%;
-    margin: auto;
-    margin-top: 0;
+    margin: 0 auto auto;
     padding-top: 0;
 }
 
@@ -50,4 +53,12 @@ header {
 .components-list {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.navbar {
+    padding: 0.25rem 1rem;
+    position: sticky;
+    background-color: #10191f;
+    top: 0;
+    border-bottom: 1px solid #37566b;
 }

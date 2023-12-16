@@ -31,74 +31,94 @@
 </head>
 
 <body>
-    <main>
-        <header>
-            <hgroup>
-                <h1>PTerm</h1>
-                <p>A modern Go module to beautify console output. Featuring a variety of components to make terminal
-                    outputs
-                    more appealing and readable.</p>
-            </hgroup>
+<nav class="navbar">
+    <ul>
+        <li><strong>PTerm</strong></li>
+    </ul>
+    <ul>
+        <li><a href="https://examples.pterm.sh">Examples</a></li>
+        <li><a role="button" href="https://github.com/pterm/pterm">GitHub</a></li>
+    </ul>
+</nav>
+<main>
+    <header>
+        <br/>
+        <br/>
+        <section class="demo">
+            <p><strong>PTerm | A Go library to beautify terminal output</strong></p>
+            <img alt="PTerm demo animation"
+                 src="https://raw.githubusercontent.com/pterm/pterm/master/_examples/demo/demo/animation.svg"/>
+            <br/>
+            <br/>
+        </section>
+    </header>
 
-            <section class="demo">
-                <img alt="PTerm demo animation"
-                    src="https://raw.githubusercontent.com/pterm/pterm/master/_examples/demo/demo/animation.svg" />
-                <br />
-                <br />
-                <div>
-                    <a href="https://github.com/pterm/pterm" role="button">GitHub Repo</a>
-                    <a href="https://docs.pterm.sh" role="button">Documentation</a>
-                </div>
-            </section>
-        </header>
+    <article>
+        <h1>PTerm</h1>
+        <p>
+            PTerm is a Go library that makes terminal output look better and more informative. It offers many features
+            like progress bars, spinners, tables, and colorful logs. It also has interactive parts like prompts, menus,
+            and text inputs. Developers can easily change how it looks to fit their needs. It's great for making Go
+            applications in the terminal more user-friendly and nice to look at.
+        </p>
+        <hgroup>
+            <h2>Components</h2>
+            <p>All the components that can be used in PTerm - linking directly to their example usage on GitHub</p>
+        </hgroup>
+        <ul class="components-list">
+            <!-- printers:start -->
+            <li><a href="https://github.com/pterm/pterm/tree/master/_examples/area">area</a></li>
+            <li><a href="https://github.com/pterm/pterm/tree/master/_examples/barchart">barchart</a></li>
+            <li><a href="https://github.com/pterm/pterm/tree/master/_examples/basictext">basictext</a></li>
+            <li><a href="https://github.com/pterm/pterm/tree/master/_examples/bigtext">bigtext</a></li>
+            <li><a href="https://github.com/pterm/pterm/tree/master/_examples/box">box</a></li>
+            <li><a href="https://github.com/pterm/pterm/tree/master/_examples/bulletlist">bulletlist</a></li>
+            <li><a href="https://github.com/pterm/pterm/tree/master/_examples/center">center</a></li>
+            <li><a href="https://github.com/pterm/pterm/tree/master/_examples/coloring">coloring</a></li>
+            <li><a href="https://github.com/pterm/pterm/tree/master/_examples/demo">demo</a></li>
+            <li><a href="https://github.com/pterm/pterm/tree/master/_examples/header">header</a></li>
+            <li><a href="https://github.com/pterm/pterm/tree/master/_examples/heatmap">heatmap</a></li>
+            <li><a
+                    href="https://github.com/pterm/pterm/tree/master/_examples/interactive_confirm">interactive_confirm</a>
+            </li>
+            <li><a
+                    href="https://github.com/pterm/pterm/tree/master/_examples/interactive_continue">interactive_continue</a>
+            </li>
+            <li><a
+                    href="https://github.com/pterm/pterm/tree/master/_examples/interactive_multiselect">interactive_multiselect</a>
+            </li>
+            <li><a
+                    href="https://github.com/pterm/pterm/tree/master/_examples/interactive_select">interactive_select</a>
+            </li>
+            <li><a
+                    href="https://github.com/pterm/pterm/tree/master/_examples/interactive_textinput">interactive_textinput</a>
+            </li>
+            <li><a href="https://github.com/pterm/pterm/tree/master/_examples/logger">logger</a></li>
+            <li><a
+                    href="https://github.com/pterm/pterm/tree/master/_examples/multiple-live-printers">multiple-live-printers</a>
+            </li>
+            <li><a href="https://github.com/pterm/pterm/tree/master/_examples/panel">panel</a></li>
+            <li><a href="https://github.com/pterm/pterm/tree/master/_examples/paragraph">paragraph</a></li>
+            <li><a href="https://github.com/pterm/pterm/tree/master/_examples/prefix">prefix</a></li>
+            <li><a href="https://github.com/pterm/pterm/tree/master/_examples/progressbar">progressbar</a></li>
+            <li><a href="https://github.com/pterm/pterm/tree/master/_examples/section">section</a></li>
+            <li><a href="https://github.com/pterm/pterm/tree/master/_examples/slog">slog</a></li>
+            <li><a href="https://github.com/pterm/pterm/tree/master/_examples/spinner">spinner</a></li>
+            <li><a href="https://github.com/pterm/pterm/tree/master/_examples/style">style</a></li>
+            <li><a href="https://github.com/pterm/pterm/tree/master/_examples/table">table</a></li>
+            <li><a href="https://github.com/pterm/pterm/tree/master/_examples/theme">theme</a></li>
+            <li><a href="https://github.com/pterm/pterm/tree/master/_examples/tree">tree</a></li>
+            <!-- printers:end -->
+        </ul>
+    </article>
+</main>
 
-        <article>
-            <hgroup>
-                <h2>Components</h2>
-                <p>All the components that can be used in PTerm - linking directly to their example usage on GitHub</p>
-            </hgroup>
-            <ul class="components-list">
-                <!-- printers:start -->
-<li><a href="https://github.com/pterm/pterm/tree/master/_examples/area">area</a></li>
-<li><a href="https://github.com/pterm/pterm/tree/master/_examples/barchart">barchart</a></li>
-<li><a href="https://github.com/pterm/pterm/tree/master/_examples/basictext">basictext</a></li>
-<li><a href="https://github.com/pterm/pterm/tree/master/_examples/bigtext">bigtext</a></li>
-<li><a href="https://github.com/pterm/pterm/tree/master/_examples/box">box</a></li>
-<li><a href="https://github.com/pterm/pterm/tree/master/_examples/bulletlist">bulletlist</a></li>
-<li><a href="https://github.com/pterm/pterm/tree/master/_examples/center">center</a></li>
-<li><a href="https://github.com/pterm/pterm/tree/master/_examples/coloring">coloring</a></li>
-<li><a href="https://github.com/pterm/pterm/tree/master/_examples/demo">demo</a></li>
-<li><a href="https://github.com/pterm/pterm/tree/master/_examples/header">header</a></li>
-<li><a href="https://github.com/pterm/pterm/tree/master/_examples/heatmap">heatmap</a></li>
-<li><a href="https://github.com/pterm/pterm/tree/master/_examples/interactive_confirm">interactive_confirm</a></li>
-<li><a href="https://github.com/pterm/pterm/tree/master/_examples/interactive_continue">interactive_continue</a></li>
-<li><a href="https://github.com/pterm/pterm/tree/master/_examples/interactive_multiselect">interactive_multiselect</a></li>
-<li><a href="https://github.com/pterm/pterm/tree/master/_examples/interactive_select">interactive_select</a></li>
-<li><a href="https://github.com/pterm/pterm/tree/master/_examples/interactive_textinput">interactive_textinput</a></li>
-<li><a href="https://github.com/pterm/pterm/tree/master/_examples/logger">logger</a></li>
-<li><a href="https://github.com/pterm/pterm/tree/master/_examples/multiple-live-printers">multiple-live-printers</a></li>
-<li><a href="https://github.com/pterm/pterm/tree/master/_examples/panel">panel</a></li>
-<li><a href="https://github.com/pterm/pterm/tree/master/_examples/paragraph">paragraph</a></li>
-<li><a href="https://github.com/pterm/pterm/tree/master/_examples/prefix">prefix</a></li>
-<li><a href="https://github.com/pterm/pterm/tree/master/_examples/progressbar">progressbar</a></li>
-<li><a href="https://github.com/pterm/pterm/tree/master/_examples/section">section</a></li>
-<li><a href="https://github.com/pterm/pterm/tree/master/_examples/slog">slog</a></li>
-<li><a href="https://github.com/pterm/pterm/tree/master/_examples/spinner">spinner</a></li>
-<li><a href="https://github.com/pterm/pterm/tree/master/_examples/style">style</a></li>
-<li><a href="https://github.com/pterm/pterm/tree/master/_examples/table">table</a></li>
-<li><a href="https://github.com/pterm/pterm/tree/master/_examples/theme">theme</a></li>
-<li><a href="https://github.com/pterm/pterm/tree/master/_examples/tree">tree</a></li>
-<!-- printers:end -->
-            </ul>
-        </article>
-    </main>
-
-    <footer style="text-align: center">
-        <small>Made with 💙 by <a href="https://marvinjwendt.com">Marvin Wendt</a></small>
-        <br />
-        <small><a href="https:////github.com/MarvinJWendt">GitHub</a> | <a
-                href="https://twitter.com/MarvinJWendt">Twitter</a></small>
-    </footer>
+<footer style="text-align: center">
+    <small>Made with 💙 by <a href="https://marvinjwendt.com">Marvin Wendt</a></small>
+    <br/>
+    <small><a href="https:////github.com/MarvinJWendt">GitHub</a> | <a
+            href="https://twitter.com/MarvinJWendt">Twitter</a></small>
+</footer>
 </body>
 
 </html>

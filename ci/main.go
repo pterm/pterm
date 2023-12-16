@@ -98,14 +98,19 @@ func main() {
 		var allPrinters []string
 		do("Geneating printers Table", currentLevel, func(currentLevel int) {
 			// get features located in "_examples/*"
-			files, _ := os.ReadDir("./_examples/")
+			dirs, _ := os.ReadDir("./_examples/")
 
-			for _, file := range files {
-				if file.Name() == "README.md" {
+			for _, dir := range dirs {
+				if dir.Name() == "README.md" {
 					continue
 				}
 
-				allPrinters = append(allPrinters, file.Name())
+				// Exclude demo folder
+				if dir.Name() == "demo" {
+					continue
+				}
+
+				allPrinters = append(allPrinters, dir.Name())
 			}
 
 			// generate table
