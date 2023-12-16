@@ -12,25 +12,17 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// All available options: https://pkg.go.dev/github.com/pterm/pterm#HeaderPrinter
+	// Customize the DefaultHeader with a cyan background, black text, and a margin of 15.
+	pterm.DefaultHeader.WithMargin(15).WithBackgroundStyle(pterm.NewStyle(pterm.BgCyan)).WithTextStyle(pterm.NewStyle(pterm.FgBlack)).Println("This is a custom header!")
 
-	// Build on top of DefaultHeader
-	pterm.DefaultHeader. // Use DefaultHeader as base
-				WithMargin(15).
-				WithBackgroundStyle(pterm.NewStyle(pterm.BgCyan)).
-				WithTextStyle(pterm.NewStyle(pterm.FgBlack)).
-				Println("This is a custom header!")
-	// Instead of printing the header you can set it to a variable.
-	// You can then reuse your custom header.
-
-	// Making a completely new HeaderPrinter
+	// Define a new HeaderPrinter with a red background, black text, and a margin of 20.
 	newHeader := pterm.HeaderPrinter{
 		TextStyle:       pterm.NewStyle(pterm.FgBlack),
 		BackgroundStyle: pterm.NewStyle(pterm.BgRed),
 		Margin:          20,
 	}
 
-	// Print header.
+	// Print the custom header using the new HeaderPrinter.
 	newHeader.Println("This is a custom header!")
 }
 
@@ -53,8 +45,14 @@ import "github.com/pterm/pterm"
 
 func main() {
 	// Print a default header.
+	// This uses the default settings of PTerm to print a header.
 	pterm.DefaultHeader.Println("This is the default header!")
-	pterm.Println() // spacer
+
+	// Print a spacer line for better readability.
+	pterm.Println()
+
+	// Print a full-width header.
+	// This uses the WithFullWidth() option of PTerm to print a header that spans the full width of the terminal.
 	pterm.DefaultHeader.WithFullWidth().Println("This is a full-width header.")
 }
 
