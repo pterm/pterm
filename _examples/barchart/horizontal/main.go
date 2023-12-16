@@ -3,7 +3,8 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	pterm.DefaultBarChart.WithBars([]pterm.Bar{
+	// Define the data for the bar chart
+	bars := []pterm.Bar{
 		{Label: "A", Value: 10},
 		{Label: "B", Value: 20},
 		{Label: "C", Value: 30},
@@ -13,5 +14,10 @@ func main() {
 		{Label: "G", Value: 30},
 		{Label: "H", Value: 20},
 		{Label: "I", Value: 10},
-	}).WithHorizontal().Render()
+	}
+
+	// Create a bar chart with the defined data
+	// The chart is displayed horizontally
+	// The Render() function is called to display the chart
+	pterm.DefaultBarChart.WithBars(bars).WithHorizontal().Render()
 }
