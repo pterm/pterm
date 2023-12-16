@@ -2,7 +2,6 @@ package pterm
 
 import (
 	"fmt"
-	"os"
 	"strings"
 
 	"atomicgo.dev/cursor"
@@ -155,7 +154,7 @@ func (p InteractiveContinuePrinter) Show(text ...string) (string, error) {
 			result = p.Options[p.DefaultValueIndex]
 			return true, nil
 		case keys.CtrlC:
-			os.Exit(1)
+			internal.Exit(1)
 			return true, nil
 		}
 		return false, nil
