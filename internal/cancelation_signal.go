@@ -1,7 +1,5 @@
 package internal
 
-import "os"
-
 // NewCancelationSignal for keeping track of a cancelation
 func NewCancelationSignal(interruptFunc func()) (func(), func()) {
 	canceled := false
@@ -15,7 +13,7 @@ func NewCancelationSignal(interruptFunc func()) (func(), func()) {
 			if interruptFunc != nil {
 				interruptFunc()
 			} else {
-				os.Exit(1)
+				Exit(1)
 			}
 		}
 	}
