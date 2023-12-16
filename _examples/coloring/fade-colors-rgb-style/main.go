@@ -7,61 +7,62 @@ import (
 )
 
 func main() {
-	white := pterm.NewRGB(255, 255, 255) // This RGB value is used as the gradients start point.
-	grey := pterm.NewRGB(128, 128, 128)  // This RGB value is used as the gradients start point.
-	black := pterm.NewRGB(0, 0, 0)       // This RGB value is used as the gradients start point.
-	red := pterm.NewRGB(255, 0, 0)       // This RGB value is used as the gradients start point.
-	purple := pterm.NewRGB(255, 0, 255)  // This RGB value is used as the gradients start point.
-	green := pterm.NewRGB(0, 255, 0)     // This RGB value is used as the gradients start point.
+	// Define RGB colors
+	white := pterm.NewRGB(255, 255, 255)
+	grey := pterm.NewRGB(128, 128, 128)
+	black := pterm.NewRGB(0, 0, 0)
+	red := pterm.NewRGB(255, 0, 0)
+	purple := pterm.NewRGB(255, 0, 255)
+	green := pterm.NewRGB(0, 255, 0)
 
-	str := "RGB colors only work in Terminals which support TrueColor."
+	// Define strings to be printed
+	str1 := "RGB colors only work in Terminals which support TrueColor."
+	str2 := "The background and foreground colors can be customized individually."
+	str3 := "Styles can also be applied. For example: Bold or Italic."
+
+	// Print first string with color fading from white to purple
+	printFadedString(str1, white, purple, grey, black)
+
+	// Print second string with color fading from purple to red
+	printFadedString(str2, black, purple, red, red)
+
+	// Print third string with color fading from white to green and style changes
+	printStyledString(str3, white, green, red, black)
+}
+
+// printFadedString prints a string with color fading effect
+func printFadedString(str string, fgStart, fgEnd, bgStart, bgEnd pterm.RGB) {
 	strs := strings.Split(str, "")
-	var fadeInfo string // String which will be used to print.
+	var result string
 	for i := 0; i < len(str); i++ {
-		// Append faded letter to info string.
-		fadeInfo += pterm.NewRGBStyle(white.Fade(0, float32(len(str)), float32(i), purple), grey.Fade(0, float32(len(str)), float32(i), black)).Sprint(strs[i])
+		// Create a style with color fading effect
+		style := pterm.NewRGBStyle(fgStart.Fade(0, float32(len(str)), float32(i), fgEnd), bgStart.Fade(0, float32(len(str)), float32(i), bgEnd))
+		// Append styled letter to result string
+		result += style.Sprint(strs[i])
 	}
+	pterm.Println(result)
+}
 
-	pterm.Info.Println(fadeInfo)
-
-	str = "The background and foreground colors can be customized individually."
-	strs = strings.Split(str, "")
-	var fade2 string // String which will be used to print info.
-	for i := 0; i < len(str); i++ {
-		// Append faded letter to info string.
-		fade2 += pterm.NewRGBStyle(black, purple.Fade(0, float32(len(str)), float32(i), red)).Sprint(strs[i])
-	}
-
-	pterm.Println(fade2)
-
-	str = "Styles can also be applied. For example: Bold or Italic."
-	strs = strings.Split(str, "")
-	var fade3 string // String which will be used to print.
-
-	bold := 0
+// printStyledString prints a string with color fading and style changes
+func printStyledString(str string, fgStart, fgEnd, bgStart, bgEnd pterm.RGB) {
+	strs := strings.Split(str, "")
+	var result string
 	boldStr := strings.Split("Bold", "")
-	italic := 0
 	italicStr := strings.Split("Italic", "")
-
+	bold, italic := 0, 0
 	for i := 0; i < len(str); i++ {
-		// Append faded letter to info string.
-		s := pterm.NewRGBStyle(white.Fade(0, float32(len(str)), float32(i), green), red.Fade(0, float32(len(str)), float32(i), black))
-
-		// if the next letters are "Bold", then add the style "Bold".
-		// else if the next letters are "Italic", then add the style "Italic".
-		if bold < len(boldStr) && i+len(boldStr) <= len(strs) {
-			if strings.Join(strs[i:i+len(boldStr)-bold], "") == strings.Join(boldStr[bold:], "") {
-				s = s.AddOptions(pterm.Bold)
-				bold++
-			}
-		} else if italic < len(italicStr) && i+len(italicStr)-italic < len(strs) {
-			if strings.Join(strs[i:i+len(italicStr)-italic], "") == strings.Join(italicStr[italic:], "") {
-				s = s.AddOptions(pterm.Italic)
-				italic++
-			}
+		// Create a style with color fading effect
+		style := pterm.NewRGBStyle(fgStart.Fade(0, float32(len(str)), float32(i), fgEnd), bgStart.Fade(0, float32(len(str)), float32(i), bgEnd))
+		// Check if the next letters are "Bold" or "Italic" and add the corresponding style
+		if bold < len(boldStr) && i+len(boldStr)-bold <= len(strs) && strings.Join(strs[i:i+len(boldStr)-bold], "") == strings.Join(boldStr[bold:], "") {
+			style = style.AddOptions(pterm.Bold)
+			bold++
+		} else if italic < len(italicStr) && i+len(italicStr)-italic < len(strs) && strings.Join(strs[i:i+len(italicStr)-italic], "") == strings.Join(italicStr[italic:], "") {
+			style = style.AddOptions(pterm.Italic)
+			italic++
 		}
-		fade3 += s.Sprint(strs[i])
+		// Append styled letter to result string
+		result += style.Sprint(strs[i])
 	}
-
-	pterm.Println(fade3)
+	pterm.Println(result)
 }
