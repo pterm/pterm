@@ -95,11 +95,11 @@ func main() {
 			os.WriteFile("./docs/docs/putils.md", []byte(putilsReadme), 0600)
 		})
 
+		var allPrinters []string
 		do("Geneating printers Table", currentLevel, func(currentLevel int) {
 			// get features located in "_examples/*"
 			files, _ := os.ReadDir("./_examples/")
 
-			var allPrinters []string
 			for _, file := range files {
 				if file.Name() == "README.md" {
 					continue
@@ -140,6 +140,23 @@ func main() {
 
 			// write readme
 			os.WriteFile("./README.md", []byte(readmeString), 0600)
+		})
+
+		do("Write printers to website", currentLevel, func(currentLevel int) {
+			pterm.Info.Println("Writing printers to website")
+			websiteIndex, _ := os.ReadFile("./docs/index.html")
+			websiteIndexString := string(websiteIndex)
+
+			// Write as li elements, which contain a link to the example. (https://github.com/pterm/pterm/tree/master/_examples/{name})
+			var links []string
+			for _, printer := range allPrinters {
+				links = append(links, fmt.Sprintf(`<li><a href="https://github.com/pterm/pterm/tree/master/_examples/%s">%s</a></li>`, printer, printer))
+			}
+
+			// Replace placeholder with li elements.
+			websiteIndexString = writeBetween("printers", websiteIndexString, "\n"+strings.Join(links, "\n")+"\n")
+
+			os.WriteFile("./docs/index.html", []byte(websiteIndexString), 0600)
 		})
 
 		var readmeExamples string
@@ -223,12 +240,6 @@ func main() {
 
 			pterm.Info.Println("Writing README")
 			err = os.WriteFile("./README.md", []byte(newReadmeContent), 0600)
-			if err != nil {
-				log.Panic(err)
-			}
-
-			pterm.Info.Println("Writing README for https://pterm.sh")
-			err = os.WriteFile("./docs/README.md", []byte(newReadmeContent), 0600)
 			if err != nil {
 				log.Panic(err)
 			}

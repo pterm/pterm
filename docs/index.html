@@ -1,84 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-7QZCNCZ353"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
 
-        gtag('config', 'G-7QZCNCZ353');
-    </script>
+    <!-- Basic Meta Tags -->
     <meta charset="UTF-8">
-    <title>✨ PTerm - A modern go module to beautify console output</title>
-    <link rel="icon" href="_assets/favicon.ico">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-    <meta name="description" content="Description">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <!-- <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify/lib/themes/vue.css"> -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple-dark.css">
-    <link rel="stylesheet" href="_assets/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <script src="//cdn.jsdelivr.net/npm/docsify-edit-on-github"></script>
+    <!-- SEO Meta Tags -->
+    <title>PTerm | A Go library to beautify terminal output</title>
+    <meta name="description" content="PTerm is a Go library that helps to beautify terminal output.">
+    <meta name="keywords" content="go, golang, terminal, pterm, library, framework">
+    <meta name="author" content="@MarvinJWendt">
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="PTerm | A Go library to beautify terminal output">
+    <meta property="og:description" content="PTerm is a Go library that helps to beautify terminal output.">
+    <meta property="og:image" content="URL_TO_YOUR_IMAGE"> <!-- Replace with your image URL -->
+    <meta property="og:site_name" content="PTerm">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@MarvinJWendt">
+    <meta name="twitter:creator" content="@MarvinJWendt">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.classless.min.css">
+    <link rel="stylesheet" href="./assets/css/style.css">
 </head>
+
 <body>
-<div id="app"></div>
-<script>
-    window.$docsify = {
-        name: 'PTerm',
-        repo: 'pterm/pterm',
-        executeScript: true,
-        loadSidebar: true,
-        auto2top: true,
-        maxLevel: 4,
-        subMaxLevel: 10,
-        coverpage: true,
-        // ga: 'G-7QZCNCZ353',
-        plugins: [
-            EditOnGithubPlugin.create("https://github.com/pterm/pterm/blob/master/docs/", "", "Edit this document on GitHub")
-        ],
-        share: {
-            reddit: true,
-            linkedin: true,
-            facebook: true,
-            twitter: true,
-            whatsapp: true,
-            telegram: true,
-        },
-        'flexible-alerts': {
-            style: 'flat'
-        },
-    }
-</script>
-<script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/docsify-themeable@0"></script>
-<script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
-<script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/zoom-image.min.js"></script>
-<script src="//cdn.jsdelivr.net/npm/docsify-copy-code"></script>
-<script src="//cdn.jsdelivr.net/npm/docsify-tabs@1"></script>
-<!-- <script src="//unpkg.com/docsify-share/build/index.min.js"></script> -->
-<script src="https://unpkg.com/docsify-plugin-flexible-alerts"></script>
-<script src="//unpkg.com/docsify-sidebar-collapse/dist/docsify-sidebar-collapse.min.js"></script>
-<script src="//unpkg.com/docsify-pagination/dist/docsify-pagination.min.js"></script>
-<script src="_assets/asciinema.js"></script>
+    <main>
+        <header>
+            <hgroup>
+                <h1>PTerm</h1>
+                <p>A modern Go module to beautify console output. Featuring a variety of components to make terminal
+                    outputs
+                    more appealing and readable.</p>
+            </hgroup>
 
+            <section class="demo">
+                <img alt="PTerm demo animation"
+                    src="https://raw.githubusercontent.com/pterm/pterm/master/_examples/demo/demo/animation.svg" />
+                <br />
+                <br />
+                <div>
+                    <a href="https://github.com/pterm/pterm" role="button">GitHub Repo</a>
+                    <a href="https://docs.pterm.sh" role="button">Documentation</a>
+                </div>
+            </section>
+        </header>
 
-<!-- Syntax highlighting -->
-<script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
-<script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-powershell.min.js"></script>
-<script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-go.min.js"></script>
-<script src="_assets/prism-command.js"></script>
-<script src="_assets/prism-flags.js"></script>
+        <article>
+            <hgroup>
+                <h2>Components</h2>
+                <p>All the components that can be used in PTerm - linking directly to their example usage on GitHub</p>
+            </hgroup>
+            <ul class="components-list">
+                <!-- printers:start -->
+                <li><a href="https://github.com/pterm/pterm/tree/master/_examples/area">area</a></li>
+                <li><a href="https://github.com/pterm/pterm/tree/master/_examples/barchart">barchart</a></li>
+                <li><a href="https://github.com/pterm/pterm/tree/master/_examples/basictext">basictext</a></li>
+                <li><a href="https://github.com/pterm/pterm/tree/master/_examples/bigtext">bigtext</a></li>
+                <li><a href="https://github.com/pterm/pterm/tree/master/_examples/box">box</a></li>
+                <li><a href="https://github.com/pterm/pterm/tree/master/_examples/bulletlist">bulletlist</a></li>
+                <li><a href="https://github.com/pterm/pterm/tree/master/_examples/center">center</a></li>
+                <li><a href="https://github.com/pterm/pterm/tree/master/_examples/coloring">coloring</a></li>
+                <li><a href="https://github.com/pterm/pterm/tree/master/_examples/demo">demo</a></li>
+                <li><a href="https://github.com/pterm/pterm/tree/master/_examples/header">header</a></li>
+                <li><a href="https://github.com/pterm/pterm/tree/master/_examples/heatmap">heatmap</a></li>
+                <li><a
+                        href="https://github.com/pterm/pterm/tree/master/_examples/interactive_confirm">interactive_confirm</a>
+                </li>
+                <li><a
+                        href="https://github.com/pterm/pterm/tree/master/_examples/interactive_continue">interactive_continue</a>
+                </li>
+                <li><a
+                        href="https://github.com/pterm/pterm/tree/master/_examples/interactive_multiselect">interactive_multiselect</a>
+                </li>
+                <li><a
+                        href="https://github.com/pterm/pterm/tree/master/_examples/interactive_select">interactive_select</a>
+                </li>
+                <li><a
+                        href="https://github.com/pterm/pterm/tree/master/_examples/interactive_textinput">interactive_textinput</a>
+                </li>
+                <li><a href="https://github.com/pterm/pterm/tree/master/_examples/logger">logger</a></li>
+                <li><a
+                        href="https://github.com/pterm/pterm/tree/master/_examples/multiple-live-printers">multiple-live-printers</a>
+                </li>
+                <li><a href="https://github.com/pterm/pterm/tree/master/_examples/panel">panel</a></li>
+                <li><a href="https://github.com/pterm/pterm/tree/master/_examples/paragraph">paragraph</a></li>
+                <li><a href="https://github.com/pterm/pterm/tree/master/_examples/prefix">prefix</a></li>
+                <li><a href="https://github.com/pterm/pterm/tree/master/_examples/progressbar">progressbar</a></li>
+                <li><a href="https://github.com/pterm/pterm/tree/master/_examples/section">section</a></li>
+                <li><a href="https://github.com/pterm/pterm/tree/master/_examples/slog">slog</a></li>
+                <li><a href="https://github.com/pterm/pterm/tree/master/_examples/spinner">spinner</a></li>
+                <li><a href="https://github.com/pterm/pterm/tree/master/_examples/style">style</a></li>
+                <li><a href="https://github.com/pterm/pterm/tree/master/_examples/table">table</a></li>
+                <li><a href="https://github.com/pterm/pterm/tree/master/_examples/theme">theme</a></li>
+                <li><a href="https://github.com/pterm/pterm/tree/master/_examples/tree">tree</a></li>
+                <!-- printers:end -->
+            </ul>
+        </article>
+    </main>
 
-<!-- Google Analytics -->
-<!-- <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/ga.min.js"></script> -->
-
-<script>
-    // if (typeof navigator.serviceWorker !== 'undefined') {
-    //     navigator.serviceWorker.register('sw.js')
-    // }
-</script>
+    <footer style="text-align: center">
+        <small>Made with 💙 by <a href="https://marvinjwendt.com">Marvin Wendt</a></small>
+        <br />
+        <small><a href="https:////github.com/MarvinJWendt">GitHub</a> | <a
+                href="https://twitter.com/MarvinJWendt">Twitter</a></small>
+    </footer>
 </body>
+
 </html>
