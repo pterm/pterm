@@ -9,8 +9,12 @@ func NewCancelationSignal(interruptFunc func()) (func(), func()) {
 	}
 
 	exit := func() {
-		if canceled && interruptFunc != nil {
-			interruptFunc()
+		if canceled {
+			if interruptFunc != nil {
+				interruptFunc()
+			} else {
+				Exit(1)
+			}
 		}
 	}
 
