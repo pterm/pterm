@@ -8,20 +8,27 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	logger := pterm.DefaultLogger.WithLevel(pterm.LogLevelTrace) // Only show logs with a level of Trace or higher.
+	// Create a logger with a level of Trace or higher.
+	logger := pterm.DefaultLogger.WithLevel(pterm.LogLevelTrace)
 
-	// Overwrite all key styles with a new map
-	logger = logger.WithKeyStyles(map[string]pterm.Style{
+	// Define a new style for the "priority" key.
+	priorityStyle := map[string]pterm.Style{
 		"priority": *pterm.NewStyle(pterm.FgRed),
-	})
+	}
 
-	// The priority key should now be red
+	// Overwrite all key styles with the new map.
+	logger = logger.WithKeyStyles(priorityStyle)
+
+	// Log an info message. The "priority" key will be displayed in red.
 	logger.Info("The priority key should now be red", logger.Args("priority", "low", "foo", "bar"))
 
-	// Append a key style to the exisiting ones
-	logger.AppendKeyStyle("foo", *pterm.NewStyle(pterm.FgBlue))
+	// Define a new style for the "foo" key.
+	fooStyle := *pterm.NewStyle(pterm.FgBlue)
 
-	// The foo key should now be blue
+	// Append the new style to the existing ones.
+	logger.AppendKeyStyle("foo", fooStyle)
+
+	// Log another info message. The "foo" key will be displayed in blue.
 	logger.Info("The foo key should now be blue", logger.Args("priority", "low", "foo", "bar"))
 }
 

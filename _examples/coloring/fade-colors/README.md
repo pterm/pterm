@@ -10,16 +10,26 @@ import (
 )
 
 func main() {
-	// Print info.
+	// Print an informational message.
 	pterm.Info.Println("RGB colors only work in Terminals which support TrueColor.")
 
-	from := pterm.NewRGB(0, 255, 255) // This RGB value is used as the gradients start point.
-	to := pterm.NewRGB(255, 0, 255)   // This RGB value is used as the gradients end point.
+	// Define the start and end points for the color gradient.
+	startColor := pterm.NewRGB(0, 255, 255) // Cyan
+	endColor := pterm.NewRGB(255, 0, 255)   // Magenta
 
-	// For loop over the range of the terminal height.
-	for i := 0; i < pterm.GetTerminalHeight()-2; i++ {
-		// Print string which is colored with the faded RGB value.
-		from.Fade(0, float32(pterm.GetTerminalHeight()-2), float32(i), to).Println("Hello, World!")
+	// Get the terminal height to determine the gradient range.
+	terminalHeight := pterm.GetTerminalHeight()
+
+	// Loop over the range of the terminal height to create a color gradient.
+	for i := 0; i < terminalHeight-2; i++ {
+		// Calculate the fade factor for the current step in the gradient.
+		fadeFactor := float32(i) / float32(terminalHeight-2)
+
+		// Create a color that represents the current step in the gradient.
+		currentColor := startColor.Fade(0, 1, fadeFactor, endColor)
+
+		// Print a string with the current color.
+		currentColor.Println("Hello, World!")
 	}
 }
 

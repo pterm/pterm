@@ -14,11 +14,17 @@ import (
 )
 
 func main() {
+	// Define a tree structure using pterm.TreeNode
 	tree := pterm.TreeNode{
+		// The top node of the tree
 		Text: "Top node",
+		// The children of the top node
 		Children: []pterm.TreeNode{{
+			// A child node
 			Text: "Child node",
+			// The children of the child node
 			Children: []pterm.TreeNode{
+				// Grandchildren nodes
 				{Text: "Grandchild node"},
 				{Text: "Grandchild node"},
 				{Text: "Grandchild node"},
@@ -26,6 +32,7 @@ func main() {
 		}},
 	}
 
+	// Render the tree with the defined structure as the root
 	pterm.DefaultTree.WithRoot(tree).Render()
 }
 
@@ -50,37 +57,37 @@ import (
 )
 
 func main() {
-	// You can use a LeveledList here, for easy generation.
+	// Define a leveled list to represent the structure of the directories.
 	leveledList := pterm.LeveledList{
-		pterm.LeveledListItem{Level: 0, Text: "C:"},
-		pterm.LeveledListItem{Level: 1, Text: "Users"},
-		pterm.LeveledListItem{Level: 1, Text: "Windows"},
-		pterm.LeveledListItem{Level: 1, Text: "Programs"},
-		pterm.LeveledListItem{Level: 1, Text: "Programs(x86)"},
-		pterm.LeveledListItem{Level: 1, Text: "dev"},
-		pterm.LeveledListItem{Level: 0, Text: "D:"},
-		pterm.LeveledListItem{Level: 0, Text: "E:"},
-		pterm.LeveledListItem{Level: 1, Text: "Movies"},
-		pterm.LeveledListItem{Level: 1, Text: "Music"},
-		pterm.LeveledListItem{Level: 2, Text: "LinkinPark"},
-		pterm.LeveledListItem{Level: 1, Text: "Games"},
-		pterm.LeveledListItem{Level: 2, Text: "Shooter"},
-		pterm.LeveledListItem{Level: 3, Text: "CallOfDuty"},
-		pterm.LeveledListItem{Level: 3, Text: "CS:GO"},
-		pterm.LeveledListItem{Level: 3, Text: "Battlefield"},
-		pterm.LeveledListItem{Level: 4, Text: "Battlefield 1"},
-		pterm.LeveledListItem{Level: 4, Text: "Battlefield 2"},
-		pterm.LeveledListItem{Level: 0, Text: "F:"},
-		pterm.LeveledListItem{Level: 1, Text: "dev"},
-		pterm.LeveledListItem{Level: 2, Text: "dops"},
-		pterm.LeveledListItem{Level: 2, Text: "PTerm"},
+		{Level: 0, Text: "C:"},
+		{Level: 1, Text: "Users"},
+		{Level: 1, Text: "Windows"},
+		{Level: 1, Text: "Programs"},
+		{Level: 1, Text: "Programs(x86)"},
+		{Level: 1, Text: "dev"},
+		{Level: 0, Text: "D:"},
+		{Level: 0, Text: "E:"},
+		{Level: 1, Text: "Movies"},
+		{Level: 1, Text: "Music"},
+		{Level: 2, Text: "LinkinPark"},
+		{Level: 1, Text: "Games"},
+		{Level: 2, Text: "Shooter"},
+		{Level: 3, Text: "CallOfDuty"},
+		{Level: 3, Text: "CS:GO"},
+		{Level: 3, Text: "Battlefield"},
+		{Level: 4, Text: "Battlefield 1"},
+		{Level: 4, Text: "Battlefield 2"},
+		{Level: 0, Text: "F:"},
+		{Level: 1, Text: "dev"},
+		{Level: 2, Text: "dops"},
+		{Level: 2, Text: "PTerm"},
 	}
 
-	// Generate tree from LeveledList.
+	// Convert the leveled list into a tree structure.
 	root := putils.TreeFromLeveledList(leveledList)
-	root.Text = "Computer"
+	root.Text = "Computer" // Set the root node text.
 
-	// Render TreePrinter
+	// Render the tree structure using the default tree printer.
 	pterm.DefaultTree.WithRoot(root).Render()
 }
 
