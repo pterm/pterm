@@ -1,6 +1,7 @@
 package pterm_test
 
 import (
+	"os"
 	"reflect"
 	"testing"
 	"time"
@@ -10,6 +11,7 @@ import (
 	"github.com/MarvinJWendt/testza"
 
 	"github.com/pterm/pterm"
+	"github.com/pterm/pterm/internal"
 )
 
 func TestInteractiveTextInputPrinter_WithDefaultText(t *testing.T) {
@@ -56,12 +58,23 @@ func TestInteractiveTextInputPrinter_WithMask(t *testing.T) {
 }
 
 func TestInteractiveTextInputPrinter_WithCancel(t *testing.T) {
-	go func() {
-		time.Sleep(1 * time.Millisecond)
-		keyboard.SimulateKeyPress(keys.CtrlC)
-	}()
-	result, _ := pterm.DefaultInteractiveTextInput.WithMask("*").Show()
-	testza.AssertEqual(t, "", result)
+    exitCalled := false
+    internal.DefaultExitFunc = func(code int) {
+        exitCalled = true
+    }
+    defer func() { internal.DefaultExitFunc = os.Exit }()
+
+    go func() {
+        time.Sleep(1 * time.Millisecond)
+        keyboard.SimulateKeyPress(keys.CtrlC)
+    }()
+
+    result, _ := pterm.DefaultInteractiveTextInput.WithMask("*").Show()
+    testza.AssertEqual(t, "", result)
+
+    if !exitCalled {
+        t.Errorf("Expected exit to be called on Ctrl+C")
+    }
 }
 
 func TestInteractiveTextInputPrinter_OnEnter(t *testing.T) {
