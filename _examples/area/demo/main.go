@@ -25,7 +25,7 @@ func main() {
 		// Get the current time, format it as "15:04:05" (hour:minute:second), and convert it to a string.
 		// Then, create a BigText from the time string using PTerm's DefaultBigText and putils NewLettersFromString.
 		// The Srender() function is used to save the BigText as a string.
-		str, _ := pterm.DefaultBigText.WithLetters(putils.NewLettersFromString(time.Now().Format("15:04:05"))).Srender()
+		str, _ := pterm.DefaultBigText.WithLetters(putils.LettersFromString(time.Now().Format("15:04:05"))).Srender()
 
 		// Update the Area contents with the current time string.
 		area.Update(str)
