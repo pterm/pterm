@@ -10,5 +10,5 @@ var DefaultExitFunc ExitFuncType = os.Exit
 
 // Exit calls the current exit function.
 func Exit(code int) {
-    DefaultExitFunc(code)
+	DefaultExitFunc(code)
 }
