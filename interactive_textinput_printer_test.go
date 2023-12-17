@@ -58,23 +58,23 @@ func TestInteractiveTextInputPrinter_WithMask(t *testing.T) {
 }
 
 func TestInteractiveTextInputPrinter_WithCancel(t *testing.T) {
-    exitCalled := false
-    internal.DefaultExitFunc = func(code int) {
-        exitCalled = true
-    }
-    defer func() { internal.DefaultExitFunc = os.Exit }()
+	exitCalled := false
+	internal.DefaultExitFunc = func(code int) {
+		exitCalled = true
+	}
+	defer func() { internal.DefaultExitFunc = os.Exit }()
 
-    go func() {
-        time.Sleep(1 * time.Millisecond)
-        keyboard.SimulateKeyPress(keys.CtrlC)
-    }()
+	go func() {
+		time.Sleep(1 * time.Millisecond)
+		keyboard.SimulateKeyPress(keys.CtrlC)
+	}()
 
-    result, _ := pterm.DefaultInteractiveTextInput.WithMask("*").Show()
-    testza.AssertEqual(t, "", result)
+	result, _ := pterm.DefaultInteractiveTextInput.WithMask("*").Show()
+	testza.AssertEqual(t, "", result)
 
-    if !exitCalled {
-        t.Errorf("Expected exit to be called on Ctrl+C")
-    }
+	if !exitCalled {
+		t.Errorf("Expected exit to be called on Ctrl+C")
+	}
 }
 
 func TestInteractiveTextInputPrinter_OnEnter(t *testing.T) {

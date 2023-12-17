@@ -11,7 +11,14 @@ import (
 )
 
 func main() {
-	pterm.DefaultBigText.WithLetters(putils.LettersFromString("PTerm")).Render()
+	// Define the text to be rendered
+	var text = "PTerm"
+
+	// Convert the text into a format suitable for PTerm
+	var letters = putils.LettersFromString(text)
+
+	// Render the text using PTerm's default big text style
+	pterm.DefaultBigText.WithLetters(letters).Render()
 }
 
 ```

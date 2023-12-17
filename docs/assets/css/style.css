@@ -1,0 +1,64 @@
+h1 {
+    margin-bottom: 1rem !important;
+}
+
+h1::before {
+    content: "# ";
+    color: #a8a8a8;
+}
+
+h2::before {
+    content: "## ";
+    color: #a8a8a8;
+}
+
+h3::before {
+    content: "### ";
+    color: #a8a8a8;
+}
+
+h4::before {
+    content: "#### ";
+    color: #a8a8a8;
+}
+
+article {
+    padding-top: calc(1.5 * 1rem);
+    padding-bottom: calc(1.5 * 1rem);
+}
+
+main {
+    padding-top: 2rem !important;
+}
+
+header {
+    max-width: 100%;
+    margin: 0 auto auto;
+    padding-top: 0;
+}
+
+@media screen and (min-width: 768px) {
+    header {
+        max-width: 70%;
+    }
+}
+
+.demo {
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.components-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.navbar {
+    padding: 0.25rem 1rem;
+    position: sticky;
+    background-color: #10191f;
+    top: 0;
+    border-bottom: 1px solid #37566b;
+}

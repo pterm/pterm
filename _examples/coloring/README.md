@@ -12,8 +12,7 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Print all colors
-
+	// Create a table with different foreground and background colors.
 	pterm.DefaultTable.WithData([][]string{
 		{pterm.FgBlack.Sprint("Black"), pterm.FgRed.Sprint("Red"), pterm.FgGreen.Sprint("Green"), pterm.FgYellow.Sprint("Yellow")},
 		{"", pterm.FgLightRed.Sprint("Light Red"), pterm.FgLightGreen.Sprint("Light Green"), pterm.FgLightYellow.Sprint("Light Yellow")},
@@ -23,18 +22,19 @@ func main() {
 		{pterm.FgLightBlue.Sprint("Light Blue"), pterm.FgLightMagenta.Sprint("Light Magenta"), pterm.FgLightCyan.Sprint("Light Cyan"), pterm.FgLightWhite.Sprint("Light White")},
 		{pterm.BgBlue.Sprint("Blue"), pterm.BgMagenta.Sprint("Magenta"), pterm.BgCyan.Sprint("Cyan"), pterm.BgWhite.Sprint("White")},
 		{pterm.BgLightBlue.Sprint("Light Blue"), pterm.BgLightMagenta.Sprint("Light Magenta"), pterm.BgLightCyan.Sprint("Light Cyan"), pterm.BgLightWhite.Sprint("Light White")},
-	}).Render()
+	}).Render() // Render the table.
 
 	pterm.Println()
 
-	// Print different colored words.
+	// Print words in different colors.
 	pterm.Println(pterm.Red("Hello, ") + pterm.Green("World") + pterm.Cyan("!"))
 	pterm.Println(pterm.Red("Even " + pterm.Cyan("nested ") + pterm.Green("colors ") + "are supported!"))
 
 	pterm.Println()
 
-	// Or print colors as a style
+	// Create a new style with a red background, light green foreground, and bold text.
 	style := pterm.NewStyle(pterm.BgRed, pterm.FgLightGreen, pterm.Bold)
+	// Print text using the created style.
 	style.Println("This text uses a style and is bold and light green with a red background!")
 }
 
@@ -56,16 +56,20 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
+	// Loop from 0 to 14
 	for i := 0; i < 15; i++ {
 		switch i {
 		case 5:
+			// At the 5th iteration, print a message and disable the output
 			pterm.Info.Println("Disabled Output!")
 			pterm.DisableOutput()
 		case 10:
+			// At the 10th iteration, enable the output and print a message
 			pterm.EnableOutput()
 			pterm.Info.Println("Enabled Output!")
 		}
 
+		// Print a progress message for each iteration
 		pterm.Printf("Printing something... [%d/%d]\n", i, 15)
 	}
 }
@@ -90,16 +94,26 @@ import (
 )
 
 func main() {
-	// Print info.
+	// Print an informational message.
 	pterm.Info.Println("RGB colors only work in Terminals which support TrueColor.")
 
-	from := pterm.NewRGB(0, 255, 255) // This RGB value is used as the gradients start point.
-	to := pterm.NewRGB(255, 0, 255)   // This RGB value is used as the gradients end point.
+	// Define the start and end points for the color gradient.
+	startColor := pterm.NewRGB(0, 255, 255) // Cyan
+	endColor := pterm.NewRGB(255, 0, 255)   // Magenta
 
-	// For loop over the range of the terminal height.
-	for i := 0; i < pterm.GetTerminalHeight()-2; i++ {
-		// Print string which is colored with the faded RGB value.
-		from.Fade(0, float32(pterm.GetTerminalHeight()-2), float32(i), to).Println("Hello, World!")
+	// Get the terminal height to determine the gradient range.
+	terminalHeight := pterm.GetTerminalHeight()
+
+	// Loop over the range of the terminal height to create a color gradient.
+	for i := 0; i < terminalHeight-2; i++ {
+		// Calculate the fade factor for the current step in the gradient.
+		fadeFactor := float32(i) / float32(terminalHeight-2)
+
+		// Create a color that represents the current step in the gradient.
+		currentColor := startColor.Fade(0, 1, fadeFactor, endColor)
+
+		// Print a string with the current color.
+		currentColor.Println("Hello, World!")
 	}
 }
 
@@ -125,63 +139,64 @@ import (
 )
 
 func main() {
-	white := pterm.NewRGB(255, 255, 255) // This RGB value is used as the gradients start point.
-	grey := pterm.NewRGB(128, 128, 128)  // This RGB value is used as the gradients start point.
-	black := pterm.NewRGB(0, 0, 0)       // This RGB value is used as the gradients start point.
-	red := pterm.NewRGB(255, 0, 0)       // This RGB value is used as the gradients start point.
-	purple := pterm.NewRGB(255, 0, 255)  // This RGB value is used as the gradients start point.
-	green := pterm.NewRGB(0, 255, 0)     // This RGB value is used as the gradients start point.
+	// Define RGB colors
+	white := pterm.NewRGB(255, 255, 255)
+	grey := pterm.NewRGB(128, 128, 128)
+	black := pterm.NewRGB(0, 0, 0)
+	red := pterm.NewRGB(255, 0, 0)
+	purple := pterm.NewRGB(255, 0, 255)
+	green := pterm.NewRGB(0, 255, 0)
 
-	str := "RGB colors only work in Terminals which support TrueColor."
+	// Define strings to be printed
+	str1 := "RGB colors only work in Terminals which support TrueColor."
+	str2 := "The background and foreground colors can be customized individually."
+	str3 := "Styles can also be applied. For example: Bold or Italic."
+
+	// Print first string with color fading from white to purple
+	printFadedString(str1, white, purple, grey, black)
+
+	// Print second string with color fading from purple to red
+	printFadedString(str2, black, purple, red, red)
+
+	// Print third string with color fading from white to green and style changes
+	printStyledString(str3, white, green, red, black)
+}
+
+// printFadedString prints a string with color fading effect
+func printFadedString(str string, fgStart, fgEnd, bgStart, bgEnd pterm.RGB) {
 	strs := strings.Split(str, "")
-	var fadeInfo string // String which will be used to print.
+	var result string
 	for i := 0; i < len(str); i++ {
-		// Append faded letter to info string.
-		fadeInfo += pterm.NewRGBStyle(white.Fade(0, float32(len(str)), float32(i), purple), grey.Fade(0, float32(len(str)), float32(i), black)).Sprint(strs[i])
+		// Create a style with color fading effect
+		style := pterm.NewRGBStyle(fgStart.Fade(0, float32(len(str)), float32(i), fgEnd), bgStart.Fade(0, float32(len(str)), float32(i), bgEnd))
+		// Append styled letter to result string
+		result += style.Sprint(strs[i])
 	}
+	pterm.Println(result)
+}
 
-	pterm.Info.Println(fadeInfo)
-
-	str = "The background and foreground colors can be customized individually."
-	strs = strings.Split(str, "")
-	var fade2 string // String which will be used to print info.
-	for i := 0; i < len(str); i++ {
-		// Append faded letter to info string.
-		fade2 += pterm.NewRGBStyle(black, purple.Fade(0, float32(len(str)), float32(i), red)).Sprint(strs[i])
-	}
-
-	pterm.Println(fade2)
-
-	str = "Styles can also be applied. For example: Bold or Italic."
-	strs = strings.Split(str, "")
-	var fade3 string // String which will be used to print.
-
-	bold := 0
+// printStyledString prints a string with color fading and style changes
+func printStyledString(str string, fgStart, fgEnd, bgStart, bgEnd pterm.RGB) {
+	strs := strings.Split(str, "")
+	var result string
 	boldStr := strings.Split("Bold", "")
-	italic := 0
 	italicStr := strings.Split("Italic", "")
-
+	bold, italic := 0, 0
 	for i := 0; i < len(str); i++ {
-		// Append faded letter to info string.
-		s := pterm.NewRGBStyle(white.Fade(0, float32(len(str)), float32(i), green), red.Fade(0, float32(len(str)), float32(i), black))
-
-		// if the next letters are "Bold", then add the style "Bold".
-		// else if the next letters are "Italic", then add the style "Italic".
-		if bold < len(boldStr) && i+len(boldStr) <= len(strs) {
-			if strings.Join(strs[i:i+len(boldStr)-bold], "") == strings.Join(boldStr[bold:], "") {
-				s = s.AddOptions(pterm.Bold)
-				bold++
-			}
-		} else if italic < len(italicStr) && i+len(italicStr)-italic < len(strs) {
-			if strings.Join(strs[i:i+len(italicStr)-italic], "") == strings.Join(italicStr[italic:], "") {
-				s = s.AddOptions(pterm.Italic)
-				italic++
-			}
+		// Create a style with color fading effect
+		style := pterm.NewRGBStyle(fgStart.Fade(0, float32(len(str)), float32(i), fgEnd), bgStart.Fade(0, float32(len(str)), float32(i), bgEnd))
+		// Check if the next letters are "Bold" or "Italic" and add the corresponding style
+		if bold < len(boldStr) && i+len(boldStr)-bold <= len(strs) && strings.Join(strs[i:i+len(boldStr)-bold], "") == strings.Join(boldStr[bold:], "") {
+			style = style.AddOptions(pterm.Bold)
+			bold++
+		} else if italic < len(italicStr) && i+len(italicStr)-italic < len(strs) && strings.Join(strs[i:i+len(italicStr)-italic], "") == strings.Join(italicStr[italic:], "") {
+			style = style.AddOptions(pterm.Italic)
+			italic++
 		}
-		fade3 += s.Sprint(strs[i])
+		// Append styled letter to result string
+		result += style.Sprint(strs[i])
 	}
-
-	pterm.Println(fade3)
+	pterm.Println(result)
 }
 
 ```
@@ -206,28 +221,36 @@ import (
 )
 
 func main() {
-	from := pterm.NewRGB(0, 255, 255)  // This RGB value is used as the gradients start point.
-	to := pterm.NewRGB(255, 0, 255)    // This RGB value is used as the gradients first point.
-	to2 := pterm.NewRGB(255, 0, 0)     // This RGB value is used as the gradients second point.
-	to3 := pterm.NewRGB(0, 255, 0)     // This RGB value is used as the gradients third point.
-	to4 := pterm.NewRGB(255, 255, 255) // This RGB value is used as the gradients end point.
+	// Define RGB values for gradient points.
+	startColor := pterm.NewRGB(0, 255, 255)
+	firstPoint := pterm.NewRGB(255, 0, 255)
+	secondPoint := pterm.NewRGB(255, 0, 0)
+	thirdPoint := pterm.NewRGB(0, 255, 0)
+	endColor := pterm.NewRGB(255, 255, 255)
 
+	// Define the string to be printed.
 	str := "RGB colors only work in Terminals which support TrueColor."
 	strs := strings.Split(str, "")
-	var fadeInfo string // String which will be used to print info.
-	// For loop over the range of the string length.
+
+	// Initialize an empty string for the faded info.
+	var fadeInfo string
+
+	// Loop over the string length to create a gradient effect.
 	for i := 0; i < len(str); i++ {
-		// Append faded letter to info string.
-		fadeInfo += from.Fade(0, float32(len(str)), float32(i), to).Sprint(strs[i])
+		// Append each character of the string with a faded color to the info string.
+		fadeInfo += startColor.Fade(0, float32(len(str)), float32(i), firstPoint).Sprint(strs[i])
 	}
 
-	// Print info.
+	// Print the info string with gradient effect.
 	pterm.Info.Println(fadeInfo)
 
-	// For loop over the range of the terminal height.
-	for i := 0; i < pterm.GetTerminalHeight()-2; i++ {
-		// Print string which is colored with the faded RGB value.
-		from.Fade(0, float32(pterm.GetTerminalHeight()-2), float32(i), to, to2, to3, to4).Println("Hello, World!")
+	// Get the terminal height.
+	terminalHeight := pterm.GetTerminalHeight()
+
+	// Loop over the terminal height to print "Hello, World!" with a gradient effect.
+	for i := 0; i < terminalHeight-2; i++ {
+		// Print the string with a color that fades from startColor to endColor.
+		startColor.Fade(0, float32(terminalHeight-2), float32(i), firstPoint, secondPoint, thirdPoint, endColor).Println("Hello, World!")
 	}
 }
 
@@ -249,16 +272,13 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Print default error.
+	// Print a default error message with PTerm's built-in Error style.
 	pterm.Error.Println("This is the default Error")
 
-	// Customize default error.
-	pterm.Error.Prefix = pterm.Prefix{
-		Text:  "OVERRIDE",
-		Style: pterm.NewStyle(pterm.BgCyan, pterm.FgRed),
-	}
+	// Override the default error prefix with a new text and style.
+	pterm.Error.Prefix = pterm.Prefix{Text: "OVERRIDE", Style: pterm.NewStyle(pterm.BgCyan, pterm.FgRed)}
 
-	// Print new default error.
+	// Print the error message again, this time with the overridden prefix.
 	pterm.Error.Println("This is the default Error after the prefix was overridden")
 }
 
@@ -280,10 +300,17 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Print strings with a custom RGB color.
-	// NOTICE: This only works with terminals which support TrueColor.
+	// Create a new RGB color with values 178, 44, 199.
+	// This color will be used for the text.
 	pterm.NewRGB(178, 44, 199).Println("This text is printed with a custom RGB!")
+
+	// Create a new RGB color with values 15, 199, 209.
+	// This color will be used for the text.
 	pterm.NewRGB(15, 199, 209).Println("This text is printed with a custom RGB!")
+
+	// Create a new RGB color with values 201, 144, 30.
+	// This color will be used for the background.
+	// The 'true' argument indicates that the color is for the background.
 	pterm.NewRGB(201, 144, 30, true).Println("This text is printed with a custom RGB background!")
 }
 
@@ -307,17 +334,21 @@ import (
 )
 
 func main() {
+	// Define RGB colors for foreground and background.
 	foregroundRGB := pterm.RGB{R: 187, G: 80, B: 0}
 	backgroundRGB := pterm.RGB{R: 0, G: 50, B: 123}
 
-	// Print string with a custom foreground and background RGB color.
-	pterm.NewRGBStyle(foregroundRGB, backgroundRGB).Println("This text is not styled.")
+	// Create a new RGB style with the defined foreground and background colors.
+	rgbStyle := pterm.NewRGBStyle(foregroundRGB, backgroundRGB)
 
-	// Print string with a custom foreground and background RGB color and style bold.
-	pterm.NewRGBStyle(foregroundRGB, backgroundRGB).AddOptions(pterm.Bold).Println("This text is bold.")
+	// Print a string with the custom RGB style.
+	rgbStyle.Println("This text is not styled.")
 
-	// Print string with a custom foreground and background RGB color and style italic.
-	pterm.NewRGBStyle(foregroundRGB, backgroundRGB).AddOptions(pterm.Italic).Println("This text is italic.")
+	// Add the 'Bold' option to the RGB style and print a string with this style.
+	rgbStyle.AddOptions(pterm.Bold).Println("This text is bold.")
+
+	// Add the 'Italic' option to the RGB style and print a string with this style.
+	rgbStyle.AddOptions(pterm.Italic).Println("This text is italic.")
 }
 
 ```
