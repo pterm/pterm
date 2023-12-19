@@ -1506,7 +1506,7 @@ func main() {
 		pterm.DefaultCenter.WithCenterEachLineSeparately().Println(fadeInfo)
 	})
 
-	showcase("Fully Customizale", 2, func() {
+	showcase("Fully Customizable", 2, func() {
 		for i := 0; i < 4; i++ {
 			pterm.Println()
 		}
