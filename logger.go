@@ -200,6 +200,9 @@ func (l Logger) AppendKeyStyle(key string, style Style) *Logger {
 
 // CanPrint checks if the logger can print a specific log level.
 func (l Logger) CanPrint(level LogLevel) bool {
+	if l.Level == LogLevelDisabled {
+		return false
+	}
 	return l.Level <= level
 }
 
@@ -261,7 +264,7 @@ func (l Logger) combineArgs(args ...[]LoggerArgument) []LoggerArgument {
 }
 
 func (l Logger) print(level LogLevel, msg string, args []LoggerArgument) {
-	if l.Level > level {
+	if !l.CanPrint(level) {
 		return
 	}
 
