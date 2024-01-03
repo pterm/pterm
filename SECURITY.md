@@ -8,7 +8,6 @@ PTerm is a command-line interface (CLI) tool library, and we believe the securit
 If you discover a security issue in PTerm, please follow these steps:
 
 Open a new issue in the PTerm GitHub repository, describing the security problem in detail.
-Do not disclose any sensitive information or exploit details in the issue, as PTerm is not considered to have any exploitable features.
 
 ## 3. Vulnerable Dependencies
 If a dependency of PTerm is found to be vulnerable or infected and requires immediate updates, please follow these steps:
