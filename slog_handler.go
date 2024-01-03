@@ -48,17 +48,24 @@ func (s *SlogHandler) Handle(ctx context.Context, record slog.Record) error {
 	// Wrapping args inside another slice to match [][]LoggerArgument
 	argsWrapped := [][]LoggerArgument{args}
 
+	logger := s.logger
+
+	// Must be done here, see https://github.com/pterm/pterm/issues/608#issuecomment-1876001650
+	if logger.CallerOffset == 0 {
+		logger = logger.WithCallerOffset(3)
+	}
+
 	switch level {
 	case slog.LevelDebug:
-		s.logger.Debug(message, argsWrapped...)
+		logger.Debug(message, argsWrapped...)
 	case slog.LevelInfo:
-		s.logger.Info(message, argsWrapped...)
+		logger.Info(message, argsWrapped...)
 	case slog.LevelWarn:
-		s.logger.Warn(message, argsWrapped...)
+		logger.Warn(message, argsWrapped...)
 	case slog.LevelError:
-		s.logger.Error(message, argsWrapped...)
+		logger.Error(message, argsWrapped...)
 	default:
-		s.logger.Print(message, argsWrapped...)
+		logger.Print(message, argsWrapped...)
 	}
 
 	return nil
