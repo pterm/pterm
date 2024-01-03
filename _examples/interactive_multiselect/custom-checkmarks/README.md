@@ -6,7 +6,6 @@
 package main
 
 import (
-	"atomicgo.dev/keyboard/keys"
 	"fmt"
 	"github.com/pterm/pterm"
 )
@@ -21,12 +20,10 @@ func main() {
 	}
 
 	// Create a new interactive multiselect printer with the options
-	// Disable the filter, set the keys for confirming and selecting, and define the checkmark symbols
+	// Disable the filter and define the checkmark symbols
 	printer := pterm.DefaultInteractiveMultiselect.
 		WithOptions(options).
 		WithFilter(false).
-		WithKeyConfirm(keys.Enter).
-		WithKeySelect(keys.Space).
 		WithCheckmark(&pterm.Checkmark{Checked: pterm.Green("+"), Unchecked: pterm.Red("-")})
 
 	// Show the interactive multiselect and get the selected options
