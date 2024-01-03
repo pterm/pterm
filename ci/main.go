@@ -285,7 +285,15 @@ func generateSectionContent(section os.DirEntry) string {
 		return true
 	})
 
-	sort.Strings(keys)
+	sort.Slice(keys, func(i, j int) bool {
+		if keys[i] == "demo" {
+			return true
+		}
+		if keys[j] == "demo" {
+			return false
+		}
+		return keys[i] < keys[j]
+	})
 
 	for _, key := range keys {
 		value, _ := exampleMap.Load(key)
@@ -296,7 +304,6 @@ func generateSectionContent(section os.DirEntry) string {
 
 	return sectionExamples
 }
-
 func generateExampleContent(dir string, section os.DirEntry, example os.DirEntry) string {
 	var content string
 
