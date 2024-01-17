@@ -183,7 +183,7 @@ func (p PanelPrinter) Srender() (string, error) {
 // Render prints the Template to the terminal.
 func (p PanelPrinter) Render() error {
 	s, _ := p.Srender()
-	Println(s)
+	Fprintln(p.Writer, s)
 
 	return nil
 }
