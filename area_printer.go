@@ -19,8 +19,9 @@ type AreaPrinter struct {
 	Fullscreen     bool
 	Center         bool
 
-	content  string
-	isActive bool
+	content       string
+	isActive      bool
+	centerPrinter CenterPrinter
 
 	area *cursor.Area
 }
@@ -43,7 +44,10 @@ func (p AreaPrinter) WithFullscreen(b ...bool) *AreaPrinter {
 }
 
 // WithCenter centers the AreaPrinter content to the terminal.
-func (p AreaPrinter) WithCenter(b ...bool) *AreaPrinter {
+func (p AreaPrinter) WithCenter(centerEachLineSeparately bool, b ...bool) *AreaPrinter {
+	p.centerPrinter = CenterPrinter{
+		CenterEachLineSeparately: centerEachLineSeparately,
+	}
 	p.Center = internal.WithBoolean(b)
 	return &p
 }
@@ -64,7 +68,7 @@ func (p *AreaPrinter) Update(text ...interface{}) {
 	p.content = str
 
 	if p.Center {
-		str = DefaultCenter.Sprint(str)
+		str = p.centerPrinter.Sprint(str)
 	}
 
 	if p.Fullscreen {

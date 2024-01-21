@@ -66,7 +66,7 @@ func TestAreaPrinter_CenterFullscreen(t *testing.T) {
 	originalStdout := os.Stdout
 	os.Stdout = os.NewFile(0, os.DevNull) // Set os.Stdout to DevNull to hide output from cursor.Area
 
-	a, _ := pterm.DefaultArea.WithRemoveWhenDone().WithFullscreen().WithCenter().Start()
+	a, _ := pterm.DefaultArea.WithRemoveWhenDone().WithFullscreen().WithCenter(false).Start()
 
 	a.Update("asd")
 	a.Stop()
