@@ -397,7 +397,6 @@ func (p *InteractiveMultiselectPrinter) renderSelectMenu() string {
 
 	// Optionally, add selected options to the menu
 	if p.OptionsRenderer != nil && len(p.selectedOptions) > 0 {
-
 		selected := make([]string, len(p.selectedOptions))
 		for i, optIdx := range p.selectedOptions {
 			selected[i] = p.Options[optIdx]
