@@ -3,6 +3,7 @@ package pterm
 import (
 	"fmt"
 	"sort"
+	"strings"
 
 	"atomicgo.dev/cursor"
 	"atomicgo.dev/keyboard"
@@ -32,17 +33,18 @@ var (
 
 // InteractiveMultiselectPrinter is a printer for interactive multiselect menus.
 type InteractiveMultiselectPrinter struct {
-	DefaultText     string
-	TextStyle       *Style
-	Options         []string
-	OptionStyle     *Style
-	DefaultOptions  []string
-	MaxHeight       int
-	Selector        string
-	SelectorStyle   *Style
-	Filter          bool
-	Checkmark       *Checkmark
-	OnInterruptFunc func()
+	DefaultText         string
+	TextStyle           *Style
+	Options             []string
+	OptionStyle         *Style
+	DefaultOptions      []string
+	MaxHeight           int
+	Selector            string
+	SelectorStyle       *Style
+	Filter              bool
+	Checkmark           *Checkmark
+	OnInterruptFunc     func()
+	ShowSelectedOptions bool
 
 	selectedOption        int
 	selectedOptions       []int
@@ -113,6 +115,12 @@ func (p InteractiveMultiselectPrinter) WithCheckmark(checkmark *Checkmark) *Inte
 // OnInterrupt sets the function to execute on exit of the input reader
 func (p InteractiveMultiselectPrinter) WithOnInterruptFunc(exitFunc func()) *InteractiveMultiselectPrinter {
 	p.OnInterruptFunc = exitFunc
+	return &p
+}
+
+// WithShowSelectedOption shows the selected options at the bottom if the menu
+func (p InteractiveMultiselectPrinter) WithShowSelectedOptions(b bool) *InteractiveMultiselectPrinter {
+	p.ShowSelectedOptions = b
 	return &p
 }
 
@@ -382,6 +390,18 @@ func (p *InteractiveMultiselectPrinter) renderSelectMenu() string {
 		help += fmt.Sprintf("| type to %s", Bold.Sprint("filter"))
 	}
 	content += ThemeDefault.SecondaryStyle.Sprintfln(help)
+
+	if p.ShowSelectedOptions && len(p.selectedOptions) > 0 {
+		content += ThemeDefault.SecondaryStyle.Sprint("you have selected: ")
+
+		selected := make([]string, len(p.selectedOptions))
+		for i, optIdx := range p.selectedOptions {
+			selected[i] = p.Options[optIdx]
+		}
+
+		content += ThemeDefault.SecondaryStyle.Add(*Italic.ToStyle()).
+			Sprintln(strings.Join(selected, ", "))
+	}
 
 	return content
 }
