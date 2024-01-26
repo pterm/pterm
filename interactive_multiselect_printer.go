@@ -391,6 +391,7 @@ func (p *InteractiveMultiselectPrinter) renderSelectMenu() string {
 	}
 	content += ThemeDefault.SecondaryStyle.Sprintfln(help)
 
+	// Optionally, add selected options to the menu
 	if p.ShowSelectedOptions && len(p.selectedOptions) > 0 {
 		content += ThemeDefault.SecondaryStyle.Sprint("you have selected: ")
 
