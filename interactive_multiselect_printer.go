@@ -391,7 +391,7 @@ func (p *InteractiveMultiselectPrinter) renderSelectMenu() string {
 
 	help := fmt.Sprintf("%s: %s | %s: %s | left: %s | right: %s", p.KeySelect, Bold.Sprint("select"), p.KeyConfirm, Bold.Sprint("confirm"), Bold.Sprint("none"), Bold.Sprint("all"))
 	if p.Filter {
-		help += fmt.Sprintf("| type to %s", Bold.Sprint("filter"))
+		help += fmt.Sprintf(" | type to %s", Bold.Sprint("filter"))
 	}
 	content += ThemeDefault.SecondaryStyle.Sprintfln(help)
 
