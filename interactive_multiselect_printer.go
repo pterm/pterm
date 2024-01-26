@@ -3,7 +3,6 @@ package pterm
 import (
 	"fmt"
 	"sort"
-	"strings"
 
 	"atomicgo.dev/cursor"
 	"atomicgo.dev/keyboard"
@@ -33,18 +32,18 @@ var (
 
 // InteractiveMultiselectPrinter is a printer for interactive multiselect menus.
 type InteractiveMultiselectPrinter struct {
-	DefaultText         string
-	TextStyle           *Style
-	Options             []string
-	OptionStyle         *Style
-	DefaultOptions      []string
-	MaxHeight           int
-	Selector            string
-	SelectorStyle       *Style
-	Filter              bool
-	Checkmark           *Checkmark
-	OnInterruptFunc     func()
-	ShowSelectedOptions bool
+	DefaultText     string
+	TextStyle       *Style
+	Options         []string
+	OptionStyle     *Style
+	DefaultOptions  []string
+	MaxHeight       int
+	Selector        string
+	SelectorStyle   *Style
+	Filter          bool
+	Checkmark       *Checkmark
+	OnInterruptFunc func()
+	OptionsRenderer OptionsRenderer
 
 	selectedOption        int
 	selectedOptions       []int
@@ -118,9 +117,14 @@ func (p InteractiveMultiselectPrinter) WithOnInterruptFunc(exitFunc func()) *Int
 	return &p
 }
 
-// WithShowSelectedOption shows the selected options at the bottom if the menu
+// WithShowSelectedOptions shows the selected options at the bottom if the menu
 func (p InteractiveMultiselectPrinter) WithShowSelectedOptions(b bool) *InteractiveMultiselectPrinter {
-	p.ShowSelectedOptions = b
+	return p.WithCustomOptionsRenderer(NewInterpolatedOptions(", "))
+}
+
+// WithCustomOptionsRenderer uses the provided OptionsRenderer to render the selected options
+func (p InteractiveMultiselectPrinter) WithCustomOptionsRenderer(r OptionsRenderer) *InteractiveMultiselectPrinter {
+	p.OptionsRenderer = r
 	return &p
 }
 
@@ -392,16 +396,14 @@ func (p *InteractiveMultiselectPrinter) renderSelectMenu() string {
 	content += ThemeDefault.SecondaryStyle.Sprintfln(help)
 
 	// Optionally, add selected options to the menu
-	if p.ShowSelectedOptions && len(p.selectedOptions) > 0 {
-		content += ThemeDefault.SecondaryStyle.Sprint("you have selected: ")
+	if p.OptionsRenderer != nil && len(p.selectedOptions) > 0 {
 
 		selected := make([]string, len(p.selectedOptions))
 		for i, optIdx := range p.selectedOptions {
 			selected[i] = p.Options[optIdx]
 		}
 
-		content += ThemeDefault.SecondaryStyle.Add(*Italic.ToStyle()).
-			Sprintln(strings.Join(selected, ", "))
+		content += p.OptionsRenderer.RenderOptions(selected)
 	}
 
 	return content
