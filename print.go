@@ -3,6 +3,7 @@ package pterm
 import (
 	"fmt"
 	"io"
+	"os"
 	"strings"
 
 	"github.com/gookit/color"
@@ -45,7 +46,7 @@ func Sprinto(a ...interface{}) string {
 // Spaces are added between operands when neither is a string.
 // It returns the number of bytes written and any write error encountered.
 func Print(a ...interface{}) {
-	Fprint(nil, a...)
+	Fprint(os.Stdout, a...)
 }
 
 // Println formats using the default formats for its operands and writes to standard output.

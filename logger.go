@@ -280,7 +280,7 @@ func (l Logger) print(level LogLevel, msg string, args []LoggerArgument) {
 	loggerMutex.Lock()
 	defer loggerMutex.Unlock()
 
-	_, _ = l.Writer.Write([]byte(line + "\n"))
+	Fprintln(l.Writer, line)
 }
 
 func (l Logger) renderColorful(level LogLevel, msg string, args []LoggerArgument) (result string) {
