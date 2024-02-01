@@ -245,9 +245,8 @@ func (l Logger) sanitizeArgs(args []any) []any {
 	numArgs := len(args)
 	if numArgs > 0 && numArgs%2 != 0 {
 		if numArgs > 1 {
-			last := args[numArgs-1]
-			args = args[:numArgs-1]
-			args = append(args, []any{ErrKeyWithoutValue, last}...)
+			lastArg := args[numArgs-1]
+			args = append(args[:numArgs-1], []any{ErrKeyWithoutValue, lastArg}...)
 		} else {
 			args = []any{ErrKeyWithoutValue, args[0]}
 		}

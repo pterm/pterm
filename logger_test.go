@@ -12,7 +12,7 @@ func Test_sanitizeArgs(t *testing.T) {
 		expected []any
 	}{
 		{
-			name:     "pass_no_args",
+			name:     "pass_zero_args",
 			args:     []any{},
 			expected: []any{},
 		},
