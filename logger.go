@@ -211,6 +211,8 @@ func (l Logger) Args(args ...any) []LoggerArgument {
 	var loggerArgs []LoggerArgument
 
 	// args are in the format of: key, value, key, value, key, value, ...
+	args = l.sanitizeArgs(args)
+
 	for i := 0; i < len(args); i += 2 {
 		key := Sprint(args[i])
 		value := args[i+1]
@@ -236,6 +238,20 @@ func (l Logger) ArgsFromMap(m map[string]any) []LoggerArgument {
 	}
 
 	return loggerArgs
+}
+
+func (l Logger) sanitizeArgs(args []any) []any {
+	numArgs := len(args)
+	if numArgs > 0 && numArgs%2 != 0 {
+		if numArgs > 1 {
+			last := args[numArgs-1]
+			args = args[:numArgs-1]
+			args = append(args, []any{ErrKeyWithoutValue, last}...)
+		} else {
+			args = []any{ErrKeyWithoutValue, args[0]}
+		}
+	}
+	return args
 }
 
 func (l Logger) getCallerInfo() (path string, line int) {
