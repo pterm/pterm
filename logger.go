@@ -240,6 +240,7 @@ func (l Logger) ArgsFromMap(m map[string]any) []LoggerArgument {
 	return loggerArgs
 }
 
+// sanitizeArgs inserts an error message into an args slice if an odd number of arguments is provided.
 func (l Logger) sanitizeArgs(args []any) []any {
 	numArgs := len(args)
 	if numArgs > 0 && numArgs%2 != 0 {
