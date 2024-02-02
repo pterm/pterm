@@ -8,4 +8,7 @@ var (
 
 	// ErrHexCodeIsInvalid - the given HEX code is invalid.
 	ErrHexCodeIsInvalid = errors.New("hex code is not valid")
+
+	// ErrKeyWithoutValue - an odd number of arguments was passed to a pterm Logger's Args method.
+	ErrKeyWithoutValue = "ERROR: key_without_value"
 )
