@@ -6,6 +6,7 @@ import (
 	"atomicgo.dev/cursor"
 	"atomicgo.dev/keyboard"
 	"atomicgo.dev/keyboard/keys"
+	"github.com/mattn/go-runewidth"
 
 	"github.com/pterm/pterm/internal"
 )
