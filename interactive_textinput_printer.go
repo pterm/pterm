@@ -101,7 +101,7 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	area.StartOfLine()
 
 	if !p.MultiLine {
-		cursor.Right(len([]rune(RemoveColorFromString(areaText))))
+		cursor.Right(runewidth.StringWidth(RemoveColorFromString(areaText)))
 	}
 
 	if p.DefaultValue != "" {
