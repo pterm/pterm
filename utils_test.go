@@ -25,6 +25,8 @@ func TestMain(m *testing.M) {
 
 // testPrintContains can be used to test Print methods.
 func testPrintContains(t *testing.T, logic func(w io.Writer, a interface{})) {
+	t.Helper()
+
 	for _, printable := range printables {
 		t.Run(fmt.Sprint(printable), func(t *testing.T) {
 			s := captureStdout(func(w io.Writer) {
