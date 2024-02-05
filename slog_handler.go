@@ -14,6 +14,8 @@ type SlogHandler struct {
 // Enabled returns true if the given level is enabled.
 func (s *SlogHandler) Enabled(ctx context.Context, level slog.Level) bool {
 	switch level {
+	case slog.LevelTrace:
+		return s.logger.CanPrint(LogLevelTrace)
 	case slog.LevelDebug:
 		return s.logger.CanPrint(LogLevelDebug)
 	case slog.LevelInfo:
