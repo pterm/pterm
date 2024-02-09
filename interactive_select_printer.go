@@ -173,7 +173,7 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 			area.Update(p.renderSelectMenu())
 		case keys.Backspace:
 			// Remove last character from fuzzy search string
-			if len(p.fuzzySearchString) > 0 {
+			if p.fuzzySearchString != "" {
 				// Handle UTF-8 characters
 				p.fuzzySearchString = string([]rune(p.fuzzySearchString)[:len([]rune(p.fuzzySearchString))-1])
 			}
