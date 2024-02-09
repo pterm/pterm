@@ -1,4 +1,4 @@
-# interactive_textinput/demo
+# interactive_textinput/default-value
 
 ![Animation](animation.svg)
 
@@ -10,11 +10,8 @@ import (
 )
 
 func main() {
-	// Create an interactive text input with single line input mode
-	textInput := pterm.DefaultInteractiveTextInput.WithMultiLine(false)
-
-	// Show the text input and get the result
-	result, _ := textInput.Show()
+	// Create an interactive text input with single line input mode and show it
+	result, _ := pterm.DefaultInteractiveTextInput.WithDefaultValue("Some default value").Show()
 
 	// Print a blank line for better readability
 	pterm.Println()

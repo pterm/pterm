@@ -2388,11 +2388,38 @@ import (
 )
 
 func main() {
-	// Create an interactive text input with single line input mode
-	textInput := pterm.DefaultInteractiveTextInput.WithMultiLine(false)
+	// Create an interactive text input with single line input mode and show it
+	result, _ := pterm.DefaultInteractiveTextInput.Show()
 
-	// Show the text input and get the result
-	result, _ := textInput.Show()
+	// Print a blank line for better readability
+	pterm.Println()
+
+	// Print the user's answer with an info prefix
+	pterm.Info.Printfln("You answered: %s", result)
+}
+
+```
+
+</details>
+
+### interactive_textinput/default-value
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/interactive_textinput/default-value/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	// Create an interactive text input with single line input mode and show it
+	result, _ := pterm.DefaultInteractiveTextInput.WithDefaultValue("Some default value").Show()
 
 	// Print a blank line for better readability
 	pterm.Println()
