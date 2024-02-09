@@ -1,7 +1,6 @@
 package pterm
 
 import (
-	"fmt"
 	"strings"
 
 	"atomicgo.dev/cursor"
@@ -89,7 +88,7 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 
 	var areaText string
 
-	if len(text) == 0 || fmt.Sprint(text[0]) == "" {
+	if len(text) == 0 || text[0] == "" {
 		text = []string{p.DefaultText}
 	}
 
