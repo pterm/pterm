@@ -6,7 +6,7 @@ import (
 
 func main() {
 	// Create an interactive text input with single line input mode and show it
-	result, _ := pterm.DefaultInteractiveTextInput.Show()
+	result, _ := pterm.DefaultInteractiveTextInput.WithDefaultValue("Some default value").Show()
 
 	// Print a blank line for better readability
 	pterm.Println()
