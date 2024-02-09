@@ -183,6 +183,7 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 			if !p.startedTyping {
 				p.input = []string{""}
 				p.startedTyping = true
+				return false, nil
 			}
 			if len([]rune(p.input[p.cursorYPos]))+p.cursorXPos < len([]rune(p.input[p.cursorYPos])) {
 				p.input[p.cursorYPos] = string(append([]rune(p.input[p.cursorYPos])[:len([]rune(p.input[p.cursorYPos]))+p.cursorXPos], []rune(p.input[p.cursorYPos])[len([]rune(p.input[p.cursorYPos]))+p.cursorXPos+1:]...))
@@ -258,6 +259,10 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 		} else {
 			areaText += s
 		}
+	}
+
+	if !p.startedTyping {
+		return p.DefaultValue, nil
 	}
 
 	return strings.ReplaceAll(areaText, p.text, ""), nil
