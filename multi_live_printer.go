@@ -1,12 +1,13 @@
 package pterm
 
 import (
-	"atomicgo.dev/schedule"
 	"bytes"
 	"io"
 	"os"
 	"strings"
 	"time"
+
+	"atomicgo.dev/schedule"
 )
 
 var DefaultMultiPrinter = MultiPrinter{
@@ -63,8 +64,12 @@ func (p *MultiPrinter) getString() string {
 
 		// check if s is empty, if so get one part before, repeat until not empty
 		for s == "" {
-			parts = parts[:len(parts)-1]
-			s = parts[len(parts)-1]
+			if len(parts) != 0 {
+				parts = parts[:len(parts)-1]
+				if len(parts) != 0 {
+					s = parts[len(parts)-1]
+				}
+			}
 		}
 
 		s = strings.Trim(s, "\n\r")
