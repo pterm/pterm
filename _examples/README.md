@@ -3,6 +3,59 @@
 > This directory contains examples of using the PTerm library.
 
 <!-- examples:start -->
+### area/demo
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/area/demo/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"time"
+
+	"github.com/pterm/pterm"
+	"github.com/pterm/pterm/putils"
+)
+
+func main() {
+	// Print an informational message using PTerm's Info printer.
+	// This message will stay in place while the area updates.
+	pterm.Info.Println("The previous text will stay in place, while the area updates.")
+
+	// Print two new lines as spacer.
+	pterm.Print("\n\n")
+
+	// Start the Area printer from PTerm's DefaultArea, with the Center option.
+	// The Area printer allows us to update a specific area of the console output.
+	// The returned 'area' object is used to control the area updates.
+	area, _ := pterm.DefaultArea.WithCenter().Start()
+
+	// Loop 10 times to update the area with the current time.
+	for i := 0; i < 10; i++ {
+		// Get the current time, format it as "15:04:05" (hour:minute:second), and convert it to a string.
+		// Then, create a BigText from the time string using PTerm's DefaultBigText and putils NewLettersFromString.
+		// The Srender() function is used to save the BigText as a string.
+		str, _ := pterm.DefaultBigText.WithLetters(putils.LettersFromString(time.Now().Format("15:04:05"))).Srender()
+
+		// Update the Area contents with the current time string.
+		area.Update(str)
+
+		// Sleep for a second before the next update.
+		time.Sleep(time.Second)
+	}
+
+	// Stop the Area printer after all updates are done.
+	area.Stop()
+}
+
+```
+
+</details>
+
 ### area/center
 
 ![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/area/center/animation.svg)
@@ -77,59 +130,6 @@ func main() {
 
 	// Stop the area after all updates are done.
 	// This will clean up and free resources used by the area.
-	area.Stop()
-}
-
-```
-
-</details>
-
-### area/demo
-
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/area/demo/animation.svg)
-
-<details>
-
-<summary>SHOW SOURCE</summary>
-
-```go
-package main
-
-import (
-	"time"
-
-	"github.com/pterm/pterm"
-	"github.com/pterm/pterm/putils"
-)
-
-func main() {
-	// Print an informational message using PTerm's Info printer.
-	// This message will stay in place while the area updates.
-	pterm.Info.Println("The previous text will stay in place, while the area updates.")
-
-	// Print two new lines as spacer.
-	pterm.Print("\n\n")
-
-	// Start the Area printer from PTerm's DefaultArea, with the Center option.
-	// The Area printer allows us to update a specific area of the console output.
-	// The returned 'area' object is used to control the area updates.
-	area, _ := pterm.DefaultArea.WithCenter().Start()
-
-	// Loop 10 times to update the area with the current time.
-	for i := 0; i < 10; i++ {
-		// Get the current time, format it as "15:04:05" (hour:minute:second), and convert it to a string.
-		// Then, create a BigText from the time string using PTerm's DefaultBigText and putils NewLettersFromString.
-		// The Srender() function is used to save the BigText as a string.
-		str, _ := pterm.DefaultBigText.WithLetters(putils.LettersFromString(time.Now().Format("15:04:05"))).Srender()
-
-		// Update the Area contents with the current time string.
-		area.Update(str)
-
-		// Sleep for a second before the next update.
-		time.Sleep(time.Second)
-	}
-
-	// Stop the Area printer after all updates are done.
 	area.Stop()
 }
 
@@ -272,6 +272,47 @@ func main() {
 
 </details>
 
+### barchart/demo
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/demo/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	// Define the bars for the chart
+	bars := []pterm.Bar{
+		{Label: "Bar 1", Value: 5},
+		{Label: "Bar 2", Value: 3},
+		{Label: "Longer Label", Value: 7},
+	}
+
+	// Print an informational message
+	pterm.Info.Println("Chart example with positive only values (bars use 100% of chart area)")
+
+	// Create a bar chart with the defined bars and render it
+	// The DefaultBarChart is used as a base, and the bars are added with the WithBars option
+	// The Render function is then called to display the chart
+	pterm.DefaultBarChart.WithBars(bars).Render()
+
+	// Create a horizontal bar chart with the defined bars and render it
+	// The DefaultBarChart is used as a base, the chart is made horizontal with the WithHorizontal option, and the bars are added with the WithBars option
+	// The Render function is then called to display the chart
+	pterm.DefaultBarChart.WithHorizontal().WithBars(bars).Render()
+}
+
+```
+
+</details>
+
 ### barchart/custom-height
 
 ![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/custom-height/animation.svg)
@@ -380,47 +421,6 @@ func main() {
 	// The `WithBars` method is used to set the bars of the chart.
 	// The `Render` method is used to display the chart.
 	pterm.DefaultBarChart.WithBars(bars).Render()
-}
-
-```
-
-</details>
-
-### barchart/demo
-
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/demo/animation.svg)
-
-<details>
-
-<summary>SHOW SOURCE</summary>
-
-```go
-package main
-
-import (
-	"github.com/pterm/pterm"
-)
-
-func main() {
-	// Define the bars for the chart
-	bars := []pterm.Bar{
-		{Label: "Bar 1", Value: 5},
-		{Label: "Bar 2", Value: 3},
-		{Label: "Longer Label", Value: 7},
-	}
-
-	// Print an informational message
-	pterm.Info.Println("Chart example with positive only values (bars use 100% of chart area)")
-
-	// Create a bar chart with the defined bars and render it
-	// The DefaultBarChart is used as a base, and the bars are added with the WithBars option
-	// The Render function is then called to display the chart
-	pterm.DefaultBarChart.WithBars(bars).Render()
-
-	// Create a horizontal bar chart with the defined bars and render it
-	// The DefaultBarChart is used as a base, the chart is made horizontal with the WithHorizontal option, and the bars are added with the WithBars option
-	// The Render function is then called to display the chart
-	pterm.DefaultBarChart.WithHorizontal().WithBars(bars).Render()
 }
 
 ```
@@ -657,6 +657,47 @@ func main() {
 
 </details>
 
+### bigtext/demo
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/bigtext/demo/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"github.com/pterm/pterm"
+	"github.com/pterm/pterm/putils"
+)
+
+func main() {
+	// Create a large text with the LetterStyle from the standard theme.
+	// This is useful for creating title screens.
+	pterm.DefaultBigText.WithLetters(putils.LettersFromString("PTerm")).Render()
+
+	// Create a large text with differently colored letters.
+	// Here, the first letter 'P' is colored cyan and the rest 'Term' is colored light magenta.
+	// This can be used to highlight specific parts of the text.
+	pterm.DefaultBigText.WithLetters(
+		putils.LettersFromStringWithStyle("P", pterm.FgCyan.ToStyle()),
+		putils.LettersFromStringWithStyle("Term", pterm.FgLightMagenta.ToStyle()),
+	).Render()
+
+	// Create a large text with a specific RGB color.
+	// This can be used when you need a specific color that is not available in the standard colors.
+	// Here, the color is gold (RGB: 255, 215, 0).
+	pterm.DefaultBigText.WithLetters(
+		putils.LettersFromStringWithRGB("PTerm", pterm.NewRGB(255, 215, 0)),
+	).Render()
+}
+
+```
+
+</details>
+
 ### bigtext/colored
 
 ![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/bigtext/colored/animation.svg)
@@ -717,9 +758,9 @@ func main() {
 
 </details>
 
-### bigtext/demo
+### box/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/bigtext/demo/animation.svg)
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/box/demo/animation.svg)
 
 <details>
 
@@ -728,30 +769,29 @@ func main() {
 ```go
 package main
 
-import (
-	"github.com/pterm/pterm"
-	"github.com/pterm/pterm/putils"
-)
+import "github.com/pterm/pterm"
 
 func main() {
-	// Create a large text with the LetterStyle from the standard theme.
-	// This is useful for creating title screens.
-	pterm.DefaultBigText.WithLetters(putils.LettersFromString("PTerm")).Render()
+	// Print an informational message.
+	pterm.Info.Println("This might not be rendered correctly on GitHub,\nbut it will work in a real terminal.\nThis is because GitHub does not use a monospaced font by default for SVGs")
 
-	// Create a large text with differently colored letters.
-	// Here, the first letter 'P' is colored cyan and the rest 'Term' is colored light magenta.
-	// This can be used to highlight specific parts of the text.
-	pterm.DefaultBigText.WithLetters(
-		putils.LettersFromStringWithStyle("P", pterm.FgCyan.ToStyle()),
-		putils.LettersFromStringWithStyle("Term", pterm.FgLightMagenta.ToStyle()),
-	).Render()
+	// Create three panels with text, some of them with titles.
+	// The panels are created using the DefaultBox style.
+	panel1 := pterm.DefaultBox.Sprint("Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit,\nsed do eiusmod tempor incididunt\nut labore et dolore\nmagna aliqua.")
+	panel2 := pterm.DefaultBox.WithTitle("title").Sprint("Ut enim ad minim veniam,\nquis nostrud exercitation\nullamco laboris\nnisi ut aliquip\nex ea commodo\nconsequat.")
+	panel3 := pterm.DefaultBox.WithTitle("bottom center title").WithTitleBottomCenter().Sprint("Duis aute irure\ndolor in reprehenderit\nin voluptate velit esse cillum\ndolore eu fugiat\nnulla pariatur.")
 
-	// Create a large text with a specific RGB color.
-	// This can be used when you need a specific color that is not available in the standard colors.
-	// Here, the color is gold (RGB: 255, 215, 0).
-	pterm.DefaultBigText.WithLetters(
-		putils.LettersFromStringWithRGB("PTerm", pterm.NewRGB(255, 215, 0)),
-	).Render()
+	// Combine the panels into a layout using the DefaultPanel style.
+	// The layout is a 2D grid, with each row being an array of panels.
+	// In this case, the first row contains panel1 and panel2, and the second row contains only panel3.
+	panels, _ := pterm.DefaultPanel.WithPanels(pterm.Panels{
+		{{Data: panel1}, {Data: panel2}},
+		{{Data: panel3}},
+	}).Srender()
+
+	// Print the panels layout inside a box with a title.
+	// The box is created using the DefaultBox style, with the title positioned at the bottom right.
+	pterm.DefaultBox.WithTitle("Lorem Ipsum").WithTitleBottomRight().WithRightPadding(0).WithBottomPadding(0).Println(panels)
 }
 
 ```
@@ -803,46 +843,6 @@ func main() {
 
 </details>
 
-### box/demo
-
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/box/demo/animation.svg)
-
-<details>
-
-<summary>SHOW SOURCE</summary>
-
-```go
-package main
-
-import "github.com/pterm/pterm"
-
-func main() {
-	// Print an informational message.
-	pterm.Info.Println("This might not be rendered correctly on GitHub,\nbut it will work in a real terminal.\nThis is because GitHub does not use a monospaced font by default for SVGs")
-
-	// Create three panels with text, some of them with titles.
-	// The panels are created using the DefaultBox style.
-	panel1 := pterm.DefaultBox.Sprint("Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit,\nsed do eiusmod tempor incididunt\nut labore et dolore\nmagna aliqua.")
-	panel2 := pterm.DefaultBox.WithTitle("title").Sprint("Ut enim ad minim veniam,\nquis nostrud exercitation\nullamco laboris\nnisi ut aliquip\nex ea commodo\nconsequat.")
-	panel3 := pterm.DefaultBox.WithTitle("bottom center title").WithTitleBottomCenter().Sprint("Duis aute irure\ndolor in reprehenderit\nin voluptate velit esse cillum\ndolore eu fugiat\nnulla pariatur.")
-
-	// Combine the panels into a layout using the DefaultPanel style.
-	// The layout is a 2D grid, with each row being an array of panels.
-	// In this case, the first row contains panel1 and panel2, and the second row contains only panel3.
-	panels, _ := pterm.DefaultPanel.WithPanels(pterm.Panels{
-		{{Data: panel1}, {Data: panel2}},
-		{{Data: panel3}},
-	}).Srender()
-
-	// Print the panels layout inside a box with a title.
-	// The box is created using the DefaultBox style, with the title positioned at the bottom right.
-	pterm.DefaultBox.WithTitle("Lorem Ipsum").WithTitleBottomRight().WithRightPadding(0).WithBottomPadding(0).Println(panels)
-}
-
-```
-
-</details>
-
 ### box/title
 
 ![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/box/title/animation.svg)
@@ -878,6 +878,47 @@ func main() {
 		{{box4}, {box5}, {box6}},
 		{{box7}},
 	}).Render()
+}
+
+```
+
+</details>
+
+### bulletlist/demo
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/bulletlist/demo/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"github.com/pterm/pterm"
+	"github.com/pterm/pterm/putils"
+)
+
+func main() {
+	// Define a list of bullet list items with different levels.
+	bulletListItems := []pterm.BulletListItem{
+		{Level: 0, Text: "Level 0"}, // Level 0 item
+		{Level: 1, Text: "Level 1"}, // Level 1 item
+		{Level: 2, Text: "Level 2"}, // Level 2 item
+	}
+
+	// Use the default bullet list style to render the list items.
+	pterm.DefaultBulletList.WithItems(bulletListItems).Render()
+
+	// Define a string with different levels of indentation.
+	text := `0
+ 1
+  2
+   3`
+
+	// Convert the indented string to a bullet list and render it.
+	putils.BulletListFromString(text, " ").Render()
 }
 
 ```
@@ -926,47 +967,6 @@ func main() {
 
 	// Create a bullet list with the defined items and render it.
 	pterm.DefaultBulletList.WithItems(bulletListItems).Render()
-}
-
-```
-
-</details>
-
-### bulletlist/demo
-
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/bulletlist/demo/animation.svg)
-
-<details>
-
-<summary>SHOW SOURCE</summary>
-
-```go
-package main
-
-import (
-	"github.com/pterm/pterm"
-	"github.com/pterm/pterm/putils"
-)
-
-func main() {
-	// Define a list of bullet list items with different levels.
-	bulletListItems := []pterm.BulletListItem{
-		{Level: 0, Text: "Level 0"}, // Level 0 item
-		{Level: 1, Text: "Level 1"}, // Level 1 item
-		{Level: 2, Text: "Level 2"}, // Level 2 item
-	}
-
-	// Use the default bullet list style to render the list items.
-	pterm.DefaultBulletList.WithItems(bulletListItems).Render()
-
-	// Define a string with different levels of indentation.
-	text := `0
- 1
-  2
-   3`
-
-	// Convert the indented string to a bullet list and render it.
-	putils.BulletListFromString(text, " ").Render()
 }
 
 ```
@@ -1506,7 +1506,7 @@ func main() {
 		pterm.DefaultCenter.WithCenterEachLineSeparately().Println(fadeInfo)
 	})
 
-	showcase("Fully Customizale", 2, func() {
+	showcase("Fully Customizable", 2, func() {
 		for i := 0; i < 4; i++ {
 			pterm.Println()
 		}
@@ -1646,6 +1646,36 @@ func randomInt(min, max int) int {
 
 </details>
 
+### header/demo
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/header/demo/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	// Print a default header.
+	// This uses the default settings of PTerm to print a header.
+	pterm.DefaultHeader.Println("This is the default header!")
+
+	// Print a spacer line for better readability.
+	pterm.Println()
+
+	// Print a full-width header.
+	// This uses the WithFullWidth() option of PTerm to print a header that spans the full width of the terminal.
+	pterm.DefaultHeader.WithFullWidth().Println("This is a full-width header.")
+}
+
+```
+
+</details>
+
 ### header/custom
 
 ![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/header/custom/animation.svg)
@@ -1678,9 +1708,9 @@ func main() {
 
 </details>
 
-### header/demo
+### heatmap/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/header/demo/animation.svg)
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/heatmap/demo/animation.svg)
 
 <details>
 
@@ -1689,19 +1719,29 @@ func main() {
 ```go
 package main
 
-import "github.com/pterm/pterm"
+import (
+	"github.com/pterm/pterm"
+)
 
 func main() {
-	// Print a default header.
-	// This uses the default settings of PTerm to print a header.
-	pterm.DefaultHeader.Println("This is the default header!")
+	// Define the data for the heatmap. Each sub-array represents a row in the heatmap.
+	data := [][]float32{
+		{0.9, 0.2, -0.7, 0.4, -0.5, 0.6, -0.3, 0.8, -0.1, -1.0, 0.1, -0.8, 0.3},
+		{0.2, -0.7, -0.5, -0.3, -0.1, 0.1, 0.3, 0.5, 0.9, -0.9, -0.7, -0.5, -0.3},
+		{0.4, 0.4, -0.3, -1.0, 0.3, -0.2, -0.9, 0.5, -0.3, -1.0, 0.6, -0.2, -0.9},
+		{0.9, -0.5, -0.1, 0.3, 1, -0.7, -0.3, 0.1, 0.7, -0.9, -0.5, 0.2, 0.6},
+		{0.5, 0.6, 0.1, -0.2, -0.7, 0.8, 0.6, 0.1, -0.5, -0.7, 0.7, 0.3, 0.0},
+	}
 
-	// Print a spacer line for better readability.
-	pterm.Println()
+	// Define the labels for the X and Y axes of the heatmap.
+	headerData := pterm.HeatmapAxis{
+		XAxis: []string{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m"},
+		YAxis: []string{"1", "2", "3", "4", "5"},
+	}
 
-	// Print a full-width header.
-	// This uses the WithFullWidth() option of PTerm to print a header that spans the full width of the terminal.
-	pterm.DefaultHeader.WithFullWidth().Println("This is a full-width header.")
+	// Create a heatmap with the defined data and axis labels, and enable RGB colors.
+	// Then render the heatmap.
+	pterm.DefaultHeatmap.WithAxisData(headerData).WithData(data).WithEnableRGB().Render()
 }
 
 ```
@@ -1860,46 +1900,6 @@ func main() {
 		WithEnableRGB().
 		WithRGBRange(rgbRange...).
 		Render()
-}
-
-```
-
-</details>
-
-### heatmap/demo
-
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/heatmap/demo/animation.svg)
-
-<details>
-
-<summary>SHOW SOURCE</summary>
-
-```go
-package main
-
-import (
-	"github.com/pterm/pterm"
-)
-
-func main() {
-	// Define the data for the heatmap. Each sub-array represents a row in the heatmap.
-	data := [][]float32{
-		{0.9, 0.2, -0.7, 0.4, -0.5, 0.6, -0.3, 0.8, -0.1, -1.0, 0.1, -0.8, 0.3},
-		{0.2, -0.7, -0.5, -0.3, -0.1, 0.1, 0.3, 0.5, 0.9, -0.9, -0.7, -0.5, -0.3},
-		{0.4, 0.4, -0.3, -1.0, 0.3, -0.2, -0.9, 0.5, -0.3, -1.0, 0.6, -0.2, -0.9},
-		{0.9, -0.5, -0.1, 0.3, 1, -0.7, -0.3, 0.1, 0.7, -0.9, -0.5, 0.2, 0.6},
-		{0.5, 0.6, 0.1, -0.2, -0.7, 0.8, 0.6, 0.1, -0.5, -0.7, 0.7, 0.3, 0.0},
-	}
-
-	// Define the labels for the X and Y axes of the heatmap.
-	headerData := pterm.HeatmapAxis{
-		XAxis: []string{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m"},
-		YAxis: []string{"1", "2", "3", "4", "5"},
-	}
-
-	// Create a heatmap with the defined data and axis labels, and enable RGB colors.
-	// Then render the heatmap.
-	pterm.DefaultHeatmap.WithAxisData(headerData).WithData(data).WithEnableRGB().Render()
 }
 
 ```
@@ -2068,6 +2068,48 @@ func main() {
 
 </details>
 
+### interactive_multiselect/demo
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/interactive_multiselect/demo/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	// Initialize an empty slice to hold the options.
+	var options []string
+
+	// Populate the options slice with 100 options.
+	for i := 0; i < 100; i++ {
+		options = append(options, fmt.Sprintf("Option %d", i))
+	}
+
+	// Add 5 more options to the slice, indicating the availability of fuzzy searching.
+	for i := 0; i < 5; i++ {
+		options = append(options, fmt.Sprintf("You can use fuzzy searching (%d)", i))
+	}
+
+	// Use PTerm's interactive multiselect to present the options to the user and capture their selections.
+	// The Show() method displays the options and waits for user input.
+	selectedOptions, _ := pterm.DefaultInteractiveMultiselect.WithOptions(options).Show()
+
+	// Print the selected options, highlighted in green.
+	pterm.Info.Printfln("Selected options: %s", pterm.Green(selectedOptions))
+}
+
+```
+
+</details>
+
 ### interactive_multiselect/custom-checkmarks
 
 ![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/interactive_multiselect/custom-checkmarks/animation.svg)
@@ -2080,7 +2122,6 @@ func main() {
 package main
 
 import (
-	"atomicgo.dev/keyboard/keys"
 	"fmt"
 	"github.com/pterm/pterm"
 )
@@ -2095,12 +2136,10 @@ func main() {
 	}
 
 	// Create a new interactive multiselect printer with the options
-	// Disable the filter, set the keys for confirming and selecting, and define the checkmark symbols
+	// Disable the filter and define the checkmark symbols
 	printer := pterm.DefaultInteractiveMultiselect.
 		WithOptions(options).
 		WithFilter(false).
-		WithKeyConfirm(keys.Enter).
-		WithKeySelect(keys.Space).
 		WithCheckmark(&pterm.Checkmark{Checked: pterm.Green("+"), Unchecked: pterm.Red("-")})
 
 	// Show the interactive multiselect and get the selected options
@@ -2152,48 +2191,6 @@ func main() {
 	selectedOptions, _ := printer.Show()
 
 	// Print the selected options
-	pterm.Info.Printfln("Selected options: %s", pterm.Green(selectedOptions))
-}
-
-```
-
-</details>
-
-### interactive_multiselect/demo
-
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/interactive_multiselect/demo/animation.svg)
-
-<details>
-
-<summary>SHOW SOURCE</summary>
-
-```go
-package main
-
-import (
-	"fmt"
-	"github.com/pterm/pterm"
-)
-
-func main() {
-	// Initialize an empty slice to hold the options.
-	var options []string
-
-	// Populate the options slice with 100 options.
-	for i := 0; i < 100; i++ {
-		options = append(options, fmt.Sprintf("Option %d", i))
-	}
-
-	// Add 5 more options to the slice, indicating the availability of fuzzy searching.
-	for i := 0; i < 5; i++ {
-		options = append(options, fmt.Sprintf("You can use fuzzy searching (%d)", i))
-	}
-
-	// Use PTerm's interactive multiselect to present the options to the user and capture their selections.
-	// The Show() method displays the options and waits for user input.
-	selectedOptions, _ := pterm.DefaultInteractiveMultiselect.WithOptions(options).Show()
-
-	// Print the selected options, highlighted in green.
 	pterm.Info.Printfln("Selected options: %s", pterm.Green(selectedOptions))
 }
 
@@ -2259,11 +2256,38 @@ import (
 )
 
 func main() {
-	// Create an interactive text input with single line input mode
-	textInput := pterm.DefaultInteractiveTextInput.WithMultiLine(false)
+	// Create an interactive text input with single line input mode and show it
+	result, _ := pterm.DefaultInteractiveTextInput.Show()
 
-	// Show the text input and get the result
-	result, _ := textInput.Show()
+	// Print a blank line for better readability
+	pterm.Println()
+
+	// Print the user's answer with an info prefix
+	pterm.Info.Printfln("You answered: %s", result)
+}
+
+```
+
+</details>
+
+### interactive_textinput/default-value
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/interactive_textinput/default-value/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	// Create an interactive text input with single line input mode and show it
+	result, _ := pterm.DefaultInteractiveTextInput.WithDefaultValue("Some default value").Show()
 
 	// Print a blank line for better readability
 	pterm.Println()
@@ -2338,6 +2362,82 @@ func main() {
 	// Log the received password (masked)
 	// Note: In a real-world application, you should never log passwords
 	logger.Info("Password received", logger.Args("password", result))
+}
+
+```
+
+</details>
+
+### logger/demo
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/logger/demo/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"github.com/pterm/pterm"
+	"time"
+)
+
+func main() {
+	// Create a logger with trace level
+	logger := pterm.DefaultLogger.WithLevel(pterm.LogLevelTrace)
+
+	// Log a trace level message
+	logger.Trace("Doing not so important stuff", logger.Args("priority", "super low"))
+
+	// Pause for 3 seconds
+	sleep()
+
+	// Define a map with interesting stuff
+	interstingStuff := map[string]any{
+		"when were crayons invented":  "1903",
+		"what is the meaning of life": 42,
+		"is this interesting":         true,
+	}
+
+	// Log a debug level message with arguments from the map
+	logger.Debug("This might be interesting", logger.ArgsFromMap(interstingStuff))
+
+	// Pause for 3 seconds
+	sleep()
+
+	// Log an info level message
+	logger.Info("That was actually interesting", logger.Args("such", "wow"))
+
+	// Pause for 3 seconds
+	sleep()
+
+	// Log a warning level message
+	logger.Warn("Oh no, I see an error coming to us!", logger.Args("speed", 88, "measures", "mph"))
+
+	// Pause for 3 seconds
+	sleep()
+
+	// Log an error level message
+	logger.Error("Damn, here it is!", logger.Args("error", "something went wrong"))
+
+	// Pause for 3 seconds
+	sleep()
+
+	// Log an info level message with a long text that will be automatically wrapped
+	logger.Info("But what's really cool is, that you can print very long logs, and PTerm will automatically wrap them for you! Say goodbye to text, that has weird line breaks!", logger.Args("very", "long"))
+
+	// Pause for 3 seconds
+	sleep()
+
+	// Log a fatal level message
+	logger.Fatal("Oh no, this process is getting killed!", logger.Args("fatal", true))
+}
+
+// Function to pause the execution for 3 seconds
+func sleep() {
+	time.Sleep(time.Second * 3)
 }
 
 ```
@@ -2436,82 +2536,6 @@ func main() {
 
 	// Log a fatal message with additional arguments. This will terminate the process.
 	logger.Fatal("Oh no, this process is getting killed!", logger.Args("fatal", true))
-}
-
-```
-
-</details>
-
-### logger/demo
-
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/logger/demo/animation.svg)
-
-<details>
-
-<summary>SHOW SOURCE</summary>
-
-```go
-package main
-
-import (
-	"github.com/pterm/pterm"
-	"time"
-)
-
-func main() {
-	// Create a logger with trace level
-	logger := pterm.DefaultLogger.WithLevel(pterm.LogLevelTrace)
-
-	// Log a trace level message
-	logger.Trace("Doing not so important stuff", logger.Args("priority", "super low"))
-
-	// Pause for 3 seconds
-	sleep()
-
-	// Define a map with interesting stuff
-	interstingStuff := map[string]any{
-		"when were crayons invented":  "1903",
-		"what is the meaning of life": 42,
-		"is this interesting":         true,
-	}
-
-	// Log a debug level message with arguments from the map
-	logger.Debug("This might be interesting", logger.ArgsFromMap(interstingStuff))
-
-	// Pause for 3 seconds
-	sleep()
-
-	// Log an info level message
-	logger.Info("That was actually interesting", logger.Args("such", "wow"))
-
-	// Pause for 3 seconds
-	sleep()
-
-	// Log a warning level message
-	logger.Warn("Oh no, I see an error coming to us!", logger.Args("speed", 88, "measures", "mph"))
-
-	// Pause for 3 seconds
-	sleep()
-
-	// Log an error level message
-	logger.Error("Damn, here it is!", logger.Args("error", "something went wrong"))
-
-	// Pause for 3 seconds
-	sleep()
-
-	// Log an info level message with a long text that will be automatically wrapped
-	logger.Info("But what's really cool is, that you can print very long logs, and PTerm will automatically wrap them for you! Say goodbye to text, that has weird line breaks!", logger.Args("very", "long"))
-
-	// Pause for 3 seconds
-	sleep()
-
-	// Log a fatal level message
-	logger.Fatal("Oh no, this process is getting killed!", logger.Args("fatal", true))
-}
-
-// Function to pause the execution for 3 seconds
-func sleep() {
-	time.Sleep(time.Second * 3)
 }
 
 ```
@@ -2719,6 +2743,40 @@ func main() {
 
 </details>
 
+### paragraph/demo
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/paragraph/demo/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	// Using the default paragraph printer to print a long text.
+	// The text is split at the spaces, which is useful for continuous text of all kinds.
+	// The line width can be manually adjusted if needed.
+	pterm.DefaultParagraph.Println("This is the default paragraph printer. As you can see, no words are separated, " +
+		"but the text is split at the spaces. This is useful for continuous text of all kinds. You can manually change the line width if you want to." +
+		"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam")
+
+	// Printing a line space for separation.
+	pterm.Println()
+
+	// Printing a long text without using the paragraph printer.
+	// The default Println() function is used here, which does not provide intelligent splitting.
+	pterm.Println("This text is written with the default Println() function. No intelligent splitting here." +
+		"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam")
+}
+
+```
+
+</details>
+
 ### paragraph/customized
 
 ![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/paragraph/customized/animation.svg)
@@ -2750,40 +2808,6 @@ func main() {
 
 	// Print the long text without using a paragraph printer.
 	pterm.Println(longTextWithoutParagraph)
-}
-
-```
-
-</details>
-
-### paragraph/demo
-
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/paragraph/demo/animation.svg)
-
-<details>
-
-<summary>SHOW SOURCE</summary>
-
-```go
-package main
-
-import "github.com/pterm/pterm"
-
-func main() {
-	// Using the default paragraph printer to print a long text.
-	// The text is split at the spaces, which is useful for continuous text of all kinds.
-	// The line width can be manually adjusted if needed.
-	pterm.DefaultParagraph.Println("This is the default paragraph printer. As you can see, no words are separated, " +
-		"but the text is split at the spaces. This is useful for continuous text of all kinds. You can manually change the line width if you want to." +
-		"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam")
-
-	// Printing a line space for separation.
-	pterm.Println()
-
-	// Printing a long text without using the paragraph printer.
-	// The default Println() function is used here, which does not provide intelligent splitting.
-	pterm.Println("This text is written with the default Println() function. No intelligent splitting here." +
-		"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam")
 }
 
 ```
@@ -3185,41 +3209,6 @@ func main() {
 
 </details>
 
-### table/boxed
-
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/table/boxed/animation.svg)
-
-<details>
-
-<summary>SHOW SOURCE</summary>
-
-```go
-package main
-
-import "github.com/pterm/pterm"
-
-func main() {
-	// Define the data for the table.
-	// Each inner slice represents a row in the table.
-	// The first row is considered as the header of the table.
-	tableData := pterm.TableData{
-		{"Firstname", "Lastname", "Email", "Note"},
-		{"Paul", "Dean", "augue@velitAliquam.co.uk", ""},
-		{"Callie", "Mckay", "nunc.sed@est.com", "这是一个测试, haha!"},
-		{"Libby", "Camacho", "lobortis@semper.com", "just a test, hey!"},
-		{"张", "小宝", "zhang@example.com", ""},
-	}
-
-	// Create a table with the defined data.
-	// The table has a header and is boxed.
-	// Finally, render the table to print it.
-	pterm.DefaultTable.WithHasHeader().WithBoxed().WithData(tableData).Render()
-}
-
-```
-
-</details>
-
 ### table/demo
 
 ![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/table/demo/animation.svg)
@@ -3259,6 +3248,41 @@ func main() {
 
 	// Create another table with a header and the defined data, then render it
 	pterm.DefaultTable.WithHasHeader().WithData(tableData2).Render()
+}
+
+```
+
+</details>
+
+### table/boxed
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/table/boxed/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	// Define the data for the table.
+	// Each inner slice represents a row in the table.
+	// The first row is considered as the header of the table.
+	tableData := pterm.TableData{
+		{"Firstname", "Lastname", "Email", "Note"},
+		{"Paul", "Dean", "augue@velitAliquam.co.uk", ""},
+		{"Callie", "Mckay", "nunc.sed@est.com", "这是一个测试, haha!"},
+		{"Libby", "Camacho", "lobortis@semper.com", "just a test, hey!"},
+		{"张", "小宝", "zhang@example.com", ""},
+	}
+
+	// Create a table with the defined data.
+	// The table has a header and is boxed.
+	// Finally, render the table to print it.
+	pterm.DefaultTable.WithHasHeader().WithBoxed().WithData(tableData).Render()
 }
 
 ```

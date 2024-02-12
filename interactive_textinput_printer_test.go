@@ -98,6 +98,7 @@ func TestInteractiveTextInputPrinter_WithMultiLineOnTab(t *testing.T) {
 func TestInteractiveTextInputPrinter_WithMultiLineOnUp(t *testing.T) {
 	go func() {
 		time.Sleep(1 * time.Millisecond)
+		keyboard.SimulateKeyPress(keys.Backspace)
 		keyboard.SimulateKeyPress(keys.Enter)
 		keyboard.SimulateKeyPress("second line")
 		keyboard.SimulateKeyPress(keys.Up)
@@ -129,6 +130,7 @@ func TestInteractiveTextInputPrinter_WithMultiLineOnDown(t *testing.T) {
 func TestInteractiveTextInputPrinter_WithMultiLineOnLeft(t *testing.T) {
 	go func() {
 		time.Sleep(1 * time.Millisecond)
+		keyboard.SimulateKeyPress(keys.Backspace)
 		keyboard.SimulateKeyPress(keys.Enter)
 		keyboard.SimulateKeyPress("a")
 		keyboard.SimulateKeyPress(keys.Left)
@@ -157,28 +159,6 @@ func TestInteractiveTextInputPrinter_WithMultiLineOnRight(t *testing.T) {
 	testza.AssertEqual(t, "a\nb", result)
 }
 
-func TestInteractiveTextInputPrinter_OnSpace(t *testing.T) {
-	go func() {
-		keyboard.SimulateKeyPress(keys.Space)
-		keyboard.SimulateKeyPress(keys.Tab)
-	}()
-	result, _ := pterm.DefaultInteractiveTextInput.
-		WithMultiLine(true).
-		WithDefaultValue("default").Show()
-	testza.AssertEqual(t, "default ", result)
-}
-
-func TestInteractiveTextInputPrinter_OnDelete(t *testing.T) {
-	go func() {
-		keyboard.SimulateKeyPress(keys.Left)
-		keyboard.SimulateKeyPress(keys.Delete)
-		keyboard.SimulateKeyPress(keys.Enter)
-	}()
-	result, _ := pterm.DefaultInteractiveTextInput.
-		WithDefaultValue("a").Show()
-	testza.AssertEqual(t, "", result)
-}
-
 func TestInteractiveTextInputPrinter_OnBackspace(t *testing.T) {
 	go func() {
 		keyboard.SimulateKeyPress(keys.Backspace)
@@ -191,6 +171,7 @@ func TestInteractiveTextInputPrinter_OnBackspace(t *testing.T) {
 
 func TestInteractiveTextInputPrinter_WithMultiLineOnDelete(t *testing.T) {
 	go func() {
+		keyboard.SimulateKeyPress(keys.Backspace)
 		keyboard.SimulateKeyPress(keys.Enter)
 		keyboard.SimulateKeyPress('a')
 		keyboard.SimulateKeyPress(keys.Up)
@@ -200,11 +181,12 @@ func TestInteractiveTextInputPrinter_WithMultiLineOnDelete(t *testing.T) {
 	result, _ := pterm.DefaultInteractiveTextInput.
 		WithMultiLine(true).
 		WithDefaultValue("a").Show()
-	testza.AssertEqual(t, "aa", result)
+	testza.AssertEqual(t, "a", result)
 }
 
 func TestInteractiveTextInputPrinter_WithMultiLineOnBackspace(t *testing.T) {
 	go func() {
+		keyboard.SimulateKeyPress(keys.Backspace)
 		keyboard.SimulateKeyPress(keys.Enter)
 		keyboard.SimulateKeyPress(keys.Backspace)
 		keyboard.SimulateKeyPress(keys.Tab)
@@ -212,31 +194,7 @@ func TestInteractiveTextInputPrinter_WithMultiLineOnBackspace(t *testing.T) {
 	result, _ := pterm.DefaultInteractiveTextInput.
 		WithMultiLine(true).
 		WithDefaultValue("a").Show()
-	testza.AssertEqual(t, "a", result)
-}
-
-func TestInteractiveTextInputPrinter_WithMultiLineAltPressed(t *testing.T) {
-	go func() {
-		keyboard.SimulateKeyPress(keys.Key{AltPressed: true, Code: keys.Enter})
-		keyboard.SimulateKeyPress(keys.Tab)
-	}()
-	result, _ := pterm.DefaultInteractiveTextInput.
-		WithMultiLine(true).
-		WithDefaultValue("a").Show()
-	testza.AssertEqual(t, "a\n", result)
-}
-
-func TestInteractiveTextInputPrinter_OnLeftRight(t *testing.T) {
-	go func() {
-		keyboard.SimulateKeyPress(keys.Left)
-		keyboard.SimulateKeyPress("left")
-		keyboard.SimulateKeyPress(keys.Right)
-		keyboard.SimulateKeyPress("right")
-		keyboard.SimulateKeyPress(keys.Enter)
-	}()
-	result, _ := pterm.DefaultInteractiveTextInput.
-		WithDefaultValue("default").Show()
-	testza.AssertEqual(t, "defaullefttright", result)
+	testza.AssertEqual(t, "", result)
 }
 
 func TestInteractiveTextInputPrinter_WithMultiLineOnLeftRight(t *testing.T) {

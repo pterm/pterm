@@ -200,6 +200,9 @@ func (l Logger) AppendKeyStyle(key string, style Style) *Logger {
 
 // CanPrint checks if the logger can print a specific log level.
 func (l Logger) CanPrint(level LogLevel) bool {
+	if l.Level == LogLevelDisabled {
+		return false
+	}
 	return l.Level <= level
 }
 
@@ -208,6 +211,8 @@ func (l Logger) Args(args ...any) []LoggerArgument {
 	var loggerArgs []LoggerArgument
 
 	// args are in the format of: key, value, key, value, key, value, ...
+	args = l.sanitizeArgs(args)
+
 	for i := 0; i < len(args); i += 2 {
 		key := Sprint(args[i])
 		value := args[i+1]
@@ -233,6 +238,20 @@ func (l Logger) ArgsFromMap(m map[string]any) []LoggerArgument {
 	}
 
 	return loggerArgs
+}
+
+// sanitizeArgs inserts an error message into an args slice if an odd number of arguments is provided.
+func (l Logger) sanitizeArgs(args []any) []any {
+	numArgs := len(args)
+	if numArgs > 0 && numArgs%2 != 0 {
+		if numArgs > 1 {
+			lastArg := args[numArgs-1]
+			args = append(args[:numArgs-1], []any{ErrKeyWithoutValue, lastArg}...)
+		} else {
+			args = []any{ErrKeyWithoutValue, args[0]}
+		}
+	}
+	return args
 }
 
 func (l Logger) getCallerInfo() (path string, line int) {
@@ -261,7 +280,7 @@ func (l Logger) combineArgs(args ...[]LoggerArgument) []LoggerArgument {
 }
 
 func (l Logger) print(level LogLevel, msg string, args []LoggerArgument) {
-	if l.Level > level {
+	if !l.CanPrint(level) {
 		return
 	}
 
@@ -277,7 +296,7 @@ func (l Logger) print(level LogLevel, msg string, args []LoggerArgument) {
 	loggerMutex.Lock()
 	defer loggerMutex.Unlock()
 
-	_, _ = l.Writer.Write([]byte(line + "\n"))
+	Fprintln(l.Writer, line)
 }
 
 func (l Logger) renderColorful(level LogLevel, msg string, args []LoggerArgument) (result string) {

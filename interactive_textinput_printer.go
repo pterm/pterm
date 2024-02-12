@@ -6,6 +6,7 @@ import (
 	"atomicgo.dev/cursor"
 	"atomicgo.dev/keyboard"
 	"atomicgo.dev/keyboard/keys"
+	"github.com/mattn/go-runewidth"
 
 	"github.com/pterm/pterm/internal"
 )
@@ -28,10 +29,12 @@ type InteractiveTextInputPrinter struct {
 	Mask            string
 	OnInterruptFunc func()
 
-	input      []string
-	cursorXPos int
-	cursorYPos int
-	text       string
+	input         []string
+	cursorXPos    int
+	cursorYPos    int
+	text          string
+	startedTyping bool
+	valueStyle    *Style
 }
 
 // WithDefaultText sets the default text.
@@ -85,7 +88,7 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 
 	var areaText string
 
-	if len(text) == 0 || Sprint(text[0]) == "" {
+	if len(text) == 0 || text[0] == "" {
 		text = []string{p.DefaultText}
 	}
 
@@ -101,11 +104,11 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	area.StartOfLine()
 
 	if !p.MultiLine {
-		cursor.Right(len(RemoveColorFromString(areaText)))
+		cursor.Right(runewidth.StringWidth(RemoveColorFromString(areaText)))
 	}
 
 	if p.DefaultValue != "" {
-		p.input = append(p.input, p.DefaultValue)
+		p.input = append(p.input, Gray(p.DefaultValue))
 		p.updateArea(&area)
 	}
 
@@ -124,6 +127,17 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 				return true, nil
 			}
 		case keys.Enter:
+			if p.DefaultValue != "" && !p.startedTyping {
+				for i := range p.input {
+					p.input[i] = RemoveColorFromString(p.input[i])
+				}
+
+				if p.MultiLine {
+					area.Bottom()
+				}
+				return true, nil
+			}
+
 			if p.MultiLine {
 				if key.AltPressed {
 					p.cursorXPos = 0
@@ -140,10 +154,22 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 				return true, nil
 			}
 		case keys.RuneKey:
+			if !p.startedTyping {
+				p.input = []string{""}
+				p.startedTyping = true
+			}
 			p.input[p.cursorYPos] = string(append([]rune(p.input[p.cursorYPos])[:len([]rune(p.input[p.cursorYPos]))+p.cursorXPos], append([]rune(key.String()), []rune(p.input[p.cursorYPos])[len([]rune(p.input[p.cursorYPos]))+p.cursorXPos:]...)...))
 		case keys.Space:
+			if !p.startedTyping {
+				p.input = []string{" "}
+				p.startedTyping = true
+			}
 			p.input[p.cursorYPos] = string(append([]rune(p.input[p.cursorYPos])[:len([]rune(p.input[p.cursorYPos]))+p.cursorXPos], append([]rune(" "), []rune(p.input[p.cursorYPos])[len([]rune(p.input[p.cursorYPos]))+p.cursorXPos:]...)...))
 		case keys.Backspace:
+			if !p.startedTyping {
+				p.input = []string{""}
+				p.startedTyping = true
+			}
 			if len([]rune(p.input[p.cursorYPos]))+p.cursorXPos > 0 {
 				p.input[p.cursorYPos] = string(append([]rune(p.input[p.cursorYPos])[:len([]rune(p.input[p.cursorYPos]))-1+p.cursorXPos], []rune(p.input[p.cursorYPos])[len([]rune(p.input[p.cursorYPos]))+p.cursorXPos:]...))
 			} else if p.cursorYPos > 0 {
@@ -154,6 +180,11 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 				p.cursorYPos--
 			}
 		case keys.Delete:
+			if !p.startedTyping {
+				p.input = []string{""}
+				p.startedTyping = true
+				return false, nil
+			}
 			if len([]rune(p.input[p.cursorYPos]))+p.cursorXPos < len([]rune(p.input[p.cursorYPos])) {
 				p.input[p.cursorYPos] = string(append([]rune(p.input[p.cursorYPos])[:len([]rune(p.input[p.cursorYPos]))+p.cursorXPos], []rune(p.input[p.cursorYPos])[len([]rune(p.input[p.cursorYPos]))+p.cursorXPos+1:]...))
 				p.cursorXPos++
@@ -167,6 +198,10 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 			cancel()
 			return true, nil
 		case keys.Down:
+			if !p.startedTyping {
+				p.input = []string{""}
+				p.startedTyping = true
+			}
 			if p.cursorYPos+1 < len(p.input) {
 				p.cursorXPos = (internal.GetStringMaxWidth(p.input[p.cursorYPos]) + p.cursorXPos) - internal.GetStringMaxWidth(p.input[p.cursorYPos+1])
 				if p.cursorXPos > 0 {
@@ -175,6 +210,10 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 				p.cursorYPos++
 			}
 		case keys.Up:
+			if !p.startedTyping {
+				p.input = []string{""}
+				p.startedTyping = true
+			}
 			if p.cursorYPos > 0 {
 				p.cursorXPos = (internal.GetStringMaxWidth(p.input[p.cursorYPos]) + p.cursorXPos) - internal.GetStringMaxWidth(p.input[p.cursorYPos-1])
 				if p.cursorXPos > 0 {
@@ -220,6 +259,10 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 		} else {
 			areaText += s
 		}
+	}
+
+	if !p.startedTyping {
+		return p.DefaultValue, nil
 	}
 
 	return strings.ReplaceAll(areaText, p.text, ""), nil

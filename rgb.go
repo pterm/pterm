@@ -136,13 +136,13 @@ func (p RGBStyle) Sprintln(a ...interface{}) string {
 
 // Sprintf formats according to a format specifier and returns the resulting string.
 func (p RGBStyle) Sprintf(format string, a ...interface{}) string {
-	return fmt.Sprintf(format, p.Sprint(a...))
+	return p.Sprint(Sprintf(format, a...))
 }
 
 // Sprintfln formats according to a format specifier and returns the resulting string.
 // Spaces are always added between operands and a newline is appended.
 func (p RGBStyle) Sprintfln(format string, a ...interface{}) string {
-	return fmt.Sprintf(format, p.Sprint(a...)) + "\n"
+	return p.Sprintf(format, a...) + "\n"
 }
 
 // GetValues returns the RGB values separately.
