@@ -1,15 +1,17 @@
 package pterm
 
 import (
+	"fmt"
+
 	"atomicgo.dev/cursor"
 	"atomicgo.dev/keyboard"
 	"atomicgo.dev/keyboard/keys"
-	"fmt"
 	"github.com/lithammer/fuzzysearch/fuzzy"
 
-	"github.com/pterm/pterm/internal"
 	"sort"
 	"strings"
+
+	"github.com/pterm/pterm/internal"
 )
 
 var (
@@ -213,7 +215,7 @@ func (p *InteractiveMultiselectPrinter) Show(text ...string) ([]string, error) {
 			}
 		case keys.Backspace:
 			// Remove last character from fuzzy search string
-			if len(p.fuzzySearchString) > 0 {
+			if p.fuzzySearchString != "" {
 				// Handle UTF-8 characters
 				p.fuzzySearchString = string([]rune(p.fuzzySearchString)[:len([]rune(p.fuzzySearchString))-1])
 			}
