@@ -92,6 +92,12 @@ func (s SpinnerPrinter) WithShowTimer(b ...bool) *SpinnerPrinter {
 	return &s
 }
 
+// WithStartedAt sets the time when the SpinnerPrinter started.
+func (s SpinnerPrinter) WithStartedAt(t time.Time) *SpinnerPrinter {
+	s.startedAt = t
+	return &s
+}
+
 // WithTimerRoundingFactor sets the rounding factor for the timer.
 func (s SpinnerPrinter) WithTimerRoundingFactor(factor time.Duration) *SpinnerPrinter {
 	s.TimerRoundingFactor = factor
@@ -113,6 +119,16 @@ func (p SpinnerPrinter) WithWriter(writer io.Writer) *SpinnerPrinter {
 // SetWriter sets the custom Writer.
 func (p *SpinnerPrinter) SetWriter(writer io.Writer) {
 	p.Writer = writer
+}
+
+// ResetTimer resets the timer of the SpinnerPrinter.
+func (s *SpinnerPrinter) ResetTimer() {
+	s.startedAt = time.Now()
+}
+
+// SetStartedAt sets the time when the SpinnerPrinter started.
+func (s *SpinnerPrinter) SetStartedAt(t time.Time) {
+	s.startedAt = t
 }
 
 // UpdateText updates the message of the active SpinnerPrinter.
