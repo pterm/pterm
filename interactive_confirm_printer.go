@@ -38,6 +38,7 @@ type InteractiveConfirmPrinter struct {
 	RejectStyle     *Style
 	SuffixStyle     *Style
 	OnInterruptFunc func()
+	Confirmation    bool
 }
 
 // WithDefaultText sets the default text.
@@ -58,13 +59,13 @@ func (p InteractiveConfirmPrinter) WithTextStyle(style *Style) *InteractiveConfi
 	return &p
 }
 
-// WithConfirmText sets the confirm text.
+// WithConfirmText sets the confirmation text.
 func (p InteractiveConfirmPrinter) WithConfirmText(text string) *InteractiveConfirmPrinter {
 	p.ConfirmText = text
 	return &p
 }
 
-// WithConfirmStyle sets the confirm style.
+// WithConfirmStyle sets the confirmation style.
 func (p InteractiveConfirmPrinter) WithConfirmStyle(style *Style) *InteractiveConfirmPrinter {
 	p.ConfirmStyle = style
 	return &p
@@ -88,7 +89,7 @@ func (p InteractiveConfirmPrinter) WithSuffixStyle(style *Style) *InteractiveCon
 	return &p
 }
 
-// OnInterrupt sets the function to execute on exit of the input reader
+// WithOnInterruptFunc sets the function to execute on exit of the input reader
 func (p InteractiveConfirmPrinter) WithOnInterruptFunc(exitFunc func()) *InteractiveConfirmPrinter {
 	p.OnInterruptFunc = exitFunc
 	return &p
@@ -100,7 +101,12 @@ func (p InteractiveConfirmPrinter) WithDelimiter(delimiter string) *InteractiveC
 	return &p
 }
 
-// Show shows the confirm prompt.
+func (p InteractiveConfirmPrinter) WithConfirmation(value bool) *InteractiveConfirmPrinter {
+	p.Confirmation = value
+	return &p
+}
+
+// Show shows the confirmation prompt.
 //
 // Example:
 //
@@ -113,6 +119,7 @@ func (p InteractiveConfirmPrinter) Show(text ...string) (bool, error) {
 	defer exit()
 
 	var result bool
+	var resultFlag bool
 
 	if len(text) == 0 || text[0] == "" {
 		text = []string{p.DefaultText}
@@ -134,16 +141,29 @@ func (p InteractiveConfirmPrinter) Show(text ...string) (bool, error) {
 			switch char {
 			case y:
 				p.ConfirmStyle.Print(p.ConfirmText)
-				Println()
 				result = true
+				Println()
+				if p.Confirmation {
+					p.renderHelp()
+					resultFlag = true
+					return false, nil
+				}
 				return true, nil
 			case n:
 				p.RejectStyle.Print(p.RejectText)
-				Println()
 				result = false
+				Println()
+				if p.Confirmation {
+					p.renderHelp()
+					resultFlag = true
+					return false, nil
+				}
 				return true, nil
 			}
 		case keys.Enter:
+			if p.Confirmation && resultFlag {
+				return true, nil
+			}
 			if p.DefaultValue {
 				p.ConfirmStyle.Print(p.ConfirmText)
 			} else {
@@ -165,7 +185,7 @@ func (p InteractiveConfirmPrinter) Show(text ...string) (bool, error) {
 	return result, err
 }
 
-// getShortHandles returns the short hand answers for the confirmation prompt
+// getShortHandles returns the shorthand answers for the confirmation prompt
 func (p InteractiveConfirmPrinter) getShortHandles() (string, string) {
 	y := strings.ToLower(string([]rune(p.ConfirmText)[0]))
 	n := strings.ToLower(string([]rune(p.RejectText)[0]))
@@ -183,4 +203,10 @@ func (p InteractiveConfirmPrinter) getSuffix() string {
 	}
 
 	return p.SuffixStyle.Sprintf("[%s/%s]", y, n)
+}
+
+func (p *InteractiveConfirmPrinter) renderHelp() {
+	help := fmt.Sprintf("(Press enter to confirm)")
+
+	ThemeDefault.SecondaryStyle.Println(help)
 }
