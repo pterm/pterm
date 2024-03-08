@@ -206,7 +206,5 @@ func (p InteractiveConfirmPrinter) getSuffix() string {
 }
 
 func (p *InteractiveConfirmPrinter) renderHelp() {
-	help := fmt.Sprintf("(Press enter to confirm)")
-
-	ThemeDefault.SecondaryStyle.Println(help)
+	ThemeDefault.SecondaryStyle.Println("(Press enter to confirm)")
 }
