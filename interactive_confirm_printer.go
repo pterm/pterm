@@ -138,7 +138,7 @@ func (p InteractiveConfirmPrinter) Show(text ...string) (bool, error) {
 
 		switch key {
 		case keys.RuneKey:
-			if result {
+			if p.Confirmation && resultFlag {
 				return false, nil
 			}
 			switch char {
