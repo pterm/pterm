@@ -138,13 +138,15 @@ func (p InteractiveConfirmPrinter) Show(text ...string) (bool, error) {
 
 		switch key {
 		case keys.RuneKey:
+			if result {
+				return false, nil
+			}
 			switch char {
 			case y:
 				p.ConfirmStyle.Print(p.ConfirmText)
 				result = true
 				Println()
 				if p.Confirmation {
-					p.renderHelp()
 					resultFlag = true
 					return false, nil
 				}
@@ -154,7 +156,6 @@ func (p InteractiveConfirmPrinter) Show(text ...string) (bool, error) {
 				result = false
 				Println()
 				if p.Confirmation {
-					p.renderHelp()
 					resultFlag = true
 					return false, nil
 				}
@@ -203,8 +204,4 @@ func (p InteractiveConfirmPrinter) getSuffix() string {
 	}
 
 	return p.SuffixStyle.Sprintf("[%s/%s]", y, n)
-}
-
-func (p *InteractiveConfirmPrinter) renderHelp() {
-	ThemeDefault.SecondaryStyle.Println("(Press enter to confirm)")
 }
