@@ -132,6 +132,12 @@ func (p ProgressbarPrinter) WithShowPercentage(b ...bool) *ProgressbarPrinter {
 	return &p
 }
 
+// WithStartedAt sets the time when the ProgressbarPrinter started.
+func (p ProgressbarPrinter) WithStartedAt(t time.Time) *ProgressbarPrinter {
+	p.startedAt = t
+	return &p
+}
+
 // WithTitleStyle sets the style of the title.
 func (p ProgressbarPrinter) WithTitleStyle(style *Style) *ProgressbarPrinter {
 	p.TitleStyle = style
@@ -165,6 +171,16 @@ func (p ProgressbarPrinter) WithWriter(writer io.Writer) *ProgressbarPrinter {
 // SetWriter sets the custom Writer.
 func (p *ProgressbarPrinter) SetWriter(writer io.Writer) {
 	p.Writer = writer
+}
+
+// SetStartedAt sets the time when the ProgressbarPrinter started.
+func (p *ProgressbarPrinter) SetStartedAt(t time.Time) {
+	p.startedAt = t
+}
+
+// ResetTimer resets the timer of the ProgressbarPrinter.
+func (p *ProgressbarPrinter) ResetTimer() {
+	p.startedAt = time.Now()
 }
 
 // Increment current value by one.
