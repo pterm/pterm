@@ -136,7 +136,7 @@ func (s *SpinnerPrinter) SetStartedAt(t time.Time) {
 func (s *SpinnerPrinter) UpdateText(text string) {
 	s.Text = text
 	if !RawOutput {
-		Fprinto(s.Writer, s.Style.Sprint(s.currentSequence)+" "+s.MessageStyle.Sprint(s.Text))
+		Fprinto(s.Writer, "\x1b[K"+s.Style.Sprint(s.currentSequence)+" "+s.MessageStyle.Sprint(s.Text))
 	} else {
 		Fprintln(s.Writer, s.Text)
 	}
