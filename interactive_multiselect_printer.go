@@ -43,6 +43,7 @@ type InteractiveMultiselectPrinter struct {
 	Filter          bool
 	Checkmark       *Checkmark
 	OnInterruptFunc func()
+	OptionsRenderer OptionsRenderer
 
 	selectedOption        int
 	selectedOptions       []int
@@ -113,6 +114,17 @@ func (p InteractiveMultiselectPrinter) WithCheckmark(checkmark *Checkmark) *Inte
 // OnInterrupt sets the function to execute on exit of the input reader
 func (p InteractiveMultiselectPrinter) WithOnInterruptFunc(exitFunc func()) *InteractiveMultiselectPrinter {
 	p.OnInterruptFunc = exitFunc
+	return &p
+}
+
+// WithShowSelectedOptions shows the selected options at the bottom if the menu
+func (p InteractiveMultiselectPrinter) WithShowSelectedOptions(b bool) *InteractiveMultiselectPrinter {
+	return p.WithCustomOptionsRenderer(NewInterpolatedOptions(", "))
+}
+
+// WithCustomOptionsRenderer uses the provided OptionsRenderer to render the selected options
+func (p InteractiveMultiselectPrinter) WithCustomOptionsRenderer(r OptionsRenderer) *InteractiveMultiselectPrinter {
+	p.OptionsRenderer = r
 	return &p
 }
 
@@ -379,9 +391,19 @@ func (p *InteractiveMultiselectPrinter) renderSelectMenu() string {
 
 	help := fmt.Sprintf("%s: %s | %s: %s | left: %s | right: %s", p.KeySelect, Bold.Sprint("select"), p.KeyConfirm, Bold.Sprint("confirm"), Bold.Sprint("none"), Bold.Sprint("all"))
 	if p.Filter {
-		help += fmt.Sprintf("| type to %s", Bold.Sprint("filter"))
+		help += fmt.Sprintf(" | type to %s", Bold.Sprint("filter"))
 	}
 	content += ThemeDefault.SecondaryStyle.Sprintfln(help)
+
+	// Optionally, add selected options to the menu
+	if p.OptionsRenderer != nil && len(p.selectedOptions) > 0 {
+		selected := make([]string, len(p.selectedOptions))
+		for i, optIdx := range p.selectedOptions {
+			selected[i] = p.Options[optIdx]
+		}
+
+		content += p.OptionsRenderer.RenderOptions(selected)
+	}
 
 	return content
 }
