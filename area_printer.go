@@ -60,6 +60,7 @@ func (p *AreaPrinter) Update(text ...interface{}) {
 		newArea := cursor.NewArea()
 		p.area = &newArea
 	}
+
 	str := Sprint(text...)
 	p.content = str
 
@@ -85,6 +86,7 @@ func (p *AreaPrinter) Update(text ...interface{}) {
 			str += strings.Repeat("\n", bottomPadding)
 		}
 	}
+
 	p.area.Update(str)
 }
 
@@ -106,10 +108,12 @@ func (p *AreaPrinter) Stop() error {
 	if !p.isActive {
 		return nil
 	}
+
 	p.isActive = false
 	if p.RemoveWhenDone {
 		p.Clear()
 	}
+
 	return nil
 }
 
@@ -119,6 +123,7 @@ func (p *AreaPrinter) Stop() error {
 func (p *AreaPrinter) GenericStart() (*LivePrinter, error) {
 	_, _ = p.Start()
 	lp := LivePrinter(p)
+
 	return &lp, nil
 }
 
@@ -128,6 +133,7 @@ func (p *AreaPrinter) GenericStart() (*LivePrinter, error) {
 func (p *AreaPrinter) GenericStop() (*LivePrinter, error) {
 	_ = p.Stop()
 	lp := LivePrinter(p)
+
 	return &lp, nil
 }
 

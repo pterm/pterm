@@ -18,6 +18,7 @@ type LogLevel int
 // Style returns the style of the log level.
 func (l LogLevel) Style() Style {
 	baseStyle := NewStyle(Bold)
+
 	switch l {
 	case LogLevelTrace:
 		return baseStyle.Add(*FgCyan.ToStyle())
@@ -57,6 +58,7 @@ func (l LogLevel) String() string {
 	case LogLevelPrint:
 		return "PRINT"
 	}
+
 	return "Unknown"
 }
 
@@ -189,6 +191,7 @@ func (l Logger) AppendKeyStyles(styles map[string]Style) *Logger {
 	for k, v := range styles {
 		l.KeyStyles[k] = v
 	}
+
 	return &l
 }
 
@@ -203,6 +206,7 @@ func (l Logger) CanPrint(level LogLevel) bool {
 	if l.Level == LogLevelDisabled {
 		return false
 	}
+
 	return l.Level <= level
 }
 
@@ -251,6 +255,7 @@ func (l Logger) sanitizeArgs(args []any) []any {
 			args = []any{ErrKeyWithoutValue, args[0]}
 		}
 	}
+
 	return args
 }
 
@@ -368,6 +373,7 @@ func (l Logger) renderColorful(level LogLevel, msg string, args []LoggerArgument
 			} else {
 				pipe = "└"
 			}
+
 			result += "\n" + strings.Repeat(" ", padding) + pipe + " " + argument
 		}
 	}
@@ -387,6 +393,7 @@ func (l Logger) renderJSON(level LogLevel, msg string, args []LoggerArgument) st
 	}
 
 	b, _ := json.Marshal(m)
+
 	return string(b)
 }
 
@@ -428,6 +435,7 @@ func (l Logger) Error(msg string, args ...[]LoggerArgument) {
 // Fatal prints a fatal log and exits the program.
 func (l Logger) Fatal(msg string, args ...[]LoggerArgument) {
 	l.print(LogLevelFatal, msg, l.combineArgs(args...))
+
 	if l.CanPrint(LogLevelFatal) {
 		os.Exit(1)
 	}

@@ -62,6 +62,7 @@ func (p BarChartPrinter) WithHorizontalBarCharacter(char string) *BarChartPrinte
 func (p BarChartPrinter) WithHorizontal(b ...bool) *BarChartPrinter {
 	b2 := internal.WithBoolean(b)
 	p.Horizontal = b2
+
 	return &p
 }
 
@@ -248,6 +249,7 @@ func (p BarChartPrinter) Srender() (string, error) {
 	if RawOutput {
 		return p.getRawOutput(), nil
 	}
+
 	for i, bar := range p.Bars {
 		if bar.Style == nil {
 			p.Bars[i].Style = &ThemeDefault.BarStyle
@@ -263,18 +265,24 @@ func (p BarChartPrinter) Srender() (string, error) {
 	var ret string
 
 	var maxLabelHeight int
+
 	var maxBarValue int
+
 	var minBarValue int
+
 	var maxAbsBarValue int
+
 	var rParams renderParams
 
 	for _, bar := range p.Bars {
 		if bar.Value > maxBarValue {
 			maxBarValue = bar.Value
 		}
+
 		if bar.Value < minBarValue {
 			minBarValue = bar.Value
 		}
+
 		labelHeight := len(strings.Split(bar.Label, "\n"))
 		if labelHeight > maxLabelHeight {
 			maxLabelHeight = labelHeight
@@ -328,7 +336,9 @@ func (p BarChartPrinter) Srender() (string, error) {
 				}
 			}
 		}
+
 		ret, _ = DefaultPanel.WithPanels(panels).Srender()
+
 		return ret, nil
 	} else {
 		renderedBars := make([]string, len(p.Bars))
@@ -345,6 +355,7 @@ func (p BarChartPrinter) Srender() (string, error) {
 
 		for i, bar := range p.Bars {
 			var renderedBar string
+
 			rParams.bar = bar
 			rParams.indent = strings.Repeat(" ", internal.GetStringMaxWidth(RemoveColorFromString(bar.Label))/2)
 
@@ -397,17 +408,22 @@ func (p BarChartPrinter) Srender() (string, error) {
 		for i := 0; i <= maxBarHeight; i++ {
 			for _, barString := range renderedBars {
 				var barLine string
+
 				letterLines := strings.Split(barString, "\n")
 				maxBarWidth := internal.GetStringMaxWidth(RemoveColorFromString(barString))
+
 				if len(letterLines) > i {
 					barLine = letterLines[i]
 				}
+
 				letterLineLength := runewidth.StringWidth(RemoveColorFromString(barLine))
 				if letterLineLength < maxBarWidth {
 					barLine += strings.Repeat(" ", maxBarWidth-letterLineLength)
 				}
+
 				ret += barLine
 			}
+
 			ret += "\n"
 		}
 	}

@@ -71,6 +71,7 @@ func (p HeaderPrinter) Sprint(a ...interface{}) string {
 	if p.TextStyle == nil {
 		p.TextStyle = NewStyle()
 	}
+
 	if p.BackgroundStyle == nil {
 		p.BackgroundStyle = NewStyle()
 	}
@@ -96,6 +97,7 @@ func (p HeaderPrinter) Sprint(a ...interface{}) string {
 	}
 
 	var marginString string
+
 	var ret string
 
 	if p.FullWidth {
@@ -106,14 +108,18 @@ func (p HeaderPrinter) Sprint(a ...interface{}) string {
 	}
 
 	ret += p.BackgroundStyle.Sprint(blankLine) + "\n"
+
 	for _, line := range strings.Split(text, "\n") {
 		line = strings.ReplaceAll(line, "\n", "")
 		line = marginString + line + marginString
+
 		if runewidth.StringWidth(line) < runewidth.StringWidth(blankLine) {
 			line += strings.Repeat(" ", runewidth.StringWidth(blankLine)-runewidth.StringWidth(line))
 		}
+
 		ret += p.BackgroundStyle.Sprint(p.TextStyle.Sprint(line)) + "\n"
 	}
+
 	ret += p.BackgroundStyle.Sprint(blankLine) + "\n"
 
 	return ret
@@ -121,18 +127,23 @@ func (p HeaderPrinter) Sprint(a ...interface{}) string {
 
 func splitText(text string, width int) string {
 	var lines []string
+
 	linesTmp := strings.Split(text, "\n")
 	for _, line := range linesTmp {
 		if runewidth.StringWidth(RemoveColorFromString(line)) > width {
 			extraLines := []string{""}
 			extraLinesCounter := 0
+
 			for i, letter := range line {
 				if i%width == 0 && i != 0 {
 					extraLinesCounter++
+
 					extraLines = append(extraLines, "")
 				}
+
 				extraLines[extraLinesCounter] += string(letter)
 			}
+
 			for _, extraLine := range extraLines {
 				extraLine += "\n"
 				lines = append(lines, extraLine)
@@ -174,6 +185,7 @@ func (p HeaderPrinter) Sprintfln(format string, a ...interface{}) string {
 func (p *HeaderPrinter) Print(a ...interface{}) *TextPrinter {
 	Fprint(p.Writer, p.Sprint(a...))
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -183,6 +195,7 @@ func (p *HeaderPrinter) Print(a ...interface{}) *TextPrinter {
 func (p *HeaderPrinter) Println(a ...interface{}) *TextPrinter {
 	Fprint(p.Writer, p.Sprintln(a...))
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -191,6 +204,7 @@ func (p *HeaderPrinter) Println(a ...interface{}) *TextPrinter {
 func (p *HeaderPrinter) Printf(format string, a ...interface{}) *TextPrinter {
 	Fprint(p.Writer, p.Sprintf(format, a...))
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -200,6 +214,7 @@ func (p *HeaderPrinter) Printf(format string, a ...interface{}) *TextPrinter {
 func (p *HeaderPrinter) Printfln(format string, a ...interface{}) *TextPrinter {
 	Fprint(p.Writer, p.Sprintfln(format, a...))
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -216,6 +231,7 @@ func (p *HeaderPrinter) PrintOnError(a ...interface{}) *TextPrinter {
 	}
 
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -232,5 +248,6 @@ func (p *HeaderPrinter) PrintOnErrorf(format string, a ...interface{}) *TextPrin
 	}
 
 	tp := TextPrinter(p)
+
 	return &tp
 }

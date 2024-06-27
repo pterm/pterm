@@ -36,7 +36,9 @@ func TestBigTextPrinter_RenderRawOutput(t *testing.T) {
 	printer := pterm.DefaultBigText.WithLetters(pterm.NewLettersFromString("Hello"))
 
 	pterm.DisableStyling()
+
 	content, err := printer.Srender()
+
 	pterm.EnableStyling()
 
 	testza.AssertNoError(t, err)
@@ -149,6 +151,7 @@ func TestNewLettersFromTextWithRGB(t *testing.T) {
 
 func TestDefaultLettersMaxHeight(t *testing.T) {
 	maxHeight := 5
+
 	chars := pterm.DefaultBigText.BigCharacters
 	for s, l := range chars {
 		h := strings.Count(l, "\n")

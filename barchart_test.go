@@ -10,7 +10,9 @@ import (
 
 func TestBarChartPrinterNilPrint(t *testing.T) {
 	proxyToDevNull()
+
 	p := pterm.BarChartPrinter{}
+
 	err := p.Render()
 	if err != nil {
 		panic(err)

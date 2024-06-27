@@ -156,6 +156,7 @@ func (p PrefixPrinter) WithWriter(writer io.Writer) *PrefixPrinter {
 // Spaces are added between operands when neither is a string.
 func (p *PrefixPrinter) Sprint(a ...interface{}) string {
 	m := Sprint(a...)
+
 	if p.Debugger && !PrintDebugMessages {
 		return ""
 	}
@@ -171,14 +172,17 @@ func (p *PrefixPrinter) Sprint(a ...interface{}) string {
 	if p.Prefix.Style == nil {
 		p.Prefix.Style = NewStyle()
 	}
+
 	if p.Scope.Style == nil {
 		p.Scope.Style = NewStyle()
 	}
+
 	if p.MessageStyle == nil {
 		p.MessageStyle = NewStyle()
 	}
 
 	var ret string
+
 	var newLine bool
 
 	if strings.HasSuffix(m, "\n") {
@@ -193,6 +197,7 @@ func (p *PrefixPrinter) Sprint(a ...interface{}) string {
 			if p.Scope.Text != "" {
 				ret += NewStyle(*p.Scope.Style...).Sprint(" (" + p.Scope.Text + ") ")
 			}
+
 			ret += p.MessageStyle.Sprint(m)
 		} else {
 			ret += "\n" + p.Prefix.Style.Sprint(strings.Repeat(" ", len(p.Prefix.Text)+2)) + " " + p.MessageStyle.Sprint(m)
@@ -218,7 +223,9 @@ func (p PrefixPrinter) Sprintln(a ...interface{}) string {
 	if p.Debugger && !PrintDebugMessages {
 		return ""
 	}
+
 	str := fmt.Sprintln(a...)
+
 	return p.Sprint(str)
 }
 
@@ -227,6 +234,7 @@ func (p PrefixPrinter) Sprintf(format string, a ...interface{}) string {
 	if p.Debugger && !PrintDebugMessages {
 		return ""
 	}
+
 	return p.Sprint(Sprintf(format, a...))
 }
 
@@ -236,6 +244,7 @@ func (p PrefixPrinter) Sprintfln(format string, a ...interface{}) string {
 	if p.Debugger && !PrintDebugMessages {
 		return ""
 	}
+
 	return p.Sprintf(format, a...) + "\n"
 }
 
@@ -247,10 +256,13 @@ func (p *PrefixPrinter) Print(a ...interface{}) *TextPrinter {
 	if p.Debugger && !PrintDebugMessages {
 		return &tp
 	}
+
 	p.LineNumberOffset--
 	Fprint(p.Writer, p.Sprint(a...))
+
 	p.LineNumberOffset++
 	checkFatal(p)
+
 	return &tp
 }
 
@@ -262,8 +274,10 @@ func (p *PrefixPrinter) Println(a ...interface{}) *TextPrinter {
 	if p.Debugger && !PrintDebugMessages {
 		return &tp
 	}
+
 	Fprint(p.Writer, p.Sprintln(a...))
 	checkFatal(p)
+
 	return &tp
 }
 
@@ -274,8 +288,10 @@ func (p *PrefixPrinter) Printf(format string, a ...interface{}) *TextPrinter {
 	if p.Debugger && !PrintDebugMessages {
 		return &tp
 	}
+
 	Fprint(p.Writer, p.Sprintf(format, a...))
 	checkFatal(p)
+
 	return &tp
 }
 
@@ -287,10 +303,13 @@ func (p *PrefixPrinter) Printfln(format string, a ...interface{}) *TextPrinter {
 	if p.Debugger && !PrintDebugMessages {
 		return &tp
 	}
+
 	p.LineNumberOffset++
 	Fprint(p.Writer, p.Sprintfln(format, a...))
+
 	p.LineNumberOffset--
 	checkFatal(p)
+
 	return &tp
 }
 
@@ -309,6 +328,7 @@ func (p *PrefixPrinter) PrintOnError(a ...interface{}) *TextPrinter {
 	}
 
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -325,6 +345,7 @@ func (p *PrefixPrinter) PrintOnErrorf(format string, a ...interface{}) *TextPrin
 	}
 
 	tp := TextPrinter(p)
+
 	return &tp
 }
 

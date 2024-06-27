@@ -107,6 +107,7 @@ func Fprint(writer io.Writer, a ...interface{}) {
 	}
 
 	var ret string
+
 	var printed bool
 
 	for _, bar := range ActiveProgressBarPrinters {
@@ -170,6 +171,7 @@ func Fprinto(w io.Writer, a ...interface{}) {
 	if !Output {
 		return
 	}
+
 	if w != nil {
 		color.Fprint(w, "\r", Sprint(a...))
 	} else {

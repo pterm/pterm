@@ -112,6 +112,7 @@ func (p SectionPrinter) Sprintfln(format string, a ...interface{}) string {
 func (p *SectionPrinter) Print(a ...interface{}) *TextPrinter {
 	Fprint(p.Writer, p.Sprint(a...))
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -121,6 +122,7 @@ func (p *SectionPrinter) Print(a ...interface{}) *TextPrinter {
 func (p *SectionPrinter) Println(a ...interface{}) *TextPrinter {
 	Fprint(p.Writer, p.Sprintln(a...))
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -129,6 +131,7 @@ func (p *SectionPrinter) Println(a ...interface{}) *TextPrinter {
 func (p *SectionPrinter) Printf(format string, a ...interface{}) *TextPrinter {
 	Fprint(p.Writer, p.Sprintf(format, a...))
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -138,6 +141,7 @@ func (p *SectionPrinter) Printf(format string, a ...interface{}) *TextPrinter {
 func (p *SectionPrinter) Printfln(format string, a ...interface{}) *TextPrinter {
 	Fprint(p.Writer, p.Sprintfln(format, a...))
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -154,6 +158,7 @@ func (p *SectionPrinter) PrintOnError(a ...interface{}) *TextPrinter {
 	}
 
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -170,5 +175,6 @@ func (p *SectionPrinter) PrintOnErrorf(format string, a ...interface{}) *TextPri
 	}
 
 	tp := TextPrinter(p)
+
 	return &tp
 }

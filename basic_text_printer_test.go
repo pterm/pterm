@@ -13,6 +13,7 @@ import (
 
 func TestBasicTextPrinterNilPrint(t *testing.T) {
 	proxyToDevNull()
+
 	p := pterm.BasicTextPrinter{}
 	p.Println("Hello, World!")
 }

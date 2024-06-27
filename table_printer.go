@@ -108,6 +108,7 @@ func (p TablePrinter) WithCSVReader(reader *csv.Reader) *TablePrinter {
 	if records, err := reader.ReadAll(); err == nil {
 		p.Data = records
 	}
+
 	return &p
 }
 
@@ -122,6 +123,7 @@ func (p TablePrinter) WithLeftAlignment(b ...bool) *TablePrinter {
 	b2 := internal.WithBoolean(b)
 	p.LeftAlignment = b2
 	p.RightAlignment = false
+
 	return &p
 }
 
@@ -130,6 +132,7 @@ func (p TablePrinter) WithRightAlignment(b ...bool) *TablePrinter {
 	b2 := internal.WithBoolean(b)
 	p.LeftAlignment = false
 	p.RightAlignment = b2
+
 	return &p
 }
 
@@ -161,15 +164,19 @@ func (p TablePrinter) Srender() (string, error) {
 	if p.Style == nil {
 		p.Style = NewStyle()
 	}
+
 	if p.SeparatorStyle == nil {
 		p.SeparatorStyle = NewStyle()
 	}
+
 	if p.HeaderStyle == nil {
 		p.HeaderStyle = NewStyle()
 	}
+
 	if p.HeaderRowSeparatorStyle == nil {
 		p.HeaderRowSeparatorStyle = NewStyle()
 	}
+
 	if p.RowSeparatorStyle == nil {
 		p.RowSeparatorStyle = NewStyle()
 	}
@@ -179,15 +186,18 @@ func (p TablePrinter) Srender() (string, error) {
 	// convert data to table and calculate values
 	for _, rRaw := range p.Data {
 		var r row
+
 		for _, cRaw := range rRaw {
 			var c cell
 			c.lines = strings.Split(cRaw, "\n")
 			c.height = len(c.lines)
+
 			for _, l := range c.lines {
 				if maxWidth := internal.GetStringMaxWidth(l); maxWidth > c.width {
 					c.width = maxWidth
 				}
 			}
+
 			r.cells = append(r.cells, c)
 			if c.height > r.height {
 				r.height = c.height
@@ -207,6 +217,7 @@ func (p TablePrinter) Srender() (string, error) {
 	}
 
 	var maxRowWidth int
+
 	for _, r := range t.rows {
 		rowWidth := internal.GetStringMaxWidth(p.renderRow(t, r))
 		if rowWidth > maxRowWidth {
@@ -224,6 +235,7 @@ func (p TablePrinter) Srender() (string, error) {
 			if p.HeaderRowSeparator != "" {
 				s += strings.Repeat(p.HeaderRowSeparatorStyle.Sprint(p.HeaderRowSeparator), maxRowWidth) + "\n"
 			}
+
 			continue
 		}
 
@@ -256,6 +268,7 @@ func (p TablePrinter) renderRow(t table, r row) string {
 			if i < len(c.lines) {
 				currentLine = c.lines[i]
 			}
+
 			paddingForLine := t.maxColumnWidths[j] - internal.GetStringMaxWidth(currentLine)
 
 			if p.RightAlignment {
@@ -270,9 +283,11 @@ func (p TablePrinter) renderRow(t table, r row) string {
 				if p.LeftAlignment {
 					s += strings.Repeat(" ", paddingForLine)
 				}
+
 				s += p.SeparatorStyle.Sprint(p.Separator)
 			}
 		}
+
 		s += "\n"
 	}
 

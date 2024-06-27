@@ -13,16 +13,19 @@ func TestNewCancelationSignal(t *testing.T) {
 		exitCalled = true
 		exitCode = code
 	}
+
 	defer func() { DefaultExitFunc = os.Exit }() // Reset after tests
 
 	// Scenario 1: Testing cancel function
 	cancel, exit := NewCancelationSignal(nil)
+
 	if exitCalled {
 		t.Error("Exit function should not be called immediately after NewCancelationSignal")
 	}
 
 	// Scenario 2: Testing exit function without cancel
 	exit()
+
 	if exitCalled {
 		t.Error("Exit function should not be called when cancel is not set")
 	}
@@ -30,6 +33,7 @@ func TestNewCancelationSignal(t *testing.T) {
 	// Scenario 3: Testing cancel then exit with no interruptFunc
 	cancel()
 	exit()
+
 	if !exitCalled || exitCode != 1 {
 		t.Errorf("Expected Exit(1) to be called, exitCalled: %v, exitCode: %d", exitCalled, exitCode)
 	}
@@ -45,9 +49,11 @@ func TestNewCancelationSignal(t *testing.T) {
 	})
 	cancel()
 	exit()
+
 	if interruptCalled == false {
 		t.Error("Expected interruptFunc to be called")
 	}
+
 	if exitCalled {
 		t.Error("Exit should not be called when interruptFunc is provided")
 	}

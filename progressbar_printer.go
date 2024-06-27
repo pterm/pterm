@@ -193,6 +193,7 @@ func (p *ProgressbarPrinter) Increment() *ProgressbarPrinter {
 func (p *ProgressbarPrinter) UpdateTitle(title string) *ProgressbarPrinter {
 	p.Title = title
 	p.updateProgress()
+
 	return p
 }
 
@@ -206,18 +207,23 @@ func (p *ProgressbarPrinter) getString() string {
 	if !p.IsActive {
 		return ""
 	}
+
 	if p.TitleStyle == nil {
 		p.TitleStyle = NewStyle()
 	}
+
 	if p.BarStyle == nil {
 		p.BarStyle = NewStyle()
 	}
+
 	if p.Total == 0 {
 		return ""
 	}
 
 	var before string
+
 	var after string
+
 	var width int
 
 	if p.MaxWidth <= 0 {
@@ -231,6 +237,7 @@ func (p *ProgressbarPrinter) getString() string {
 	if p.ShowTitle {
 		before += p.TitleStyle.Sprint(p.Title) + " "
 	}
+
 	if p.ShowCount {
 		padding := 1 + int(math.Log10(float64(p.Total)))
 		before += Gray("[") + LightWhite(fmt.Sprintf("%0*d", padding, p.Current)) + Gray("/") + LightWhite(p.Total) + Gray("]") + " "
@@ -244,6 +251,7 @@ func (p *ProgressbarPrinter) getString() string {
 			Sprintf("%3d%%", currentPercentage)
 		after += decoratorCurrentPercentage + " "
 	}
+
 	if p.ShowElapsedTime {
 		after += "| " + p.parseElapsedTime()
 	}
@@ -251,7 +259,9 @@ func (p *ProgressbarPrinter) getString() string {
 	barMaxLength := width - len(RemoveColorFromString(before)) - len(RemoveColorFromString(after)) - 1
 
 	barCurrentLength := (p.Current * barMaxLength) / p.Total
+
 	var barFiller string
+
 	if barMaxLength-barCurrentLength > 0 {
 		barFiller = strings.Repeat(p.BarFiller, barMaxLength-barCurrentLength)
 	}
@@ -278,19 +288,23 @@ func (p *ProgressbarPrinter) Add(count int) *ProgressbarPrinter {
 		p.updateProgress()
 		p.Stop()
 	}
+
 	return p
 }
 
 // Start the ProgressbarPrinter.
 func (p ProgressbarPrinter) Start(title ...interface{}) (*ProgressbarPrinter, error) {
 	cursor.Hide()
+
 	if RawOutput && p.ShowTitle {
 		Fprintln(p.Writer, p.Title)
 	}
+
 	p.IsActive = true
 	if len(title) != 0 {
 		p.Title = Sprint(title...)
 	}
+
 	ActiveProgressBarPrinters = append(ActiveProgressBarPrinters, &p)
 	p.startedAt = time.Now()
 
@@ -311,11 +325,13 @@ func (p *ProgressbarPrinter) Stop() (*ProgressbarPrinter, error) {
 	if p.rerenderTask != nil && p.rerenderTask.IsActive() {
 		p.rerenderTask.Stop()
 	}
+
 	cursor.Show()
 
 	if !p.IsActive {
 		return p, nil
 	}
+
 	p.IsActive = false
 	if p.RemoveWhenDone {
 		fClearLine(p.Writer)
@@ -323,6 +339,7 @@ func (p *ProgressbarPrinter) Stop() (*ProgressbarPrinter, error) {
 	} else {
 		Fprintln(p.Writer)
 	}
+
 	return p, nil
 }
 
@@ -332,6 +349,7 @@ func (p *ProgressbarPrinter) Stop() (*ProgressbarPrinter, error) {
 func (p *ProgressbarPrinter) GenericStart() (*LivePrinter, error) {
 	p2, _ := p.Start()
 	lp := LivePrinter(p2)
+
 	return &lp, nil
 }
 
@@ -341,6 +359,7 @@ func (p *ProgressbarPrinter) GenericStart() (*LivePrinter, error) {
 func (p *ProgressbarPrinter) GenericStop() (*LivePrinter, error) {
 	p2, _ := p.Stop()
 	lp := LivePrinter(p2)
+
 	return &lp, nil
 }
 

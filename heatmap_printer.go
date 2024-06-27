@@ -108,6 +108,7 @@ var complementaryColors = map[Color]Color{
 func (p HeatmapPrinter) WithAxisData(hd HeatmapAxis) *HeatmapPrinter {
 	p.HasHeader = true
 	p.Axis = hd
+
 	return &p
 }
 
@@ -134,6 +135,7 @@ func (p HeatmapPrinter) WithData(data [][]float32) *HeatmapPrinter {
 func (p HeatmapPrinter) WithTextColor(color Color) *HeatmapPrinter {
 	p.TextColor = color
 	p.EnableComplementaryColor = false
+
 	return &p
 }
 
@@ -142,6 +144,7 @@ func (p HeatmapPrinter) WithTextColor(color Color) *HeatmapPrinter {
 func (p HeatmapPrinter) WithTextRGB(rgb RGB) *HeatmapPrinter {
 	p.TextRGB = rgb
 	p.EnableComplementaryColor = false
+
 	return &p
 }
 
@@ -152,6 +155,7 @@ func (p HeatmapPrinter) WithBoxed(b ...bool) *HeatmapPrinter {
 	if p.Boxed && !p.Grid {
 		p.Grid = true
 	}
+
 	return &p
 }
 
@@ -160,9 +164,11 @@ func (p HeatmapPrinter) WithBoxed(b ...bool) *HeatmapPrinter {
 func (p HeatmapPrinter) WithGrid(b ...bool) *HeatmapPrinter {
 	b2 := internal.WithBoolean(b)
 	p.Grid = b2
+
 	if !b2 && p.Boxed {
 		p.Boxed = false
 	}
+
 	return &p
 }
 
@@ -176,6 +182,7 @@ func (p HeatmapPrinter) WithEnableRGB(b ...bool) *HeatmapPrinter {
 func (p HeatmapPrinter) WithOnlyColoredCells(b ...bool) *HeatmapPrinter {
 	b2 := internal.WithBoolean(b)
 	p.OnlyColoredCells = b2
+
 	return &p
 }
 
@@ -184,9 +191,11 @@ func (p HeatmapPrinter) WithOnlyColoredCells(b ...bool) *HeatmapPrinter {
 func (p HeatmapPrinter) WithLegendOnlyColoredCells(b ...bool) *HeatmapPrinter {
 	b2 := internal.WithBoolean(b)
 	p.LegendOnlyColoredCells = b2
+
 	if b2 {
 		p.Legend = true
 	}
+
 	return &p
 }
 
@@ -214,6 +223,7 @@ func (p HeatmapPrinter) WithCellSize(i int) *HeatmapPrinter {
 func (p HeatmapPrinter) WithLegendLabel(s string) *HeatmapPrinter {
 	p.LegendLabel = s
 	p.Legend = true
+
 	return &p
 }
 
@@ -244,6 +254,7 @@ func (p HeatmapPrinter) Srender() (string, error) {
 	if p.SeparatorStyle == nil {
 		p.SeparatorStyle = DefaultHeatmap.SeparatorStyle
 	}
+
 	if p.AxisStyle == nil {
 		p.AxisStyle = DefaultHeatmap.AxisStyle
 	}
@@ -258,6 +269,7 @@ func (p HeatmapPrinter) Srender() (string, error) {
 	p.minValue, p.maxValue = minMaxFloat32(p.Data)
 
 	var data string
+
 	for _, datum := range p.Data {
 		for _, f := range datum {
 			data += Sprintf("%v\n", f)
@@ -303,6 +315,7 @@ func (p HeatmapPrinter) computeAxisData(data string, xAmount, yAmount int) (stri
 	for _, h := range p.Axis.XAxis {
 		header += h + "\n"
 	}
+
 	for _, h := range p.Axis.YAxis {
 		header += h + "\n"
 	}
@@ -312,6 +325,7 @@ func (p HeatmapPrinter) computeAxisData(data string, xAmount, yAmount int) (stri
 	} else {
 		data += header
 	}
+
 	xAmount++
 	yAmount++
 
@@ -332,9 +346,12 @@ func (p HeatmapPrinter) renderSeparatorRow(buffer *bytes.Buffer, colWidth, xAmou
 	} else {
 		buffer.WriteString("\n")
 	}
+
 	buffer.WriteString(p.SeparatorStyle.Sprint(rightSep))
+
 	for i := 0; i < xAmount+1; i++ {
 		buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), colWidth))
+
 		if i < xAmount {
 			buffer.WriteString(p.SeparatorStyle.Sprint(tSep))
 		}
@@ -349,6 +366,7 @@ func (p HeatmapPrinter) renderSeparatorRow(buffer *bytes.Buffer, colWidth, xAmou
 func (p HeatmapPrinter) renderLegend(buffer *bytes.Buffer, legendColWidth int) {
 	buffer.WriteString("\n")
 	buffer.WriteString("\n")
+
 	if p.Boxed {
 		p.boxLegend(buffer, p.LegendLabel, legendColWidth)
 	} else {
@@ -358,48 +376,61 @@ func (p HeatmapPrinter) renderLegend(buffer *bytes.Buffer, legendColWidth int) {
 
 func (p HeatmapPrinter) renderHeader(buffer *bytes.Buffer, colWidth int, xAmount int) {
 	buffer.WriteString("\n")
+
 	if p.Boxed {
 		buffer.WriteString(p.SeparatorStyle.Sprint(p.LSeparator))
 	}
+
 	if p.Grid {
 		for i := 0; i < xAmount+1; i++ {
 			buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), colWidth))
+
 			if i < xAmount {
 				buffer.WriteString(p.SeparatorStyle.Sprint(p.TCrossSeparator))
 			}
 		}
 	}
+
 	if p.Boxed {
 		buffer.WriteString(p.SeparatorStyle.Sprint(p.LReverseSeparator))
 	}
+
 	if p.Grid {
 		buffer.WriteString("\n")
 	}
+
 	for j, f := range p.Axis.XAxis {
 		if j == 0 {
 			if p.Boxed {
 				buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
 			}
+
 			ct := internal.CenterText(" ", colWidth)
 			if len(ct) < colWidth {
 				ct += strings.Repeat(" ", colWidth-len(ct))
 			}
+
 			buffer.WriteString(p.AxisStyle.Sprint(ct))
+
 			if p.Grid {
 				buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
 			}
 		}
+
 		var ct string
+
 		ct = internal.CenterText(Sprintf("%v", f), colWidth)
 		if len(ct) < colWidth {
 			ct += strings.Repeat(" ", colWidth-len(ct))
 		}
+
 		buffer.WriteString(p.AxisStyle.Sprint(ct))
 
 		if j < xAmount {
 			if !p.Boxed && j == xAmount-1 {
 				continue
 			}
+
 			if p.Grid {
 				buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
 			}
@@ -412,23 +443,28 @@ func (p HeatmapPrinter) renderData(buffer *bytes.Buffer, colWidth int, xAmount i
 		if p.Boxed {
 			buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
 		}
+
 		for j, f := range datum {
 			if j == 0 && p.HasHeader {
 				ct := internal.CenterText(p.Axis.YAxis[i], colWidth)
 				if len(ct) < colWidth {
 					ct += strings.Repeat(" ", colWidth-len(ct))
 				}
+
 				buffer.WriteString(p.AxisStyle.Sprint(ct))
+
 				if p.Grid {
 					buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
 				}
 			}
+
 			var ct string
 			if p.OnlyColoredCells {
 				ct = internal.CenterText(" ", colWidth)
 			} else {
 				ct = internal.CenterText(Sprintf("%v", f), colWidth)
 			}
+
 			if len(ct) < colWidth {
 				if len(Sprintf("%v", f)) == 1 {
 					ct += strings.Repeat(" ", colWidth-len(ct))
@@ -436,30 +472,38 @@ func (p HeatmapPrinter) renderData(buffer *bytes.Buffer, colWidth int, xAmount i
 					ct = strings.Repeat(" ", colWidth-len(ct)) + ct
 				}
 			}
+
 			if p.EnableRGB {
 				rgb := p.RGBRange[0].Fade(p.minValue, p.maxValue, f, p.RGBRange[1:]...)
 				rgbStyle := NewRGBStyle(p.TextRGB, rgb)
+
 				if p.EnableComplementaryColor {
 					complimentary := NewRGB(internal.Complementary(rgb.R, rgb.G, rgb.B))
 					rgbStyle = NewRGBStyle(complimentary, rgb)
 				}
+
 				buffer.WriteString(rgbStyle.Sprint(ct))
 			} else {
 				color := getColor(p.minValue, p.maxValue, f, p.Colors...)
 				fgColor := p.TextColor
+
 				if p.EnableComplementaryColor {
 					fgColor = complementaryColors[color]
 				}
+
 				buffer.WriteString(fgColor.Sprint(color.Sprintf(ct)))
 			}
+
 			if j < xAmount {
 				if !p.Boxed && p.HasHeader && j == xAmount-1 {
 					continue
 				}
+
 				if p.Grid {
 					buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
 				}
 			}
+
 			if p.Boxed && !p.HasHeader && j == xAmount {
 				buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
 			}
@@ -469,21 +513,27 @@ func (p HeatmapPrinter) renderData(buffer *bytes.Buffer, colWidth int, xAmount i
 			if p.HasHeader && i == yAmount-1 {
 				continue
 			}
+
 			buffer.WriteString("\n")
+
 			if p.Boxed {
 				buffer.WriteString(p.SeparatorStyle.Sprint(p.LSeparator))
 			}
+
 			if p.Grid {
 				for i := 0; i < xAmount+1; i++ {
 					buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), colWidth))
+
 					if i < xAmount {
 						buffer.WriteString(p.SeparatorStyle.Sprint(p.TCrossSeparator))
 					}
 				}
 			}
+
 			if p.Boxed {
 				buffer.WriteString(p.SeparatorStyle.Sprint(p.LReverseSeparator))
 			}
+
 			if p.Grid {
 				buffer.WriteString("\n")
 			}
@@ -493,11 +543,13 @@ func (p HeatmapPrinter) renderData(buffer *bytes.Buffer, colWidth int, xAmount i
 
 func (p HeatmapPrinter) generateLegend(buffer *bytes.Buffer, legend string, legendColWidth int) {
 	buffer.WriteString(p.AxisStyle.Sprint(legend))
+
 	if p.Grid {
 		buffer.WriteString(p.SeparatorStyle.Sprintf("%s", p.VerticalSeparator))
 	} else {
 		buffer.WriteString(" ")
 	}
+
 	if p.EnableRGB {
 		p.generateRGBLegend(buffer, legendColWidth)
 	} else {
@@ -516,11 +568,14 @@ func (p HeatmapPrinter) generateColorLegend(buffer *bytes.Buffer, legendColWidth
 		} else {
 			f = p.minValue + (p.maxValue-p.minValue)*float32(i)/float32(len(p.Colors)-1)
 		}
+
 		fgColor := p.TextColor
 		if p.EnableComplementaryColor {
 			fgColor = complementaryColors[color]
 		}
+
 		buffer.WriteString(fgColor.Sprint(color.Sprint(centerAndShorten(f, legendColWidth, p.LegendOnlyColoredCells))))
+
 		if p.Grid && i < len(p.Colors)-1 && !p.LegendOnlyColoredCells {
 			buffer.WriteString(p.SeparatorStyle.Sprintf("%s", p.VerticalSeparator))
 		}
@@ -530,12 +585,15 @@ func (p HeatmapPrinter) generateColorLegend(buffer *bytes.Buffer, legendColWidth
 func (p HeatmapPrinter) generateRGBLegend(buffer *bytes.Buffer, legendColWidth int) {
 	p.rgbLegendValue = 10
 	steps := len(p.RGBRange)
+
 	if steps < p.rgbLegendValue {
 		steps = p.rgbLegendValue
 	}
+
 	if p.LegendOnlyColoredCells {
 		steps *= 3
 	}
+
 	for i := 0; i < steps; i++ {
 		// the first color is the min value and the last color is the max value
 		var f float32
@@ -546,17 +604,21 @@ func (p HeatmapPrinter) generateRGBLegend(buffer *bytes.Buffer, legendColWidth i
 		} else {
 			f = p.minValue + (p.maxValue-p.minValue)*float32(i)/float32(steps-1)
 		}
+
 		rgb := p.RGBRange[0].Fade(p.minValue, p.maxValue, f, p.RGBRange[1:]...)
 		rgbStyle := NewRGBStyle(p.TextRGB, rgb)
+
 		if p.EnableComplementaryColor {
 			complimentary := NewRGB(internal.Complementary(rgb.R, rgb.G, rgb.B))
 			rgbStyle = NewRGBStyle(complimentary, rgb)
 		}
+
 		if p.LegendOnlyColoredCells {
 			buffer.WriteString(rgbStyle.Sprint(centerAndShorten(f, 1, p.LegendOnlyColoredCells)))
 		} else {
 			buffer.WriteString(rgbStyle.Sprint(centerAndShorten(f, legendColWidth, p.LegendOnlyColoredCells)))
 		}
+
 		if p.Grid && i < steps-1 && !p.LegendOnlyColoredCells {
 			buffer.WriteString(p.SeparatorStyle.Sprintf("%s", p.VerticalSeparator))
 		}
@@ -587,9 +649,11 @@ func (p HeatmapPrinter) boxLegend(buffer *bytes.Buffer, legend string, legendCol
 func (p HeatmapPrinter) generateSeparatorRow(buffer *bytes.Buffer, legend string, legendColWidth int, top bool) {
 	p.rgbLegendValue = 10
 	steps := len(p.RGBRange)
+
 	if steps < p.rgbLegendValue {
 		steps = p.rgbLegendValue
 	}
+
 	if p.LegendOnlyColoredCells {
 		steps *= 3
 	}
@@ -619,6 +683,7 @@ func (p HeatmapPrinter) generateSeparatorRow(buffer *bytes.Buffer, legend string
 				buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), legendColWidth))
 			}
 		}
+
 		if i < xValue && !p.LegendOnlyColoredCells || i == 0 {
 			if top {
 				buffer.WriteString(p.SeparatorStyle.Sprint(p.TSeparator))
@@ -634,6 +699,7 @@ func centerAndShorten(f float32, lineLength int, onlyColor bool) string {
 	if !onlyColor {
 		value = Sprintf("%.2v", f)
 	}
+
 	if len(value) > lineLength {
 		value = value[:lineLength]
 		if strings.HasSuffix(value, ".") {
@@ -641,6 +707,7 @@ func centerAndShorten(f float32, lineLength int, onlyColor bool) string {
 			lineLength = len(value)
 		}
 	}
+
 	ct := internal.CenterText(value, lineLength)
 	if len(ct) < lineLength {
 		if len(Sprintf("%v", f)) == 1 {
@@ -666,6 +733,7 @@ func getColor(min float32, max float32, current float32, colors ...Color) Color 
 			return colors[i]
 		}
 	}
+
 	return colors[len(colors)-1]
 }
 
@@ -675,6 +743,7 @@ func (p HeatmapPrinter) Render() error {
 	if err != nil {
 		return err
 	}
+
 	Fprintln(p.Writer, s)
 
 	return nil
@@ -685,6 +754,7 @@ func (p HeatmapPrinter) errCheck() error {
 		if p.Axis.XAxis == nil {
 			return errors.New("x axis is nil")
 		}
+
 		if p.Axis.YAxis == nil {
 			return errors.New("y axis is nil")
 		}
@@ -692,6 +762,7 @@ func (p HeatmapPrinter) errCheck() error {
 		if len(p.Axis.XAxis) == 0 {
 			return errors.New("x axis is empty")
 		}
+
 		if len(p.Axis.YAxis) == 0 {
 			return errors.New("y axis is empty")
 		}
@@ -701,6 +772,7 @@ func (p HeatmapPrinter) errCheck() error {
 				return errors.New("x axis length does not match data")
 			}
 		}
+
 		if len(p.Axis.YAxis) != len(p.Data) {
 			return errors.New("y axis length does not match data")
 		}
@@ -735,10 +807,12 @@ func minMaxFloat32(s [][]float32) (float32, float32) {
 			if c < min {
 				min = c
 			}
+
 			if c > max {
 				max = c
 			}
 		}
 	}
+
 	return min, max
 }

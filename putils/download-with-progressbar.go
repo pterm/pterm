@@ -21,6 +21,7 @@ func (w *progressbarWriter) Write(p []byte) (int, error) {
 	n := len(p)
 	w.Total += uint64(n)
 	w.pb.Add(len(p))
+
 	return n, nil
 }
 
@@ -28,6 +29,7 @@ func (w *progressbarWriter) Write(p []byte) (int, error) {
 // The download progress, will be reported via a progressbar.
 func DownloadFileWithProgressbar(progressbar *pterm.ProgressbarPrinter, outputPath, url string, mode os.FileMode) error {
 	path := filepath.Clean(outputPath)
+
 	out, err := os.Create(path)
 	if err != nil {
 		return fmt.Errorf("could not create download path: %w", err)
@@ -41,6 +43,7 @@ func DownloadFileWithProgressbar(progressbar *pterm.ProgressbarPrinter, outputPa
 	defer resp.Body.Close()
 
 	counter := &progressbarWriter{}
+
 	fileSize, err := strconv.Atoi(resp.Header.Get("Content-Length"))
 	if err != nil {
 		return fmt.Errorf("could not determine file size: %w", err)
@@ -58,6 +61,7 @@ func DownloadFileWithProgressbar(progressbar *pterm.ProgressbarPrinter, outputPa
 	}
 
 	out.Close()
+
 	return nil
 }
 

@@ -42,7 +42,9 @@ func (p ParagraphPrinter) Sprint(a ...interface{}) string {
 	if len(words) == 0 {
 		return ""
 	}
+
 	wrapped := words[0]
+
 	spaceLeft := p.MaxWidth - len(wrapped)
 	for _, word := range words[1:] {
 		if len(word)+1 > spaceLeft {
@@ -80,6 +82,7 @@ func (p ParagraphPrinter) Sprintfln(format string, a ...interface{}) string {
 func (p *ParagraphPrinter) Print(a ...interface{}) *TextPrinter {
 	Fprint(p.Writer, p.Sprint(a...))
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -89,6 +92,7 @@ func (p *ParagraphPrinter) Print(a ...interface{}) *TextPrinter {
 func (p *ParagraphPrinter) Println(a ...interface{}) *TextPrinter {
 	Fprint(p.Writer, p.Sprintln(a...))
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -97,6 +101,7 @@ func (p *ParagraphPrinter) Println(a ...interface{}) *TextPrinter {
 func (p *ParagraphPrinter) Printf(format string, a ...interface{}) *TextPrinter {
 	Fprint(p.Writer, p.Sprintf(format, a...))
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -106,6 +111,7 @@ func (p *ParagraphPrinter) Printf(format string, a ...interface{}) *TextPrinter 
 func (p *ParagraphPrinter) Printfln(format string, a ...interface{}) *TextPrinter {
 	Fprint(p.Writer, p.Sprintfln(format, a...))
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -122,6 +128,7 @@ func (p *ParagraphPrinter) PrintOnError(a ...interface{}) *TextPrinter {
 	}
 
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -138,5 +145,6 @@ func (p *ParagraphPrinter) PrintOnErrorf(format string, a ...interface{}) *TextP
 	}
 
 	tp := TextPrinter(p)
+
 	return &tp
 }

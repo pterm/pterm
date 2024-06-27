@@ -98,6 +98,7 @@ func TestHeatmapPrinter_WithSeparatorStyle(t *testing.T) {
 
 func TestHeatmapPrinter_WithData(t *testing.T) {
 	proxyToDevNull()
+
 	d := [][]float32{
 		{-1, -0.9, -0.8, -0.7, -0.6},
 		{-1, -0.9, -0.8, -0.7, -0.6},

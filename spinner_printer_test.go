@@ -20,6 +20,7 @@ func TestSpinnerPrinter_NilPrint(t *testing.T) {
 
 func TestSpinnerPrinter_Fail(t *testing.T) {
 	p := pterm.DefaultSpinner
+
 	testPrintContains(t, func(w io.Writer, a interface{}) {
 		p.Fail(a)
 	})
@@ -46,6 +47,7 @@ func TestSpinnerPrinter_GenericStop(t *testing.T) {
 
 func TestSpinnerPrinter_Info(t *testing.T) {
 	p := pterm.DefaultSpinner
+
 	testPrintContains(t, func(w io.Writer, a interface{}) {
 		p.Info(a)
 	})
@@ -53,6 +55,7 @@ func TestSpinnerPrinter_Info(t *testing.T) {
 
 func TestSpinnerPrinter_Success(t *testing.T) {
 	p := pterm.DefaultSpinner
+
 	testPrintContains(t, func(w io.Writer, a interface{}) {
 		p.Success(a)
 	})
@@ -91,6 +94,7 @@ func TestSpinnerPrinter_UpdateTextRawOutput(t *testing.T) {
 
 func TestSpinnerPrinter_Warning(t *testing.T) {
 	p := pterm.DefaultSpinner
+
 	testPrintContains(t, func(w io.Writer, a interface{}) {
 		p.Warning(a)
 	})
@@ -166,9 +170,11 @@ func TestSpinnerPrinter_WithTimerRoundingFactor(t *testing.T) {
 func TestSpinnerPrinter_WithRawOutput(t *testing.T) {
 	pterm.RawOutput = true
 	s, _ := pterm.DefaultSpinner.Start()
+
 	go func() {
 		time.Sleep(time.Millisecond * 50)
 		s.Stop()
+
 		pterm.RawOutput = false
 	}()
 }
@@ -187,9 +193,11 @@ func TestSpinnerPrinter_DifferentVariations(t *testing.T) {
 		RemoveWhenDone bool
 		IsActive       bool
 	}
+
 	type args struct {
 		text []interface{}
 	}
+
 	tests := []struct {
 		name   string
 		fields fields
@@ -254,10 +262,12 @@ func TestSpinnerPrinter_OutputToWriters(t *testing.T) {
 		t.Run(testTitle, func(t *testing.T) {
 			stderr, err := testza.CaptureStderr(func(w io.Writer) error {
 				sp, err := pterm.DefaultSpinner.WithText("Hello world").WithWriter(os.Stderr).Start()
+
 				time.Sleep(time.Second) // Required otherwise the goroutine doesn't run and the text isnt outputted
 				testza.AssertNoError(t, err)
 				testCase.action(sp)
 				time.Sleep(time.Second) // Required otherwise the goroutine doesn't run and the text isnt updated
+
 				return nil
 			})
 

@@ -17,6 +17,7 @@ func RGBFromHEX(hex string) (pterm.RGB, error) {
 	if len(hex) == 3 {
 		hex = string([]byte{hex[0], hex[0], hex[1], hex[1], hex[2], hex[2]})
 	}
+
 	if len(hex) != 6 {
 		return pterm.RGB{}, pterm.ErrHexCodeIsInvalid
 	}
@@ -25,6 +26,7 @@ func RGBFromHEX(hex string) (pterm.RGB, error) {
 	if err != nil {
 		return pterm.RGB{}, err
 	}
+
 	c := int(i64)
 
 	return pterm.RGB{

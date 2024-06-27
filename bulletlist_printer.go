@@ -101,6 +101,7 @@ func (l BulletListPrinter) Render() error {
 // Srender renders the list as a string.
 func (l BulletListPrinter) Srender() (string, error) {
 	var ret string
+
 	for _, item := range l.Items {
 		if item.TextStyle == nil {
 			if l.TextStyle == nil {
@@ -109,6 +110,7 @@ func (l BulletListPrinter) Srender() (string, error) {
 				item.TextStyle = l.TextStyle
 			}
 		}
+
 		if item.BulletStyle == nil {
 			if l.BulletStyle == nil {
 				item.BulletStyle = &ThemeDefault.BulletListBulletStyle
@@ -130,5 +132,6 @@ func (l BulletListPrinter) Srender() (string, error) {
 			}
 		}
 	}
+
 	return ret, nil
 }

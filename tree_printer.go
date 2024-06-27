@@ -95,7 +95,9 @@ func (p TreePrinter) WithIndent(indent int) *TreePrinter {
 	if indent < 1 {
 		indent = 1
 	}
+
 	p.Indent = indent
+
 	return &p
 }
 
@@ -118,6 +120,7 @@ func (p TreePrinter) Srender() (string, error) {
 	if p.TreeStyle == nil {
 		p.TreeStyle = NewStyle()
 	}
+
 	if p.TextStyle == nil {
 		p.TextStyle = NewStyle()
 	}
@@ -126,7 +129,9 @@ func (p TreePrinter) Srender() (string, error) {
 	if p.Root.Text != "" {
 		result += p.TextStyle.Sprint(p.Root.Text) + "\n"
 	}
+
 	result += walkOverTree(p.Root.Children, p, "")
+
 	return result, nil
 }
 
@@ -135,6 +140,7 @@ func (p TreePrinter) Srender() (string, error) {
 // Returns TreePrinter as string.
 func walkOverTree(list []TreeNode, p TreePrinter, prefix string) string {
 	var ret string
+
 	for i, item := range list {
 		if len(list) > i+1 { // if not last in list
 			if len(item.Children) == 0 { // if there are no children
@@ -156,5 +162,6 @@ func walkOverTree(list []TreeNode, p TreePrinter, prefix string) string {
 			}
 		}
 	}
+
 	return ret
 }

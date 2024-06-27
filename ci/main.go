@@ -40,6 +40,7 @@ func (e *Examples) GetSorted() []Example {
 	sort.Slice(e.examples, func(i, j int) bool {
 		return e.examples[i].name < e.examples[j].name
 	})
+
 	return e.examples
 }
 
@@ -48,6 +49,7 @@ func (e *Examples) String() string {
 	for _, example := range e.GetSorted() {
 		output += example.content
 	}
+
 	return output
 }
 
@@ -61,16 +63,19 @@ func main() {
 	do("Running PTerm CI System", 1, func(currentLevel int) {
 		do("Generating PUtils Docs", currentLevel, func(currentLevel int) {
 			pterm.Info.Println("Getting docs from 'go doc'...")
+
 			goDocOutputBytes, err := exec.Command("go", "doc", "-all", "./putils").Output()
 			if err != nil {
 				log.Panic(err)
 			}
+
 			goDocOutput := string(goDocOutputBytes)
 			goDocOutput = strings.Join(strings.Split(goDocOutput, "FUNCTIONS")[1:], "")
 			goDocOutputLines := strings.Split(goDocOutput, "\n")
 
 			pterm.Info.Println("Parsing docs...")
 			var goDocOutputFiltered []string
+
 			for _, line := range goDocOutputLines {
 				if strings.HasPrefix(line, "func") {
 					goDocOutputFiltered = append(goDocOutputFiltered, line)
@@ -78,12 +83,14 @@ func main() {
 			}
 
 			pterm.Info.Println("Reading README Template")
+
 			putilsTemplateBytes, err := os.ReadFile("./putils/README.template.md")
 			if err != nil {
 				log.Panic(err)
 			}
 
 			pterm.Info.Println("Generating README.md")
+
 			putilsReadme := string(putilsTemplateBytes)
 			putilsReadme += "\n## Util Functions\n\n"
 
@@ -115,6 +122,7 @@ func main() {
 
 			// generate table
 			tableContent := "| Feature | Feature | Feature | Feature | Feature |\n| :-------: | :-------: | :-------: | :-------: | :-------: |\n"
+
 			for i, feature := range allPrinters {
 				// the table should contain 5 columns. Each cell is a feature.
 				// Make multiple rows, if there are more than 4 features.
@@ -123,8 +131,10 @@ func main() {
 				if i%5 == 0 {
 					tableContent += "| "
 				}
+
 				name := strings.ToUpper(string(feature[0])) + feature[1:]
 				name = strings.ReplaceAll(name, "_", " ")
+
 				tableContent += fmt.Sprintf("%s <br/> [(Examples)](https://github.com/pterm/pterm/tree/master/_examples/%s) |", name, feature)
 				if (i+1)%5 == 0 {
 					tableContent += "\n"
@@ -149,6 +159,7 @@ func main() {
 
 		do("Write printers to website", currentLevel, func(currentLevel int) {
 			pterm.Info.Println("Writing printers to website")
+
 			websiteIndex, _ := os.ReadFile("./docs/index.html")
 			websiteIndexString := string(websiteIndex)
 
@@ -177,6 +188,7 @@ func main() {
 				}
 
 				wg.Add(1)
+
 				go func(section os.DirEntry) {
 					defer wg.Done()
 
@@ -202,6 +214,7 @@ func main() {
 			}
 
 			pterm.Info.Println("Writing '/_examples/README.md'")
+
 			examplesReadme, _ := os.ReadFile("./_examples/README.md")
 			examplesReadmeContent := string(examplesReadme)
 			examplesReadmeContent = writeBetween("examples", examplesReadmeContent, "\n"+readmeExamples+"\n")
@@ -209,6 +222,7 @@ func main() {
 		})
 
 		var newReadmeContent string
+
 		readmeContent, err := os.ReadFile("./README.md")
 		if err != nil {
 			log.Panic(err)
@@ -244,6 +258,7 @@ func main() {
 			pterm.Info.Println("Appending examples to root README.md")
 
 			pterm.Info.Println("Writing README")
+
 			err = os.WriteFile("./README.md", []byte(newReadmeContent), 0600)
 			if err != nil {
 				log.Panic(err)
@@ -265,6 +280,7 @@ func generateSectionContent(section os.DirEntry) string {
 		}
 
 		wg.Add(1)
+
 		go func(section os.DirEntry, example os.DirEntry) {
 			defer wg.Done()
 
@@ -289,9 +305,11 @@ func generateSectionContent(section os.DirEntry) string {
 		if keys[i] == "demo" {
 			return true
 		}
+
 		if keys[j] == "demo" {
 			return false
 		}
+
 		return keys[i] < keys[j]
 	})
 
@@ -310,6 +328,7 @@ func generateExampleContent(dir string, section os.DirEntry, example os.DirEntry
 	exampleRenderStart := time.Now()
 	animationDataPath := "./_examples/" + dir + "/animation_data.json"
 	animationSvgPath := "./_examples/" + dir + "/animation.svg"
+
 	exampleCode, err := os.ReadFile("./_examples/" + dir + "/main.go")
 	if err != nil {
 		log.Panic(err)
@@ -317,13 +336,16 @@ func generateExampleContent(dir string, section os.DirEntry, example os.DirEntry
 
 	if fileExists(animationDataPath) {
 		pterm.Info.Println("[" + dir + "] 'animation_data.json' already exists. Removing it.")
+
 		err = os.Remove(animationDataPath)
 		if err != nil {
 			log.Panic(err)
 		}
 	}
+
 	if fileExists(animationSvgPath) {
 		pterm.Info.Println("[" + dir + "] 'animation.svg' already exists. Removing it.")
+
 		err := os.Remove(animationSvgPath)
 		if err != nil {
 			log.Panic(err)
@@ -346,6 +368,7 @@ func generateExampleContent(dir string, section os.DirEntry, example os.DirEntry
 
 	pterm.Info.Println("[" + dir + "] Generating README")
 	readmeString := generateExampleReadme(dir, exampleCode)
+
 	err = os.WriteFile("./_examples/"+dir+"/README.md", []byte(readmeString), 0600)
 	if err != nil {
 		log.Panic(err)
@@ -372,6 +395,7 @@ func generateSVG(animationDataPath, animationSvgPath string) {
 	if strings.Contains(animationDataPath, "interactive") {
 		noCursorFlag = ""
 	}
+
 	execute(`svg-term --in ` + animationDataPath + ` --out ` + animationSvgPath + " " + noCursorFlag + ` --window true --no-optimize --profile "./ci/terminal-theme.txt" --term "iterm2"`)
 }
 
@@ -381,11 +405,14 @@ func addSleepToEndOfAnimationData(dir, animationDataPath string) {
 	re := regexp.MustCompile(`\[\d[^,]*`).FindAllString(animationDataLastLine, 1)[0]
 	lastTime, _ := strconv.ParseFloat(strings.ReplaceAll(re, "[", ""), 64)
 	sleepString := `[` + strconv.FormatFloat(lastTime+5, 'f', 6, 64) + `, "o", "\nRestarting animation...\n"]`
+
 	animationDataFile, err := os.OpenFile(animationDataPath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
 	if err != nil {
 		log.Panicf("[%s] %s", dir, err.Error())
 	}
+
 	defer animationDataFile.Close()
+
 	_, err = animationDataFile.WriteString(sleepString)
 	if err != nil {
 		log.Panicf("[%s] %s", dir, err.Error())

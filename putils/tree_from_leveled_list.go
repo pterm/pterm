@@ -30,6 +30,7 @@ func TreeFromLeveledList(leveledListItems pterm.LeveledList) pterm.TreeNode {
 			lastIndex := len(last.Children) - 1
 			last = &last.Children[lastIndex]
 		}
+
 		last.Children = append(last.Children, pterm.TreeNode{
 			Children: []pterm.TreeNode{},
 			Text:     record.Text,

@@ -43,7 +43,9 @@ func (p PanelPrinter) WithPadding(padding int) *PanelPrinter {
 	if padding < 0 {
 		padding = 0
 	}
+
 	p.Padding = padding
+
 	return &p
 }
 
@@ -52,7 +54,9 @@ func (p PanelPrinter) WithBottomPadding(bottomPadding int) *PanelPrinter {
 	if bottomPadding < 0 {
 		bottomPadding = 0
 	}
+
 	p.BottomPadding = bottomPadding
+
 	return &p
 }
 
@@ -76,12 +80,15 @@ func (p PanelPrinter) WithWriter(writer io.Writer) *PanelPrinter {
 
 func (p PanelPrinter) getRawOutput() string {
 	var ret string
+
 	for _, panel := range p.Panels {
 		for _, panel2 := range panel {
 			ret += panel2.Data + "\n\n"
 		}
+
 		ret += "\n"
 	}
+
 	return ret
 }
 
@@ -151,14 +158,18 @@ func (p PanelPrinter) Srender() (string, error) {
 			if maxHeight != i {
 				for j, letter := range renderedPanels {
 					var letterLine string
+
 					letterLines := strings.Split(letter, "\n")
+
 					var maxLetterWidth int
 					if !p.SameColumnWidth {
 						maxLetterWidth = internal.GetStringMaxWidth(letter)
 					}
+
 					if len(letterLines) > i {
 						letterLine = letterLines[i]
 					}
+
 					letterLineLength := runewidth.StringWidth(RemoveColorFromString(letterLine))
 					if !p.SameColumnWidth {
 						if letterLineLength < maxLetterWidth {
@@ -169,9 +180,11 @@ func (p PanelPrinter) Srender() (string, error) {
 							letterLine += strings.Repeat(" ", columnMaxHeightMap[j]-letterLineLength)
 						}
 					}
+
 					letterLine += strings.Repeat(" ", p.Padding)
 					ret += letterLine
 				}
+
 				ret += "\n"
 			}
 		}

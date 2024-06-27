@@ -18,6 +18,7 @@ func TestNewRGB(t *testing.T) {
 		g uint8
 		b uint8
 	}
+
 	tests := []struct {
 		name string
 		args args
@@ -57,6 +58,7 @@ func TestNewRGBFromHEX(t *testing.T) {
 			testza.AssertNoError(t, err)
 		})
 	}
+
 	testsFail := []struct {
 		hex  string
 		want error
@@ -81,12 +83,14 @@ func TestRGB_Fade(t *testing.T) {
 		G uint8
 		B uint8
 	}
+
 	type args struct {
 		min     float32
 		max     float32
 		current float32
 		end     []pterm.RGB
 	}
+
 	tests := []struct {
 		name   string
 		fields fields
@@ -123,6 +127,7 @@ func TestRGB_GetValues(t *testing.T) {
 		G uint8
 		B uint8
 	}
+
 	tests := []struct {
 		name   string
 		fields fields
@@ -140,13 +145,16 @@ func TestRGB_GetValues(t *testing.T) {
 				G: tt.fields.G,
 				B: tt.fields.B,
 			}
+
 			gotR, gotG, gotB := p.GetValues()
 			if gotR != tt.wantR {
 				t.Errorf("GetValues() gotR = %v, want %v", gotR, tt.wantR)
 			}
+
 			if gotG != tt.wantG {
 				t.Errorf("GetValues() gotG = %v, want %v", gotG, tt.wantG)
 			}
+
 			if gotB != tt.wantB {
 				t.Errorf("GetValues() gotB = %v, want %v", gotB, tt.wantB)
 			}
@@ -367,6 +375,7 @@ func TestRGBStyle_NewRGBStyle(t *testing.T) {
 			if len(rgb.Options) > 0 {
 				result = result.AddOptions(rgb.Options...)
 			}
+
 			testza.AssertEqual(t, rgb.Foreground, result.Foreground)
 			testza.AssertEqual(t, rgb.Background, result.Background)
 			testza.AssertEqual(t, rgb.Options, result.Options)

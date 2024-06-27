@@ -50,7 +50,9 @@ func (p InteractiveContinuePrinter) WithDefaultValueIndex(value int) *Interactiv
 	if value >= len(p.Options) {
 		panic("Index out of range")
 	}
+
 	p.DefaultValueIndex = value
+
 	return &p
 }
 
@@ -62,6 +64,7 @@ func (p InteractiveContinuePrinter) WithDefaultValue(value string) *InteractiveC
 			break
 		}
 	}
+
 	return &p
 }
 
@@ -82,9 +85,12 @@ func (p InteractiveContinuePrinter) WithHandles(handles []string) *InteractiveCo
 	if len(handles) != len(p.Options) {
 		Warning.Printf("%v is not a valid set of handles", handles)
 		p.setDefaultHandles()
+
 		return &p
 	}
+
 	p.Handles = handles
+
 	return &p
 }
 
@@ -132,6 +138,7 @@ func (p InteractiveContinuePrinter) Show(text ...string) (string, error) {
 		if err != nil {
 			return false, fmt.Errorf("failed to get key: %w", err)
 		}
+
 		key := keyInfo.Code
 		char := keyInfo.String()
 
@@ -141,25 +148,33 @@ func (p InteractiveContinuePrinter) Show(text ...string) (string, error) {
 				if !p.ShowShortHandles {
 					c = string([]rune(c)[0])
 				}
+
 				if char == c || (i == p.DefaultValueIndex && strings.EqualFold(c, char)) {
 					p.OptionsStyle.Print(p.Options[i])
 					Println()
+
 					result = p.Options[i]
+
 					return true, nil
 				}
 			}
 		case keys.Enter:
 			p.OptionsStyle.Print(p.Options[p.DefaultValueIndex])
 			Println()
+
 			result = p.Options[p.DefaultValueIndex]
+
 			return true, nil
 		case keys.CtrlC:
 			internal.Exit(1)
 			return true, nil
 		}
+
 		return false, nil
 	})
+
 	cursor.StartOfLine()
+
 	return result, err
 }
 
@@ -169,6 +184,7 @@ func (p InteractiveContinuePrinter) getShortHandles() []string {
 	for _, option := range p.Options {
 		handles = append(handles, strings.ToLower(string([]rune(option)[0])))
 	}
+
 	handles[p.DefaultValueIndex] = strings.ToUpper(handles[p.DefaultValueIndex])
 
 	return handles

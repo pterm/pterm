@@ -15,6 +15,7 @@ func TestInteractiveConfirmPrinter_Show_yes(t *testing.T) {
 	go func() {
 		keyboard.SimulateKeyPress('y')
 	}()
+
 	result, _ := pterm.DefaultInteractiveConfirm.Show()
 	testza.AssertTrue(t, result)
 }
@@ -23,6 +24,7 @@ func TestInteractiveConfirmPrinter_Show_no(t *testing.T) {
 	go func() {
 		keyboard.SimulateKeyPress('n')
 	}()
+
 	result, _ := pterm.DefaultInteractiveConfirm.Show()
 	testza.AssertFalse(t, result)
 }
@@ -36,6 +38,7 @@ func TestInteractiveConfirmPrinter_WithDefaultValue_false(t *testing.T) {
 	go func() {
 		keyboard.SimulateKeyPress(keys.Enter)
 	}()
+
 	p := pterm.DefaultInteractiveConfirm.WithDefaultValue(false)
 	result, _ := p.Show()
 	testza.AssertFalse(t, result)
@@ -45,6 +48,7 @@ func TestInteractiveConfirmPrinter_WithDefaultValue_true(t *testing.T) {
 	go func() {
 		keyboard.SimulateKeyPress(keys.Enter)
 	}()
+
 	p := pterm.DefaultInteractiveConfirm.WithDefaultValue(true)
 	result, _ := p.Show()
 	testza.AssertTrue(t, result)
@@ -84,6 +88,7 @@ func TestInteractiveConfirmPrinter_WithRejectText(t *testing.T) {
 
 func TestInteractiveConfirmPrinter_CustomAnswers(t *testing.T) {
 	p := pterm.DefaultInteractiveConfirm.WithRejectText("reject").WithConfirmText("accept")
+
 	tests := []struct {
 		name     string
 		key      rune
@@ -115,6 +120,7 @@ func TestInteractiveConfirmPrinter_CustomAnswers(t *testing.T) {
 			go func() {
 				keyboard.SimulateKeyPress(tc.key)
 			}()
+
 			result, _ := p.Show()
 			testza.AssertEqual(t, result, tc.expected)
 		})

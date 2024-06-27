@@ -79,6 +79,7 @@ func TestTablePrinter_WithBoxed(t *testing.T) {
 
 func TestTablePrinter_WithData(t *testing.T) {
 	proxyToDevNull()
+
 	d := pterm.TableData{
 		{"Firstname", "Lastname", "Email"},
 		{"Paul", "Dean", "nisi.dictum.augue@velitAliquam.co.uk"},

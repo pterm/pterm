@@ -11,6 +11,7 @@ import (
 func ReturnLongestLine(text, sep string) string {
 	lines := strings.Split(text, sep)
 	var longest string
+
 	for _, line := range lines {
 		if runewidth.StringWidth(color.ClearCode(line)) > runewidth.StringWidth(color.ClearCode(longest)) {
 			longest = line

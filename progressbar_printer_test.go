@@ -12,6 +12,7 @@ import (
 
 func TestProgressbarPrinter_Add(t *testing.T) {
 	proxyToDevNull()
+
 	p := pterm.DefaultProgressbar.WithTotal(2000)
 	p.Add(1337)
 	testza.AssertEqual(t, 1337, p.Current)
@@ -20,6 +21,7 @@ func TestProgressbarPrinter_Add(t *testing.T) {
 
 func TestProgressbarPrinter_Add_With(t *testing.T) {
 	proxyToDevNull()
+
 	w := pterm.GetTerminalWidth()
 	h := pterm.GetTerminalHeight()
 	pterm.SetForcedTerminalSize(1, 1)
@@ -32,6 +34,7 @@ func TestProgressbarPrinter_Add_With(t *testing.T) {
 
 func TestProgressbarPrinter_AddWithNoStyle(t *testing.T) {
 	proxyToDevNull()
+
 	p := pterm.ProgressbarPrinter{}.WithTotal(2000)
 	p.Add(1337)
 	testza.AssertEqual(t, 1337, p.Current)
@@ -40,6 +43,7 @@ func TestProgressbarPrinter_AddWithNoStyle(t *testing.T) {
 
 func TestProgressbarPrinter_AddWithTotalOfZero(t *testing.T) {
 	proxyToDevNull()
+
 	p := pterm.ProgressbarPrinter{}.WithTotal(0)
 	p.Add(1337)
 	testza.AssertEqual(t, 0, p.Current)
@@ -48,6 +52,7 @@ func TestProgressbarPrinter_AddWithTotalOfZero(t *testing.T) {
 
 func TestProgressbarPrinter_AddTotalEqualsCurrent(t *testing.T) {
 	proxyToDevNull()
+
 	p := pterm.DefaultProgressbar.WithTotal(1)
 	p.Start()
 	p.Add(1)
@@ -58,6 +63,7 @@ func TestProgressbarPrinter_AddTotalEqualsCurrent(t *testing.T) {
 
 func TestProgressbarPrinter_RemoveWhenDone(t *testing.T) {
 	proxyToDevNull()
+
 	p, err := pterm.DefaultProgressbar.WithTotal(2).WithRemoveWhenDone().Start()
 	testza.AssertNoError(t, err)
 	p.Stop()
@@ -245,10 +251,12 @@ func TestProgressbarPrinter_OutputToWriters(t *testing.T) {
 		t.Run(testTitle, func(t *testing.T) {
 			stderr, err := testza.CaptureStderr(func(w io.Writer) error {
 				pb, err := pterm.DefaultProgressbar.WithTitle("Hello world").WithWriter(os.Stderr).Start()
+
 				time.Sleep(time.Second) // Required otherwise the goroutine doesn't run and the text isnt outputted
 				testza.AssertNoError(t, err)
 				testCase.action(pb)
 				time.Sleep(time.Second) // Required otherwise the goroutine doesn't run and the text isnt updated
+
 				return nil
 			})
 

@@ -48,12 +48,14 @@ func (p MultiPrinter) WithUpdateDelay(delay time.Duration) *MultiPrinter {
 func (p *MultiPrinter) NewWriter() io.Writer {
 	buf := bytes.NewBufferString("")
 	p.buffers = append(p.buffers, buf)
+
 	return buf
 }
 
 // getString returns all buffers appended and separated by a newline.
 func (p *MultiPrinter) getString() string {
 	var buffer bytes.Buffer
+
 	for _, b := range p.buffers {
 		s := b.String()
 		s = strings.Trim(s, "\n")
@@ -71,6 +73,7 @@ func (p *MultiPrinter) getString() string {
 		buffer.WriteString(s)
 		buffer.WriteString("\n")
 	}
+
 	return buffer.String()
 }
 
@@ -98,6 +101,7 @@ func (p *MultiPrinter) Stop() (*MultiPrinter, error) {
 	for _, printer := range p.printers {
 		printer.GenericStop()
 	}
+
 	time.Sleep(time.Millisecond * 20)
 	p.area.Update(p.getString())
 	p.area.Stop()
@@ -111,6 +115,7 @@ func (p *MultiPrinter) Stop() (*MultiPrinter, error) {
 func (p MultiPrinter) GenericStart() (*LivePrinter, error) {
 	p2, _ := p.Start()
 	lp := LivePrinter(p2)
+
 	return &lp, nil
 }
 
@@ -120,5 +125,6 @@ func (p MultiPrinter) GenericStart() (*LivePrinter, error) {
 func (p MultiPrinter) GenericStop() (*LivePrinter, error) {
 	p2, _ := p.Stop()
 	lp := LivePrinter(p2)
+
 	return &lp, nil
 }

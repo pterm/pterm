@@ -52,6 +52,7 @@ func DisableDebugMessages() {
 // This also calls EnableColor.
 func EnableStyling() {
 	RawOutput = false
+
 	EnableColor()
 }
 
@@ -60,6 +61,7 @@ func EnableStyling() {
 // This also calls DisableColor.
 func DisableStyling() {
 	RawOutput = true
+
 	DisableColor()
 }
 

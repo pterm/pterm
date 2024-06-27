@@ -18,7 +18,9 @@ var terminalHeight = 60
 func TestMain(m *testing.M) {
 	pterm.SetForcedTerminalSize(terminalWidth, terminalHeight)
 	setupStdoutCapture()
+
 	exitVal := m.Run()
+
 	teardownStdoutCapture()
 	os.Exit(exitVal)
 }
@@ -210,6 +212,7 @@ func teardownStdoutCapture() {
 func captureStdout(f func(w io.Writer)) string {
 	setupStdoutCapture()
 	f(&outBuf)
+
 	return readStdout()
 }
 
@@ -217,6 +220,7 @@ func captureStdout(f func(w io.Writer)) string {
 func readStdout() string {
 	content := outBuf.String()
 	outBuf.Reset()
+
 	return content
 }
 
