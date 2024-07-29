@@ -108,7 +108,7 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	}
 
 	if p.DefaultValue != "" {
-		p.input = append(p.input, Gray(p.DefaultValue))
+		p.input = append(p.input, p.DefaultValue)
 		p.updateArea(&area)
 	}
 
@@ -155,19 +155,16 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 			}
 		case keys.RuneKey:
 			if !p.startedTyping {
-				p.input = []string{""}
 				p.startedTyping = true
 			}
 			p.input[p.cursorYPos] = string(append([]rune(p.input[p.cursorYPos])[:len([]rune(p.input[p.cursorYPos]))+p.cursorXPos], append([]rune(key.String()), []rune(p.input[p.cursorYPos])[len([]rune(p.input[p.cursorYPos]))+p.cursorXPos:]...)...))
 		case keys.Space:
 			if !p.startedTyping {
-				p.input = []string{" "}
 				p.startedTyping = true
 			}
 			p.input[p.cursorYPos] = string(append([]rune(p.input[p.cursorYPos])[:len([]rune(p.input[p.cursorYPos]))+p.cursorXPos], append([]rune(" "), []rune(p.input[p.cursorYPos])[len([]rune(p.input[p.cursorYPos]))+p.cursorXPos:]...)...))
 		case keys.Backspace:
 			if !p.startedTyping {
-				p.input = []string{""}
 				p.startedTyping = true
 			}
 			if len([]rune(p.input[p.cursorYPos]))+p.cursorXPos > 0 {
@@ -198,6 +195,9 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 			cancel()
 			return true, nil
 		case keys.Down:
+			if !p.MultiLine {
+				return false, nil
+			}
 			if !p.startedTyping {
 				p.input = []string{""}
 				p.startedTyping = true
@@ -210,6 +210,9 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 				p.cursorYPos++
 			}
 		case keys.Up:
+			if !p.MultiLine {
+				return false, nil
+			}
 			if !p.startedTyping {
 				p.input = []string{""}
 				p.startedTyping = true
@@ -290,7 +293,7 @@ func (p InteractiveTextInputPrinter) updateArea(area *cursor.Area) string {
 		p.cursorXPos = -internal.GetStringMaxWidth(p.input[p.cursorYPos])
 	}
 
-	area.Update(areaText)
+	area.Update(Gray(areaText))
 	area.Top()
 	area.Down(p.cursorYPos + 1)
 	area.StartOfLine()

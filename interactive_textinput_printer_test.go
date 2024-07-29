@@ -85,6 +85,26 @@ func TestInteractiveTextInputPrinter_OnEnter(t *testing.T) {
 	testza.AssertEqual(t, "default", result)
 }
 
+func TestInteractiveTextInputPrinter_Editable(t *testing.T) {
+	go func() {
+		// change `default` to `deffaultt` by simulating cursor moves `left`, `right` and inserting
+		// keys on current cursor positions.
+		keyboard.SimulateKeyPress(keys.Left)
+		keyboard.SimulateKeyPress(keys.Left)
+		keyboard.SimulateKeyPress(keys.Left)
+		keyboard.SimulateKeyPress(keys.Left)
+		keyboard.SimulateKeyPress(keys.Key{Code: keys.RuneKey, Runes: []rune{'f'}})
+		keyboard.SimulateKeyPress(keys.Right)
+		keyboard.SimulateKeyPress(keys.Right)
+		keyboard.SimulateKeyPress(keys.Right)
+		keyboard.SimulateKeyPress(keys.Key{Code: keys.RuneKey, Runes: []rune{'t'}})
+		keyboard.SimulateKeyPress(keys.Enter)
+	}()
+
+	result, _ := pterm.DefaultInteractiveTextInput.WithDefaultValue("default").Show()
+	testza.AssertEqual(t, "deffaultt", result)
+}
+
 func TestInteractiveTextInputPrinter_WithMultiLineOnTab(t *testing.T) {
 	go func() {
 		keyboard.SimulateKeyPress(keys.Tab)
