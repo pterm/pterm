@@ -50,10 +50,7 @@ func TestTablePrinterWithAlternateStyle_Render(t *testing.T) {
 
 	// Create a printer with the alternate row style
 	printer := pterm.DefaultTable.WithHasHeader().WithAlternateRowStyle(alternateStyle).WithData(d)
-
-	// Render the table
 	content, err := printer.Srender()
-
 	testza.AssertNoError(t, err)
 	testza.AssertNotNil(t, content)
 }

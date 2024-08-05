@@ -254,7 +254,7 @@ func (p TablePrinter) renderRow(t table, r row, rowIndex int) string {
 	var s string
 	var currentStyle *Style
 
-	// Déterminer si la ligne doit utiliser le style de ligne alternée
+	// Identify if line should use alternate style
 	if rowIndex%2 == 1 && p.AlternateRowStyle != nil {
 		currentStyle = p.AlternateRowStyle
 	} else {
