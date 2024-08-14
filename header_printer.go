@@ -96,7 +96,7 @@ func (p HeaderPrinter) Sprint(a ...interface{}) string {
 	}
 
 	var marginString string
-	var ret string
+	var ret strings.Builder
 
 	if p.FullWidth {
 		longestLineLen = runewidth.StringWidth(RemoveColorFromString(internal.ReturnLongestLine(text, "\n")))
@@ -105,18 +105,21 @@ func (p HeaderPrinter) Sprint(a ...interface{}) string {
 		marginString = strings.Repeat(" ", p.Margin)
 	}
 
-	ret += p.BackgroundStyle.Sprint(blankLine) + "\n"
+	ret.WriteString(p.BackgroundStyle.Sprint(blankLine))
+	ret.WriteByte('\n')
 	for _, line := range strings.Split(text, "\n") {
 		line = strings.ReplaceAll(line, "\n", "")
 		line = marginString + line + marginString
 		if runewidth.StringWidth(line) < runewidth.StringWidth(blankLine) {
 			line += strings.Repeat(" ", runewidth.StringWidth(blankLine)-runewidth.StringWidth(line))
 		}
-		ret += p.BackgroundStyle.Sprint(p.TextStyle.Sprint(line)) + "\n"
+		ret.WriteString(p.BackgroundStyle.Sprint(p.TextStyle.Sprint(line)))
+		ret.WriteByte('\n')
 	}
-	ret += p.BackgroundStyle.Sprint(blankLine) + "\n"
+	ret.WriteString(p.BackgroundStyle.Sprint(blankLine))
+	ret.WriteByte('\n')
 
-	return ret
+	return ret.String()
 }
 
 func splitText(text string, width int) string {

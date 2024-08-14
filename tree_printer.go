@@ -122,12 +122,13 @@ func (p TreePrinter) Srender() (string, error) {
 		p.TextStyle = NewStyle()
 	}
 
-	var result string
+	var result strings.Builder
 	if p.Root.Text != "" {
-		result += p.TextStyle.Sprint(p.Root.Text) + "\n"
+		result.WriteString(p.TextStyle.Sprint(p.Root.Text))
+		result.WriteByte('\n')
 	}
-	result += walkOverTree(p.Root.Children, p, "")
-	return result, nil
+	result.WriteString(walkOverTree(p.Root.Children, p, ""))
+	return result.String(), nil
 }
 
 // walkOverTree is a recursive function,

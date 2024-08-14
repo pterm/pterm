@@ -221,30 +221,32 @@ func (p TablePrinter) Srender() (string, error) {
 	}
 
 	// render table
-	var s string
+	var ret strings.Builder
 
 	for i, r := range t.rows {
 		if i == 0 && p.HasHeader {
-			s += p.HeaderStyle.Sprint(p.renderRow(t, r, i))
+			ret.WriteString(p.HeaderStyle.Sprint(p.renderRow(t, r, i)))
 
 			if p.HeaderRowSeparator != "" {
-				s += strings.Repeat(p.HeaderRowSeparatorStyle.Sprint(p.HeaderRowSeparator), maxRowWidth) + "\n"
+				ret.WriteString(strings.Repeat(p.HeaderRowSeparatorStyle.Sprint(p.HeaderRowSeparator), maxRowWidth))
+				ret.WriteByte('\n')
 			}
 			continue
 		}
 
-		s += p.renderRow(t, r, i)
+		ret.WriteString(p.renderRow(t, r, i))
 
 		if p.RowSeparator != "" {
-			s += strings.Repeat(p.RowSeparatorStyle.Sprint(p.RowSeparator), maxRowWidth) + "\n"
+			ret.WriteString(strings.Repeat(p.RowSeparatorStyle.Sprint(p.RowSeparator), maxRowWidth))
+			ret.WriteByte('\n')
 		}
 	}
 
 	if p.Boxed {
-		s = DefaultBox.Sprint(strings.TrimSuffix(s, "\n"))
+		return DefaultBox.Sprint(strings.TrimSuffix(ret.String(), "\n")), nil
 	}
 
-	return s, nil
+	return ret.String(), nil
 }
 
 // renderRow renders a row.

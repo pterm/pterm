@@ -260,7 +260,7 @@ func (p BarChartPrinter) Srender() (string, error) {
 		p.Bars[i].Label = p.Bars[i].LabelStyle.Sprint(bar.Label)
 	}
 
-	var ret string
+	var ret strings.Builder
 
 	var maxLabelHeight int
 	var maxBarValue int
@@ -328,8 +328,8 @@ func (p BarChartPrinter) Srender() (string, error) {
 				}
 			}
 		}
-		ret, _ = DefaultPanel.WithPanels(panels).Srender()
-		return ret, nil
+		result, _ := DefaultPanel.WithPanels(panels).Srender()
+		return result, nil
 	} else {
 		renderedBars := make([]string, len(p.Bars))
 
@@ -406,13 +406,13 @@ func (p BarChartPrinter) Srender() (string, error) {
 				if letterLineLength < maxBarWidth {
 					barLine += strings.Repeat(" ", maxBarWidth-letterLineLength)
 				}
-				ret += barLine
+				ret.WriteString(barLine)
 			}
-			ret += "\n"
+			ret.WriteByte('\n')
 		}
 	}
 
-	return ret, nil
+	return ret.String(), nil
 }
 
 // Render prints the Template to the terminal.
