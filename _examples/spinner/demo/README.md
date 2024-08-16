@@ -15,7 +15,7 @@ func main() {
 	// Create and start a fork of the default spinner.
 	spinnerInfo, _ := pterm.DefaultSpinner.Start("Some informational action...")
 	time.Sleep(time.Second * 2) // Simulate 3 seconds of processing something.
-	spinnerInfo.Info()          // Resolve spinner with error message.
+	spinnerInfo.Info()          // Resolve spinner with information message.
 
 	// Create and start a fork of the default spinner.
 	spinnerSuccess, _ := pterm.DefaultSpinner.Start("Doing something important... (will succeed)")
