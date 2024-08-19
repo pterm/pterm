@@ -267,18 +267,18 @@ func (p TablePrinter) renderRow(t table, r row, rowIndex int) string {
 	for i := 0; i < r.height; i++ {
 		for j, c := range r.cells {
 			var currentLine string
+			// Check if the current line exists in the cell
 			if i < len(c.lines) {
 				currentLine = c.lines[i]
 			}
+			// Calculate padding based on the max width of the current column
 			paddingForLine := t.maxColumnWidths[j] - internal.GetStringMaxWidth(currentLine)
 
 			if p.RightAlignment {
 				s += strings.Repeat(" ", paddingForLine)
 			}
 
-			if i < len(c.lines) {
-				s += c.lines[i]
-			}
+			s += currentLine
 
 			if j < len(r.cells)-1 {
 				if p.LeftAlignment {
@@ -287,7 +287,15 @@ func (p TablePrinter) renderRow(t table, r row, rowIndex int) string {
 				s += p.SeparatorStyle.Sprint(p.Separator)
 			}
 		}
-		s += strings.Repeat(" ", t.maxColumnWidths[len(r.cells)-1]-internal.GetStringMaxWidth(r.cells[len(r.cells)-1].lines[i]))
+
+		// Ensure that the last column is padded and styled correctly
+		lastCell := r.cells[len(r.cells)-1]
+		if len(lastCell.lines) > i {
+			s += strings.Repeat(" ", t.maxColumnWidths[len(r.cells)-1]-internal.GetStringMaxWidth(lastCell.lines[i]))
+		} else {
+			// Fill the remaining space with padding if there are fewer lines
+			s += strings.Repeat(" ", t.maxColumnWidths[len(r.cells)-1])
+		}
 		s += "\n"
 	}
 
