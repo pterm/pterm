@@ -254,14 +254,16 @@ func (p TablePrinter) renderRow(t table, r row, rowIndex int) string {
 	var s string
 	var currentStyle *Style
 
-	// Identify if the line should use an alternate style
+	// Identify if line should use alternate style
 	if rowIndex%2 == 1 && p.AlternateRowStyle != nil {
 		currentStyle = p.AlternateRowStyle
 	} else {
 		currentStyle = p.Style
 	}
 
-	// Merge lines of cells and add separator
+	// merge lines of cells and add separator
+	// use the t.maxColumnWidths to add padding to the corresponding cell
+	// a newline in a cell should be in the same column as the original cell
 	for i := 0; i < r.height; i++ {
 		for j, c := range r.cells {
 			var currentLine string
