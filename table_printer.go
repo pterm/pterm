@@ -214,7 +214,7 @@ func (p TablePrinter) Srender() (string, error) {
 
 	var maxRowWidth int
 	for _, r := range t.rows {
-		rowWidth := internal.GetStringMaxWidth(p.renderRow(t, r, 0))
+		rowWidth := internal.GetStringMaxWidth(p.renderRow(t, r))
 		if rowWidth > maxRowWidth {
 			maxRowWidth = rowWidth
 		}
@@ -225,7 +225,7 @@ func (p TablePrinter) Srender() (string, error) {
 
 	for i, r := range t.rows {
 		if i == 0 && p.HasHeader {
-			s += p.HeaderStyle.Sprint(p.renderRow(t, r, i))
+			s += p.HeaderStyle.Sprint(p.renderRow(t, r))
 
 			if p.HeaderRowSeparator != "" {
 				s += strings.Repeat(p.HeaderRowSeparatorStyle.Sprint(p.HeaderRowSeparator), maxRowWidth) + "\n"
@@ -233,9 +233,14 @@ func (p TablePrinter) Srender() (string, error) {
 			continue
 		}
 
-		s += p.renderRow(t, r, i)
+		// Apply AlternateRowStyle if needed
+		if i%2 == 1 && p.AlternateRowStyle != nil {
+			s += p.AlternateRowStyle.Sprint(p.renderRow(t, r))
+		} else {
+			s += p.renderRow(t, r)
+		}
 
-		if p.RowSeparator != "" {
+		if p.RowSeparator != "" && i < len(t.rows)-1 {
 			s += strings.Repeat(p.RowSeparatorStyle.Sprint(p.RowSeparator), maxRowWidth) + "\n"
 		}
 	}
@@ -250,58 +255,44 @@ func (p TablePrinter) Srender() (string, error) {
 // renderRow renders a row.
 // It merges the cells of a row into one string.
 // Each line of each cell is merged with the same line of the other cells.
-func (p TablePrinter) renderRow(t table, r row, rowIndex int) string {
+func (p TablePrinter) renderRow(t table, r row) string {
 	var s string
-	var currentStyle *Style
 
-	// Identify if line should use alternate style
-	if rowIndex%2 == 1 && p.AlternateRowStyle != nil {
-		currentStyle = p.AlternateRowStyle
-	} else {
-		currentStyle = p.Style
-	}
-
-	// merge lines of cells and add separator
-	// use the t.maxColumnWidths to add padding to the corresponding cell
-	// a newline in a cell should be in the same column as the original cell
+	// Merge lines of cells and add separator
+	// Use t.maxColumnWidths to add padding to corresponding cell
+	// A newline in a cell should be in the same column as original cell
 	for i := 0; i < r.height; i++ {
 		for j, c := range r.cells {
 			var currentLine string
-			// Check if the current line exists in the cell
 			if i < len(c.lines) {
 				currentLine = c.lines[i]
 			}
-			// Calculate padding based on the max width of the current column
 			paddingForLine := t.maxColumnWidths[j] - internal.GetStringMaxWidth(currentLine)
 
+			// Add right alignment if necessary
 			if p.RightAlignment {
 				s += strings.Repeat(" ", paddingForLine)
 			}
 
-			s += currentLine
+			// Add line content
+			if i < len(c.lines) {
+				s += c.lines[i]
+			}
 
+			// Add padding for left alignment, except for last column
 			if j < len(r.cells)-1 {
 				if p.LeftAlignment {
 					s += strings.Repeat(" ", paddingForLine)
 				}
 				s += p.SeparatorStyle.Sprint(p.Separator)
+			} else if p.LeftAlignment {
+				// Add padding after last column
+				s += strings.Repeat(" ", paddingForLine)
 			}
-		}
-
-		// Ensure that the last column is padded and styled correctly
-		lastCell := r.cells[len(r.cells)-1]
-		if len(lastCell.lines) > i {
-			s += strings.Repeat(" ", t.maxColumnWidths[len(r.cells)-1]-internal.GetStringMaxWidth(lastCell.lines[i]))
-		} else {
-			// Fill the remaining space with padding if there are fewer lines
-			s += strings.Repeat(" ", t.maxColumnWidths[len(r.cells)-1])
 		}
 		s += "\n"
 	}
 
-	if currentStyle != nil {
-		return currentStyle.Sprint(s)
-	}
 	return s
 }
 
