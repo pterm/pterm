@@ -180,7 +180,7 @@ func (p *InteractiveContinuePrinter) setDefaultHandles() {
 		p.Handles = p.getShortHandles()
 	}
 
-	if p.Handles == nil || len(p.Handles) == 0 {
+	if len(p.Handles) == 0 {
 		p.Handles = make([]string, len(p.Options))
 		copy(p.Handles, p.Options)
 		p.Handles[p.DefaultValueIndex] = cases.Title(language.Und, cases.Compact).String(p.Handles[p.DefaultValueIndex])
