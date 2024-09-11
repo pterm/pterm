@@ -1,17 +1,17 @@
 package pterm
 
 import (
-	"atomicgo.dev/schedule"
 	"bytes"
 	"io"
-	"os"
 	"strings"
 	"time"
+
+	"atomicgo.dev/cursor"
+	"atomicgo.dev/schedule"
 )
 
 var DefaultMultiPrinter = MultiPrinter{
 	printers:    []LivePrinter{},
-	Writer:      os.Stdout,
 	UpdateDelay: time.Millisecond * 200,
 
 	buffers: []*bytes.Buffer{},
@@ -20,7 +20,6 @@ var DefaultMultiPrinter = MultiPrinter{
 
 type MultiPrinter struct {
 	IsActive    bool
-	Writer      io.Writer
 	UpdateDelay time.Duration
 
 	printers []LivePrinter
@@ -30,12 +29,29 @@ type MultiPrinter struct {
 
 // SetWriter sets the writer for the AreaPrinter.
 func (p *MultiPrinter) SetWriter(writer io.Writer) {
-	p.Writer = writer
+	cw, ok := writer.(cursor.Writer)
+	if ok {
+		p.SetCWriter(cw)
+	}
+}
+
+// SetCWriter sets the writer for the AreaPrinter.
+func (p *MultiPrinter) SetCWriter(writer cursor.Writer) {
+	p.area.SetWriter(writer)
 }
 
 // WithWriter returns a fork of the MultiPrinter with a new writer.
 func (p MultiPrinter) WithWriter(writer io.Writer) *MultiPrinter {
-	p.Writer = writer
+	cw, ok := writer.(cursor.Writer)
+	if ok {
+		return p.WithCWriter(cw)
+	}
+	return &p
+}
+
+// WithCWriter returns a fork of the MultiPrinter with a new writer.
+func (p MultiPrinter) WithCWriter(writer cursor.Writer) *MultiPrinter {
+	p.area.SetWriter(writer)
 	return &p
 }
 
