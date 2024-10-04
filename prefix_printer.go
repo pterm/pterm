@@ -195,7 +195,7 @@ func (p *PrefixPrinter) Sprint(a ...interface{}) string {
 			}
 			ret += p.MessageStyle.Sprint(m)
 		} else {
-			ret += "\n" + p.Prefix.Style.Sprint(strings.Repeat(" ", len(p.Prefix.Text)+2)) + " " + p.MessageStyle.Sprint(m)
+			ret += "\n" + p.Prefix.Style.Sprint(strings.Repeat(" ", len([]rune(p.Prefix.Text))+2)) + " " + p.MessageStyle.Sprint(m)
 		}
 	}
 
