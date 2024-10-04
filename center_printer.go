@@ -43,18 +43,18 @@ func (p CenterPrinter) Sprint(a ...interface{}) string {
 
 	lines := strings.Split(Sprint(a...), "\n")
 
-	var ret string
+	var ret strings.Builder
 
 	if p.CenterEachLineSeparately {
 		for _, line := range lines {
 			margin := (GetTerminalWidth() - runewidth.StringWidth(RemoveColorFromString(line))) / 2
-			if margin < 1 {
-				ret += line + "\n"
-			} else {
-				ret += strings.Repeat(" ", margin) + line + "\n"
+			if margin >= 1 {
+				ret.WriteString(strings.Repeat(" ", margin))
 			}
+			ret.WriteString(line)
+			ret.WriteByte('\n')
 		}
-		return ret
+		return ret.String()
 	}
 
 	var maxLineWidth int
@@ -70,17 +70,20 @@ func (p CenterPrinter) Sprint(a ...interface{}) string {
 
 	if indent/2 < 1 {
 		for _, line := range lines {
-			ret += line + "\n"
+			ret.WriteString(line)
+			ret.WriteByte('\n')
 		}
 
-		return ret
+		return ret.String()
 	}
 
 	for _, line := range lines {
-		ret += strings.Repeat(" ", indent/2) + line + "\n"
+		ret.WriteString(strings.Repeat(" ", indent/2))
+		ret.WriteString(line)
+		ret.WriteByte('\n')
 	}
 
-	return ret
+	return ret.String()
 }
 
 // Sprintln formats using the default formats for its operands and returns the resulting string.

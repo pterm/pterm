@@ -178,7 +178,7 @@ func (p *PrefixPrinter) Sprint(a ...interface{}) string {
 		p.MessageStyle = NewStyle()
 	}
 
-	var ret string
+	var ret strings.Builder
 	var newLine bool
 
 	if strings.HasSuffix(m, "\n") {
@@ -189,27 +189,31 @@ func (p *PrefixPrinter) Sprint(a ...interface{}) string {
 	messageLines := strings.Split(m, "\n")
 	for i, m := range messageLines {
 		if i == 0 {
-			ret += p.GetFormattedPrefix() + " "
+			ret.WriteString(p.GetFormattedPrefix())
+			ret.WriteByte(' ')
 			if p.Scope.Text != "" {
-				ret += NewStyle(*p.Scope.Style...).Sprint(" (" + p.Scope.Text + ") ")
+				ret.WriteString(NewStyle(*p.Scope.Style...).Sprint(" (" + p.Scope.Text + ") "))
 			}
-			ret += p.MessageStyle.Sprint(m)
+			ret.WriteString(p.MessageStyle.Sprint(m))
 		} else {
-			ret += "\n" + p.Prefix.Style.Sprint(strings.Repeat(" ", len([]rune(p.Prefix.Text))+2)) + " " + p.MessageStyle.Sprint(m)
+			ret.WriteByte('\n')
+			ret.WriteString(p.Prefix.Style.Sprint(strings.Repeat(" ", len([]rune(p.Prefix.Text))+2)))
+			ret.WriteByte(' ')
+			ret.WriteString(p.MessageStyle.Sprint(m))
 		}
 	}
 
 	if p.ShowLineNumber {
 		_, fileName, line, _ := runtime.Caller(3 + p.LineNumberOffset)
-		ret += FgGray.Sprint("\n└ " + fmt.Sprintf("(%s:%d)\n", fileName, line))
+		ret.WriteString(FgGray.Sprint("\n└ " + fmt.Sprintf("(%s:%d)\n", fileName, line)))
 		newLine = false
 	}
 
 	if newLine {
-		ret += "\n"
+		ret.WriteByte('\n')
 	}
 
-	return Sprint(ret)
+	return Sprint(ret.String())
 }
 
 // Sprintln formats using the default formats for its operands and returns the resulting string.

@@ -450,7 +450,7 @@ func (p HeatmapPrinter) renderData(buffer *bytes.Buffer, colWidth int, xAmount i
 				if p.EnableComplementaryColor {
 					fgColor = complementaryColors[color]
 				}
-				buffer.WriteString(fgColor.Sprint(color.Sprintf(ct)))
+				buffer.WriteString(fgColor.Sprint(color.Sprint(ct)))
 			}
 			if j < xAmount {
 				if !p.Boxed && p.HasHeader && j == xAmount-1 {

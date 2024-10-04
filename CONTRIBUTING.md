@@ -78,9 +78,9 @@ type TemplatePrinter struct{
 
 // Srender renders the Template as a string.
 func (p TemplatePrinter) Srender() (string, error) {
-	var ret string
+	var ret strings.Builder
 
-    return ret, nil
+    return ret.String(), nil
 }
 
 // Render prints the Template to the terminal.

@@ -3,6 +3,7 @@ package pterm
 import (
 	"fmt"
 	"sort"
+	"strings"
 
 	"atomicgo.dev/cursor"
 	"atomicgo.dev/keyboard"
@@ -338,8 +339,8 @@ func (p *InteractiveMultiselectPrinter) selectOption(optionText string) {
 }
 
 func (p *InteractiveMultiselectPrinter) renderSelectMenu() string {
-	var content string
-	content += Sprintf("%s: %s\n", p.text, p.fuzzySearchString)
+	var content strings.Builder
+	content.WriteString(Sprintf("%s: %s\n", p.text, p.fuzzySearchString))
 
 	// find options that match fuzzy search string
 	rankedResults := fuzzy.RankFindFold(p.fuzzySearchString, p.Options)
@@ -371,9 +372,9 @@ func (p *InteractiveMultiselectPrinter) renderSelectMenu() string {
 			checkmark = fmt.Sprintf("[%s]", p.Checkmark.Unchecked)
 		}
 		if i == p.selectedOption {
-			content += Sprintf("%s %s %s\n", p.renderSelector(), checkmark, option)
+			content.WriteString(Sprintf("%s %s %s\n", p.renderSelector(), checkmark, option))
 		} else {
-			content += Sprintf("  %s %s\n", checkmark, option)
+			content.WriteString(Sprintf("  %s %s\n", checkmark, option))
 		}
 	}
 
@@ -381,9 +382,9 @@ func (p *InteractiveMultiselectPrinter) renderSelectMenu() string {
 	if p.Filter {
 		help += fmt.Sprintf("| type to %s", Bold.Sprint("filter"))
 	}
-	content += ThemeDefault.SecondaryStyle.Sprintfln(help)
+	content.WriteString(ThemeDefault.SecondaryStyle.Sprintln(help))
 
-	return content
+	return content.String()
 }
 
 func (p InteractiveMultiselectPrinter) renderFinishedMenu() string {
