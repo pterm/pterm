@@ -197,7 +197,7 @@ func (p *PrefixPrinter) Sprint(a ...interface{}) string {
 			ret.WriteString(p.MessageStyle.Sprint(m))
 		} else {
 			ret.WriteByte('\n')
-			ret.WriteString(p.Prefix.Style.Sprint(strings.Repeat(" ", len(p.Prefix.Text)+2)))
+			ret.WriteString(p.Prefix.Style.Sprint(strings.Repeat(" ", len([]rune(p.Prefix.Text))+2)))
 			ret.WriteByte(' ')
 			ret.WriteString(p.MessageStyle.Sprint(m))
 		}
