@@ -221,14 +221,15 @@ func (p TablePrinter) Srender() (string, error) {
 	}
 
 	// render table
-	var s string
+	var ret strings.Builder
 
 	for i, r := range t.rows {
 		if i == 0 && p.HasHeader {
 			s += p.HeaderStyle.Sprint(p.renderRow(t, r))
 
 			if p.HeaderRowSeparator != "" {
-				s += strings.Repeat(p.HeaderRowSeparatorStyle.Sprint(p.HeaderRowSeparator), maxRowWidth) + "\n"
+				ret.WriteString(strings.Repeat(p.HeaderRowSeparatorStyle.Sprint(p.HeaderRowSeparator), maxRowWidth))
+				ret.WriteByte('\n')
 			}
 			continue
 		}
@@ -246,10 +247,10 @@ func (p TablePrinter) Srender() (string, error) {
 	}
 
 	if p.Boxed {
-		s = DefaultBox.Sprint(strings.TrimSuffix(s, "\n"))
+		return DefaultBox.Sprint(strings.TrimSuffix(ret.String(), "\n")), nil
 	}
 
-	return s, nil
+	return ret.String(), nil
 }
 
 // renderRow renders a row.

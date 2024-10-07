@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"sort"
+	"strings"
 
 	"atomicgo.dev/cursor"
 	"atomicgo.dev/keyboard"
@@ -261,11 +262,11 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 }
 
 func (p *InteractiveSelectPrinter) renderSelectMenu() string {
-	var content string
+	var content strings.Builder
 	if p.Filter {
-		content += Sprintf("%s %s: %s\n", p.text, p.SelectorStyle.Sprint("[type to search]"), p.fuzzySearchString)
+		content.WriteString(Sprintf("%s %s: %s\n", p.text, p.SelectorStyle.Sprint("[type to search]"), p.fuzzySearchString))
 	} else {
-		content += Sprintf("%s:\n", p.text)
+		content.WriteString(Sprintf("%s:\n", p.text))
 	}
 
 	// find options that match fuzzy search string
@@ -296,13 +297,13 @@ func (p *InteractiveSelectPrinter) renderSelectMenu() string {
 			continue
 		}
 		if i == p.selectedOption {
-			content += Sprintf("%s %s\n", p.renderSelector(), p.OptionStyle.Sprint(option))
+			content.WriteString(Sprintf("%s %s\n", p.renderSelector(), p.OptionStyle.Sprint(option)))
 		} else {
-			content += Sprintf("  %s\n", p.OptionStyle.Sprint(option))
+			content.WriteString(Sprintf("  %s\n", p.OptionStyle.Sprint(option)))
 		}
 	}
 
-	return content
+	return content.String()
 }
 
 func (p InteractiveSelectPrinter) renderFinishedMenu() string {
