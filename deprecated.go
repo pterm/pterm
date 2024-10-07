@@ -139,7 +139,7 @@ func NewRGBFromHEX(hex string) (RGB, error) {
 		return RGB{}, err
 	}
 	c := int(i64)
-
+	// #nosec G115
 	return RGB{
 		R: uint8(c >> 16),
 		G: uint8((c & 0x00FF00) >> 8),

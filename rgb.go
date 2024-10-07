@@ -171,6 +171,7 @@ func (p RGB) Fade(minRGB, maxRGB, current float32, end ...RGB) RGB {
 		current -= minRGB
 		minRGB = 0
 	}
+	// #nosec G115
 	if len(end) == 1 {
 		return RGB{
 			R:          uint8(internal.MapRangeToRange(minRGB, maxRGB, float32(p.R), float32(end[0].R), current)),
