@@ -225,7 +225,7 @@ func (p TablePrinter) Srender() (string, error) {
 
 	for i, r := range t.rows {
 		if i == 0 && p.HasHeader {
-			s += p.HeaderStyle.Sprint(p.renderRow(t, r))
+			ret.WriteString(p.HeaderStyle.Sprint(p.renderRow(t, r)))
 
 			if p.HeaderRowSeparator != "" {
 				ret.WriteString(strings.Repeat(p.HeaderRowSeparatorStyle.Sprint(p.HeaderRowSeparator), maxRowWidth))
@@ -236,13 +236,13 @@ func (p TablePrinter) Srender() (string, error) {
 
 		// Apply AlternateRowStyle if needed
 		if i%2 == 1 && p.AlternateRowStyle != nil {
-			s += p.AlternateRowStyle.Sprint(p.renderRow(t, r))
+			ret.WriteString(p.AlternateRowStyle.Sprint(p.renderRow(t, r)))
 		} else {
-			s += p.renderRow(t, r)
+			ret.WriteString(p.renderRow(t, r))
 		}
 
 		if p.RowSeparator != "" && i < len(t.rows)-1 {
-			s += strings.Repeat(p.RowSeparatorStyle.Sprint(p.RowSeparator), maxRowWidth) + "\n"
+			ret.WriteString(strings.Repeat(p.RowSeparatorStyle.Sprint(p.RowSeparator), maxRowWidth) + "\n")
 		}
 	}
 
