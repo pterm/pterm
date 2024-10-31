@@ -119,7 +119,10 @@ func Fprint(writer io.Writer, a ...interface{}) {
 
 	for _, spinner := range activeSpinnerPrinters {
 		if spinner.IsActive && spinner.Writer == writer {
-			ret += sClearLine()
+			if !RawOutput {
+				ret += sClearLine()
+			}
+
 			ret += Sprinto(a...)
 			printed = true
 		}

@@ -152,7 +152,7 @@ func (s SpinnerPrinter) Start(text ...interface{}) (*SpinnerPrinter, error) {
 		s.Text = Sprint(text...)
 	}
 
-	if RawOutput {
+	if RawOutput && s.Text != "" {
 		Fprintln(s.Writer, s.Text)
 	}
 
@@ -183,7 +183,7 @@ func (s SpinnerPrinter) Start(text ...interface{}) (*SpinnerPrinter, error) {
 // Stop terminates the SpinnerPrinter immediately.
 // The SpinnerPrinter will not resolve into anything.
 func (s *SpinnerPrinter) Stop() error {
-	if !s.IsActive {
+	if !s.IsActive || RawOutput {
 		return nil
 	}
 	s.IsActive = false
@@ -224,7 +224,11 @@ func (s *SpinnerPrinter) Info(message ...interface{}) {
 	if len(message) == 0 {
 		message = []interface{}{s.Text}
 	}
-	fClearLine(s.Writer)
+
+	if !RawOutput {
+		fClearLine(s.Writer)
+	}
+
 	Fprinto(s.Writer, s.InfoPrinter.Sprint(message...))
 	_ = s.Stop()
 }
@@ -239,7 +243,11 @@ func (s *SpinnerPrinter) Success(message ...interface{}) {
 	if len(message) == 0 {
 		message = []interface{}{s.Text}
 	}
-	fClearLine(s.Writer)
+
+	if !RawOutput {
+		fClearLine(s.Writer)
+	}
+
 	Fprinto(s.Writer, s.SuccessPrinter.Sprint(message...))
 	_ = s.Stop()
 }
@@ -254,7 +262,11 @@ func (s *SpinnerPrinter) Fail(message ...interface{}) {
 	if len(message) == 0 {
 		message = []interface{}{s.Text}
 	}
-	fClearLine(s.Writer)
+
+	if !RawOutput {
+		fClearLine(s.Writer)
+	}
+
 	Fprinto(s.Writer, s.FailPrinter.Sprint(message...))
 	_ = s.Stop()
 }
@@ -269,7 +281,11 @@ func (s *SpinnerPrinter) Warning(message ...interface{}) {
 	if len(message) == 0 {
 		message = []interface{}{s.Text}
 	}
-	fClearLine(s.Writer)
+
+	if !RawOutput {
+		fClearLine(s.Writer)
+	}
+
 	Fprinto(s.Writer, s.WarningPrinter.Sprint(message...))
 	_ = s.Stop()
 }
