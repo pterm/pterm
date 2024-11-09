@@ -162,32 +162,32 @@ func NewRGB(r, g, b uint8, background ...bool) RGB {
 }
 
 // Fade fades one RGB value (over other RGB values) to another RGB value, by giving the function a minimum, maximum and current value.
-func (p RGB) Fade(min, max, current float32, end ...RGB) RGB {
-	if max == current {
+func (p RGB) Fade(minRGB, maxRGB, current float32, end ...RGB) RGB {
+	if maxRGB == current {
 		return end[len(end)-1]
 	}
-	if min < 0 {
-		max -= min
-		current -= min
-		min = 0
+	if minRGB < 0 {
+		maxRGB -= minRGB
+		current -= minRGB
+		minRGB = 0
 	}
 	if len(end) == 1 {
 		return RGB{
-			R:          uint8(internal.MapRangeToRange(min, max, float32(p.R), float32(end[0].R), current)),
-			G:          uint8(internal.MapRangeToRange(min, max, float32(p.G), float32(end[0].G), current)),
-			B:          uint8(internal.MapRangeToRange(min, max, float32(p.B), float32(end[0].B), current)),
+			R:          uint8(internal.MapRangeToRange(minRGB, maxRGB, float32(p.R), float32(end[0].R), current)),
+			G:          uint8(internal.MapRangeToRange(minRGB, maxRGB, float32(p.G), float32(end[0].G), current)),
+			B:          uint8(internal.MapRangeToRange(minRGB, maxRGB, float32(p.B), float32(end[0].B), current)),
 			Background: p.Background,
 		}
 	} else if len(end) > 1 {
-		f := (max - min) / float32(len(end))
+		f := (maxRGB - minRGB) / float32(len(end))
 		tempCurrent := current
 		if f > current {
-			return p.Fade(min, f, current, end[0])
+			return p.Fade(minRGB, f, current, end[0])
 		} else {
 			for i := 0; i < len(end)-1; i++ {
 				tempCurrent -= f
 				if f > tempCurrent {
-					return end[i].Fade(min, min+f, tempCurrent, end[i+1])
+					return end[i].Fade(minRGB, minRGB+f, tempCurrent, end[i+1])
 				}
 			}
 		}

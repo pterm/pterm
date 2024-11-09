@@ -41,6 +41,7 @@ type TablePrinter struct {
 	LeftAlignment           bool
 	RightAlignment          bool
 	Writer                  io.Writer
+	AlternateRowStyle       *Style
 }
 
 // WithStyle returns a new TablePrinter with a specific Style.
@@ -103,7 +104,7 @@ func (p TablePrinter) WithData(data [][]string) *TablePrinter {
 	return &p
 }
 
-// WithCSVReader return a new TablePrinter with specified Data extracted from CSV.
+// WithCSVReader returns a new TablePrinter with specified Data extracted from CSV.
 func (p TablePrinter) WithCSVReader(reader *csv.Reader) *TablePrinter {
 	if records, err := reader.ReadAll(); err == nil {
 		p.Data = records
@@ -139,15 +140,20 @@ func (p TablePrinter) WithWriter(writer io.Writer) *TablePrinter {
 	return &p
 }
 
+// WithAlternateRowStyle returns a new TablePrinter with a specific AlternateRowStyle.
+func (p TablePrinter) WithAlternateRowStyle(style *Style) *TablePrinter {
+	p.AlternateRowStyle = style
+	return &p
+}
+
 type table struct {
 	rows            []row
 	maxColumnWidths []int
 }
 
 type row struct {
-	height       int
-	cells        []cell
-	columnWidths []int
+	height int
+	cells  []cell
 }
 
 type cell struct {
@@ -208,44 +214,54 @@ func (p TablePrinter) Srender() (string, error) {
 
 	var maxRowWidth int
 	for _, r := range t.rows {
-		rowWidth := internal.GetStringMaxWidth(p.renderRow(t, r))
+		rowWidth := internal.GetStringMaxWidth(p.renderRow(t, r, 0))
 		if rowWidth > maxRowWidth {
 			maxRowWidth = rowWidth
 		}
 	}
 
 	// render table
-	var s string
+	var ret strings.Builder
 
 	for i, r := range t.rows {
 		if i == 0 && p.HasHeader {
-			s += p.HeaderStyle.Sprint(p.renderRow(t, r))
+			ret.WriteString(p.HeaderStyle.Sprint(p.renderRow(t, r, i)))
 
 			if p.HeaderRowSeparator != "" {
-				s += strings.Repeat(p.HeaderRowSeparatorStyle.Sprint(p.HeaderRowSeparator), maxRowWidth) + "\n"
+				ret.WriteString(strings.Repeat(p.HeaderRowSeparatorStyle.Sprint(p.HeaderRowSeparator), maxRowWidth))
+				ret.WriteByte('\n')
 			}
 			continue
 		}
 
-		s += p.renderRow(t, r)
+		ret.WriteString(p.renderRow(t, r, i))
 
 		if p.RowSeparator != "" {
-			s += strings.Repeat(p.RowSeparatorStyle.Sprint(p.RowSeparator), maxRowWidth) + "\n"
+			ret.WriteString(strings.Repeat(p.RowSeparatorStyle.Sprint(p.RowSeparator), maxRowWidth))
+			ret.WriteByte('\n')
 		}
 	}
 
 	if p.Boxed {
-		s = DefaultBox.Sprint(strings.TrimSuffix(s, "\n"))
+		return DefaultBox.Sprint(strings.TrimSuffix(ret.String(), "\n")), nil
 	}
 
-	return s, nil
+	return ret.String(), nil
 }
 
 // renderRow renders a row.
 // It merges the cells of a row into one string.
 // Each line of each cell is merged with the same line of the other cells.
-func (p TablePrinter) renderRow(t table, r row) string {
+func (p TablePrinter) renderRow(t table, r row, rowIndex int) string {
 	var s string
+	var currentStyle *Style
+
+	// Identify if line should use alternate style
+	if rowIndex%2 == 1 && p.AlternateRowStyle != nil {
+		currentStyle = p.AlternateRowStyle
+	} else {
+		currentStyle = p.Style
+	}
 
 	// merge lines of cells and add separator
 	// use the t.maxColumnWidths to add padding to the corresponding cell
@@ -253,18 +269,18 @@ func (p TablePrinter) renderRow(t table, r row) string {
 	for i := 0; i < r.height; i++ {
 		for j, c := range r.cells {
 			var currentLine string
+			// Check if the current line exists in the cell
 			if i < len(c.lines) {
 				currentLine = c.lines[i]
 			}
+			// Calculate padding based on the max width of the current column
 			paddingForLine := t.maxColumnWidths[j] - internal.GetStringMaxWidth(currentLine)
 
 			if p.RightAlignment {
 				s += strings.Repeat(" ", paddingForLine)
 			}
 
-			if i < len(c.lines) {
-				s += c.lines[i]
-			}
+			s += currentLine
 
 			if j < len(r.cells)-1 {
 				if p.LeftAlignment {
@@ -273,9 +289,21 @@ func (p TablePrinter) renderRow(t table, r row) string {
 				s += p.SeparatorStyle.Sprint(p.Separator)
 			}
 		}
+
+		// Ensure that the last column is padded and styled correctly
+		lastCell := r.cells[len(r.cells)-1]
+		if len(lastCell.lines) > i {
+			s += strings.Repeat(" ", t.maxColumnWidths[len(r.cells)-1]-internal.GetStringMaxWidth(lastCell.lines[i]))
+		} else {
+			// Fill the remaining space with padding if there are fewer lines
+			s += strings.Repeat(" ", t.maxColumnWidths[len(r.cells)-1])
+		}
 		s += "\n"
 	}
 
+	if currentStyle != nil {
+		return currentStyle.Sprint(s)
+	}
 	return s
 }
 

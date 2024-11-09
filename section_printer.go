@@ -69,23 +69,24 @@ func (p SectionPrinter) Sprint(a ...interface{}) string {
 		p.Style = NewStyle()
 	}
 
-	var ret string
+	var ret strings.Builder
 
 	for i := 0; i < p.TopPadding; i++ {
-		ret += "\n"
+		ret.WriteByte('\n')
 	}
 
 	if p.Level > 0 {
-		ret += strings.Repeat(p.IndentCharacter, p.Level) + " "
+		ret.WriteString(strings.Repeat(p.IndentCharacter, p.Level))
+		ret.WriteByte(' ')
 	}
 
-	ret += p.Style.Sprint(a...)
+	ret.WriteString(p.Style.Sprint(a...))
 
 	for i := 0; i < p.BottomPadding; i++ {
-		ret += "\n"
+		ret.WriteByte('\n')
 	}
 
-	return ret
+	return ret.String()
 }
 
 // Sprintln formats using the default formats for its operands and returns the resulting string.
