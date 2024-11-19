@@ -141,8 +141,8 @@ func NewRGBFromHEX(hex string) (RGB, error) {
 	c := int(i64)
 
 	return RGB{
-		R: uint8(c >> 16),
-		G: uint8((c & 0x00FF00) >> 8),
-		B: uint8(c & 0x0000FF),
+		R: uint8(c >> 16),             //nolint:gosec
+		G: uint8((c & 0x00FF00) >> 8), //nolint:gosec
+		B: uint8(c & 0x0000FF),        //nolint:gosec
 	}, nil
 }
