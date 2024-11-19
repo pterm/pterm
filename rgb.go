@@ -173,9 +173,9 @@ func (p RGB) Fade(minRGB, maxRGB, current float32, end ...RGB) RGB {
 	}
 	if len(end) == 1 {
 		return RGB{
-			R:          uint8(internal.MapRangeToRange(minRGB, maxRGB, float32(p.R), float32(end[0].R), current)),
-			G:          uint8(internal.MapRangeToRange(minRGB, maxRGB, float32(p.G), float32(end[0].G), current)),
-			B:          uint8(internal.MapRangeToRange(minRGB, maxRGB, float32(p.B), float32(end[0].B), current)),
+			R:          uint8(internal.MapRangeToRange(minRGB, maxRGB, float32(p.R), float32(end[0].R), current)), //nolint:gosec
+			G:          uint8(internal.MapRangeToRange(minRGB, maxRGB, float32(p.G), float32(end[0].G), current)), //nolint:gosec
+			B:          uint8(internal.MapRangeToRange(minRGB, maxRGB, float32(p.B), float32(end[0].B), current)), //nolint:gosec
 			Background: p.Background,
 		}
 	} else if len(end) > 1 {
