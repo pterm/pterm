@@ -20,7 +20,7 @@ func TestSpinnerPrinter_NilPrint(t *testing.T) {
 
 func TestSpinnerPrinter_Fail(t *testing.T) {
 	p := pterm.DefaultSpinner
-	testPrintContains(t, func(w io.Writer, a interface{}) {
+	testPrintContains(t, func(w io.Writer, a any) {
 		p.Fail(a)
 	})
 }
@@ -46,14 +46,14 @@ func TestSpinnerPrinter_GenericStop(t *testing.T) {
 
 func TestSpinnerPrinter_Info(t *testing.T) {
 	p := pterm.DefaultSpinner
-	testPrintContains(t, func(w io.Writer, a interface{}) {
+	testPrintContains(t, func(w io.Writer, a any) {
 		p.Info(a)
 	})
 }
 
 func TestSpinnerPrinter_Success(t *testing.T) {
 	p := pterm.DefaultSpinner
-	testPrintContains(t, func(w io.Writer, a interface{}) {
+	testPrintContains(t, func(w io.Writer, a any) {
 		p.Success(a)
 	})
 }
@@ -91,7 +91,7 @@ func TestSpinnerPrinter_UpdateTextRawOutput(t *testing.T) {
 
 func TestSpinnerPrinter_Warning(t *testing.T) {
 	p := pterm.DefaultSpinner
-	testPrintContains(t, func(w io.Writer, a interface{}) {
+	testPrintContains(t, func(w io.Writer, a any) {
 		p.Warning(a)
 	})
 }
@@ -188,7 +188,7 @@ func TestSpinnerPrinter_DifferentVariations(t *testing.T) {
 		IsActive       bool
 	}
 	type args struct {
-		text []interface{}
+		text []any
 	}
 	tests := []struct {
 		name   string
@@ -196,7 +196,7 @@ func TestSpinnerPrinter_DifferentVariations(t *testing.T) {
 		args   args
 	}{
 		{name: "WithText", fields: fields{Text: "test"}, args: args{}},
-		{name: "WithText", fields: fields{}, args: args{[]interface{}{"test"}}},
+		{name: "WithText", fields: fields{}, args: args{[]any{"test"}}},
 		{name: "WithRemoveWhenDone", fields: fields{RemoveWhenDone: true}, args: args{}},
 	}
 	for _, tt := range tests {

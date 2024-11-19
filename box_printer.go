@@ -221,7 +221,7 @@ func (p BoxPrinter) WithWriter(writer io.Writer) *BoxPrinter {
 
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
-func (p BoxPrinter) Sprint(a ...interface{}) string {
+func (p BoxPrinter) Sprint(a ...any) string {
 	if p.BoxStyle == nil {
 		p.BoxStyle = &ThemeDefault.BoxStyle
 	}
@@ -288,25 +288,25 @@ func (p BoxPrinter) Sprint(a ...interface{}) string {
 
 // Sprintln formats using the default formats for its operands and returns the resulting string.
 // Spaces are always added between operands and a newline is appended.
-func (p BoxPrinter) Sprintln(a ...interface{}) string {
+func (p BoxPrinter) Sprintln(a ...any) string {
 	return p.Sprint(strings.TrimSuffix(Sprintln(a...), "\n")) + "\n"
 }
 
 // Sprintf formats according to a format specifier and returns the resulting string.
-func (p BoxPrinter) Sprintf(format string, a ...interface{}) string {
+func (p BoxPrinter) Sprintf(format string, a ...any) string {
 	return p.Sprint(Sprintf(format, a...))
 }
 
 // Sprintfln formats according to a format specifier and returns the resulting string.
 // Spaces are always added between operands and a newline is appended.
-func (p BoxPrinter) Sprintfln(format string, a ...interface{}) string {
+func (p BoxPrinter) Sprintfln(format string, a ...any) string {
 	return p.Sprintf(format, a...) + "\n"
 }
 
 // Print formats using the default formats for its operands and writes to standard output.
 // Spaces are added between operands when neither is a string.
 // It returns the number of bytes written and any write error encountered.
-func (p BoxPrinter) Print(a ...interface{}) *TextPrinter {
+func (p BoxPrinter) Print(a ...any) *TextPrinter {
 	Fprint(p.Writer, p.Sprint(a...))
 	tp := TextPrinter(p)
 	return &tp
@@ -315,7 +315,7 @@ func (p BoxPrinter) Print(a ...interface{}) *TextPrinter {
 // Println formats using the default formats for its operands and writes to standard output.
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
-func (p BoxPrinter) Println(a ...interface{}) *TextPrinter {
+func (p BoxPrinter) Println(a ...any) *TextPrinter {
 	Fprint(p.Writer, p.Sprintln(a...))
 	tp := TextPrinter(p)
 	return &tp
@@ -323,7 +323,7 @@ func (p BoxPrinter) Println(a ...interface{}) *TextPrinter {
 
 // Printf formats according to a format specifier and writes to standard output.
 // It returns the number of bytes written and any write error encountered.
-func (p BoxPrinter) Printf(format string, a ...interface{}) *TextPrinter {
+func (p BoxPrinter) Printf(format string, a ...any) *TextPrinter {
 	Fprint(p.Writer, p.Sprintf(format, a...))
 	tp := TextPrinter(p)
 	return &tp
@@ -332,7 +332,7 @@ func (p BoxPrinter) Printf(format string, a ...interface{}) *TextPrinter {
 // Printfln formats according to a format specifier and writes to standard output.
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
-func (p BoxPrinter) Printfln(format string, a ...interface{}) *TextPrinter {
+func (p BoxPrinter) Printfln(format string, a ...any) *TextPrinter {
 	Fprint(p.Writer, p.Sprintfln(format, a...))
 	tp := TextPrinter(p)
 	return &tp
@@ -341,7 +341,7 @@ func (p BoxPrinter) Printfln(format string, a ...interface{}) *TextPrinter {
 // PrintOnError prints every error which is not nil.
 // If every error is nil, nothing will be printed.
 // This can be used for simple error checking.
-func (p BoxPrinter) PrintOnError(a ...interface{}) *TextPrinter {
+func (p BoxPrinter) PrintOnError(a ...any) *TextPrinter {
 	for _, arg := range a {
 		if err, ok := arg.(error); ok {
 			if err != nil {
@@ -357,7 +357,7 @@ func (p BoxPrinter) PrintOnError(a ...interface{}) *TextPrinter {
 // PrintOnErrorf wraps every error which is not nil and prints it.
 // If every error is nil, nothing will be printed.
 // This can be used for simple error checking.
-func (p BoxPrinter) PrintOnErrorf(format string, a ...interface{}) *TextPrinter {
+func (p BoxPrinter) PrintOnErrorf(format string, a ...any) *TextPrinter {
 	for _, arg := range a {
 		if err, ok := arg.(error); ok {
 			if err != nil {

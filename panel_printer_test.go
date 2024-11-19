@@ -27,7 +27,7 @@ func TestPanelPrinterNilPrintWithPanels(t *testing.T) {
 }
 
 func TestPanelPrinter_Render(t *testing.T) {
-	testPrintContains(t, func(w io.Writer, a interface{}) {
+	testPrintContains(t, func(w io.Writer, a any) {
 		panels := pterm.Panels{
 			{{Data: pterm.Sprint(a)}},
 		}
@@ -38,7 +38,7 @@ func TestPanelPrinter_Render(t *testing.T) {
 }
 
 func TestPanelPrinter_RenderMultiplePanels(t *testing.T) {
-	testPrintContains(t, func(w io.Writer, a interface{}) {
+	testPrintContains(t, func(w io.Writer, a any) {
 		panels := pterm.Panels{
 			{{Data: pterm.Sprint("a\nbc\ndef")}, {Data: pterm.Sprint("abcd")}},
 			{{Data: pterm.Sprint(a)}},
@@ -50,7 +50,7 @@ func TestPanelPrinter_RenderMultiplePanels(t *testing.T) {
 }
 
 func TestPanelPrinter_RenderMultiplePanelsWithBorder(t *testing.T) {
-	testPrintContains(t, func(w io.Writer, a interface{}) {
+	testPrintContains(t, func(w io.Writer, a any) {
 		panels := pterm.Panels{
 			{{Data: pterm.Sprint("a\nbc\ndef")}, {Data: pterm.Sprint("abcd")}},
 			{{Data: pterm.Sprint(a)}},
@@ -62,7 +62,7 @@ func TestPanelPrinter_RenderMultiplePanelsWithBorder(t *testing.T) {
 }
 
 func TestPanelPrinter_RenderWithSameColumnWidth(t *testing.T) {
-	testPrintContains(t, func(w io.Writer, a interface{}) {
+	testPrintContains(t, func(w io.Writer, a any) {
 		panels := pterm.Panels{
 			{{Data: pterm.Sprint(a)}},
 			{{Data: pterm.Sprint("test")}},
@@ -75,7 +75,7 @@ func TestPanelPrinter_RenderWithSameColumnWidth(t *testing.T) {
 }
 
 func TestPanelPrinter_RenderWithBottomPadding(t *testing.T) {
-	testPrintContains(t, func(w io.Writer, a interface{}) {
+	testPrintContains(t, func(w io.Writer, a any) {
 		panels := pterm.Panels{
 			{{Data: pterm.Sprint(a)}},
 			{{Data: pterm.Sprint("test")}},

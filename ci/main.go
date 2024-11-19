@@ -189,7 +189,7 @@ func main() {
 			wg.Wait()
 
 			var keys []string
-			sectionExamples.Range(func(key, value interface{}) bool {
+			sectionExamples.Range(func(key, value any) bool {
 				keys = append(keys, key.(string))
 				return true
 			})
@@ -280,7 +280,7 @@ func generateSectionContent(section os.DirEntry) string {
 	wg.Wait()
 
 	var keys []string
-	exampleMap.Range(func(key, value interface{}) bool {
+	exampleMap.Range(func(key, value any) bool {
 		keys = append(keys, key.(string))
 		return true
 	})
