@@ -11,7 +11,7 @@ import (
 	"github.com/pterm/pterm"
 )
 
-var printables = []interface{}{"Hello, World!", 1337, true, false, -1337, 'c', 1.5, "\\", "%s"}
+var printables = []any{"Hello, World!", 1337, true, false, -1337, 'c', 1.5, "\\", "%s"}
 var terminalWidth = 80
 var terminalHeight = 60
 
@@ -24,7 +24,7 @@ func TestMain(m *testing.M) {
 }
 
 // testPrintContains can be used to test Print methods.
-func testPrintContains(t *testing.T, logic func(w io.Writer, a interface{})) {
+func testPrintContains(t *testing.T, logic func(w io.Writer, a any)) {
 	t.Helper()
 
 	for _, printable := range printables {
@@ -46,7 +46,7 @@ func testPrintContains(t *testing.T, logic func(w io.Writer, a interface{})) {
 }
 
 // testPrintfContains can be used to test Printf methods.
-func testPrintfContains(t *testing.T, logic func(w io.Writer, format string, a interface{})) {
+func testPrintfContains(t *testing.T, logic func(w io.Writer, format string, a any)) {
 	for _, printable := range printables {
 		t.Run(fmt.Sprint(printable), func(t *testing.T) {
 			s := captureStdout(func(w io.Writer) {
@@ -66,7 +66,7 @@ func testPrintfContains(t *testing.T, logic func(w io.Writer, format string, a i
 }
 
 // testPrintflnContains can be used to test Printfln methods.
-func testPrintflnContains(t *testing.T, logic func(w io.Writer, format string, a interface{})) {
+func testPrintflnContains(t *testing.T, logic func(w io.Writer, format string, a any)) {
 	for _, printable := range printables {
 		t.Run(fmt.Sprint(printable), func(t *testing.T) {
 			testPrintfContains(t, logic)
@@ -80,7 +80,7 @@ func testPrintflnContains(t *testing.T, logic func(w io.Writer, format string, a
 }
 
 // testPrintlnContains can be used to test Println methods.
-func testPrintlnContains(t *testing.T, logic func(w io.Writer, a interface{})) {
+func testPrintlnContains(t *testing.T, logic func(w io.Writer, a any)) {
 	for _, printable := range printables {
 		t.Run(fmt.Sprint(printable), func(t *testing.T) {
 			testPrintContains(t, logic)
@@ -94,7 +94,7 @@ func testPrintlnContains(t *testing.T, logic func(w io.Writer, a interface{})) {
 }
 
 // testSprintContains can be used to test Sprint methods.
-func testSprintContains(t *testing.T, logic func(a interface{}) string) {
+func testSprintContains(t *testing.T, logic func(a any) string) {
 	for _, printable := range printables {
 		t.Run(fmt.Sprint(printable), func(t *testing.T) {
 			testza.AssertContains(t, logic(printable), fmt.Sprint(printable))
@@ -108,7 +108,7 @@ func testSprintContains(t *testing.T, logic func(a interface{}) string) {
 }
 
 // testSprintContainsWithoutError can be used to test Sprint methods which return an error.
-func testSprintContainsWithoutError(t *testing.T, logic func(a interface{}) (string, error)) {
+func testSprintContainsWithoutError(t *testing.T, logic func(a any) (string, error)) {
 	for _, printable := range printables {
 		t.Run(fmt.Sprint(printable), func(t *testing.T) {
 			s, err := logic(printable)
@@ -126,7 +126,7 @@ func testSprintContainsWithoutError(t *testing.T, logic func(a interface{}) (str
 }
 
 // testSprintfContains can be used to test Sprintf methods.
-func testSprintfContains(t *testing.T, logic func(format string, a interface{}) string) {
+func testSprintfContains(t *testing.T, logic func(format string, a any) string) {
 	for _, printable := range printables {
 		t.Run(fmt.Sprint(printable), func(t *testing.T) {
 			testza.AssertContains(t, logic("Hello, %v!", printable), fmt.Sprintf("Hello, %v!", printable))
@@ -140,7 +140,7 @@ func testSprintfContains(t *testing.T, logic func(format string, a interface{}) 
 }
 
 // testSprintflnContains can be used to test Sprintfln methods.
-func testSprintflnContains(t *testing.T, logic func(format string, a interface{}) string) {
+func testSprintflnContains(t *testing.T, logic func(format string, a any) string) {
 	for _, printable := range printables {
 		t.Run(fmt.Sprint(printable), func(t *testing.T) {
 			testSprintfContains(t, logic)
@@ -154,7 +154,7 @@ func testSprintflnContains(t *testing.T, logic func(format string, a interface{}
 }
 
 // testSprintlnContains can be used to test Sprintln methods.
-func testSprintlnContains(t *testing.T, logic func(a interface{}) string) {
+func testSprintlnContains(t *testing.T, logic func(a any) string) {
 	for _, printable := range printables {
 		t.Run(fmt.Sprint(printable), func(t *testing.T) {
 			testSprintContains(t, logic)
@@ -176,7 +176,7 @@ func testDoesOutput(t *testing.T, logic func(w io.Writer)) {
 }
 
 // testEmpty checks that a function does not return a string.
-func testEmpty(t *testing.T, logic func(a interface{}) string) {
+func testEmpty(t *testing.T, logic func(a any) string) {
 	for _, printable := range printables {
 		testza.AssertZero(t, logic(printable))
 		pterm.DisableStyling()
