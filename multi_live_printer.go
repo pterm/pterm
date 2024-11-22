@@ -1,12 +1,13 @@
 package pterm
 
 import (
-	"atomicgo.dev/schedule"
 	"bytes"
 	"io"
 	"os"
 	"strings"
 	"time"
+
+	"atomicgo.dev/schedule"
 )
 
 var DefaultMultiPrinter = MultiPrinter{
@@ -59,18 +60,20 @@ func (p *MultiPrinter) getString() string {
 		s = strings.Trim(s, "\n")
 
 		parts := strings.Split(s, "\r") // only get the last override
-		s = parts[len(parts)-1]
 
-		// check if s is empty, if so get one part before, repeat until not empty
-		for s == "" {
+		// check if the last part is empty, if so remove it, repeat until not
+		// empty. If there is no part left, don't do anything
+		for len(parts) > 0 && parts[len(parts)-1] == "" {
 			parts = parts[:len(parts)-1]
-			s = parts[len(parts)-1]
 		}
 
-		s = strings.Trim(s, "\n\r")
-		buffer.WriteString(s)
-		buffer.WriteString("\n")
+		if len(parts) > 0 {
+			s = strings.Trim(parts[len(parts)-1], "\n\r")
+			buffer.WriteString(s)
+			buffer.WriteString("\n")
+		}
 	}
+
 	return buffer.String()
 }
 
