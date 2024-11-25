@@ -18,6 +18,20 @@ func TestAreaPrinter_NilPrint(t *testing.T) {
 	os.Stdout = originalStdout // Restore original os.Stdout
 }
 
+func TestAreaPrinter_CallbackCalled(t *testing.T) {
+	originalStdout := os.Stdout
+	var callbackCalled bool
+
+	os.Stdout = os.NewFile(0, os.DevNull) // Set os.Stdout to DevNull to hide output from cursor.Area
+
+	p := pterm.AreaPrinter{}
+	p.WithCallback(func() {
+		callbackCalled = true
+	}).Update("asd")
+	os.Stdout = originalStdout // Restore original os.Stdout
+	testza.AssertTrue(t, callbackCalled)
+}
+
 func TestAreaPrinter_GenericStart(t *testing.T) {
 	originalStdout := os.Stdout
 	os.Stdout = os.NewFile(0, os.DevNull) // Set os.Stdout to DevNull to hide output from cursor.Area
