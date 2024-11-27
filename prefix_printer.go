@@ -22,6 +22,7 @@ var (
 			Style: &ThemeDefault.InfoPrefixStyle,
 			Text:  "INFO",
 		},
+		Writer: defaultWriter,
 	}
 
 	// Warning returns a PrefixPrinter, which can be used to print text with a "warning" Prefix.
@@ -31,6 +32,7 @@ var (
 			Style: &ThemeDefault.WarningPrefixStyle,
 			Text:  "WARNING",
 		},
+		Writer: defaultWriter,
 	}
 
 	// Success returns a PrefixPrinter, which can be used to print text with a "success" Prefix.
@@ -40,6 +42,7 @@ var (
 			Style: &ThemeDefault.SuccessPrefixStyle,
 			Text:  "SUCCESS",
 		},
+		Writer: defaultWriter,
 	}
 
 	// Error returns a PrefixPrinter, which can be used to print text with an "error" Prefix.
@@ -49,6 +52,7 @@ var (
 			Style: &ThemeDefault.ErrorPrefixStyle,
 			Text:  " ERROR ",
 		},
+		Writer: defaultWriter,
 	}
 
 	// Fatal returns a PrefixPrinter, which can be used to print text with an "fatal" Prefix.
@@ -59,7 +63,8 @@ var (
 			Style: &ThemeDefault.FatalPrefixStyle,
 			Text:  " FATAL ",
 		},
-		Fatal: true,
+		Fatal:  true,
+		Writer: defaultWriter,
 	}
 
 	// Debug Prints debug messages. By default it will only print if PrintDebugMessages is true.
@@ -71,6 +76,7 @@ var (
 			Style: &ThemeDefault.DebugPrefixStyle,
 		},
 		Debugger: true,
+		Writer:   defaultWriter,
 	}
 
 	// Description returns a PrefixPrinter, which can be used to print text with a "description" Prefix.
@@ -80,6 +86,7 @@ var (
 			Style: &ThemeDefault.DescriptionPrefixStyle,
 			Text:  "Description",
 		},
+		Writer: defaultWriter,
 	}
 )
 
