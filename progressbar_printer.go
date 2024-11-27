@@ -282,7 +282,7 @@ func (p *ProgressbarPrinter) Add(count int) *ProgressbarPrinter {
 }
 
 // Start the ProgressbarPrinter.
-func (p ProgressbarPrinter) Start(title ...interface{}) (*ProgressbarPrinter, error) {
+func (p ProgressbarPrinter) Start(title ...any) (*ProgressbarPrinter, error) {
 	cursor.Hide()
 	if RawOutput && p.ShowTitle {
 		Fprintln(p.Writer, p.Title)

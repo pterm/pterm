@@ -15,7 +15,7 @@ func BulletListFromString(s string, padding string) pterm.BulletListPrinter
 func BulletListFromStrings(s []string, padding string) pterm.BulletListPrinter
 func BulletListItemFromString(text string, padding string) pterm.BulletListItem
 func CenterText(text string) string
-func DefaultTableFromStructSlice(structSlice interface{}) *pterm.TablePrinter
+func DefaultTableFromStructSlice(structSlice any) *pterm.TablePrinter
 func DownloadFileWithDefaultProgressbar(title, outputPath, url string, mode os.FileMode) error
 func DownloadFileWithProgressbar(progressbar *pterm.ProgressbarPrinter, outputPath, url string, mode os.FileMode) error
 func LettersFromString(text string) pterm.Letters
@@ -28,6 +28,6 @@ func RunWithSpinner(spinner *pterm.SpinnerPrinter, f func(spinner *pterm.Spinner
 func TableDataFromCSV(csv string) (td pterm.TableData)
 func TableDataFromSeparatedValues(text, valueSeparator, rowSeparator string) (td pterm.TableData)
 func TableDataFromTSV(csv string) (td pterm.TableData)
-func TableFromStructSlice(tablePrinter pterm.TablePrinter, structSlice interface{}) *pterm.TablePrinter
+func TableFromStructSlice(tablePrinter pterm.TablePrinter, structSlice any) *pterm.TablePrinter
 func TreeFromLeveledList(leveledListItems pterm.LeveledList) pterm.TreeNode
 ```

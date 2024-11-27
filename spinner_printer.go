@@ -143,7 +143,7 @@ func (s *SpinnerPrinter) UpdateText(text string) {
 }
 
 // Start the SpinnerPrinter.
-func (s SpinnerPrinter) Start(text ...interface{}) (*SpinnerPrinter, error) {
+func (s SpinnerPrinter) Start(text ...any) (*SpinnerPrinter, error) {
 	s.IsActive = true
 	s.startedAt = time.Now()
 	activeSpinnerPrinters = append(activeSpinnerPrinters, &s)
@@ -216,13 +216,13 @@ func (s *SpinnerPrinter) GenericStop() (*LivePrinter, error) {
 
 // Info displays an info message
 // If no message is given, the text of the SpinnerPrinter will be reused as the default message.
-func (s *SpinnerPrinter) Info(message ...interface{}) {
+func (s *SpinnerPrinter) Info(message ...any) {
 	if s.InfoPrinter == nil {
 		s.InfoPrinter = &Info
 	}
 
 	if len(message) == 0 {
-		message = []interface{}{s.Text}
+		message = []any{s.Text}
 	}
 	fClearLine(s.Writer)
 	Fprinto(s.Writer, s.InfoPrinter.Sprint(message...))
@@ -231,13 +231,13 @@ func (s *SpinnerPrinter) Info(message ...interface{}) {
 
 // Success displays the success printer.
 // If no message is given, the text of the SpinnerPrinter will be reused as the default message.
-func (s *SpinnerPrinter) Success(message ...interface{}) {
+func (s *SpinnerPrinter) Success(message ...any) {
 	if s.SuccessPrinter == nil {
 		s.SuccessPrinter = &Success
 	}
 
 	if len(message) == 0 {
-		message = []interface{}{s.Text}
+		message = []any{s.Text}
 	}
 	fClearLine(s.Writer)
 	Fprinto(s.Writer, s.SuccessPrinter.Sprint(message...))
@@ -246,13 +246,13 @@ func (s *SpinnerPrinter) Success(message ...interface{}) {
 
 // Fail displays the fail printer.
 // If no message is given, the text of the SpinnerPrinter will be reused as the default message.
-func (s *SpinnerPrinter) Fail(message ...interface{}) {
+func (s *SpinnerPrinter) Fail(message ...any) {
 	if s.FailPrinter == nil {
 		s.FailPrinter = &Error
 	}
 
 	if len(message) == 0 {
-		message = []interface{}{s.Text}
+		message = []any{s.Text}
 	}
 	fClearLine(s.Writer)
 	Fprinto(s.Writer, s.FailPrinter.Sprint(message...))
@@ -261,13 +261,13 @@ func (s *SpinnerPrinter) Fail(message ...interface{}) {
 
 // Warning displays the warning printer.
 // If no message is given, the text of the SpinnerPrinter will be reused as the default message.
-func (s *SpinnerPrinter) Warning(message ...interface{}) {
+func (s *SpinnerPrinter) Warning(message ...any) {
 	if s.WarningPrinter == nil {
 		s.WarningPrinter = &Warning
 	}
 
 	if len(message) == 0 {
-		message = []interface{}{s.Text}
+		message = []any{s.Text}
 	}
 	fClearLine(s.Writer)
 	Fprinto(s.Writer, s.WarningPrinter.Sprint(message...))

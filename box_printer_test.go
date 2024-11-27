@@ -20,61 +20,61 @@ func TestBoxPrinterPrintMethods(t *testing.T) {
 	p := pterm.DefaultBox
 
 	t.Run("Print", func(t *testing.T) {
-		testPrintContains(t, func(w io.Writer, a interface{}) {
+		testPrintContains(t, func(w io.Writer, a any) {
 			p.Print(a)
 		})
 	})
 
 	t.Run("Printf", func(t *testing.T) {
-		testPrintfContains(t, func(w io.Writer, format string, a interface{}) {
+		testPrintfContains(t, func(w io.Writer, format string, a any) {
 			p.Printf(format, a)
 		})
 	})
 
 	t.Run("Printfln", func(t *testing.T) {
-		testPrintflnContains(t, func(w io.Writer, format string, a interface{}) {
+		testPrintflnContains(t, func(w io.Writer, format string, a any) {
 			p.Printfln(format, a)
 		})
 	})
 
 	t.Run("Println", func(t *testing.T) {
-		testPrintlnContains(t, func(w io.Writer, a interface{}) {
+		testPrintlnContains(t, func(w io.Writer, a any) {
 			p.Println(a)
 		})
 	})
 
 	t.Run("Sprint", func(t *testing.T) {
-		testSprintContains(t, func(a interface{}) string {
+		testSprintContains(t, func(a any) string {
 			return p.Sprint(a)
 		})
 	})
 
 	t.Run("SprintWithTitle", func(t *testing.T) {
-		testSprintContains(t, func(a interface{}) string {
+		testSprintContains(t, func(a any) string {
 			return p.WithTitle("a").Sprint(a)
 		})
 	})
 
 	t.Run("Sprintf", func(t *testing.T) {
-		testSprintfContains(t, func(format string, a interface{}) string {
+		testSprintfContains(t, func(format string, a any) string {
 			return p.Sprintf(format, a)
 		})
 	})
 
 	t.Run("Sprintfln", func(t *testing.T) {
-		testSprintflnContains(t, func(format string, a interface{}) string {
+		testSprintflnContains(t, func(format string, a any) string {
 			return p.Sprintfln(format, a)
 		})
 	})
 
 	t.Run("Sprintln", func(t *testing.T) {
-		testSprintlnContains(t, func(a interface{}) string {
+		testSprintlnContains(t, func(a any) string {
 			return p.Sprintln(a)
 		})
 	})
 
 	t.Run("SprintMultipleLines", func(t *testing.T) {
-		testSprintContains(t, func(a interface{}) string {
+		testSprintContains(t, func(a any) string {
 			return p.Sprint("testing\ntesting2" + pterm.Sprint(a))
 		})
 	})
