@@ -22,6 +22,7 @@ var DefaultSpinner = SpinnerPrinter{
 	SuccessPrinter:      &Success,
 	FailPrinter:         &Error,
 	WarningPrinter:      &Warning,
+	Writer:              defaultWriter,
 }
 
 // SpinnerPrinter is a loading animation, which can be used if the progress is unknown.
