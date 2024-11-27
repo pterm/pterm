@@ -50,7 +50,19 @@ func (p AreaPrinter) WithCenter(b ...bool) *AreaPrinter {
 
 // SetWriter sets the writer for the AreaPrinter.
 func (p *AreaPrinter) SetWriter(writer io.Writer) {
+	cw, ok := writer.(cursor.Writer)
+	if ok {
+		p.SetCWriter(cw)
+	}
+}
 
+// SetWriter sets the writer for the AreaPrinter.
+func (p *AreaPrinter) SetCWriter(writer cursor.Writer) {
+	var newArea cursor.Area
+	if p.area == nil {
+		newArea = cursor.NewArea().WithWriter(writer)
+	}
+	p.area = &newArea
 }
 
 // Update overwrites the content of the AreaPrinter.
