@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"math"
+	"os"
 	"strings"
 	"time"
 
@@ -32,7 +33,7 @@ var DefaultProgressbar = ProgressbarPrinter{
 	ShowElapsedTime:           true,
 	BarFiller:                 Gray("█"),
 	MaxWidth:                  80,
-	Writer:                    defaultWriter,
+	Writer:                    os.Stderr,
 }
 
 // ProgressbarPrinter shows a progress animation in the terminal.

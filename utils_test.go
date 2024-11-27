@@ -29,6 +29,8 @@ func testPrintContains(t *testing.T, logic func(w io.Writer, a any)) {
 
 	for _, printable := range printables {
 		t.Run(fmt.Sprint(printable), func(t *testing.T) {
+			t.Helper()
+
 			s := captureStdout(func(w io.Writer) {
 				logic(w, printable)
 			})
@@ -36,6 +38,8 @@ func testPrintContains(t *testing.T, logic func(w io.Writer, a any)) {
 		})
 		pterm.DisableStyling()
 		t.Run(fmt.Sprint(printable), func(t *testing.T) {
+			t.Helper()
+
 			s := captureStdout(func(w io.Writer) {
 				logic(w, printable)
 			})
@@ -83,10 +87,14 @@ func testPrintflnContains(t *testing.T, logic func(w io.Writer, format string, a
 func testPrintlnContains(t *testing.T, logic func(w io.Writer, a any)) {
 	for _, printable := range printables {
 		t.Run(fmt.Sprint(printable), func(t *testing.T) {
+			t.Helper()
+
 			testPrintContains(t, logic)
 		})
 		pterm.DisableStyling()
 		t.Run(fmt.Sprint(printable), func(t *testing.T) {
+			t.Helper()
+
 			testPrintContains(t, logic)
 		})
 		pterm.EnableStyling()
@@ -206,7 +214,7 @@ func teardownStdoutCapture() {
 	pterm.SetDefaultOutput(os.Stdout)
 }
 
-// captureStdout simulates capturing of os.stdout with a buffer and returns what was writted to the screen
+// captureStdout simulates capturing of os.stdout with a buffer and returns what was written to the screen
 func captureStdout(f func(w io.Writer)) string {
 	setupStdoutCapture()
 	f(&outBuf)
