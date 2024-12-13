@@ -2,6 +2,7 @@ package pterm
 
 import (
 	"io"
+	"os"
 	"time"
 
 	"github.com/pterm/pterm/internal"
@@ -22,6 +23,7 @@ var DefaultSpinner = SpinnerPrinter{
 	SuccessPrinter:      &Success,
 	FailPrinter:         &Error,
 	WarningPrinter:      &Warning,
+	Writer:              os.Stderr,
 }
 
 // SpinnerPrinter is a loading animation, which can be used if the progress is unknown.
