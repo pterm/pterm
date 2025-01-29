@@ -195,6 +195,16 @@ func (p BoxPrinter) WithBottomPadding(padding int) *BoxPrinter {
 	return &p
 }
 
+// WithVerticalPadding returns a new box with a specific TopPadding and BottomPadding.
+func (p BoxPrinter) WithVerticalPadding(padding int) *BoxPrinter {
+	if padding < 0 {
+		padding = 0
+	}
+	p.TopPadding = padding
+	p.BottomPadding = padding
+	return &p
+}
+
 // WithRightPadding returns a new box with a specific RightPadding.
 func (p BoxPrinter) WithRightPadding(padding int) *BoxPrinter {
 	if padding < 0 {
@@ -210,6 +220,28 @@ func (p BoxPrinter) WithLeftPadding(padding int) *BoxPrinter {
 		padding = 0
 	}
 	p.LeftPadding = padding
+	return &p
+}
+
+// WithHorizontalPadding returns a new box with a specific LeftPadding and RightPadding.
+func (p BoxPrinter) WithHorizontalPadding(padding int) *BoxPrinter {
+	if padding < 0 {
+		padding = 0
+	}
+	p.LeftPadding = padding
+	p.RightPadding = padding
+	return &p
+}
+
+// WithPadding returns a new box with a specific padding on all directions.
+func (p BoxPrinter) WithPadding(padding int) *BoxPrinter {
+	if padding < 0 {
+		padding = 0
+	}
+	p.TopPadding = padding
+	p.BottomPadding = padding
+	p.LeftPadding = padding
+	p.RightPadding = padding
 	return &p
 }
 
