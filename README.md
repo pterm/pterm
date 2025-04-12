@@ -1,3 +1,4 @@
+<!-- GitAds-Verify: O8664I3XY9IA9QKAP4I9UHV4ZKFKZCT3 -->
 <!--suppress HtmlDeprecatedAttribute -->
 
 <h1 align="center">💻 PTerm | Pretty Terminal Printer</h1>
