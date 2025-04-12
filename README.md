@@ -4,6 +4,8 @@
 <h1 align="center">💻 PTerm | Pretty Terminal Printer</h1>
 <p align="center">A modern Go framework to make beautiful CLIs</p>
 
+
+
 <p align="center">
 
 <a href="https://github.com/pterm/pterm/releases" style="text-decoration: none">
@@ -3674,6 +3676,9 @@ func main() {
 
 
 <!-- examples:end -->
+
+## GitAds Sponsored
+[![Sponsored by GitAds](https://gitads.dev/v1/ad-serve?source=pterm/pterm@github)](https://gitads.dev/v1/ad-track?source=pterm/pterm@github)
 
 
 ---
