@@ -3,6 +3,7 @@ package pterm
 import (
 	"encoding/json"
 	"io"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -394,7 +395,11 @@ func (l Logger) argsToMap(args []LoggerArgument) map[string]any {
 	m := make(map[string]any)
 
 	for _, arg := range args {
-		m[arg.Key] = arg.Value
+		v := arg.Value
+		if sv, ok := arg.Value.(slog.Value); ok {
+			v = sv.Any()
+		}
+		m[arg.Key] = v
 	}
 
 	return m
