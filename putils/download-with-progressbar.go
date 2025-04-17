@@ -43,6 +43,7 @@ func DownloadFileWithProgressbar(progressbar *pterm.ProgressbarPrinter, outputPa
 	counter := &progressbarWriter{}
 	fileSize, err := strconv.Atoi(resp.Header.Get("Content-Length"))
 	if err != nil {
+		out.Close()
 		return fmt.Errorf("could not determine file size: %w", err)
 	}
 
