@@ -450,7 +450,7 @@ func (p HeatmapPrinter) renderData(buffer *bytes.Buffer, colWidth int, xAmount i
 				if p.EnableComplementaryColor {
 					fgColor = complementaryColors[color]
 				}
-				buffer.WriteString(fgColor.Sprint(color.Sprintf(ct)))
+				buffer.WriteString(fgColor.Sprint(color.Sprintf("%s", ct)))
 			}
 			if j < xAmount {
 				if !p.Boxed && p.HasHeader && j == xAmount-1 {
@@ -653,16 +653,16 @@ func centerAndShorten(f float32, lineLength int, onlyColor bool) string {
 	return ct
 }
 
-func getColor(min float32, max float32, current float32, colors ...Color) Color {
+func getColor(minStep float32, maxStep float32, current float32, colors ...Color) Color {
 	// split the range into equal parts
 	// and assign a color to each part
 	// the last color is assigned to the max value
 	// and the first color to the min value
 	// the rest of the colors are assigned to the
 	// middle values
-	step := (max - min) / float32(len(colors))
+	step := (maxStep - minStep) / float32(len(colors))
 	for i := range colors {
-		if current >= min+float32(i)*step && current < min+float32(i+1)*step {
+		if current >= minStep+float32(i)*step && current < minStep+float32(i+1)*step {
 			return colors[i]
 		}
 	}
@@ -726,19 +726,19 @@ func (p HeatmapPrinter) errCheck() error {
 
 // return min and max value of a slice
 func minMaxFloat32(s [][]float32) (float32, float32) {
-	var min, max float32
-	min = math.MaxFloat32
-	max = -math.MaxFloat32
+	var minslice, maxslice float32
+	minslice = math.MaxFloat32
+	maxslice = -math.MaxFloat32
 
 	for _, r := range s {
 		for _, c := range r {
-			if c < min {
-				min = c
+			if c < minslice {
+				minslice = c
 			}
-			if c > max {
-				max = c
+			if c > maxslice {
+				maxslice = c
 			}
 		}
 	}
-	return min, max
+	return minslice, maxslice
 }

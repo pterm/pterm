@@ -32,7 +32,7 @@ func (s *SlogHandler) Handle(ctx context.Context, record slog.Record) error {
 	message := record.Message
 
 	// Convert slog Attrs to a map.
-	keyValsMap := make(map[string]interface{})
+	keyValsMap := make(map[string]any)
 
 	record.Attrs(func(attr slog.Attr) bool {
 		keyValsMap[attr.Key] = attr.Value

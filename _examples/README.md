@@ -3072,7 +3072,7 @@ func main() {
 	// Create and start a fork of the default spinner.
 	spinnerInfo, _ := pterm.DefaultSpinner.Start("Some informational action...")
 	time.Sleep(time.Second * 2) // Simulate 3 seconds of processing something.
-	spinnerInfo.Info()          // Resolve spinner with error message.
+	spinnerInfo.Info()          // Resolve spinner with information message.
 
 	// Create and start a fork of the default spinner.
 	spinnerSuccess, _ := pterm.DefaultSpinner.Start("Doing something important... (will succeed)")
@@ -3248,6 +3248,43 @@ func main() {
 
 	// Create another table with a header and the defined data, then render it
 	pterm.DefaultTable.WithHasHeader().WithData(tableData2).Render()
+}
+
+```
+
+</details>
+
+### table/alternate-row-style
+
+![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/table/alternate-row-style/animation.svg)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	// Define the data for the table.
+	// Each inner slice represents a row in the table.
+	// The first row is considered as the header of the table.
+	alternateStyle := pterm.NewStyle(pterm.BgDarkGray)
+
+	tableData := pterm.TableData{
+		{"Firstname", "Lastname", "Email", "Note"},
+		{"Paul", "Dean", "augue@velitAliquam.co.uk", ""},
+		{"Callie", "Mckay", "nunc.sed@est.com", "这是一个测试, haha!"},
+		{"Libby", "Camacho", "lobortis@semper.com", "just a test, hey!"},
+		{"张", "小宝", "zhang@example.com", ""},
+	}
+
+	// Create a table with the defined data.
+	// The table has a header and is boxed.
+	// Finally, render the table to print it.
+	pterm.DefaultTable.WithHasHeader().WithBoxed().WithData(tableData).WithAlternateRowStyle(alternateStyle).Render()
 }
 
 ```

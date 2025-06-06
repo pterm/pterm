@@ -47,7 +47,7 @@ func (p RGBStyle) AddOptions(opts ...Color) RGBStyle {
 // Print formats using the default formats for its operands and writes to standard output.
 // Spaces are added between operands when neither is a string.
 // It returns the number of bytes written and any write error encountered.
-func (p RGBStyle) Print(a ...interface{}) *TextPrinter {
+func (p RGBStyle) Print(a ...any) *TextPrinter {
 	Print(p.Sprint(a...))
 	tp := TextPrinter(p)
 	return &tp
@@ -56,7 +56,7 @@ func (p RGBStyle) Print(a ...interface{}) *TextPrinter {
 // Println formats using the default formats for its operands and writes to standard output.
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
-func (p RGBStyle) Println(a ...interface{}) *TextPrinter {
+func (p RGBStyle) Println(a ...any) *TextPrinter {
 	Println(p.Sprint(a...))
 	tp := TextPrinter(p)
 	return &tp
@@ -64,7 +64,7 @@ func (p RGBStyle) Println(a ...interface{}) *TextPrinter {
 
 // Printf formats according to a format specifier and writes to standard output.
 // It returns the number of bytes written and any write error encountered.
-func (p RGBStyle) Printf(format string, a ...interface{}) *TextPrinter {
+func (p RGBStyle) Printf(format string, a ...any) *TextPrinter {
 	Printf(format, p.Sprint(a...))
 	tp := TextPrinter(p)
 	return &tp
@@ -73,7 +73,7 @@ func (p RGBStyle) Printf(format string, a ...interface{}) *TextPrinter {
 // Printfln formats according to a format specifier and writes to standard output.
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
-func (p RGBStyle) Printfln(format string, a ...interface{}) *TextPrinter {
+func (p RGBStyle) Printfln(format string, a ...any) *TextPrinter {
 	Printf(format, p.Sprint(a...))
 	tp := TextPrinter(p)
 	return &tp
@@ -82,7 +82,7 @@ func (p RGBStyle) Printfln(format string, a ...interface{}) *TextPrinter {
 // PrintOnError prints every error which is not nil.
 // If every error is nil, nothing will be printed.
 // This can be used for simple error checking.
-func (p RGBStyle) PrintOnError(a ...interface{}) *TextPrinter {
+func (p RGBStyle) PrintOnError(a ...any) *TextPrinter {
 	for _, arg := range a {
 		if err, ok := arg.(error); ok {
 			if err != nil {
@@ -98,7 +98,7 @@ func (p RGBStyle) PrintOnError(a ...interface{}) *TextPrinter {
 // PrintOnErrorf wraps every error which is not nil and prints it.
 // If every error is nil, nothing will be printed.
 // This can be used for simple error checking.
-func (p RGBStyle) PrintOnErrorf(format string, a ...interface{}) *TextPrinter {
+func (p RGBStyle) PrintOnErrorf(format string, a ...any) *TextPrinter {
 	for _, arg := range a {
 		if err, ok := arg.(error); ok {
 			if err != nil {
@@ -113,7 +113,7 @@ func (p RGBStyle) PrintOnErrorf(format string, a ...interface{}) *TextPrinter {
 
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
-func (p RGBStyle) Sprint(a ...interface{}) string {
+func (p RGBStyle) Sprint(a ...any) string {
 	var rgbStyle *color.RGBStyle
 	if !p.hasBg {
 		rgbStyle = color.NewRGBStyle(color.RGB(p.Foreground.R, p.Foreground.G, p.Foreground.B))
@@ -130,18 +130,18 @@ func (p RGBStyle) Sprint(a ...interface{}) string {
 
 // Sprintln formats using the default formats for its operands and returns the resulting string.
 // Spaces are always added between operands and a newline is appended.
-func (p RGBStyle) Sprintln(a ...interface{}) string {
+func (p RGBStyle) Sprintln(a ...any) string {
 	return p.Sprint(a...) + "\n"
 }
 
 // Sprintf formats according to a format specifier and returns the resulting string.
-func (p RGBStyle) Sprintf(format string, a ...interface{}) string {
+func (p RGBStyle) Sprintf(format string, a ...any) string {
 	return p.Sprint(Sprintf(format, a...))
 }
 
 // Sprintfln formats according to a format specifier and returns the resulting string.
 // Spaces are always added between operands and a newline is appended.
-func (p RGBStyle) Sprintfln(format string, a ...interface{}) string {
+func (p RGBStyle) Sprintfln(format string, a ...any) string {
 	return p.Sprintf(format, a...) + "\n"
 }
 
@@ -162,32 +162,33 @@ func NewRGB(r, g, b uint8, background ...bool) RGB {
 }
 
 // Fade fades one RGB value (over other RGB values) to another RGB value, by giving the function a minimum, maximum and current value.
-func (p RGB) Fade(min, max, current float32, end ...RGB) RGB {
-	if max == current {
+func (p RGB) Fade(minRGB, maxRGB, current float32, end ...RGB) RGB {
+	if maxRGB == current {
 		return end[len(end)-1]
 	}
-	if min < 0 {
-		max -= min
-		current -= min
-		min = 0
+	if minRGB < 0 {
+		maxRGB -= minRGB
+		current -= minRGB
+		minRGB = 0
 	}
+	// #nosec G115
 	if len(end) == 1 {
 		return RGB{
-			R:          uint8(internal.MapRangeToRange(min, max, float32(p.R), float32(end[0].R), current)),
-			G:          uint8(internal.MapRangeToRange(min, max, float32(p.G), float32(end[0].G), current)),
-			B:          uint8(internal.MapRangeToRange(min, max, float32(p.B), float32(end[0].B), current)),
+			R:          uint8(internal.MapRangeToRange(minRGB, maxRGB, float32(p.R), float32(end[0].R), current)), //nolint:gosec
+			G:          uint8(internal.MapRangeToRange(minRGB, maxRGB, float32(p.G), float32(end[0].G), current)), //nolint:gosec
+			B:          uint8(internal.MapRangeToRange(minRGB, maxRGB, float32(p.B), float32(end[0].B), current)), //nolint:gosec
 			Background: p.Background,
 		}
 	} else if len(end) > 1 {
-		f := (max - min) / float32(len(end))
+		f := (maxRGB - minRGB) / float32(len(end))
 		tempCurrent := current
 		if f > current {
-			return p.Fade(min, f, current, end[0])
+			return p.Fade(minRGB, f, current, end[0])
 		} else {
 			for i := 0; i < len(end)-1; i++ {
 				tempCurrent -= f
 				if f > tempCurrent {
-					return end[i].Fade(min, min+f, tempCurrent, end[i+1])
+					return end[i].Fade(minRGB, minRGB+f, tempCurrent, end[i+1])
 				}
 			}
 		}
@@ -197,7 +198,7 @@ func (p RGB) Fade(min, max, current float32, end ...RGB) RGB {
 
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
-func (p RGB) Sprint(a ...interface{}) string {
+func (p RGB) Sprint(a ...any) string {
 	if p.Background {
 		return color.RGB(p.R, p.G, p.B, p.Background).Sprint(a...) + "\033[0m\033[K"
 	}
@@ -206,25 +207,25 @@ func (p RGB) Sprint(a ...interface{}) string {
 
 // Sprintln formats using the default formats for its operands and returns the resulting string.
 // Spaces are always added between operands and a newline is appended.
-func (p RGB) Sprintln(a ...interface{}) string {
+func (p RGB) Sprintln(a ...any) string {
 	return p.Sprint(Sprintln(a...))
 }
 
 // Sprintf formats according to a format specifier and returns the resulting string.
-func (p RGB) Sprintf(format string, a ...interface{}) string {
+func (p RGB) Sprintf(format string, a ...any) string {
 	return p.Sprint(Sprintf(format, a...))
 }
 
 // Sprintfln formats according to a format specifier and returns the resulting string.
 // Spaces are always added between operands and a newline is appended.
-func (p RGB) Sprintfln(format string, a ...interface{}) string {
+func (p RGB) Sprintfln(format string, a ...any) string {
 	return p.Sprintf(format, a...) + "\n"
 }
 
 // Print formats using the default formats for its operands and writes to standard output.
 // Spaces are added between operands when neither is a string.
 // It returns the number of bytes written and any write error encountered.
-func (p RGB) Print(a ...interface{}) *TextPrinter {
+func (p RGB) Print(a ...any) *TextPrinter {
 	Print(p.Sprint(a...))
 	tp := TextPrinter(p)
 	return &tp
@@ -233,7 +234,7 @@ func (p RGB) Print(a ...interface{}) *TextPrinter {
 // Println formats using the default formats for its operands and writes to standard output.
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
-func (p RGB) Println(a ...interface{}) *TextPrinter {
+func (p RGB) Println(a ...any) *TextPrinter {
 	Print(p.Sprintln(a...))
 	tp := TextPrinter(p)
 	return &tp
@@ -241,7 +242,7 @@ func (p RGB) Println(a ...interface{}) *TextPrinter {
 
 // Printf formats according to a format specifier and writes to standard output.
 // It returns the number of bytes written and any write error encountered.
-func (p RGB) Printf(format string, a ...interface{}) *TextPrinter {
+func (p RGB) Printf(format string, a ...any) *TextPrinter {
 	Print(p.Sprintf(format, a...))
 	tp := TextPrinter(p)
 	return &tp
@@ -250,7 +251,7 @@ func (p RGB) Printf(format string, a ...interface{}) *TextPrinter {
 // Printfln formats according to a format specifier and writes to standard output.
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
-func (p RGB) Printfln(format string, a ...interface{}) *TextPrinter {
+func (p RGB) Printfln(format string, a ...any) *TextPrinter {
 	Print(p.Sprintfln(format, a...))
 	tp := TextPrinter(p)
 	return &tp
@@ -259,7 +260,7 @@ func (p RGB) Printfln(format string, a ...interface{}) *TextPrinter {
 // PrintOnError prints every error which is not nil.
 // If every error is nil, nothing will be printed.
 // This can be used for simple error checking.
-func (p RGB) PrintOnError(a ...interface{}) *TextPrinter {
+func (p RGB) PrintOnError(a ...any) *TextPrinter {
 	for _, arg := range a {
 		if err, ok := arg.(error); ok {
 			if err != nil {
@@ -275,7 +276,7 @@ func (p RGB) PrintOnError(a ...interface{}) *TextPrinter {
 // PrintOnErrorf wraps every error which is not nil and prints it.
 // If every error is nil, nothing will be printed.
 // This can be used for simple error checking.
-func (p RGB) PrintOnErrorf(format string, a ...interface{}) *TextPrinter {
+func (p RGB) PrintOnErrorf(format string, a ...any) *TextPrinter {
 	for _, arg := range a {
 		if err, ok := arg.(error); ok {
 			if err != nil {

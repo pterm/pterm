@@ -19,9 +19,8 @@ func TestSpinnerPrinter_NilPrint(t *testing.T) {
 }
 
 func TestSpinnerPrinter_Fail(t *testing.T) {
-	p := pterm.DefaultSpinner
-	testPrintContains(t, func(w io.Writer, a interface{}) {
-		p.Fail(a)
+	testPrintContains(t, func(w io.Writer, a any) {
+		pterm.DefaultSpinner.WithWriter(w).Fail(a)
 	})
 }
 
@@ -45,16 +44,14 @@ func TestSpinnerPrinter_GenericStop(t *testing.T) {
 }
 
 func TestSpinnerPrinter_Info(t *testing.T) {
-	p := pterm.DefaultSpinner
-	testPrintContains(t, func(w io.Writer, a interface{}) {
-		p.Info(a)
+	testPrintContains(t, func(w io.Writer, a any) {
+		pterm.DefaultSpinner.WithWriter(w).Info(a)
 	})
 }
 
 func TestSpinnerPrinter_Success(t *testing.T) {
-	p := pterm.DefaultSpinner
-	testPrintContains(t, func(w io.Writer, a interface{}) {
-		p.Success(a)
+	testPrintContains(t, func(w io.Writer, a any) {
+		pterm.DefaultSpinner.WithWriter(w).Success(a)
 	})
 }
 
@@ -68,9 +65,9 @@ func TestSpinnerPrinter_UpdateText(t *testing.T) {
 	})
 
 	t.Run("Override", func(t *testing.T) {
-		out := captureStdout(func(io.Writer) {
+		out := captureStdout(func(w io.Writer) {
 			// Set a really long delay to make sure text doesn't get updated before function returns.
-			p := pterm.DefaultSpinner.WithDelay(1 * time.Hour)
+			p := pterm.DefaultSpinner.WithDelay(1 * time.Hour).WithWriter(w)
 			p.Start("An initial long message")
 			p.UpdateText("A short message")
 		})
@@ -90,9 +87,8 @@ func TestSpinnerPrinter_UpdateTextRawOutput(t *testing.T) {
 }
 
 func TestSpinnerPrinter_Warning(t *testing.T) {
-	p := pterm.DefaultSpinner
-	testPrintContains(t, func(w io.Writer, a interface{}) {
-		p.Warning(a)
+	testPrintContains(t, func(w io.Writer, a any) {
+		pterm.DefaultSpinner.WithWriter(w).Warning(a)
 	})
 }
 
@@ -188,7 +184,7 @@ func TestSpinnerPrinter_DifferentVariations(t *testing.T) {
 		IsActive       bool
 	}
 	type args struct {
-		text []interface{}
+		text []any
 	}
 	tests := []struct {
 		name   string
@@ -196,7 +192,7 @@ func TestSpinnerPrinter_DifferentVariations(t *testing.T) {
 		args   args
 	}{
 		{name: "WithText", fields: fields{Text: "test"}, args: args{}},
-		{name: "WithText", fields: fields{}, args: args{[]interface{}{"test"}}},
+		{name: "WithText", fields: fields{}, args: args{[]any{"test"}}},
 		{name: "WithRemoveWhenDone", fields: fields{RemoveWhenDone: true}, args: args{}},
 	}
 	for _, tt := range tests {

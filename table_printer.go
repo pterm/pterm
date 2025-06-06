@@ -41,6 +41,7 @@ type TablePrinter struct {
 	LeftAlignment           bool
 	RightAlignment          bool
 	Writer                  io.Writer
+	AlternateRowStyle       *Style
 }
 
 // WithStyle returns a new TablePrinter with a specific Style.
@@ -103,7 +104,7 @@ func (p TablePrinter) WithData(data [][]string) *TablePrinter {
 	return &p
 }
 
-// WithCSVReader return a new TablePrinter with specified Data extracted from CSV.
+// WithCSVReader returns a new TablePrinter with specified Data extracted from CSV.
 func (p TablePrinter) WithCSVReader(reader *csv.Reader) *TablePrinter {
 	if records, err := reader.ReadAll(); err == nil {
 		p.Data = records
@@ -139,15 +140,20 @@ func (p TablePrinter) WithWriter(writer io.Writer) *TablePrinter {
 	return &p
 }
 
+// WithAlternateRowStyle returns a new TablePrinter with a specific AlternateRowStyle.
+func (p TablePrinter) WithAlternateRowStyle(style *Style) *TablePrinter {
+	p.AlternateRowStyle = style
+	return &p
+}
+
 type table struct {
 	rows            []row
 	maxColumnWidths []int
 }
 
 type row struct {
-	height       int
-	cells        []cell
-	columnWidths []int
+	height int
+	cells  []cell
 }
 
 type cell struct {
@@ -215,30 +221,36 @@ func (p TablePrinter) Srender() (string, error) {
 	}
 
 	// render table
-	var s string
+	var ret strings.Builder
 
 	for i, r := range t.rows {
 		if i == 0 && p.HasHeader {
-			s += p.HeaderStyle.Sprint(p.renderRow(t, r))
+			ret.WriteString(p.HeaderStyle.Sprint(p.renderRow(t, r)))
 
 			if p.HeaderRowSeparator != "" {
-				s += strings.Repeat(p.HeaderRowSeparatorStyle.Sprint(p.HeaderRowSeparator), maxRowWidth) + "\n"
+				ret.WriteString(strings.Repeat(p.HeaderRowSeparatorStyle.Sprint(p.HeaderRowSeparator), maxRowWidth))
+				ret.WriteByte('\n')
 			}
 			continue
 		}
 
-		s += p.renderRow(t, r)
+		// Apply AlternateRowStyle if needed
+		if i%2 == 1 && p.AlternateRowStyle != nil {
+			ret.WriteString(p.AlternateRowStyle.Sprint(p.renderRow(t, r)))
+		} else {
+			ret.WriteString(p.renderRow(t, r))
+		}
 
-		if p.RowSeparator != "" {
-			s += strings.Repeat(p.RowSeparatorStyle.Sprint(p.RowSeparator), maxRowWidth) + "\n"
+		if p.RowSeparator != "" && i < len(t.rows)-1 {
+			ret.WriteString(strings.Repeat(p.RowSeparatorStyle.Sprint(p.RowSeparator), maxRowWidth) + "\n")
 		}
 	}
 
 	if p.Boxed {
-		s = DefaultBox.Sprint(strings.TrimSuffix(s, "\n"))
+		return DefaultBox.Sprint(strings.TrimSuffix(ret.String(), "\n")), nil
 	}
 
-	return s, nil
+	return ret.String(), nil
 }
 
 // renderRow renders a row.
@@ -247,9 +259,9 @@ func (p TablePrinter) Srender() (string, error) {
 func (p TablePrinter) renderRow(t table, r row) string {
 	var s string
 
-	// merge lines of cells and add separator
-	// use the t.maxColumnWidths to add padding to the corresponding cell
-	// a newline in a cell should be in the same column as the original cell
+	// Merge lines of cells and add separator
+	// Use t.maxColumnWidths to add padding to corresponding cell
+	// A newline in a cell should be in the same column as original cell
 	for i := 0; i < r.height; i++ {
 		for j, c := range r.cells {
 			var currentLine string
@@ -258,19 +270,25 @@ func (p TablePrinter) renderRow(t table, r row) string {
 			}
 			paddingForLine := t.maxColumnWidths[j] - internal.GetStringMaxWidth(currentLine)
 
+			// Add right alignment if necessary
 			if p.RightAlignment {
 				s += strings.Repeat(" ", paddingForLine)
 			}
 
+			// Add line content
 			if i < len(c.lines) {
 				s += c.lines[i]
 			}
 
+			// Add padding for left alignment, except for last column
 			if j < len(r.cells)-1 {
 				if p.LeftAlignment {
 					s += strings.Repeat(" ", paddingForLine)
 				}
 				s += p.SeparatorStyle.Sprint(p.Separator)
+			} else if p.LeftAlignment {
+				// Add padding after last column
+				s += strings.Repeat(" ", paddingForLine)
 			}
 		}
 		s += "\n"
