@@ -139,7 +139,7 @@ type Color uint8
 // Sprintln formats using the default formats for its operands and returns the resulting string.
 // Spaces are always added between operands and a newline is appended.
 // Input will be colored with the parent Color.
-func (c Color) Sprintln(a ...interface{}) string {
+func (c Color) Sprintln(a ...any) string {
 	str := fmt.Sprintln(a...)
 	return c.Sprint(str)
 }
@@ -147,7 +147,7 @@ func (c Color) Sprintln(a ...interface{}) string {
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
 // Input will be colored with the parent Color.
-func (c Color) Sprint(a ...interface{}) string {
+func (c Color) Sprint(a ...any) string {
 	message := Sprint(a...)
 	messageLines := strings.Split(message, "\n")
 	for i, line := range messageLines {
@@ -159,14 +159,14 @@ func (c Color) Sprint(a ...interface{}) string {
 
 // Sprintf formats according to a format specifier and returns the resulting string.
 // Input will be colored with the parent Color.
-func (c Color) Sprintf(format string, a ...interface{}) string {
+func (c Color) Sprintf(format string, a ...any) string {
 	return c.Sprint(Sprintf(format, a...))
 }
 
 // Sprintfln formats according to a format specifier and returns the resulting string.
 // Spaces are always added between operands and a newline is appended.
 // Input will be colored with the parent Color.
-func (c Color) Sprintfln(format string, a ...interface{}) string {
+func (c Color) Sprintfln(format string, a ...any) string {
 	return c.Sprint(Sprintf(format, a...) + "\n")
 }
 
@@ -174,7 +174,7 @@ func (c Color) Sprintfln(format string, a ...interface{}) string {
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
 // Input will be colored with the parent Color.
-func (c Color) Println(a ...interface{}) *TextPrinter {
+func (c Color) Println(a ...any) *TextPrinter {
 	Print(c.Sprintln(a...))
 	tc := TextPrinter(c)
 	return &tc
@@ -184,7 +184,7 @@ func (c Color) Println(a ...interface{}) *TextPrinter {
 // Spaces are added between operands when neither is a string.
 // It returns the number of bytes written and any write error encountered.
 // Input will be colored with the parent Color.
-func (c Color) Print(a ...interface{}) *TextPrinter {
+func (c Color) Print(a ...any) *TextPrinter {
 	Print(c.Sprint(a...))
 	tc := TextPrinter(c)
 	return &tc
@@ -193,7 +193,7 @@ func (c Color) Print(a ...interface{}) *TextPrinter {
 // Printf formats according to a format specifier and writes to standard output.
 // It returns the number of bytes written and any write error encountered.
 // Input will be colored with the parent Color.
-func (c Color) Printf(format string, a ...interface{}) *TextPrinter {
+func (c Color) Printf(format string, a ...any) *TextPrinter {
 	Print(c.Sprintf(format, a...))
 	tc := TextPrinter(c)
 	return &tc
@@ -203,7 +203,7 @@ func (c Color) Printf(format string, a ...interface{}) *TextPrinter {
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
 // Input will be colored with the parent Color.
-func (c Color) Printfln(format string, a ...interface{}) *TextPrinter {
+func (c Color) Printfln(format string, a ...any) *TextPrinter {
 	Print(c.Sprintfln(format, a...))
 	tp := TextPrinter(c)
 	return &tp
@@ -212,7 +212,7 @@ func (c Color) Printfln(format string, a ...interface{}) *TextPrinter {
 // PrintOnError prints every error which is not nil.
 // If every error is nil, nothing will be printed.
 // This can be used for simple error checking.
-func (c Color) PrintOnError(a ...interface{}) *TextPrinter {
+func (c Color) PrintOnError(a ...any) *TextPrinter {
 	for _, arg := range a {
 		if err, ok := arg.(error); ok {
 			if err != nil {
@@ -228,7 +228,7 @@ func (c Color) PrintOnError(a ...interface{}) *TextPrinter {
 // PrintOnErrorf wraps every error which is not nil and prints it.
 // If every error is nil, nothing will be printed.
 // This can be used for simple error checking.
-func (c Color) PrintOnErrorf(format string, a ...interface{}) *TextPrinter {
+func (c Color) PrintOnErrorf(format string, a ...any) *TextPrinter {
 	for _, arg := range a {
 		if err, ok := arg.(error); ok {
 			if err != nil {
@@ -296,7 +296,7 @@ func (s Style) RemoveColor(colors ...Color) Style {
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
 // Input will be colored with the parent Style.
-func (s Style) Sprint(a ...interface{}) string {
+func (s Style) Sprint(a ...any) string {
 	message := Sprint(a...)
 	messageLines := strings.Split(message, "\n")
 	for i, line := range messageLines {
@@ -309,20 +309,20 @@ func (s Style) Sprint(a ...interface{}) string {
 // Sprintln formats using the default formats for its operands and returns the resulting string.
 // Spaces are always added between operands and a newline is appended.
 // Input will be colored with the parent Style.
-func (s Style) Sprintln(a ...interface{}) string {
+func (s Style) Sprintln(a ...any) string {
 	return s.Sprint(a...) + "\n"
 }
 
 // Sprintf formats according to a format specifier and returns the resulting string.
 // Input will be colored with the parent Style.
-func (s Style) Sprintf(format string, a ...interface{}) string {
+func (s Style) Sprintf(format string, a ...any) string {
 	return s.Sprint(Sprintf(format, a...))
 }
 
 // Sprintfln formats according to a format specifier and returns the resulting string.
 // Spaces are always added between operands and a newline is appended.
 // Input will be colored with the parent Style.
-func (s Style) Sprintfln(format string, a ...interface{}) string {
+func (s Style) Sprintfln(format string, a ...any) string {
 	return s.Sprint(Sprintf(format, a...) + "\n")
 }
 
@@ -330,7 +330,7 @@ func (s Style) Sprintfln(format string, a ...interface{}) string {
 // Spaces are added between operands when neither is a string.
 // It returns the number of bytes written and any write error encountered.
 // Input will be colored with the parent Style.
-func (s Style) Print(a ...interface{}) {
+func (s Style) Print(a ...any) {
 	Print(s.Sprint(a...))
 }
 
@@ -338,14 +338,14 @@ func (s Style) Print(a ...interface{}) {
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
 // Input will be colored with the parent Style.
-func (s Style) Println(a ...interface{}) {
+func (s Style) Println(a ...any) {
 	Println(s.Sprint(a...))
 }
 
 // Printf formats according to a format specifier and writes to standard output.
 // It returns the number of bytes written and any write error encountered.
 // Input will be colored with the parent Style.
-func (s Style) Printf(format string, a ...interface{}) {
+func (s Style) Printf(format string, a ...any) {
 	Print(s.Sprintf(format, a...))
 }
 
@@ -353,7 +353,7 @@ func (s Style) Printf(format string, a ...interface{}) {
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
 // Input will be colored with the parent Style.
-func (s Style) Printfln(format string, a ...interface{}) {
+func (s Style) Printfln(format string, a ...any) {
 	Print(s.Sprintfln(format, a...))
 }
 

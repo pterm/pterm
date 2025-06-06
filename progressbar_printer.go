@@ -33,7 +33,7 @@ var DefaultProgressbar = ProgressbarPrinter{
 	ShowElapsedTime:           true,
 	BarFiller:                 Gray("█"),
 	MaxWidth:                  80,
-	Writer:                    os.Stdout,
+	Writer:                    os.Stderr,
 }
 
 // ProgressbarPrinter shows a progress animation in the terminal.
@@ -282,7 +282,7 @@ func (p *ProgressbarPrinter) Add(count int) *ProgressbarPrinter {
 }
 
 // Start the ProgressbarPrinter.
-func (p ProgressbarPrinter) Start(title ...interface{}) (*ProgressbarPrinter, error) {
+func (p ProgressbarPrinter) Start(title ...any) (*ProgressbarPrinter, error) {
 	cursor.Hide()
 	if RawOutput && p.ShowTitle {
 		Fprintln(p.Writer, p.Title)

@@ -64,7 +64,7 @@ func (p SectionPrinter) WithWriter(writer io.Writer) *SectionPrinter {
 
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
-func (p SectionPrinter) Sprint(a ...interface{}) string {
+func (p SectionPrinter) Sprint(a ...any) string {
 	if p.Style == nil {
 		p.Style = NewStyle()
 	}
@@ -91,26 +91,26 @@ func (p SectionPrinter) Sprint(a ...interface{}) string {
 
 // Sprintln formats using the default formats for its operands and returns the resulting string.
 // Spaces are always added between operands and a newline is appended.
-func (p SectionPrinter) Sprintln(a ...interface{}) string {
+func (p SectionPrinter) Sprintln(a ...any) string {
 	str := fmt.Sprintln(a...)
 	return Sprint(p.Sprint(str))
 }
 
 // Sprintf formats according to a format specifier and returns the resulting string.
-func (p SectionPrinter) Sprintf(format string, a ...interface{}) string {
+func (p SectionPrinter) Sprintf(format string, a ...any) string {
 	return p.Sprint(Sprintf(format, a...))
 }
 
 // Sprintfln formats according to a format specifier and returns the resulting string.
 // Spaces are always added between operands and a newline is appended.
-func (p SectionPrinter) Sprintfln(format string, a ...interface{}) string {
+func (p SectionPrinter) Sprintfln(format string, a ...any) string {
 	return p.Sprintf(format, a...) + "\n"
 }
 
 // Print formats using the default formats for its operands and writes to standard output.
 // Spaces are added between operands when neither is a string.
 // It returns the number of bytes written and any write error encountered.
-func (p *SectionPrinter) Print(a ...interface{}) *TextPrinter {
+func (p *SectionPrinter) Print(a ...any) *TextPrinter {
 	Fprint(p.Writer, p.Sprint(a...))
 	tp := TextPrinter(p)
 	return &tp
@@ -119,7 +119,7 @@ func (p *SectionPrinter) Print(a ...interface{}) *TextPrinter {
 // Println formats using the default formats for its operands and writes to standard output.
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
-func (p *SectionPrinter) Println(a ...interface{}) *TextPrinter {
+func (p *SectionPrinter) Println(a ...any) *TextPrinter {
 	Fprint(p.Writer, p.Sprintln(a...))
 	tp := TextPrinter(p)
 	return &tp
@@ -127,7 +127,7 @@ func (p *SectionPrinter) Println(a ...interface{}) *TextPrinter {
 
 // Printf formats according to a format specifier and writes to standard output.
 // It returns the number of bytes written and any write error encountered.
-func (p *SectionPrinter) Printf(format string, a ...interface{}) *TextPrinter {
+func (p *SectionPrinter) Printf(format string, a ...any) *TextPrinter {
 	Fprint(p.Writer, p.Sprintf(format, a...))
 	tp := TextPrinter(p)
 	return &tp
@@ -136,7 +136,7 @@ func (p *SectionPrinter) Printf(format string, a ...interface{}) *TextPrinter {
 // Printfln formats according to a format specifier and writes to standard output.
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
-func (p *SectionPrinter) Printfln(format string, a ...interface{}) *TextPrinter {
+func (p *SectionPrinter) Printfln(format string, a ...any) *TextPrinter {
 	Fprint(p.Writer, p.Sprintfln(format, a...))
 	tp := TextPrinter(p)
 	return &tp
@@ -145,7 +145,7 @@ func (p *SectionPrinter) Printfln(format string, a ...interface{}) *TextPrinter 
 // PrintOnError prints every error which is not nil.
 // If every error is nil, nothing will be printed.
 // This can be used for simple error checking.
-func (p *SectionPrinter) PrintOnError(a ...interface{}) *TextPrinter {
+func (p *SectionPrinter) PrintOnError(a ...any) *TextPrinter {
 	for _, arg := range a {
 		if err, ok := arg.(error); ok {
 			if err != nil {
@@ -161,7 +161,7 @@ func (p *SectionPrinter) PrintOnError(a ...interface{}) *TextPrinter {
 // PrintOnErrorf wraps every error which is not nil and prints it.
 // If every error is nil, nothing will be printed.
 // This can be used for simple error checking.
-func (p *SectionPrinter) PrintOnErrorf(format string, a ...interface{}) *TextPrinter {
+func (p *SectionPrinter) PrintOnErrorf(format string, a ...any) *TextPrinter {
 	for _, arg := range a {
 		if err, ok := arg.(error); ok {
 			if err != nil {
