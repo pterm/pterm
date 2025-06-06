@@ -154,9 +154,7 @@ func (s SpinnerPrinter) Start(text ...any) (*SpinnerPrinter, error) {
 		s.Text = Sprint(text...)
 	}
 
-	if RawOutput {
-		Fprintln(s.Writer, s.Text)
-	}
+	Fprintln(s.Writer, s.Text)
 
 	go func() {
 		for s.IsActive {
@@ -185,7 +183,7 @@ func (s SpinnerPrinter) Start(text ...any) (*SpinnerPrinter, error) {
 // Stop terminates the SpinnerPrinter immediately.
 // The SpinnerPrinter will not resolve into anything.
 func (s *SpinnerPrinter) Stop() error {
-	if !s.IsActive {
+	if !s.IsActive || RawOutput {
 		return nil
 	}
 	s.IsActive = false
@@ -226,7 +224,9 @@ func (s *SpinnerPrinter) Info(message ...any) {
 	if len(message) == 0 {
 		message = []any{s.Text}
 	}
+
 	fClearLine(s.Writer)
+
 	Fprinto(s.Writer, s.InfoPrinter.Sprint(message...))
 	_ = s.Stop()
 }
@@ -241,7 +241,9 @@ func (s *SpinnerPrinter) Success(message ...any) {
 	if len(message) == 0 {
 		message = []any{s.Text}
 	}
+
 	fClearLine(s.Writer)
+
 	Fprinto(s.Writer, s.SuccessPrinter.Sprint(message...))
 	_ = s.Stop()
 }
@@ -256,7 +258,9 @@ func (s *SpinnerPrinter) Fail(message ...any) {
 	if len(message) == 0 {
 		message = []any{s.Text}
 	}
+
 	fClearLine(s.Writer)
+
 	Fprinto(s.Writer, s.FailPrinter.Sprint(message...))
 	_ = s.Stop()
 }
@@ -271,7 +275,9 @@ func (s *SpinnerPrinter) Warning(message ...any) {
 	if len(message) == 0 {
 		message = []any{s.Text}
 	}
+
 	fClearLine(s.Writer)
+
 	Fprinto(s.Writer, s.WarningPrinter.Sprint(message...))
 	_ = s.Stop()
 }

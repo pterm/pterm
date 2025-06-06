@@ -120,6 +120,7 @@ func Fprint(writer io.Writer, a ...any) {
 	for _, spinner := range activeSpinnerPrinters {
 		if spinner.IsActive && (spinner.Writer == writer || spinner.Writer == os.Stderr) {
 			ret += sClearLine()
+
 			ret += Sprinto(a...)
 			printed = true
 		}
@@ -162,6 +163,11 @@ func Printo(a ...any) {
 		return
 	}
 
+	if RawOutput {
+		Sprint(a...)
+		return
+	}
+
 	color.Print("\r" + Sprint(a...))
 }
 
@@ -170,6 +176,7 @@ func Fprinto(w io.Writer, a ...any) {
 	if !Output {
 		return
 	}
+
 	if w != nil {
 		color.Fprint(w, "\r", Sprint(a...))
 	} else {
@@ -183,9 +190,17 @@ func RemoveColorFromString(a ...any) string {
 }
 
 func fClearLine(writer io.Writer) {
+	if RawOutput || writer == nil || !Output {
+		return
+	}
+
 	Fprinto(writer, strings.Repeat(" ", GetTerminalWidth()))
 }
 
 func sClearLine() string {
+	if RawOutput || !Output {
+		return ""
+	}
+
 	return Sprinto(strings.Repeat(" ", GetTerminalWidth()))
 }

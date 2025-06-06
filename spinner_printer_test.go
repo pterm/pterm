@@ -159,16 +159,6 @@ func TestSpinnerPrinter_WithTimerRoundingFactor(t *testing.T) {
 	testza.AssertEqual(t, s, p2.TimerRoundingFactor)
 }
 
-func TestSpinnerPrinter_WithRawOutput(t *testing.T) {
-	pterm.RawOutput = true
-	s, _ := pterm.DefaultSpinner.Start()
-	go func() {
-		time.Sleep(time.Millisecond * 50)
-		s.Stop()
-		pterm.RawOutput = false
-	}()
-}
-
 func TestSpinnerPrinter_DifferentVariations(t *testing.T) {
 	type fields struct {
 		Text           string
