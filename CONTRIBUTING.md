@@ -25,25 +25,25 @@ type TemplatePrinter struct{
 
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
-func (p TemplatePrinter) Sprint(a ...interface{}) string {
+func (p TemplatePrinter) Sprint(a ...any) string {
 	panic("write printer code here")
 }
 
 // Sprintln formats using the default formats for its operands and returns the resulting string.
 // Spaces are always added between operands and a newline is appended.
-func (p TemplatePrinter) Sprintln(a ...interface{}) string {
+func (p TemplatePrinter) Sprintln(a ...any) string {
 	return Sprintln(p.Sprint(a...))
 }
 
 // Sprintf formats according to a format specifier and returns the resulting string.
-func (p TemplatePrinter) Sprintf(format string, a ...interface{}) string {
+func (p TemplatePrinter) Sprintf(format string, a ...any) string {
 	return p.Sprint(Sprintf(format, a...))
 }
 
 // Print formats using the default formats for its operands and writes to standard output.
 // Spaces are added between operands when neither is a string.
 // It returns the number of bytes written and any write error encountered.
-func (p TemplatePrinter) Print(a ...interface{}) *TextPrinter {
+func (p TemplatePrinter) Print(a ...any) *TextPrinter {
 	Print(p.Sprint(a...))
 	tp := TextPrinter(p)
 	return &tp
@@ -52,7 +52,7 @@ func (p TemplatePrinter) Print(a ...interface{}) *TextPrinter {
 // Println formats using the default formats for its operands and writes to standard output.
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
-func (p TemplatePrinter) Println(a ...interface{}) *TextPrinter {
+func (p TemplatePrinter) Println(a ...any) *TextPrinter {
 	Println(p.Sprint(a...))
     tp := TextPrinter(p)
     return &tp
@@ -60,7 +60,7 @@ func (p TemplatePrinter) Println(a ...interface{}) *TextPrinter {
 
 // Printf formats according to a format specifier and writes to standard output.
 // It returns the number of bytes written and any write error encountered.
-func (p TemplatePrinter) Printf(format string, a ...interface{}) *TextPrinter {
+func (p TemplatePrinter) Printf(format string, a ...any) *TextPrinter {
 	Print(p.Sprintf(format, a...))
 	tp := TextPrinter(p)
 	return &tp
@@ -78,9 +78,9 @@ type TemplatePrinter struct{
 
 // Srender renders the Template as a string.
 func (p TemplatePrinter) Srender() (string, error) {
-	var ret string
+	var ret strings.Builder
 
-    return ret, nil
+    return ret.String(), nil
 }
 
 // Render prints the Template to the terminal.
@@ -107,7 +107,7 @@ type TemplatePrinter struct{
 }
 
 
-func (s TemplatePrinter) Start(text...interface{}) (*TemplatePrinter, error) { // TODO: Replace Template with actual printer.
+func (s TemplatePrinter) Start(text...any) (*TemplatePrinter, error) { // TODO: Replace Template with actual printer.
 	// TODO: start logic
 	return &s, nil
 }
@@ -187,37 +187,37 @@ func TestTemplatePrinterPrintMethods(t *testing.T) { // TODO: Replace "Template"
 	p := DefaultTemplate // TODO: Replace "Template" with actual printer name.
 
 	t.Run("Print", func(t *testing.T) {
-		testPrintContains(t, func(w io.Writer, a interface{}) {
+		testPrintContains(t, func(w io.Writer, a any) {
 			p.Print(a)
 		})
 	})
 
 	t.Run("Printf", func(t *testing.T) {
-		testPrintfContains(t, func(w io.Writer, format string, a interface{}) {
+		testPrintfContains(t, func(w io.Writer, format string, a any) {
 			p.Printf(format, a)
 		})
 	})
 
 	t.Run("Println", func(t *testing.T) {
-		testPrintlnContains(t, func(w io.Writer, a interface{}) {
+		testPrintlnContains(t, func(w io.Writer, a any) {
 			p.Println(a)
 		})
 	})
 
 	t.Run("Sprint", func(t *testing.T) {
-		testSprintContains(t, func(a interface{}) string {
+		testSprintContains(t, func(a any) string {
 			return p.Sprint(a)
 		})
 	})
 
 	t.Run("Sprintf", func(t *testing.T) {
-		testSprintfContains(t, func(format string, a interface{}) string {
+		testSprintfContains(t, func(format string, a any) string {
 			return p.Sprintf(format, a)
 		})
 	})
 
 	t.Run("Sprintln", func(t *testing.T) {
-		testSprintlnContains(t, func(a interface{}) string {
+		testSprintlnContains(t, func(a any) string {
 			return p.Sprintln(a)
 		})
 	})

@@ -16,7 +16,7 @@ func TestBulletListPrinterNilPrint(t *testing.T) {
 }
 
 func TestBulletListPrinter_Render(t *testing.T) {
-	testPrintContains(t, func(w io.Writer, a interface{}) {
+	testPrintContains(t, func(w io.Writer, a any) {
 		pterm.DefaultBulletList.WithItems([]pterm.BulletListItem{
 			{Level: 0, Text: fmt.Sprint(a)},
 		}).Render()
@@ -24,7 +24,7 @@ func TestBulletListPrinter_Render(t *testing.T) {
 }
 
 func TestBulletListPrinter_RenderWithoutStyle(t *testing.T) {
-	testPrintContains(t, func(w io.Writer, a interface{}) {
+	testPrintContains(t, func(w io.Writer, a any) {
 		pterm.BulletListPrinter{}.WithItems([]pterm.BulletListItem{
 			{Level: 0, Text: fmt.Sprint(a)},
 		}).Render()
@@ -32,7 +32,7 @@ func TestBulletListPrinter_RenderWithoutStyle(t *testing.T) {
 }
 
 func TestBulletListPrinter_RenderWithBullet(t *testing.T) {
-	testPrintContains(t, func(w io.Writer, a interface{}) {
+	testPrintContains(t, func(w io.Writer, a any) {
 		pterm.DefaultBulletList.WithItems([]pterm.BulletListItem{
 			{
 				Level:  0,
@@ -44,7 +44,7 @@ func TestBulletListPrinter_RenderWithBullet(t *testing.T) {
 }
 
 func TestBulletListPrinter_Srender(t *testing.T) {
-	testSprintContainsWithoutError(t, func(a interface{}) (string, error) {
+	testSprintContainsWithoutError(t, func(a any) (string, error) {
 		return pterm.DefaultBulletList.WithItems([]pterm.BulletListItem{
 			{Level: 0, Text: fmt.Sprint(a)},
 		}).Srender()

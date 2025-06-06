@@ -22,6 +22,7 @@ var (
 			Style: &ThemeDefault.InfoPrefixStyle,
 			Text:  "INFO",
 		},
+		Writer: defaultWriter,
 	}
 
 	// Warning returns a PrefixPrinter, which can be used to print text with a "warning" Prefix.
@@ -31,6 +32,7 @@ var (
 			Style: &ThemeDefault.WarningPrefixStyle,
 			Text:  "WARNING",
 		},
+		Writer: defaultWriter,
 	}
 
 	// Success returns a PrefixPrinter, which can be used to print text with a "success" Prefix.
@@ -40,6 +42,7 @@ var (
 			Style: &ThemeDefault.SuccessPrefixStyle,
 			Text:  "SUCCESS",
 		},
+		Writer: defaultWriter,
 	}
 
 	// Error returns a PrefixPrinter, which can be used to print text with an "error" Prefix.
@@ -49,6 +52,7 @@ var (
 			Style: &ThemeDefault.ErrorPrefixStyle,
 			Text:  " ERROR ",
 		},
+		Writer: defaultWriter,
 	}
 
 	// Fatal returns a PrefixPrinter, which can be used to print text with an "fatal" Prefix.
@@ -59,7 +63,8 @@ var (
 			Style: &ThemeDefault.FatalPrefixStyle,
 			Text:  " FATAL ",
 		},
-		Fatal: true,
+		Fatal:  true,
+		Writer: defaultWriter,
 	}
 
 	// Debug Prints debug messages. By default it will only print if PrintDebugMessages is true.
@@ -71,6 +76,7 @@ var (
 			Style: &ThemeDefault.DebugPrefixStyle,
 		},
 		Debugger: true,
+		Writer:   defaultWriter,
 	}
 
 	// Description returns a PrefixPrinter, which can be used to print text with a "description" Prefix.
@@ -80,6 +86,7 @@ var (
 			Style: &ThemeDefault.DescriptionPrefixStyle,
 			Text:  "Description",
 		},
+		Writer: defaultWriter,
 	}
 )
 
@@ -154,7 +161,7 @@ func (p PrefixPrinter) WithWriter(writer io.Writer) *PrefixPrinter {
 
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
-func (p *PrefixPrinter) Sprint(a ...interface{}) string {
+func (p *PrefixPrinter) Sprint(a ...any) string {
 	m := Sprint(a...)
 	if p.Debugger && !PrintDebugMessages {
 		return ""
@@ -178,7 +185,7 @@ func (p *PrefixPrinter) Sprint(a ...interface{}) string {
 		p.MessageStyle = NewStyle()
 	}
 
-	var ret string
+	var ret strings.Builder
 	var newLine bool
 
 	if strings.HasSuffix(m, "\n") {
@@ -189,32 +196,36 @@ func (p *PrefixPrinter) Sprint(a ...interface{}) string {
 	messageLines := strings.Split(m, "\n")
 	for i, m := range messageLines {
 		if i == 0 {
-			ret += p.GetFormattedPrefix() + " "
+			ret.WriteString(p.GetFormattedPrefix())
+			ret.WriteByte(' ')
 			if p.Scope.Text != "" {
-				ret += NewStyle(*p.Scope.Style...).Sprint(" (" + p.Scope.Text + ") ")
+				ret.WriteString(NewStyle(*p.Scope.Style...).Sprint(" (" + p.Scope.Text + ") "))
 			}
-			ret += p.MessageStyle.Sprint(m)
+			ret.WriteString(p.MessageStyle.Sprint(m))
 		} else {
-			ret += "\n" + p.Prefix.Style.Sprint(strings.Repeat(" ", len(p.Prefix.Text)+2)) + " " + p.MessageStyle.Sprint(m)
+			ret.WriteByte('\n')
+			ret.WriteString(p.Prefix.Style.Sprint(strings.Repeat(" ", len([]rune(p.Prefix.Text))+2)))
+			ret.WriteByte(' ')
+			ret.WriteString(p.MessageStyle.Sprint(m))
 		}
 	}
 
 	if p.ShowLineNumber {
 		_, fileName, line, _ := runtime.Caller(3 + p.LineNumberOffset)
-		ret += FgGray.Sprint("\n└ " + fmt.Sprintf("(%s:%d)\n", fileName, line))
+		ret.WriteString(FgGray.Sprint("\n└ " + fmt.Sprintf("(%s:%d)\n", fileName, line)))
 		newLine = false
 	}
 
 	if newLine {
-		ret += "\n"
+		ret.WriteByte('\n')
 	}
 
-	return Sprint(ret)
+	return Sprint(ret.String())
 }
 
 // Sprintln formats using the default formats for its operands and returns the resulting string.
 // Spaces are always added between operands and a newline is appended.
-func (p PrefixPrinter) Sprintln(a ...interface{}) string {
+func (p PrefixPrinter) Sprintln(a ...any) string {
 	if p.Debugger && !PrintDebugMessages {
 		return ""
 	}
@@ -223,7 +234,7 @@ func (p PrefixPrinter) Sprintln(a ...interface{}) string {
 }
 
 // Sprintf formats according to a format specifier and returns the resulting string.
-func (p PrefixPrinter) Sprintf(format string, a ...interface{}) string {
+func (p PrefixPrinter) Sprintf(format string, a ...any) string {
 	if p.Debugger && !PrintDebugMessages {
 		return ""
 	}
@@ -232,7 +243,7 @@ func (p PrefixPrinter) Sprintf(format string, a ...interface{}) string {
 
 // Sprintfln formats according to a format specifier and returns the resulting string.
 // Spaces are always added between operands and a newline is appended.
-func (p PrefixPrinter) Sprintfln(format string, a ...interface{}) string {
+func (p PrefixPrinter) Sprintfln(format string, a ...any) string {
 	if p.Debugger && !PrintDebugMessages {
 		return ""
 	}
@@ -242,7 +253,7 @@ func (p PrefixPrinter) Sprintfln(format string, a ...interface{}) string {
 // Print formats using the default formats for its operands and writes to standard output.
 // Spaces are added between operands when neither is a string.
 // It returns the number of bytes written and any write error encountered.
-func (p *PrefixPrinter) Print(a ...interface{}) *TextPrinter {
+func (p *PrefixPrinter) Print(a ...any) *TextPrinter {
 	tp := TextPrinter(p)
 	if p.Debugger && !PrintDebugMessages {
 		return &tp
@@ -257,7 +268,7 @@ func (p *PrefixPrinter) Print(a ...interface{}) *TextPrinter {
 // Println formats using the default formats for its operands and writes to standard output.
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
-func (p *PrefixPrinter) Println(a ...interface{}) *TextPrinter {
+func (p *PrefixPrinter) Println(a ...any) *TextPrinter {
 	tp := TextPrinter(p)
 	if p.Debugger && !PrintDebugMessages {
 		return &tp
@@ -269,7 +280,7 @@ func (p *PrefixPrinter) Println(a ...interface{}) *TextPrinter {
 
 // Printf formats according to a format specifier and writes to standard output.
 // It returns the number of bytes written and any write error encountered.
-func (p *PrefixPrinter) Printf(format string, a ...interface{}) *TextPrinter {
+func (p *PrefixPrinter) Printf(format string, a ...any) *TextPrinter {
 	tp := TextPrinter(p)
 	if p.Debugger && !PrintDebugMessages {
 		return &tp
@@ -282,7 +293,7 @@ func (p *PrefixPrinter) Printf(format string, a ...interface{}) *TextPrinter {
 // Printfln formats according to a format specifier and writes to standard output.
 // Spaces are always added between operands and a newline is appended.
 // It returns the number of bytes written and any write error encountered.
-func (p *PrefixPrinter) Printfln(format string, a ...interface{}) *TextPrinter {
+func (p *PrefixPrinter) Printfln(format string, a ...any) *TextPrinter {
 	tp := TextPrinter(p)
 	if p.Debugger && !PrintDebugMessages {
 		return &tp
@@ -299,7 +310,7 @@ func (p *PrefixPrinter) Printfln(format string, a ...interface{}) *TextPrinter {
 // This can be used for simple error checking.
 //
 // Note: Use WithFatal(true) or Fatal to panic after first non nil error.
-func (p *PrefixPrinter) PrintOnError(a ...interface{}) *TextPrinter {
+func (p *PrefixPrinter) PrintOnError(a ...any) *TextPrinter {
 	for _, arg := range a {
 		if err, ok := arg.(error); ok {
 			if err != nil {
@@ -315,7 +326,7 @@ func (p *PrefixPrinter) PrintOnError(a ...interface{}) *TextPrinter {
 // PrintOnErrorf wraps every error which is not nil and prints it.
 // If every error is nil, nothing will be printed.
 // This can be used for simple error checking.
-func (p *PrefixPrinter) PrintOnErrorf(format string, a ...interface{}) *TextPrinter {
+func (p *PrefixPrinter) PrintOnErrorf(format string, a ...any) *TextPrinter {
 	for _, arg := range a {
 		if err, ok := arg.(error); ok {
 			if err != nil {
