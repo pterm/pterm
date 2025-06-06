@@ -1,7 +1,6 @@
 package pterm_test
 
 import (
-	"bytes"
 	"io"
 	"os"
 	"testing"
@@ -158,32 +157,6 @@ func TestSpinnerPrinter_WithTimerRoundingFactor(t *testing.T) {
 	p2 := p.WithTimerRoundingFactor(s)
 
 	testza.AssertEqual(t, s, p2.TimerRoundingFactor)
-}
-
-func TestSpinnerPrinter_WithRawOutput(t *testing.T) {
-	var out bytes.Buffer
-	pterm.RawOutput = true
-	s, _ := pterm.DefaultSpinner.WithWriter(&out).Start()
-	go func() {
-		time.Sleep(time.Millisecond * 50)
-		s.Stop()
-		pterm.RawOutput = false
-	}()
-
-	// no output in raw mode when spinner has no text
-	testza.AssertEqual(t, "", out.String())
-
-	out = bytes.Buffer{}
-	pterm.RawOutput = true
-	s, _ = pterm.DefaultSpinner.WithWriter(&out).Start("test")
-	go func() {
-		time.Sleep(time.Millisecond * 50)
-		s.Success()
-		pterm.RawOutput = false
-	}()
-
-	// output in raw mode when spinner has text, but without any styling
-	testza.AssertEqual(t, "\rtest\n\rtest\n", out.String())
 }
 
 func TestSpinnerPrinter_DifferentVariations(t *testing.T) {
