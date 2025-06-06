@@ -152,9 +152,7 @@ func (s SpinnerPrinter) Start(text ...interface{}) (*SpinnerPrinter, error) {
 		s.Text = Sprint(text...)
 	}
 
-	if RawOutput && s.Text != "" {
-		Fprintln(s.Writer, s.Text)
-	}
+	Fprintln(s.Writer, s.Text)
 
 	go func() {
 		for s.IsActive {
@@ -225,9 +223,7 @@ func (s *SpinnerPrinter) Info(message ...interface{}) {
 		message = []interface{}{s.Text}
 	}
 
-	if !RawOutput {
-		fClearLine(s.Writer)
-	}
+	fClearLine(s.Writer)
 
 	Fprinto(s.Writer, s.InfoPrinter.Sprint(message...))
 	_ = s.Stop()
@@ -244,9 +240,7 @@ func (s *SpinnerPrinter) Success(message ...interface{}) {
 		message = []interface{}{s.Text}
 	}
 
-	if !RawOutput {
-		fClearLine(s.Writer)
-	}
+	fClearLine(s.Writer)
 
 	Fprinto(s.Writer, s.SuccessPrinter.Sprint(message...))
 	_ = s.Stop()
@@ -263,9 +257,7 @@ func (s *SpinnerPrinter) Fail(message ...interface{}) {
 		message = []interface{}{s.Text}
 	}
 
-	if !RawOutput {
-		fClearLine(s.Writer)
-	}
+	fClearLine(s.Writer)
 
 	Fprinto(s.Writer, s.FailPrinter.Sprint(message...))
 	_ = s.Stop()
@@ -282,9 +274,7 @@ func (s *SpinnerPrinter) Warning(message ...interface{}) {
 		message = []interface{}{s.Text}
 	}
 
-	if !RawOutput {
-		fClearLine(s.Writer)
-	}
+	fClearLine(s.Writer)
 
 	Fprinto(s.Writer, s.WarningPrinter.Sprint(message...))
 	_ = s.Stop()
