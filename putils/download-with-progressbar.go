@@ -33,9 +33,10 @@ func DownloadFileWithProgressbar(progressbar *pterm.ProgressbarPrinter, outputPa
 		return fmt.Errorf("could not create download path: %w", err)
 	}
 
+	defer out.Close()
+
 	resp, err := http.Get(url) //nolint:gosec
 	if err != nil {
-		out.Close()
 		return fmt.Errorf("error while downloading file: %w", err)
 	}
 	defer resp.Body.Close()
@@ -43,13 +44,11 @@ func DownloadFileWithProgressbar(progressbar *pterm.ProgressbarPrinter, outputPa
 	counter := &progressbarWriter{}
 	fileSize, err := strconv.Atoi(resp.Header.Get("Content-Length"))
 	if err != nil {
-		out.Close()
 		return fmt.Errorf("could not determine file size: %w", err)
 	}
 
 	counter.pb, _ = progressbar.WithTotal(fileSize).Start()
 	if _, err = io.Copy(out, io.TeeReader(resp.Body, counter)); err != nil {
-		out.Close()
 		return err
 	}
 
@@ -58,7 +57,6 @@ func DownloadFileWithProgressbar(progressbar *pterm.ProgressbarPrinter, outputPa
 		return fmt.Errorf("could not chmod file: %w", err)
 	}
 
-	out.Close()
 	return nil
 }
 
