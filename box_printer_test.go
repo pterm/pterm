@@ -280,6 +280,40 @@ func TestBoxPrinter_WithTopPadding(t *testing.T) {
 	testza.AssertZero(t, p.TopPadding)
 }
 
+func TestBoxPrinter_WithHorizontalPadding(t *testing.T) {
+	p := pterm.BoxPrinter{}
+	p2 := p.WithHorizontalPadding(5)
+
+	testza.AssertEqual(t, 5, p2.LeftPadding)
+	testza.AssertEqual(t, 5, p2.RightPadding)
+	testza.AssertEqual(t, 0, p.LeftPadding)
+	testza.AssertEqual(t, 0, p.RightPadding)
+}
+
+func TestBoxPrinter_WithVerticalPadding(t *testing.T) {
+	p := pterm.BoxPrinter{}
+	p2 := p.WithVerticalPadding(5)
+
+	testza.AssertEqual(t, 5, p2.TopPadding)
+	testza.AssertEqual(t, 5, p2.BottomPadding)
+	testza.AssertEqual(t, 0, p.TopPadding)
+	testza.AssertEqual(t, 0, p.BottomPadding)
+}
+
+func TestBoxPrinter_WithPadding(t *testing.T) {
+	p := pterm.BoxPrinter{}
+	p2 := p.WithPadding(5)
+
+	testza.AssertEqual(t, 5, p2.TopPadding)
+	testza.AssertEqual(t, 5, p2.BottomPadding)
+	testza.AssertEqual(t, 5, p2.LeftPadding)
+	testza.AssertEqual(t, 5, p2.RightPadding)
+	testza.AssertEqual(t, 0, p.TopPadding)
+	testza.AssertEqual(t, 0, p.BottomPadding)
+	testza.AssertEqual(t, 0, p.LeftPadding)
+	testza.AssertEqual(t, 0, p.RightPadding)
+}
+
 func TestBoxPrinter_WithInvalidTopPadding(t *testing.T) {
 	p := pterm.BoxPrinter{}
 	p2 := p.WithTopPadding(-5)
