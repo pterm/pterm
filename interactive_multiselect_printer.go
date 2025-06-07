@@ -331,6 +331,11 @@ func (p *InteractiveMultiselectPrinter) isSelected(optionText string) bool {
 }
 
 func (p *InteractiveMultiselectPrinter) selectOption(optionText string) {
+	idx := p.findOptionByText(optionText)
+	if idx < 0 {
+		return
+	}
+
 	if p.isSelected(optionText) {
 		// Remove from selected options
 		for i, selectedOption := range p.selectedOptions {
@@ -341,7 +346,7 @@ func (p *InteractiveMultiselectPrinter) selectOption(optionText string) {
 		}
 	} else {
 		// Add to selected options
-		p.selectedOptions = append(p.selectedOptions, p.findOptionByText(optionText))
+		p.selectedOptions = append(p.selectedOptions, idx)
 	}
 }
 
