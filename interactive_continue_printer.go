@@ -15,7 +15,7 @@ import (
 
 // DefaultInteractiveContinue is the default InteractiveContinue printer.
 // Pressing "y" will return yes, "n" will return no, "a" returns all and "s" returns stop.
-// Pressing enter without typing any letter will return the configured default value (by default set to "yes", the fisrt option).
+// Pressing enter without typing any letter will return the configured default value (by default set to "yes", the first option).
 var DefaultInteractiveContinue = InteractiveContinuePrinter{
 	DefaultValueIndex: 0,
 	DefaultText:       "Do you want to continue",
