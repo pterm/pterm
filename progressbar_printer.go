@@ -350,6 +350,12 @@ func (p *ProgressbarPrinter) GetElapsedTime() time.Duration {
 }
 
 func (p *ProgressbarPrinter) parseElapsedTime() string {
+	// time.Duration.Round panics if the rounding factor is <= 0.
+	// Guard against invalid values by skipping rounding in this case.
+	if p.ElapsedTimeRoundingFactor <= 0 {
+		return p.GetElapsedTime().String()
+	}
+
 	s := p.GetElapsedTime().Round(p.ElapsedTimeRoundingFactor).String()
 	return s
 }
