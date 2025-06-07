@@ -221,7 +221,7 @@ func captureStdout(f func(w io.Writer)) string {
 	return readStdout()
 }
 
-// readStdout reads the current stdout buffor. Assumes setupStdoutCapture() has been called before.
+// readStdout reads the current stdout buffer. Assumes setupStdoutCapture() has been called before.
 func readStdout() string {
 	content := outBuf.String()
 	outBuf.Reset()
