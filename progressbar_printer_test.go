@@ -245,10 +245,10 @@ func TestProgressbarPrinter_OutputToWriters(t *testing.T) {
 		t.Run(testTitle, func(t *testing.T) {
 			stderr, err := testza.CaptureStderr(func(w io.Writer) error {
 				pb, err := pterm.DefaultProgressbar.WithTitle("Hello world").WithWriter(os.Stderr).Start()
-				time.Sleep(time.Second) // Required otherwise the goroutine doesn't run and the text isnt outputted
+				time.Sleep(time.Second) // Required otherwise the goroutine doesn't run and the text isn't outputted
 				testza.AssertNoError(t, err)
 				testCase.action(pb)
-				time.Sleep(time.Second) // Required otherwise the goroutine doesn't run and the text isnt updated
+				time.Sleep(time.Second) // Required otherwise the goroutine doesn't run and the text isn't updated
 				return nil
 			})
 

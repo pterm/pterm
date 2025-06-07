@@ -240,10 +240,10 @@ func TestSpinnerPrinter_OutputToWriters(t *testing.T) {
 		t.Run(testTitle, func(t *testing.T) {
 			stderr, err := testza.CaptureStderr(func(w io.Writer) error {
 				sp, err := pterm.DefaultSpinner.WithText("Hello world").WithWriter(os.Stderr).Start()
-				time.Sleep(time.Second) // Required otherwise the goroutine doesn't run and the text isnt outputted
+				time.Sleep(time.Second) // Required otherwise the goroutine doesn't run and the text isn't outputted
 				testza.AssertNoError(t, err)
 				testCase.action(sp)
-				time.Sleep(time.Second) // Required otherwise the goroutine doesn't run and the text isnt updated
+				time.Sleep(time.Second) // Required otherwise the goroutine doesn't run and the text isn't updated
 				return nil
 			})
 
