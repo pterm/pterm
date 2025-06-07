@@ -84,7 +84,7 @@ func (s *SlogHandler) WithGroup(name string) slog.Handler {
 	return s
 }
 
-// NewSlogHandler returns a new logging handler that can be intrgrated with log/slog.
+// NewSlogHandler returns a new logging handler that can be integrated with log/slog.
 func NewSlogHandler(logger *Logger) *SlogHandler {
 	return &SlogHandler{logger: logger}
 }
