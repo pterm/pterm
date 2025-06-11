@@ -40,6 +40,7 @@ type InteractiveSelectPrinter struct {
 	SelectorStyle   *Style
 	OnInterruptFunc func()
 	Filter          bool
+	Callback        func()
 
 	selectedOption        int
 	result                string
@@ -67,6 +68,11 @@ func (p InteractiveSelectPrinter) WithOptions(options []string) *InteractiveSele
 func (p InteractiveSelectPrinter) WithDefaultOption(option string) *InteractiveSelectPrinter {
 	p.DefaultOption = option
 	return &p
+}
+
+func (p *InteractiveSelectPrinter) WithCallbackInArea(callback func()) *InteractiveSelectPrinter {
+	p.Callback = callback
+	return p
 }
 
 // WithMaxHeight sets the maximum height of the select menu.
@@ -142,7 +148,7 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 		return "", fmt.Errorf("could not start area: %w", err)
 	}
 
-	area.Update(p.renderSelectMenu())
+	area.WithCallback(p.Callback).Update(p.renderSelectMenu())
 
 	cursor.Hide()
 	defer cursor.Show()
