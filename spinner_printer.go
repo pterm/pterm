@@ -154,8 +154,6 @@ func (s SpinnerPrinter) Start(text ...any) (*SpinnerPrinter, error) {
 		s.Text = Sprint(text...)
 	}
 
-	Fprintln(s.Writer, s.Text)
-
 	go func() {
 		for s.IsActive {
 			for _, seq := range s.Sequence {
