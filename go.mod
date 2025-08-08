@@ -13,7 +13,7 @@ require (
 	github.com/lithammer/fuzzysearch v1.1.8
 	github.com/mattn/go-runewidth v0.0.16
 	golang.org/x/term v0.32.0
-	golang.org/x/text v0.26.0
+	golang.org/x/text v0.28.0
 )
 
 require (
