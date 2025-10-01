@@ -2,8 +2,6 @@ package internal
 
 import (
 	"strings"
-
-	"github.com/gookit/color"
 )
 
 // CenterText returns a centered string with a padding left and right
@@ -15,7 +13,7 @@ func CenterText(text string, width int) string {
 	}
 	linesTmp := strings.Split(text, "\n")
 	for _, line := range linesTmp {
-		if len(color.ClearCode(line)) > width {
+		if len(RemoveEscapeCodes(line)) > width {
 			extraLines := []string{""}
 			extraLinesCounter := 0
 			for i, letter := range line {
@@ -26,12 +24,12 @@ func CenterText(text string, width int) string {
 				extraLines[extraLinesCounter] += string(letter)
 			}
 			for _, extraLine := range extraLines {
-				padding := width - len(color.ClearCode(extraLine))
+				padding := width - len(RemoveEscapeCodes(extraLine))
 				extraLine = strings.Repeat(" ", padding/2) + extraLine + strings.Repeat(" ", padding/2) + "\n"
 				lines = append(lines, extraLine)
 			}
 		} else {
-			padding := width - len(color.ClearCode(line))
+			padding := width - len(RemoveEscapeCodes(line))
 			line = strings.Repeat(" ", padding/2) + line + strings.Repeat(" ", padding/2) + "\n"
 			lines = append(lines, line)
 		}
