@@ -547,5 +547,12 @@ var DefaultBigText = BigTextPrinter{
  ████  
        
       `,
+
+	  "@": ` ██████  
+██    ██ 
+██ ██ ██ 
+██ ██ ██ 
+ █ ████  
+         `,
 	},
 }
