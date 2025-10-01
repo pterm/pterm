@@ -16,35 +16,37 @@ import (
 var (
 	// DefaultInteractiveMultiselect is the default InteractiveMultiselect printer.
 	DefaultInteractiveMultiselect = InteractiveMultiselectPrinter{
-		TextStyle:      &ThemeDefault.PrimaryStyle,
-		DefaultText:    "Please select your options",
-		Options:        []string{},
-		OptionStyle:    &ThemeDefault.DefaultText,
-		DefaultOptions: []string{},
-		MaxHeight:      5,
-		Selector:       ">",
-		SelectorStyle:  &ThemeDefault.SecondaryStyle,
-		Filter:         true,
-		KeySelect:      keys.Enter,
-		KeyConfirm:     keys.Tab,
-		Checkmark:      &ThemeDefault.Checkmark,
+		TextStyle:              &ThemeDefault.PrimaryStyle,
+		DefaultText:            "Please select your options",
+		Options:                []string{},
+		OptionStyle:            &ThemeDefault.DefaultText,
+		DefaultOptions:         []string{},
+		MaxHeight:              5,
+		Selector:               ">",
+		SelectorStyle:          &ThemeDefault.SecondaryStyle,
+		Filter:                 true,
+		KeySelect:              keys.Enter,
+		KeyConfirm:             keys.Tab,
+		Checkmark:              &ThemeDefault.Checkmark,
+		FilterInputPlaceholder: "[type to search]",
 	}
 )
 
 // InteractiveMultiselectPrinter is a printer for interactive multiselect menus.
 type InteractiveMultiselectPrinter struct {
-	DefaultText         string
-	TextStyle           *Style
-	Options             []string
-	OptionStyle         *Style
-	DefaultOptions      []string
-	MaxHeight           int
-	Selector            string
-	SelectorStyle       *Style
-	Filter              bool
-	Checkmark           *Checkmark
-	OnInterruptFunc     func()
-	ShowSelectedOptions bool
+	DefaultText            string
+	TextStyle              *Style
+	Options                []string
+	OptionStyle            *Style
+	DefaultOptions         []string
+	MaxHeight              int
+	Selector               string
+	SelectorStyle          *Style
+	Filter                 bool
+	Checkmark              *Checkmark
+	OnInterruptFunc        func()
+	ShowSelectedOptions    bool
+	FilterInputPlaceholder string
 
 	selectedOption        int
 	selectedOptions       []int
@@ -121,6 +123,12 @@ func (p InteractiveMultiselectPrinter) WithOnInterruptFunc(exitFunc func()) *Int
 // WithShowSelectedOptions shows the selected options at the bottom if the menu
 func (p InteractiveMultiselectPrinter) WithShowSelectedOptions(b ...bool) *InteractiveMultiselectPrinter {
 	p.ShowSelectedOptions = internal.WithBoolean(b)
+	return &p
+}
+
+// WithFilterInputPlaceholder sets the filter input placeholder text.
+func (p InteractiveMultiselectPrinter) WithFilterInputPlaceholder(text string) *InteractiveMultiselectPrinter {
+	p.FilterInputPlaceholder = text
 	return &p
 }
 
@@ -352,7 +360,11 @@ func (p *InteractiveMultiselectPrinter) selectOption(optionText string) {
 
 func (p *InteractiveMultiselectPrinter) renderSelectMenu() string {
 	var content strings.Builder
-	content.WriteString(Sprintf("%s: %s\n", p.text, p.fuzzySearchString))
+	if p.Filter {
+		content.WriteString(Sprintf("%s %s: %s\n", p.text, p.SelectorStyle.Sprint(p.FilterInputPlaceholder), p.fuzzySearchString))
+	} else {
+		content.WriteString(Sprintf("%s: %s\n", p.text, p.fuzzySearchString))
+	}
 
 	// find options that match fuzzy search string
 	rankedResults := fuzzy.RankFindFold(p.fuzzySearchString, p.Options)
