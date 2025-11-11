@@ -420,7 +420,20 @@ func TestPrefixPrinter_WithWriter(t *testing.T) {
 			s := os.Stderr
 			p2 := p.WithWriter(s)
 
-			testza.AssertEqual(t, s, p2.Writer)
+			testza.AssertEqual(t, s, p2.GetWriter())
+		})
+	}
+}
+
+func TestPrefixPrinter_GetWriter(t *testing.T) {
+	for _, p := range prefixPrinters {
+		t.Run("", func(t *testing.T) {
+			pterm.SetDefaultOutput(os.Stdout)
+			testza.AssertEqual(t, os.Stdout, p.GetWriter())
+			pterm.SetDefaultOutput(os.Stderr)
+			testza.AssertEqual(t, os.Stderr, p.GetWriter())
+			p2 := p.WithWriter(os.Stdout)
+			testza.AssertEqual(t, os.Stdout, p2.GetWriter())
 		})
 	}
 }
