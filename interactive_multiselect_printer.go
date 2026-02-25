@@ -406,7 +406,7 @@ func (p *InteractiveMultiselectPrinter) renderSelectMenu() string {
 	if p.Filter {
 		help += fmt.Sprintf(" | type to %s", Bold.Sprint("filter"))
 	}
-	content.WriteString(ThemeDefault.SecondaryStyle.Sprintfln(help))
+	content.WriteString(ThemeDefault.SecondaryStyle.Sprintln(help))
 
 	// Optionally, add selected options to the menu
 	if p.ShowSelectedOptions && len(p.selectedOptions) > 0 {

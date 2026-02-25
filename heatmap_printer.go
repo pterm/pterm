@@ -539,11 +539,12 @@ func (p HeatmapPrinter) generateRGBLegend(buffer *bytes.Buffer, legendColWidth i
 	for i := 0; i < steps; i++ {
 		// the first color is the min value and the last color is the max value
 		var f float32
-		if i == 0 {
+		switch i {
+		case 0:
 			f = p.minValue
-		} else if i == steps-1 {
+		case steps - 1:
 			f = p.maxValue
-		} else {
+		default:
 			f = p.minValue + (p.maxValue-p.minValue)*float32(i)/float32(steps-1)
 		}
 		rgb := p.RGBRange[0].Fade(p.minValue, p.maxValue, f, p.RGBRange[1:]...)
