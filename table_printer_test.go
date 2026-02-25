@@ -4,6 +4,7 @@ import (
 	"encoding/csv"
 	"io"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/MarvinJWendt/testza"
@@ -175,6 +176,63 @@ func TestTablePrinter_WithStyle(t *testing.T) {
 	p2 := p.WithStyle(s)
 
 	testza.AssertEqual(t, s, p2.Style)
+}
+
+func TestTablePrinter_WithMarkdown(t *testing.T) {
+	data := [][]string{
+		{"Name", "Age", "City"},
+		{"Alice", "30", "Berlin"},
+		{"Bob", "25", "Paris"},
+	}
+
+	// Table with header, rendered as markdown
+	table := pterm.TablePrinter{}.
+		WithHasHeader(true).
+		WithData(data).
+		WithMarkdown(true)
+
+	out, err := table.Srender()
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	expected := strings.TrimSpace(`
+| Name | Age | City |
+| --- | --- | --- |
+| Alice | 30 | Berlin |
+| Bob | 25 | Paris |
+`)
+
+	if strings.TrimSpace(out) != expected {
+		t.Errorf("Markdown table output mismatch.\nExpected:\n%q\nGot:\n%q", expected, out)
+	}
+}
+
+func TestTablePrinter_WithMarkdown_NoHeader(t *testing.T) {
+	data := [][]string{
+		{"Alice", "30", "Berlin"},
+		{"Bob", "25", "Paris"},
+	}
+
+	// Table without header, rendered as markdown
+	table := pterm.TablePrinter{}.
+		WithHasHeader(false).
+		WithData(data).
+		WithMarkdown(true)
+
+	out, err := table.Srender()
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	expected := strings.TrimSpace(`
+| Alice | 30 | Berlin |
+| Bob | 25 | Paris |
+`)
+
+	if strings.TrimSpace(out) != expected {
+		t.Errorf("Markdown table (no header) output mismatch.\nExpected:\n%q\nGot:\n%q", expected, out)
+	}
 }
 
 func TestTablePrinter_WithLeftAlignment(t *testing.T) {
