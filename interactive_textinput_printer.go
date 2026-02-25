@@ -108,7 +108,7 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	}
 
 	if p.DefaultValue != "" {
-		p.input = append(p.input, Gray(p.DefaultValue))
+		p.input = append(p.input, p.DefaultValue)
 		p.updateArea(&area)
 	}
 
