@@ -181,10 +181,13 @@ func (s SpinnerPrinter) Start(text ...any) (*SpinnerPrinter, error) {
 // Stop terminates the SpinnerPrinter immediately.
 // The SpinnerPrinter will not resolve into anything.
 func (s *SpinnerPrinter) Stop() error {
-	if !s.IsActive || RawOutput {
+	if !s.IsActive {
 		return nil
 	}
 	s.IsActive = false
+	if RawOutput {
+		return nil
+	}
 	if s.RemoveWhenDone {
 		fClearLine(s.Writer)
 		Fprinto(s.Writer)

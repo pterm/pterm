@@ -86,6 +86,22 @@ func TestSpinnerPrinter_UpdateTextRawOutput(t *testing.T) {
 	pterm.EnableStyling()
 }
 
+func TestSpinnerPrinter_StopSetsIsActiveWhenRawOutput(t *testing.T) {
+	// Regression test for https://github.com/pterm/pterm/issues/763
+	// Stop() must always set IsActive = false, even when RawOutput is true,
+	// to prevent the background goroutine from leaking.
+	pterm.DisableStyling()
+	defer pterm.EnableStyling()
+
+	sp, err := pterm.DefaultSpinner.Start()
+	testza.AssertNoError(t, err)
+	testza.AssertTrue(t, sp.IsActive)
+
+	err = sp.Stop()
+	testza.AssertNoError(t, err)
+	testza.AssertFalse(t, sp.IsActive)
+}
+
 func TestSpinnerPrinter_Warning(t *testing.T) {
 	testPrintContains(t, func(w io.Writer, a any) {
 		pterm.DefaultSpinner.WithWriter(w).Warning(a)
