@@ -22,7 +22,6 @@ var (
 			Style: &ThemeDefault.InfoPrefixStyle,
 			Text:  "INFO",
 		},
-		Writer: defaultWriter,
 	}
 
 	// Warning returns a PrefixPrinter, which can be used to print text with a "warning" Prefix.
@@ -32,7 +31,6 @@ var (
 			Style: &ThemeDefault.WarningPrefixStyle,
 			Text:  "WARNING",
 		},
-		Writer: defaultWriter,
 	}
 
 	// Success returns a PrefixPrinter, which can be used to print text with a "success" Prefix.
@@ -42,7 +40,6 @@ var (
 			Style: &ThemeDefault.SuccessPrefixStyle,
 			Text:  "SUCCESS",
 		},
-		Writer: defaultWriter,
 	}
 
 	// Error returns a PrefixPrinter, which can be used to print text with an "error" Prefix.
@@ -52,7 +49,6 @@ var (
 			Style: &ThemeDefault.ErrorPrefixStyle,
 			Text:  " ERROR ",
 		},
-		Writer: defaultWriter,
 	}
 
 	// Fatal returns a PrefixPrinter, which can be used to print text with an "fatal" Prefix.
@@ -63,8 +59,7 @@ var (
 			Style: &ThemeDefault.FatalPrefixStyle,
 			Text:  " FATAL ",
 		},
-		Fatal:  true,
-		Writer: defaultWriter,
+		Fatal: true,
 	}
 
 	// Debug Prints debug messages. By default it will only print if PrintDebugMessages is true.
@@ -76,7 +71,6 @@ var (
 			Style: &ThemeDefault.DebugPrefixStyle,
 		},
 		Debugger: true,
-		Writer:   defaultWriter,
 	}
 
 	// Description returns a PrefixPrinter, which can be used to print text with a "description" Prefix.
@@ -86,7 +80,6 @@ var (
 			Style: &ThemeDefault.DescriptionPrefixStyle,
 			Text:  "Description",
 		},
-		Writer: defaultWriter,
 	}
 )
 
@@ -259,7 +252,7 @@ func (p *PrefixPrinter) Print(a ...any) *TextPrinter {
 		return &tp
 	}
 	p.LineNumberOffset--
-	Fprint(p.Writer, p.Sprint(a...))
+	Fprint(p.GetWriter(), p.Sprint(a...))
 	p.LineNumberOffset++
 	checkFatal(p)
 	return &tp
@@ -273,7 +266,7 @@ func (p *PrefixPrinter) Println(a ...any) *TextPrinter {
 	if p.Debugger && !PrintDebugMessages {
 		return &tp
 	}
-	Fprint(p.Writer, p.Sprintln(a...))
+	Fprint(p.GetWriter(), p.Sprintln(a...))
 	checkFatal(p)
 	return &tp
 }
@@ -285,7 +278,7 @@ func (p *PrefixPrinter) Printf(format string, a ...any) *TextPrinter {
 	if p.Debugger && !PrintDebugMessages {
 		return &tp
 	}
-	Fprint(p.Writer, p.Sprintf(format, a...))
+	Fprint(p.GetWriter(), p.Sprintf(format, a...))
 	checkFatal(p)
 	return &tp
 }
@@ -299,7 +292,7 @@ func (p *PrefixPrinter) Printfln(format string, a ...any) *TextPrinter {
 		return &tp
 	}
 	p.LineNumberOffset++
-	Fprint(p.Writer, p.Sprintfln(format, a...))
+	Fprint(p.GetWriter(), p.Sprintfln(format, a...))
 	p.LineNumberOffset--
 	checkFatal(p)
 	return &tp
@@ -342,6 +335,14 @@ func (p *PrefixPrinter) PrintOnErrorf(format string, a ...any) *TextPrinter {
 // GetFormattedPrefix returns the Prefix as a styled text string.
 func (p PrefixPrinter) GetFormattedPrefix() string {
 	return p.Prefix.Style.Sprint(" " + p.Prefix.Text + " ")
+}
+
+// GetWriter returns the Writer if set, otherwise defaultWriter.
+func (p PrefixPrinter) GetWriter() io.Writer {
+	if p.Writer != nil {
+		return p.Writer
+	}
+	return defaultWriter
 }
 
 // Prefix contains the data used as the beginning of a printed text via a PrefixPrinter.
