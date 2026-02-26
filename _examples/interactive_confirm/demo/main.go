@@ -6,7 +6,7 @@ import (
 
 func main() {
 	// Show an interactive confirmation dialog and get the result.
-	result, _ := pterm.DefaultInteractiveConfirm.Show()
+	result, _ := pterm.DefaultInteractiveConfirm.WithConfirmation(true).Show()
 
 	// Print a blank line for better readability.
 	pterm.Println()

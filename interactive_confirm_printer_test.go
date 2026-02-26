@@ -3,6 +3,7 @@ package pterm_test
 import (
 	"reflect"
 	"testing"
+	"time"
 
 	"atomicgo.dev/keyboard"
 	"atomicgo.dev/keyboard/keys"
@@ -80,6 +81,47 @@ func TestInteractiveConfirmPrinter_WithRejectStyle(t *testing.T) {
 func TestInteractiveConfirmPrinter_WithRejectText(t *testing.T) {
 	p := pterm.DefaultInteractiveConfirm.WithRejectText("reject")
 	testza.AssertEqual(t, p.RejectText, "reject")
+}
+
+func TestInteractiveConfirmPrinter_WithConfirmation(t *testing.T) {
+	p := pterm.DefaultInteractiveConfirm.WithConfirmation(true)
+	testza.AssertEqual(t, p.Confirmation, true)
+}
+
+func TestInteractiveConfirmPrinter_WithConfirmation_true(t *testing.T) {
+	p := pterm.DefaultInteractiveConfirm.WithConfirmation(true)
+	tests := []struct {
+		name     string
+		key      string
+		expected bool
+	}{
+		{
+			name:     "Confirm",
+			key:      "y",
+			expected: true,
+		},
+		{
+			name:     "Reject",
+			key:      "n",
+			expected: false,
+		},
+		{
+			name:     "Default_Value",
+			key:      keys.Enter.String(),
+			expected: p.DefaultValue,
+		},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			go func() {
+				keyboard.SimulateKeyPress(tc.key)
+				time.Sleep(100 * time.Millisecond)
+				keyboard.SimulateKeyPress(keys.Enter)
+			}()
+			result, _ := p.Show()
+			testza.AssertEqual(t, result, tc.expected)
+		})
+	}
 }
 
 func TestInteractiveConfirmPrinter_CustomAnswers(t *testing.T) {
