@@ -1,4 +1,3 @@
-<!-- GitAds-Verify: O8664I3XY9IA9QKAP4I9UHV4ZKFKZCT3 -->
 <!--suppress HtmlDeprecatedAttribute -->
 
 <h1 align="center">💻 PTerm | Pretty Terminal Printer</h1>
@@ -3682,6 +3681,7 @@ func main() {
 
 > GitHub [@pterm](https://github.com/pterm) &nbsp;&middot;&nbsp;
 > Author [@MarvinJWendt](https://github.com/MarvinJWendt)
+> ([mjw.dev](https://mjw.dev))
 > | [PTerm.sh](https://pterm.sh)
 
 
