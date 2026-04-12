@@ -46,6 +46,45 @@ func TestInteractiveMultiselectPrinter_Show_AlternateNavigationKeys(t *testing.T
 	testza.AssertEqual(t, []string{"b", "c"}, result)
 }
 
+func TestInteractiveMultiselectPrinter_Show_SelectAllRespectsFilter(t *testing.T) {
+	go func() {
+		// Type "test" to filter options
+		keyboard.SimulateKeyPress(keys.Key{Code: keys.RuneKey, Runes: []rune{'t'}})
+		keyboard.SimulateKeyPress(keys.Key{Code: keys.RuneKey, Runes: []rune{'e'}})
+		keyboard.SimulateKeyPress(keys.Key{Code: keys.RuneKey, Runes: []rune{'s'}})
+		keyboard.SimulateKeyPress(keys.Key{Code: keys.RuneKey, Runes: []rune{'t'}})
+		// Press Right to "select all" — should only select filtered options
+		keyboard.SimulateKeyPress(keys.Right)
+		keyboard.SimulateKeyPress(keys.Tab)
+	}()
+
+	result, _ := pterm.DefaultInteractiveMultiselect.
+		WithOptions([]string{"alpha", "test-one", "beta", "test-two", "gamma", "test-three"}).
+		WithMaxHeight(10).
+		Show()
+	testza.AssertEqual(t, []string{"test-one", "test-two", "test-three"}, result)
+}
+
+func TestInteractiveMultiselectPrinter_Show_UnselectAllRespectsFilter(t *testing.T) {
+	go func() {
+		// Type "test" to filter options
+		keyboard.SimulateKeyPress(keys.Key{Code: keys.RuneKey, Runes: []rune{'t'}})
+		keyboard.SimulateKeyPress(keys.Key{Code: keys.RuneKey, Runes: []rune{'e'}})
+		keyboard.SimulateKeyPress(keys.Key{Code: keys.RuneKey, Runes: []rune{'s'}})
+		keyboard.SimulateKeyPress(keys.Key{Code: keys.RuneKey, Runes: []rune{'t'}})
+		// Press Left to "unselect all" — should only unselect filtered options, keeping "alpha"
+		keyboard.SimulateKeyPress(keys.Left)
+		keyboard.SimulateKeyPress(keys.Tab)
+	}()
+
+	result, _ := pterm.DefaultInteractiveMultiselect.
+		WithOptions([]string{"alpha", "test-one", "beta", "test-two"}).
+		WithDefaultOptions([]string{"alpha", "test-one", "test-two"}).
+		WithMaxHeight(10).
+		Show()
+	testza.AssertEqual(t, []string{"alpha"}, result)
+}
+
 func TestInteractiveMultiselectPrinter_WithDefaultText(t *testing.T) {
 	p := pterm.DefaultInteractiveMultiselect.WithDefaultText("default")
 	testza.AssertEqual(t, p.DefaultText, "default")
