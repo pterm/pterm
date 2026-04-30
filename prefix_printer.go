@@ -156,6 +156,7 @@ func (p PrefixPrinter) WithWriter(writer io.Writer) *PrefixPrinter {
 // Spaces are added between operands when neither is a string.
 func (p *PrefixPrinter) Sprint(a ...any) string {
 	m := Sprint(a...)
+
 	if p.Debugger && !PrintDebugMessages {
 		return ""
 	}
@@ -171,9 +172,11 @@ func (p *PrefixPrinter) Sprint(a ...any) string {
 	if p.Prefix.Style == nil {
 		p.Prefix.Style = NewStyle()
 	}
+
 	if p.Scope.Style == nil {
 		p.Scope.Style = NewStyle()
 	}
+
 	if p.MessageStyle == nil {
 		p.MessageStyle = NewStyle()
 	}
@@ -191,9 +194,11 @@ func (p *PrefixPrinter) Sprint(a ...any) string {
 		if i == 0 {
 			ret.WriteString(p.GetFormattedPrefix())
 			ret.WriteByte(' ')
+
 			if p.Scope.Text != "" {
 				ret.WriteString(NewStyle(*p.Scope.Style...).Sprint(" (" + p.Scope.Text + ") "))
 			}
+
 			ret.WriteString(p.MessageStyle.Sprint(m))
 		} else {
 			ret.WriteByte('\n')
@@ -206,6 +211,7 @@ func (p *PrefixPrinter) Sprint(a ...any) string {
 	if p.ShowLineNumber {
 		_, fileName, line, _ := runtime.Caller(3 + p.LineNumberOffset)
 		ret.WriteString(FgGray.Sprint("\n└ " + fmt.Sprintf("(%s:%d)\n", fileName, line)))
+
 		newLine = false
 	}
 
@@ -222,7 +228,9 @@ func (p PrefixPrinter) Sprintln(a ...any) string {
 	if p.Debugger && !PrintDebugMessages {
 		return ""
 	}
+
 	str := fmt.Sprintln(a...)
+
 	return p.Sprint(str)
 }
 
@@ -231,6 +239,7 @@ func (p PrefixPrinter) Sprintf(format string, a ...any) string {
 	if p.Debugger && !PrintDebugMessages {
 		return ""
 	}
+
 	return p.Sprint(Sprintf(format, a...))
 }
 
@@ -240,6 +249,7 @@ func (p PrefixPrinter) Sprintfln(format string, a ...any) string {
 	if p.Debugger && !PrintDebugMessages {
 		return ""
 	}
+
 	return p.Sprintf(format, a...) + "\n"
 }
 
@@ -251,10 +261,12 @@ func (p *PrefixPrinter) Print(a ...any) *TextPrinter {
 	if p.Debugger && !PrintDebugMessages {
 		return &tp
 	}
+
 	p.LineNumberOffset--
 	Fprint(p.GetWriter(), p.Sprint(a...))
 	p.LineNumberOffset++
 	checkFatal(p)
+
 	return &tp
 }
 
@@ -266,8 +278,10 @@ func (p *PrefixPrinter) Println(a ...any) *TextPrinter {
 	if p.Debugger && !PrintDebugMessages {
 		return &tp
 	}
+
 	Fprint(p.GetWriter(), p.Sprintln(a...))
 	checkFatal(p)
+
 	return &tp
 }
 
@@ -278,8 +292,10 @@ func (p *PrefixPrinter) Printf(format string, a ...any) *TextPrinter {
 	if p.Debugger && !PrintDebugMessages {
 		return &tp
 	}
+
 	Fprint(p.GetWriter(), p.Sprintf(format, a...))
 	checkFatal(p)
+
 	return &tp
 }
 
@@ -291,10 +307,12 @@ func (p *PrefixPrinter) Printfln(format string, a ...any) *TextPrinter {
 	if p.Debugger && !PrintDebugMessages {
 		return &tp
 	}
+
 	p.LineNumberOffset++
 	Fprint(p.GetWriter(), p.Sprintfln(format, a...))
 	p.LineNumberOffset--
 	checkFatal(p)
+
 	return &tp
 }
 
@@ -313,6 +331,7 @@ func (p *PrefixPrinter) PrintOnError(a ...any) *TextPrinter {
 	}
 
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -329,6 +348,7 @@ func (p *PrefixPrinter) PrintOnErrorf(format string, a ...any) *TextPrinter {
 	}
 
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -342,6 +362,7 @@ func (p PrefixPrinter) GetWriter() io.Writer {
 	if p.Writer != nil {
 		return p.Writer
 	}
+
 	return defaultWriter
 }
 

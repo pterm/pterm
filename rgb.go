@@ -30,11 +30,13 @@ type RGBStyle struct {
 // The colors will be set as is, ignoring the RGB.Background property.
 func NewRGBStyle(foreground RGB, background ...RGB) RGBStyle {
 	var s RGBStyle
+
 	s.Foreground = foreground
 	if len(background) > 0 {
 		s.Background = background[0]
 		s.hasBg = true
 	}
+
 	return s
 }
 
@@ -50,6 +52,7 @@ func (p RGBStyle) AddOptions(opts ...Color) RGBStyle {
 func (p RGBStyle) Print(a ...any) *TextPrinter {
 	Print(p.Sprint(a...))
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -59,6 +62,7 @@ func (p RGBStyle) Print(a ...any) *TextPrinter {
 func (p RGBStyle) Println(a ...any) *TextPrinter {
 	Println(p.Sprint(a...))
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -67,6 +71,7 @@ func (p RGBStyle) Println(a ...any) *TextPrinter {
 func (p RGBStyle) Printf(format string, a ...any) *TextPrinter {
 	Printf(format, p.Sprint(a...))
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -76,6 +81,7 @@ func (p RGBStyle) Printf(format string, a ...any) *TextPrinter {
 func (p RGBStyle) Printfln(format string, a ...any) *TextPrinter {
 	Printf(format, p.Sprint(a...))
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -92,6 +98,7 @@ func (p RGBStyle) PrintOnError(a ...any) *TextPrinter {
 	}
 
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -108,6 +115,7 @@ func (p RGBStyle) PrintOnErrorf(format string, a ...any) *TextPrinter {
 	}
 
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -120,11 +128,13 @@ func (p RGBStyle) Sprint(a ...any) string {
 	} else {
 		rgbStyle = color.NewRGBStyle(color.RGB(p.Foreground.R, p.Foreground.G, p.Foreground.B), color.RGB(p.Background.R, p.Background.G, p.Background.B))
 	}
+
 	if len(p.Options) > 0 {
 		for _, opt := range p.Options {
 			rgbStyle.AddOpts(color.Color(opt))
 		}
 	}
+
 	return rgbStyle.Sprint(a...)
 }
 
@@ -166,6 +176,7 @@ func (p RGB) Fade(minRGB, maxRGB, current float32, end ...RGB) RGB {
 	if maxRGB == current {
 		return end[len(end)-1]
 	}
+
 	if minRGB < 0 {
 		maxRGB -= minRGB
 		current -= minRGB
@@ -174,13 +185,14 @@ func (p RGB) Fade(minRGB, maxRGB, current float32, end ...RGB) RGB {
 	// #nosec G115
 	if len(end) == 1 {
 		return RGB{
-			R:          uint8(internal.MapRangeToRange(minRGB, maxRGB, float32(p.R), float32(end[0].R), current)), //nolint:gosec
-			G:          uint8(internal.MapRangeToRange(minRGB, maxRGB, float32(p.G), float32(end[0].G), current)), //nolint:gosec
-			B:          uint8(internal.MapRangeToRange(minRGB, maxRGB, float32(p.B), float32(end[0].B), current)), //nolint:gosec
+			R:          uint8(internal.MapRangeToRange(minRGB, maxRGB, float32(p.R), float32(end[0].R), current)),
+			G:          uint8(internal.MapRangeToRange(minRGB, maxRGB, float32(p.G), float32(end[0].G), current)),
+			B:          uint8(internal.MapRangeToRange(minRGB, maxRGB, float32(p.B), float32(end[0].B), current)),
 			Background: p.Background,
 		}
 	} else if len(end) > 1 {
 		f := (maxRGB - minRGB) / float32(len(end))
+
 		tempCurrent := current
 		if f > current {
 			return p.Fade(minRGB, f, current, end[0])
@@ -193,6 +205,7 @@ func (p RGB) Fade(minRGB, maxRGB, current float32, end ...RGB) RGB {
 			}
 		}
 	}
+
 	return p
 }
 
@@ -202,6 +215,7 @@ func (p RGB) Sprint(a ...any) string {
 	if p.Background {
 		return color.RGB(p.R, p.G, p.B, p.Background).Sprint(a...) + "\033[0m\033[K"
 	}
+
 	return color.RGB(p.R, p.G, p.B, p.Background).Sprint(a...)
 }
 
@@ -228,6 +242,7 @@ func (p RGB) Sprintfln(format string, a ...any) string {
 func (p RGB) Print(a ...any) *TextPrinter {
 	Print(p.Sprint(a...))
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -237,6 +252,7 @@ func (p RGB) Print(a ...any) *TextPrinter {
 func (p RGB) Println(a ...any) *TextPrinter {
 	Print(p.Sprintln(a...))
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -245,6 +261,7 @@ func (p RGB) Println(a ...any) *TextPrinter {
 func (p RGB) Printf(format string, a ...any) *TextPrinter {
 	Print(p.Sprintf(format, a...))
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -254,6 +271,7 @@ func (p RGB) Printf(format string, a ...any) *TextPrinter {
 func (p RGB) Printfln(format string, a ...any) *TextPrinter {
 	Print(p.Sprintfln(format, a...))
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -270,6 +288,7 @@ func (p RGB) PrintOnError(a ...any) *TextPrinter {
 	}
 
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -286,6 +305,7 @@ func (p RGB) PrintOnErrorf(format string, a ...any) *TextPrinter {
 	}
 
 	tp := TextPrinter(p)
+
 	return &tp
 }
 

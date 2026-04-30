@@ -149,11 +149,14 @@ func (c Color) Sprintln(a ...any) string {
 // Input will be colored with the parent Color.
 func (c Color) Sprint(a ...any) string {
 	message := Sprint(a...)
+
 	messageLines := strings.Split(message, "\n")
 	for i, line := range messageLines {
 		messageLines[i] = color.RenderCode(c.String(), strings.ReplaceAll(line, color.ResetSet, Sprintf("\x1b[0m\u001B[%sm", c.String())))
 	}
+
 	message = strings.Join(messageLines, "\n")
+
 	return message
 }
 
@@ -177,6 +180,7 @@ func (c Color) Sprintfln(format string, a ...any) string {
 func (c Color) Println(a ...any) *TextPrinter {
 	Print(c.Sprintln(a...))
 	tc := TextPrinter(c)
+
 	return &tc
 }
 
@@ -187,6 +191,7 @@ func (c Color) Println(a ...any) *TextPrinter {
 func (c Color) Print(a ...any) *TextPrinter {
 	Print(c.Sprint(a...))
 	tc := TextPrinter(c)
+
 	return &tc
 }
 
@@ -196,6 +201,7 @@ func (c Color) Print(a ...any) *TextPrinter {
 func (c Color) Printf(format string, a ...any) *TextPrinter {
 	Print(c.Sprintf(format, a...))
 	tc := TextPrinter(c)
+
 	return &tc
 }
 
@@ -206,6 +212,7 @@ func (c Color) Printf(format string, a ...any) *TextPrinter {
 func (c Color) Printfln(format string, a ...any) *TextPrinter {
 	Print(c.Sprintfln(format, a...))
 	tp := TextPrinter(c)
+
 	return &tp
 }
 
@@ -222,6 +229,7 @@ func (c Color) PrintOnError(a ...any) *TextPrinter {
 	}
 
 	tp := TextPrinter(c)
+
 	return &tp
 }
 
@@ -238,6 +246,7 @@ func (c Color) PrintOnErrorf(format string, a ...any) *TextPrinter {
 	}
 
 	tp := TextPrinter(c)
+
 	return &tp
 }
 
@@ -262,6 +271,7 @@ func NewStyle(colors ...Color) *Style {
 	for _, c := range colors {
 		ret = append(ret, c)
 	}
+
 	return &ret
 }
 
@@ -298,11 +308,14 @@ func (s Style) RemoveColor(colors ...Color) Style {
 // Input will be colored with the parent Style.
 func (s Style) Sprint(a ...any) string {
 	message := Sprint(a...)
+
 	messageLines := strings.Split(message, "\n")
 	for i, line := range messageLines {
 		messageLines[i] = color.RenderCode(s.String(), strings.ReplaceAll(line, color.ResetSet, Sprintf("\x1b[0m\u001B[%sm", s.String())))
 	}
+
 	message = strings.Join(messageLines, "\n")
+
 	return color.RenderCode(s.String(), message)
 }
 

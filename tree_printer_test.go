@@ -10,6 +10,7 @@ import (
 
 func TestTreePrinterNilPrint(t *testing.T) {
 	pterm.TreePrinter{}.Render()
+
 	printer := pterm.TreePrinter{}.WithRoot(pterm.NewTreeFromLeveledList(pterm.LeveledList{pterm.LeveledListItem{Text: "Hello, World!", Level: 0}}))
 	content, err := printer.Srender()
 

@@ -32,10 +32,12 @@ func writeBetween(name string, original string, insertText string) string {
 func execute(command string) {
 	cmd := exec.Command("bash", "-c", command)
 	pterm.Info.Println("Running: " + cmd.String())
+
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		log.Panicf("Fail Running [%s] with output [%s] and status [%s]", cmd.String(), output, err)
 	}
+
 	pterm.FgGray.Println(strings.Repeat("-", 80))
 	pterm.Println(string(output))
 	pterm.FgGray.Println(strings.Repeat("-", 80))
@@ -46,6 +48,7 @@ func fileExists(filename string) bool {
 	if os.IsNotExist(err) {
 		return false
 	}
+
 	return !info.IsDir()
 }
 
@@ -53,9 +56,11 @@ func getLinesFromFile(fileName string) []string {
 	f, _ := os.Open(fileName)
 	scanner := bufio.NewScanner(f)
 	var result []string
+
 	for scanner.Scan() {
 		line := scanner.Text()
 		result = append(result, line)
 	}
+
 	return result
 }

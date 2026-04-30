@@ -25,7 +25,9 @@ func GetTerminalWidth() int {
 	if forcedTerminalWidth > 0 {
 		return forcedTerminalWidth
 	}
+
 	width, _, _ := GetTerminalSize()
+
 	return width
 }
 
@@ -34,7 +36,9 @@ func GetTerminalHeight() int {
 	if forcedTerminalHeight > 0 {
 		return forcedTerminalHeight
 	}
+
 	_, height, _ := GetTerminalSize()
+
 	return height
 }
 
@@ -43,16 +47,20 @@ func GetTerminalSize() (width, height int, err error) {
 	if forcedTerminalWidth > 0 && forcedTerminalHeight > 0 {
 		return forcedTerminalWidth, forcedTerminalHeight, nil
 	}
+
 	w, h, err := term.GetSize(int(os.Stdout.Fd()))
 	if w <= 0 {
 		w = FallbackTerminalWidth
 	}
+
 	if h <= 0 {
 		h = FallbackTerminalHeight
 	}
+
 	if err != nil {
 		err = ErrTerminalSizeNotDetectable
 	}
+
 	return w, h, err
 }
 
@@ -60,5 +68,6 @@ func GetTerminalSize() (width, height int, err error) {
 func SetForcedTerminalSize(width int, height int) {
 	forcedTerminalWidth = width
 	forcedTerminalHeight = height
+
 	RecalculateTerminalSize()
 }

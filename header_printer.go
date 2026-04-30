@@ -71,6 +71,7 @@ func (p HeaderPrinter) Sprint(a ...any) string {
 	if p.TextStyle == nil {
 		p.TextStyle = NewStyle()
 	}
+
 	if p.BackgroundStyle == nil {
 		p.BackgroundStyle = NewStyle()
 	}
@@ -107,15 +108,19 @@ func (p HeaderPrinter) Sprint(a ...any) string {
 
 	ret.WriteString(p.BackgroundStyle.Sprint(blankLine))
 	ret.WriteByte('\n')
+
 	for _, line := range strings.Split(text, "\n") {
 		line = strings.ReplaceAll(line, "\n", "")
+
 		line = marginString + line + marginString
 		if runewidth.StringWidth(line) < runewidth.StringWidth(blankLine) {
 			line += strings.Repeat(" ", runewidth.StringWidth(blankLine)-runewidth.StringWidth(line))
 		}
+
 		ret.WriteString(p.BackgroundStyle.Sprint(p.TextStyle.Sprint(line)))
 		ret.WriteByte('\n')
 	}
+
 	ret.WriteString(p.BackgroundStyle.Sprint(blankLine))
 	ret.WriteByte('\n')
 
@@ -124,18 +129,23 @@ func (p HeaderPrinter) Sprint(a ...any) string {
 
 func splitText(text string, width int) string {
 	var lines []string
+
 	linesTmp := strings.Split(text, "\n")
 	for _, line := range linesTmp {
 		if runewidth.StringWidth(RemoveColorFromString(line)) > width {
 			extraLines := []string{""}
 			extraLinesCounter := 0
+
 			for i, letter := range line {
 				if i%width == 0 && i != 0 {
 					extraLinesCounter++
+
 					extraLines = append(extraLines, "")
 				}
+
 				extraLines[extraLinesCounter] += string(letter)
 			}
+
 			for _, extraLine := range extraLines {
 				extraLine += "\n"
 				lines = append(lines, extraLine)
@@ -177,6 +187,7 @@ func (p HeaderPrinter) Sprintfln(format string, a ...any) string {
 func (p *HeaderPrinter) Print(a ...any) *TextPrinter {
 	Fprint(p.Writer, p.Sprint(a...))
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -186,6 +197,7 @@ func (p *HeaderPrinter) Print(a ...any) *TextPrinter {
 func (p *HeaderPrinter) Println(a ...any) *TextPrinter {
 	Fprint(p.Writer, p.Sprintln(a...))
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -194,6 +206,7 @@ func (p *HeaderPrinter) Println(a ...any) *TextPrinter {
 func (p *HeaderPrinter) Printf(format string, a ...any) *TextPrinter {
 	Fprint(p.Writer, p.Sprintf(format, a...))
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -203,6 +216,7 @@ func (p *HeaderPrinter) Printf(format string, a ...any) *TextPrinter {
 func (p *HeaderPrinter) Printfln(format string, a ...any) *TextPrinter {
 	Fprint(p.Writer, p.Sprintfln(format, a...))
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -219,6 +233,7 @@ func (p *HeaderPrinter) PrintOnError(a ...any) *TextPrinter {
 	}
 
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -235,5 +250,6 @@ func (p *HeaderPrinter) PrintOnErrorf(format string, a ...any) *TextPrinter {
 	}
 
 	tp := TextPrinter(p)
+
 	return &tp
 }

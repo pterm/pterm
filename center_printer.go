@@ -25,6 +25,7 @@ type CenterPrinter struct {
 func (p CenterPrinter) WithCenterEachLineSeparately(b ...bool) *CenterPrinter {
 	bt := internal.WithBoolean(b)
 	p.CenterEachLineSeparately = bt
+
 	return &p
 }
 
@@ -51,9 +52,11 @@ func (p CenterPrinter) Sprint(a ...any) string {
 			if margin >= 1 {
 				ret.WriteString(strings.Repeat(" ", margin))
 			}
+
 			ret.WriteString(line)
 			ret.WriteByte('\n')
 		}
+
 		return ret.String()
 	}
 
@@ -109,6 +112,7 @@ func (p CenterPrinter) Sprintfln(format string, a ...any) string {
 func (p CenterPrinter) Print(a ...any) *TextPrinter {
 	Fprint(p.Writer, p.Sprint(a...))
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -118,6 +122,7 @@ func (p CenterPrinter) Print(a ...any) *TextPrinter {
 func (p CenterPrinter) Println(a ...any) *TextPrinter {
 	Fprint(p.Writer, p.Sprintln(a...))
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -126,6 +131,7 @@ func (p CenterPrinter) Println(a ...any) *TextPrinter {
 func (p CenterPrinter) Printf(format string, a ...any) *TextPrinter {
 	Fprint(p.Writer, p.Sprintf(format, a...))
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -135,6 +141,7 @@ func (p CenterPrinter) Printf(format string, a ...any) *TextPrinter {
 func (p CenterPrinter) Printfln(format string, a ...any) *TextPrinter {
 	Fprint(p.Writer, p.Sprintfln(format, a...))
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -151,6 +158,7 @@ func (p CenterPrinter) PrintOnError(a ...any) *TextPrinter {
 	}
 
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -167,5 +175,6 @@ func (p CenterPrinter) PrintOnErrorf(format string, a ...any) *TextPrinter {
 	}
 
 	tp := TextPrinter(p)
+
 	return &tp
 }

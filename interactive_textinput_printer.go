@@ -116,6 +116,7 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 		if !p.MultiLine {
 			p.cursorYPos = 0
 		}
+
 		if len(p.input) == 0 {
 			p.input = append(p.input, "")
 		}
@@ -126,6 +127,7 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 				area.Bottom()
 				return true, nil
 			}
+
 		case keys.Enter:
 			if p.DefaultValue != "" && !p.startedTyping {
 				for i := range p.input {
@@ -135,6 +137,7 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 				if p.MultiLine {
 					area.Bottom()
 				}
+
 				return true, nil
 			}
 
@@ -142,6 +145,7 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 				if key.AltPressed {
 					p.cursorXPos = 0
 				}
+
 				appendAfterY := append([]string{}, p.input[p.cursorYPos+1:]...)
 				appendAfterX := string(append([]rune{}, []rune(p.input[p.cursorYPos])[len([]rune(p.input[p.cursorYPos]))+p.cursorXPos:]...))
 				p.input[p.cursorYPos] = string(append([]rune{}, []rune(p.input[p.cursorYPos])[:len([]rune(p.input[p.cursorYPos]))+p.cursorXPos]...))
@@ -149,24 +153,31 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 				p.input = append(p.input, appendAfterY...)
 				p.cursorYPos++
 				p.cursorXPos = -internal.GetStringMaxWidth(p.input[p.cursorYPos])
+
 				cursor.StartOfLine()
 			} else {
 				return true, nil
 			}
+
 		case keys.RuneKey:
 			if !p.startedTyping {
 				p.startedTyping = true
 			}
+
 			p.input[p.cursorYPos] = string(append([]rune(p.input[p.cursorYPos])[:len([]rune(p.input[p.cursorYPos]))+p.cursorXPos], append([]rune(key.String()), []rune(p.input[p.cursorYPos])[len([]rune(p.input[p.cursorYPos]))+p.cursorXPos:]...)...))
+
 		case keys.Space:
 			if !p.startedTyping {
 				p.startedTyping = true
 			}
+
 			p.input[p.cursorYPos] = string(append([]rune(p.input[p.cursorYPos])[:len([]rune(p.input[p.cursorYPos]))+p.cursorXPos], append([]rune(" "), []rune(p.input[p.cursorYPos])[len([]rune(p.input[p.cursorYPos]))+p.cursorXPos:]...)...))
+
 		case keys.Backspace:
 			if !p.startedTyping {
 				p.startedTyping = true
 			}
+
 			if len([]rune(p.input[p.cursorYPos]))+p.cursorXPos > 0 {
 				p.input[p.cursorYPos] = string(append([]rune(p.input[p.cursorYPos])[:len([]rune(p.input[p.cursorYPos]))-1+p.cursorXPos], []rune(p.input[p.cursorYPos])[len([]rune(p.input[p.cursorYPos]))+p.cursorXPos:]...))
 			} else if p.cursorYPos > 0 {
@@ -176,12 +187,15 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 				p.cursorXPos = 0
 				p.cursorYPos--
 			}
+
 		case keys.Delete:
 			if !p.startedTyping {
 				p.input = []string{""}
 				p.startedTyping = true
+
 				return false, nil
 			}
+
 			if len([]rune(p.input[p.cursorYPos]))+p.cursorXPos < len([]rune(p.input[p.cursorYPos])) {
 				p.input[p.cursorYPos] = string(append([]rune(p.input[p.cursorYPos])[:len([]rune(p.input[p.cursorYPos]))+p.cursorXPos], []rune(p.input[p.cursorYPos])[len([]rune(p.input[p.cursorYPos]))+p.cursorXPos+1:]...))
 				p.cursorXPos++
@@ -191,6 +205,7 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 				p.input = append(p.input[:p.cursorYPos+1], appendAfterY...)
 				p.cursorXPos = 0
 			}
+
 		case keys.CtrlC:
 			cancel()
 			return true, nil
@@ -198,30 +213,37 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 			if !p.MultiLine {
 				return false, nil
 			}
+
 			if !p.startedTyping {
 				p.input = []string{""}
 				p.startedTyping = true
 			}
+
 			if p.cursorYPos+1 < len(p.input) {
 				p.cursorXPos = (internal.GetStringMaxWidth(p.input[p.cursorYPos]) + p.cursorXPos) - internal.GetStringMaxWidth(p.input[p.cursorYPos+1])
 				if p.cursorXPos > 0 {
 					p.cursorXPos = 0
 				}
+
 				p.cursorYPos++
 			}
+
 		case keys.Up:
 			if !p.MultiLine {
 				return false, nil
 			}
+
 			if !p.startedTyping {
 				p.input = []string{""}
 				p.startedTyping = true
 			}
+
 			if p.cursorYPos > 0 {
 				p.cursorXPos = (internal.GetStringMaxWidth(p.input[p.cursorYPos]) + p.cursorXPos) - internal.GetStringMaxWidth(p.input[p.cursorYPos-1])
 				if p.cursorXPos > 0 {
 					p.cursorXPos = 0
 				}
+
 				p.cursorYPos--
 			}
 		}
@@ -235,6 +257,7 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 					p.cursorYPos++
 					p.cursorXPos = -internal.GetStringMaxWidth(p.input[p.cursorYPos])
 				}
+
 			case keys.Left:
 				if p.cursorXPos+internal.GetStringMaxWidth(p.input[p.cursorYPos]) > 0 {
 					p.cursorXPos--
@@ -275,6 +298,7 @@ func (p InteractiveTextInputPrinter) updateArea(area *cursor.Area) string {
 	if !p.MultiLine {
 		p.cursorYPos = 0
 	}
+
 	areaText := p.text
 
 	for i, s := range p.input {
@@ -297,10 +321,12 @@ func (p InteractiveTextInputPrinter) updateArea(area *cursor.Area) string {
 	area.Top()
 	area.Down(p.cursorYPos + 1)
 	area.StartOfLine()
+
 	if p.MultiLine {
 		cursor.Right(internal.GetStringMaxWidth(p.input[p.cursorYPos]) + p.cursorXPos)
 	} else {
 		cursor.Right(internal.GetStringMaxWidth(areaText) + p.cursorXPos)
 	}
+
 	return areaText
 }

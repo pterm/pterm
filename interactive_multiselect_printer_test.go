@@ -18,6 +18,7 @@ func TestInteractiveMultiselectPrinter_Show(t *testing.T) {
 		keyboard.SimulateKeyPress(keys.Enter)
 		keyboard.SimulateKeyPress(keys.Tab)
 	}()
+
 	result, _ := pterm.DefaultInteractiveMultiselect.WithOptions([]string{"a", "b", "c", "d", "e"}).WithDefaultOptions([]string{"b"}).Show()
 	testza.AssertEqual(t, []string{"b", "c"}, result)
 }
@@ -29,6 +30,7 @@ func TestInteractiveMultiselectPrinter_Show_MaxHeightSlidingWindow(t *testing.T)
 		keyboard.SimulateKeyPress(keys.Enter)
 		keyboard.SimulateKeyPress(keys.Tab)
 	}()
+
 	result, _ := pterm.DefaultInteractiveMultiselect.WithOptions([]string{"a", "b", "c", "d", "e", "f"}).WithDefaultOptions([]string{"b"}).Show()
 	testza.AssertEqual(t, []string{"b", "e"}, result)
 }
@@ -42,6 +44,7 @@ func TestInteractiveMultiselectPrinter_Show_AlternateNavigationKeys(t *testing.T
 		keyboard.SimulateKeyPress(keys.Enter)
 		keyboard.SimulateKeyPress(keys.Tab)
 	}()
+
 	result, _ := pterm.DefaultInteractiveMultiselect.WithOptions([]string{"a", "b", "c", "d", "e"}).WithDefaultOptions([]string{"b"}).Show()
 	testza.AssertEqual(t, []string{"b", "c"}, result)
 }
