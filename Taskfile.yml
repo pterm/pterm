@@ -1,0 +1,17 @@
+version: 3
+
+tasks:
+  lint:
+    cmds:
+      - golangci-lint run
+
+  fmt:
+    cmds:
+      - golangci-lint run --fix
+
+  test:
+    desc: Run tests with race detection
+    env:
+      CGO_ENABLED: 1
+    cmds:
+      - go test -race ./...
