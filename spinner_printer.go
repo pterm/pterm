@@ -160,6 +160,7 @@ func (s SpinnerPrinter) Start(text ...any) (*SpinnerPrinter, error) {
 				if !s.IsActive {
 					continue
 				}
+
 				if RawOutput {
 					time.Sleep(s.Delay)
 					continue
@@ -169,12 +170,14 @@ func (s SpinnerPrinter) Start(text ...any) (*SpinnerPrinter, error) {
 				if s.ShowTimer {
 					timer = " (" + time.Since(s.startedAt).Round(s.TimerRoundingFactor).String() + ")"
 				}
+
 				Fprinto(s.Writer, s.Style.Sprint(seq)+" "+s.MessageStyle.Sprint(s.Text)+s.TimerStyle.Sprint(timer))
 				s.currentSequence = seq
 				time.Sleep(s.Delay)
 			}
 		}
 	}()
+
 	return &s, nil
 }
 
@@ -184,16 +187,20 @@ func (s *SpinnerPrinter) Stop() error {
 	if !s.IsActive {
 		return nil
 	}
+
 	s.IsActive = false
+
 	if RawOutput {
 		return nil
 	}
+
 	if s.RemoveWhenDone {
 		fClearLine(s.Writer)
 		Fprinto(s.Writer)
 	} else {
 		Fprintln(s.Writer)
 	}
+
 	return nil
 }
 
@@ -203,6 +210,7 @@ func (s *SpinnerPrinter) Stop() error {
 func (s *SpinnerPrinter) GenericStart() (*LivePrinter, error) {
 	p2, _ := s.Start()
 	lp := LivePrinter(p2)
+
 	return &lp, nil
 }
 
@@ -212,6 +220,7 @@ func (s *SpinnerPrinter) GenericStart() (*LivePrinter, error) {
 func (s *SpinnerPrinter) GenericStop() (*LivePrinter, error) {
 	_ = s.Stop()
 	lp := LivePrinter(s)
+
 	return &lp, nil
 }
 

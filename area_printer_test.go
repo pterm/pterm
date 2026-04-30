@@ -33,6 +33,7 @@ func TestAreaPrinter_GenericStartRawOutput(t *testing.T) {
 	os.Stdout = os.NewFile(0, os.DevNull) // Set os.Stdout to DevNull to hide output from cursor.Area
 
 	pterm.DisableStyling()
+
 	p := pterm.DefaultArea
 	p.GenericStart()
 	pterm.EnableStyling()

@@ -125,6 +125,7 @@ func (p InteractiveConfirmPrinter) Show(text ...string) (bool, error) {
 	err := keyboard.Listen(func(keyInfo keys.Key) (stop bool, err error) {
 		key := keyInfo.Code
 		char := strings.ToLower(keyInfo.String())
+
 		if err != nil {
 			return false, fmt.Errorf("failed to get key: %w", err)
 		}
@@ -135,33 +136,48 @@ func (p InteractiveConfirmPrinter) Show(text ...string) (bool, error) {
 			case y:
 				p.ConfirmStyle.Print(p.ConfirmText)
 				Println()
+
 				result = true
+
 				return true, nil
+
 			case n:
 				p.RejectStyle.Print(p.RejectText)
 				Println()
+
 				result = false
+
 				return true, nil
 			}
+
 		case keys.Enter:
 			if p.DefaultValue {
 				p.ConfirmStyle.Print(p.ConfirmText)
 			} else {
 				p.RejectStyle.Print(p.RejectText)
 			}
+
 			Println()
+
 			result = p.DefaultValue
+
 			return true, nil
+
 		case keys.CtrlC:
 			cancel()
+
 			interrupted = true
+
 			return true, nil
 		}
+
 		return false, nil
 	})
+
 	if !interrupted {
 		cursor.StartOfLine()
 	}
+
 	return result, err
 }
 

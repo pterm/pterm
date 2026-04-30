@@ -58,6 +58,7 @@ func NewBulletListFromStrings(s []string, padding string) BulletListPrinter {
 	for _, line := range s {
 		lis = append(lis, NewBulletListItemFromString(line, padding))
 	}
+
 	return *DefaultBulletList.WithItems(lis)
 }
 
@@ -66,6 +67,7 @@ func NewBulletListFromStrings(s []string, padding string) BulletListPrinter {
 // Deprecated: use putils.BulletListItemFromString instead.
 func NewBulletListItemFromString(text string, padding string) BulletListItem {
 	s, l := internal.RemoveAndCountPrefix(text, padding)
+
 	return BulletListItem{
 		Level: l,
 		Text:  s,
@@ -110,6 +112,7 @@ func NewTreeFromLeveledList(leveledListItems LeveledList) TreeNode {
 			lastIndex := len(last.Children) - 1
 			last = &last.Children[lastIndex]
 		}
+
 		last.Children = append(last.Children, TreeNode{
 			Children: []TreeNode{},
 			Text:     record.Text,
@@ -130,6 +133,7 @@ func NewRGBFromHEX(hex string) (RGB, error) {
 	if len(hex) == 3 {
 		hex = string([]byte{hex[0], hex[0], hex[1], hex[1], hex[2], hex[2]})
 	}
+
 	if len(hex) != 6 {
 		return RGB{}, ErrHexCodeIsInvalid
 	}
@@ -138,11 +142,12 @@ func NewRGBFromHEX(hex string) (RGB, error) {
 	if err != nil {
 		return RGB{}, err
 	}
+
 	c := int(i64)
 	// #nosec G115
 	return RGB{
-		R: uint8(c >> 16),             //nolint:gosec
-		G: uint8((c & 0x00FF00) >> 8), //nolint:gosec
-		B: uint8(c & 0x0000FF),        //nolint:gosec
+		R: uint8(c >> 16),
+		G: uint8((c & 0x00FF00) >> 8),
+		B: uint8(c & 0x0000FF),
 	}, nil
 }

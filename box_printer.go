@@ -66,6 +66,7 @@ func (p BoxPrinter) WithTitleTopLeft(b ...bool) *BoxPrinter {
 	p.TitleBottomLeft = false
 	p.TitleBottomRight = false
 	p.TitleBottomCenter = false
+
 	return &p
 }
 
@@ -78,6 +79,7 @@ func (p BoxPrinter) WithTitleTopRight(b ...bool) *BoxPrinter {
 	p.TitleBottomLeft = false
 	p.TitleBottomRight = false
 	p.TitleBottomCenter = false
+
 	return &p
 }
 
@@ -90,6 +92,7 @@ func (p BoxPrinter) WithTitleTopCenter(b ...bool) *BoxPrinter {
 	p.TitleBottomLeft = false
 	p.TitleBottomRight = false
 	p.TitleBottomCenter = false
+
 	return &p
 }
 
@@ -102,6 +105,7 @@ func (p BoxPrinter) WithTitleBottomLeft(b ...bool) *BoxPrinter {
 	p.TitleBottomLeft = b2
 	p.TitleBottomRight = false
 	p.TitleBottomCenter = false
+
 	return &p
 }
 
@@ -114,6 +118,7 @@ func (p BoxPrinter) WithTitleBottomRight(b ...bool) *BoxPrinter {
 	p.TitleBottomLeft = false
 	p.TitleBottomRight = b2
 	p.TitleBottomCenter = false
+
 	return &p
 }
 
@@ -126,6 +131,7 @@ func (p BoxPrinter) WithTitleBottomCenter(b ...bool) *BoxPrinter {
 	p.TitleBottomLeft = false
 	p.TitleBottomRight = false
 	p.TitleBottomCenter = b2
+
 	return &p
 }
 
@@ -182,7 +188,9 @@ func (p BoxPrinter) WithTopPadding(padding int) *BoxPrinter {
 	if padding < 0 {
 		padding = 0
 	}
+
 	p.TopPadding = padding
+
 	return &p
 }
 
@@ -191,7 +199,9 @@ func (p BoxPrinter) WithBottomPadding(padding int) *BoxPrinter {
 	if padding < 0 {
 		padding = 0
 	}
+
 	p.BottomPadding = padding
+
 	return &p
 }
 
@@ -200,8 +210,10 @@ func (p BoxPrinter) WithVerticalPadding(padding int) *BoxPrinter {
 	if padding < 0 {
 		padding = 0
 	}
+
 	p.TopPadding = padding
 	p.BottomPadding = padding
+
 	return &p
 }
 
@@ -210,7 +222,9 @@ func (p BoxPrinter) WithRightPadding(padding int) *BoxPrinter {
 	if padding < 0 {
 		padding = 0
 	}
+
 	p.RightPadding = padding
+
 	return &p
 }
 
@@ -219,7 +233,9 @@ func (p BoxPrinter) WithLeftPadding(padding int) *BoxPrinter {
 	if padding < 0 {
 		padding = 0
 	}
+
 	p.LeftPadding = padding
+
 	return &p
 }
 
@@ -228,8 +244,10 @@ func (p BoxPrinter) WithHorizontalPadding(padding int) *BoxPrinter {
 	if padding < 0 {
 		padding = 0
 	}
+
 	p.LeftPadding = padding
 	p.RightPadding = padding
+
 	return &p
 }
 
@@ -238,10 +256,12 @@ func (p BoxPrinter) WithPadding(padding int) *BoxPrinter {
 	if padding < 0 {
 		padding = 0
 	}
+
 	p.TopPadding = padding
 	p.BottomPadding = padding
 	p.LeftPadding = padding
 	p.RightPadding = padding
+
 	return &p
 }
 
@@ -257,9 +277,11 @@ func (p BoxPrinter) Sprint(a ...any) string {
 	if p.BoxStyle == nil {
 		p.BoxStyle = &ThemeDefault.BoxStyle
 	}
+
 	if p.TextStyle == nil {
 		p.TextStyle = &ThemeDefault.BoxTextStyle
 	}
+
 	maxWidth := internal.GetStringMaxWidth(Sprint(a...))
 
 	var topLine string
@@ -275,6 +297,7 @@ func (p BoxPrinter) Sprint(a ...any) string {
 		if (maxWidth + p.RightPadding + p.LeftPadding - 4) < internal.GetStringMaxWidth(p.Title) {
 			p.RightPadding = internal.GetStringMaxWidth(p.Title) - (maxWidth + p.RightPadding + p.LeftPadding - 5)
 		}
+
 		if p.TitleTopLeft {
 			topLine = p.BoxStyle.Sprint(p.BottomRightCornerString) + internal.AddTitleToLine(p.Title, p.BoxStyle.Sprint(p.HorizontalString), maxWidth+p.LeftPadding+p.RightPadding, true) + p.BoxStyle.Sprint(p.BottomLeftCornerString)
 			bottomLine = p.BoxStyle.Sprint(p.TopRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString),
@@ -315,6 +338,7 @@ func (p BoxPrinter) Sprint(a ...any) string {
 				strings.Repeat(" ", p.RightPadding) + p.BoxStyle.Sprint(p.VerticalString)
 		}
 	}
+
 	return topLine + "\n" + strings.Join(ss, "\n") + "\n" + bottomLine
 }
 
@@ -341,6 +365,7 @@ func (p BoxPrinter) Sprintfln(format string, a ...any) string {
 func (p BoxPrinter) Print(a ...any) *TextPrinter {
 	Fprint(p.Writer, p.Sprint(a...))
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -350,6 +375,7 @@ func (p BoxPrinter) Print(a ...any) *TextPrinter {
 func (p BoxPrinter) Println(a ...any) *TextPrinter {
 	Fprint(p.Writer, p.Sprintln(a...))
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -358,6 +384,7 @@ func (p BoxPrinter) Println(a ...any) *TextPrinter {
 func (p BoxPrinter) Printf(format string, a ...any) *TextPrinter {
 	Fprint(p.Writer, p.Sprintf(format, a...))
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -367,6 +394,7 @@ func (p BoxPrinter) Printf(format string, a ...any) *TextPrinter {
 func (p BoxPrinter) Printfln(format string, a ...any) *TextPrinter {
 	Fprint(p.Writer, p.Sprintfln(format, a...))
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -383,6 +411,7 @@ func (p BoxPrinter) PrintOnError(a ...any) *TextPrinter {
 	}
 
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -399,5 +428,6 @@ func (p BoxPrinter) PrintOnErrorf(format string, a ...any) *TextPrinter {
 	}
 
 	tp := TextPrinter(p)
+
 	return &tp
 }

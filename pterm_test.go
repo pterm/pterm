@@ -1,13 +1,15 @@
 package pterm_test
 
 import (
+	"testing"
+
 	"github.com/MarvinJWendt/testza"
 	"github.com/pterm/pterm"
-	"testing"
 )
 
 func TestDisableDebugMessages(t *testing.T) {
 	pterm.PrintDebugMessages = true
+
 	pterm.DisableDebugMessages()
 	testza.AssertFalse(t, pterm.PrintDebugMessages)
 }
@@ -30,12 +32,14 @@ func TestEnableOutput(t *testing.T) {
 
 func TestDisableStyling(t *testing.T) {
 	pterm.RawOutput = false
+
 	pterm.DisableStyling()
 	testza.AssertTrue(t, pterm.RawOutput)
 }
 
 func TestEnableStyling(t *testing.T) {
 	pterm.RawOutput = true
+
 	pterm.EnableStyling()
 	testza.AssertFalse(t, pterm.RawOutput)
 }

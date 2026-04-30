@@ -32,6 +32,7 @@ func Test_sanitizeArgs(t *testing.T) {
 			expected: []any{"foo", "bar", ErrKeyWithoutValue, "baz"},
 		},
 	}
+
 	l := Logger{}
 	for _, tt := range tests {
 		if got := l.sanitizeArgs(tt.args); !reflect.DeepEqual(got, tt.expected) {

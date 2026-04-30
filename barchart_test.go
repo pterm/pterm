@@ -10,7 +10,9 @@ import (
 
 func TestBarChartPrinterNilPrint(t *testing.T) {
 	proxyToDevNull()
+
 	p := pterm.BarChartPrinter{}
+
 	err := p.Render()
 	if err != nil {
 		panic(err)
@@ -278,6 +280,7 @@ func TestBarChartPrinter_RenderZeroBarValuesHorizontal(t *testing.T) {
 
 func TestBarChartPrinter_RenderExampleRawOutput(t *testing.T) {
 	pterm.DisableStyling()
+
 	bars := pterm.Bars{
 		pterm.Bar{
 			Label: "Bar 1",

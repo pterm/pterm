@@ -10,6 +10,7 @@ import (
 // PrintAverageExecutionTime times the average execution time of a function.
 func PrintAverageExecutionTime(count int, f func(i int) error) error {
 	var total time.Duration
+
 	for i := 0; i < count; i++ {
 		start := time.Now()
 		err := f(i)

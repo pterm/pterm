@@ -34,6 +34,7 @@ func (p BasicTextPrinter) Sprint(a ...any) string {
 	if p.Style == nil {
 		p.Style = NewStyle()
 	}
+
 	return p.Style.Sprint(a...)
 }
 
@@ -61,6 +62,7 @@ func (p BasicTextPrinter) Sprintfln(format string, a ...any) string {
 func (p *BasicTextPrinter) Print(a ...any) *TextPrinter {
 	Fprint(p.Writer, p.Sprint(a...))
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -70,6 +72,7 @@ func (p *BasicTextPrinter) Print(a ...any) *TextPrinter {
 func (p *BasicTextPrinter) Println(a ...any) *TextPrinter {
 	Fprint(p.Writer, p.Sprintln(a...))
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -78,6 +81,7 @@ func (p *BasicTextPrinter) Println(a ...any) *TextPrinter {
 func (p *BasicTextPrinter) Printf(format string, a ...any) *TextPrinter {
 	Fprint(p.Writer, p.Sprintf(format, a...))
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -87,6 +91,7 @@ func (p *BasicTextPrinter) Printf(format string, a ...any) *TextPrinter {
 func (p *BasicTextPrinter) Printfln(format string, a ...any) *TextPrinter {
 	Fprint(p.Writer, p.Sprintfln(format, a...))
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -103,6 +108,7 @@ func (p *BasicTextPrinter) PrintOnError(a ...any) *TextPrinter {
 	}
 
 	tp := TextPrinter(p)
+
 	return &tp
 }
 
@@ -119,5 +125,6 @@ func (p *BasicTextPrinter) PrintOnErrorf(format string, a ...any) *TextPrinter {
 	}
 
 	tp := TextPrinter(p)
+
 	return &tp
 }

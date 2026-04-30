@@ -9,6 +9,7 @@ import (
 // GetStringMaxWidth returns the maximum width of a string with multiple lines.
 func GetStringMaxWidth(s string) int {
 	var maxString int
+
 	ss := strings.Split(s, "\n")
 	for _, s2 := range ss {
 		// Strip OSC 8 hyperlinks and color codes
@@ -17,5 +18,6 @@ func GetStringMaxWidth(s string) int {
 			maxString = runewidth.StringWidth(s2WithoutEscapes)
 		}
 	}
+
 	return maxString
 }

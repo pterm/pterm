@@ -15,9 +15,11 @@ func TableFromStructSlice(tablePrinter pterm.TablePrinter, structSlice any) *pte
 	if to.Kind() != reflect.Slice {
 		return &tablePrinter
 	}
+
 	el := to.Elem()
 
 	isPointer := false
+
 	if el.Kind() == reflect.Ptr {
 		el = el.Elem()
 		isPointer = true
@@ -51,13 +53,16 @@ func TableFromStructSlice(tablePrinter pterm.TablePrinter, structSlice any) *pte
 
 	for _, v := range items {
 		item := reflect.ValueOf(v)
+
 		record := make([]string, numFields)
 		for i := 0; i < numFields; i++ {
 			fieldVal := item.Field(i).Interface()
 			record[i] = pterm.Sprintf("%v", fieldVal)
 		}
+
 		records = append(records, record)
 	}
+
 	tablePrinter.Data = records
 
 	return &tablePrinter

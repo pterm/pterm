@@ -32,6 +32,7 @@ func TestSpinnerPrinter_GenericStart(t *testing.T) {
 
 func TestSpinnerPrinter_GenericStartRawOutput(t *testing.T) {
 	pterm.DisableStyling()
+
 	p := pterm.DefaultSpinner
 	p.GenericStart()
 	p.GenericStop()
@@ -77,6 +78,7 @@ func TestSpinnerPrinter_UpdateText(t *testing.T) {
 
 func TestSpinnerPrinter_UpdateTextRawOutput(t *testing.T) {
 	pterm.DisableStyling()
+
 	p := pterm.DefaultSpinner
 	p.Start()
 	p.UpdateText("test")
@@ -91,6 +93,7 @@ func TestSpinnerPrinter_StopSetsIsActiveWhenRawOutput(t *testing.T) {
 	// Stop() must always set IsActive = false, even when RawOutput is true,
 	// to prevent the background goroutine from leaking.
 	pterm.DisableStyling()
+
 	defer pterm.EnableStyling()
 
 	sp, err := pterm.DefaultSpinner.Start()
@@ -192,6 +195,7 @@ func TestSpinnerPrinter_DifferentVariations(t *testing.T) {
 	type args struct {
 		text []any
 	}
+
 	tests := []struct {
 		name   string
 		fields fields
@@ -256,10 +260,12 @@ func TestSpinnerPrinter_OutputToWriters(t *testing.T) {
 		t.Run(testTitle, func(t *testing.T) {
 			stderr, err := testza.CaptureStderr(func(w io.Writer) error {
 				sp, err := pterm.DefaultSpinner.WithText("Hello world").WithWriter(os.Stderr).Start()
+
 				time.Sleep(time.Second) // Required otherwise the goroutine doesn't run and the text isn't outputted
 				testza.AssertNoError(t, err)
 				testCase.action(sp)
 				time.Sleep(time.Second) // Required otherwise the goroutine doesn't run and the text isn't updated
+
 				return nil
 			})
 

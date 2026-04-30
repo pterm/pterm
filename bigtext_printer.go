@@ -60,7 +60,9 @@ func (p BigTextPrinter) WithLetters(letters ...Letters) *BigTextPrinter {
 	for _, letter := range letters {
 		l = append(l, letter...)
 	}
+
 	p.Letters = l
+
 	return &p
 }
 
@@ -78,10 +80,12 @@ func (p BigTextPrinter) Srender() (string, error) {
 		for _, letter := range p.Letters {
 			ret.WriteString(letter.String)
 		}
+
 		return ret.String(), nil
 	}
 
 	var bigLetters Letters
+
 	for _, l := range p.Letters {
 		if val, ok := p.BigCharacters[l.String]; ok {
 			bigLetters = append(bigLetters, Letter{
@@ -106,9 +110,11 @@ func (p BigTextPrinter) Srender() (string, error) {
 			var letterLine string
 			letterLines := strings.Split(letter.String, "\n")
 			maxLetterWidth := internal.GetStringMaxWidth(letter.String)
+
 			if len(letterLines) > i {
 				letterLine = letterLines[i]
 			}
+
 			letterLineLength := runewidth.StringWidth(letterLine)
 			if letterLineLength < maxLetterWidth {
 				letterLine += strings.Repeat(" ", maxLetterWidth-letterLineLength)
@@ -120,6 +126,7 @@ func (p BigTextPrinter) Srender() (string, error) {
 				ret.WriteString(letter.Style.Sprint(letterLine))
 			}
 		}
+
 		ret.WriteByte('\n')
 	}
 
@@ -548,7 +555,7 @@ var DefaultBigText = BigTextPrinter{
        
       `,
 
-	  "@": ` ██████  
+		"@": ` ██████  
 ██    ██ 
 ██ ██ ██ 
 ██ ██ ██ 
