@@ -37,6 +37,7 @@ type InteractiveContinuePrinter struct {
 	Handles           []string
 	ShowShortHandles  bool
 	SuffixStyle       *Style
+	OnInterruptFunc   func()
 }
 
 // WithDefaultText sets the default text.
@@ -120,6 +121,11 @@ func (p InteractiveContinuePrinter) WithDelimiter(delimiter string) *Interactive
 //	result, _ := pterm.DefaultInteractiveContinue.Show("Do you want to apply the changes?")
 //	pterm.Println(result)
 func (p InteractiveContinuePrinter) Show(text ...string) (string, error) {
+	// should be the first defer statement to make sure it is executed last
+	// and all the needed cleanup can be done before
+	cancel, exit := internal.NewCancelationSignal(p.OnInterruptFunc)
+	defer exit()
+
 	var result string
 
 	if len(text) == 0 || text[0] == "" {
@@ -154,7 +160,7 @@ func (p InteractiveContinuePrinter) Show(text ...string) (string, error) {
 			result = p.Options[p.DefaultValueIndex]
 			return true, nil
 		case keys.CtrlC:
-			internal.Exit(1)
+			cancel()
 			return true, nil
 		}
 		return false, nil
