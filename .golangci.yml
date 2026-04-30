@@ -1,65 +1,58 @@
 version: "2"
+
+run:
+  timeout: 3m
+
 linters:
-  default: none
+  default: standard
+
   enable:
-    - gocritic
-    - godox
+    # Correctness and bug finding
+    - bodyclose
+    - durationcheck
+    - errchkjson
+    - errorlint
     - gosec
-    - govet
-    - ineffassign
-    - staticcheck
+    - nilerr
+    - nilnesserr
+    - wastedassign
+
+    # Maintainability and common hygiene
+    - asasalint
+    - bidichk
+    - gocritic
+    - makezero
+    - misspell
+    - nolintlint
+    - prealloc
+    - reassign
+    - revive
     - unconvert
+    - usestdlibvars
     - whitespace
+    - wsl_v5
+
   settings:
-    gocritic:
-      disabled-checks:
-        - dupImport
-        - ifElseChain
-        - octalLiteral
-        - whyNoLint
-        - wrapperFunc
-        - exitAfterDefer
-        - hugeParam
-        - ptrToRefParam
-        - paramTypeCombine
-        - unnamedResult
-      enabled-tags:
-        - diagnostic
-        - experimental
-        - opinionated
-        - performance
-        - style
-    misspell:
-      locale: US
+    govet:
+      enable:
+        - shadow
+
+    wsl_v5:
+      case-max-lines: 3
+      default: default
+      disable:
+        - decl
+
   exclusions:
-    generated: lax
-    presets:
-      - comments
-      - common-false-positives
-      - legacy
-      - std-error-handling
+    generated: strict
+    paths:
+      - '(^|/)examples_test\.go$'
     rules:
-      - linters:
-          - dupl
+      - path: "_test(_[^/]+)?\\.go"
+        linters:
           - errcheck
-          - gocritic
-          - gocyclo
-          - gosec
-        path: _test\.go
-      - linters:
-          - gocritic
-        text: 'unnecessaryDefer:'
-      - linters:
-          - gocritic
-        text: 'preferDecodeRune:'
-    paths:
-      - third_party$
-      - builtin$
-      - examples$
+
 formatters:
-  exclusions:
-    generated: lax
-    paths:
-      - third_party$
-      - builtin$
-      - examples$
+  enable:
+    - gofmt
+    - goimports

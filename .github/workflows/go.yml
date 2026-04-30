@@ -1,41 +1,125 @@
 name: Go
 
 on:
-  push:
-    branches: [ master ]
   pull_request:
-    branches: [ master ]
+  push:
+    branches:
+      - master
+
+concurrency:
+  group: go-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  CGO_ENABLED: "1"
 
 jobs:
-
-  build:
-    if: "!contains(github.event.head_commit.message, 'autoupdate')"
-    name: Build
+  test:
+    name: Test (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
+    if: "${{ github.event_name != 'push' || !contains(github.event.head_commit.message, 'docs: autoupdate') }}"
     strategy:
+      fail-fast: false
       matrix:
-        os: [ windows-latest ]
+        os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
-
-      - name: Set up Go 1.x
-        uses: actions/setup-go@v4
-        with:
-          go-version: 1.21
-          cache-dependency-path: go.sum
-        id: go
-
       - name: Check out code into the Go module directory
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
-      - name: Get dependencies
-        run: go get -v -t -d ./...
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Download dependencies
+        shell: bash
+        run: |
+          go mod download
+          go mod verify
 
       - name: Build
-        run: go build -v .
+        run: go build -v ./...
 
       - name: Test
-        run: go test -coverprofile="coverage.txt" -covermode=atomic -p 1 .
+        run: go test -race -coverprofile="coverage.txt" -covermode=atomic -v -p 1 ./...
 
       - name: Upload coverage to Codecov
-        if: success() && matrix.os == 'windows-latest'
-        uses: codecov/codecov-action@v3
+        if: matrix.os == 'ubuntu-latest'
+        uses: codecov/codecov-action@v6
+        with:
+          files: ./coverage.txt
+          fail_ci_if_error: true
+          use_oidc: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
+
+      - name: Test summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "### Go test: ${{ matrix.os }}"
+            echo ""
+            echo "| Check | Result |"
+            echo "| --- | --- |"
+            echo "| Build and tests | ${{ job.status }} |"
+            echo "| Coverage upload | ${{ matrix.os == 'ubuntu-latest' && 'enabled' || 'skipped' }} |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    if: "${{ github.event_name != 'push' || !contains(github.event.head_commit.message, 'docs: autoupdate') }}"
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v6
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v9
+        with:
+          version: v2.11.4
+          args: --timeout=3m
+
+      - name: Lint summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "### Lint"
+            echo ""
+            echo "| Tool | Result |"
+            echo "| --- | --- |"
+            echo "| golangci-lint | ${{ job.status }} |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  summary:
+    name: CI summary
+    runs-on: ubuntu-latest
+    needs: [test, lint]
+    if: "${{ always() && (github.event_name != 'push' || !contains(github.event.head_commit.message, 'docs: autoupdate')) }}"
+    steps:
+      - name: Write workflow summary
+        shell: bash
+        run: |
+          {
+            echo "## PTerm CI"
+            echo ""
+            echo "| Job | Result |"
+            echo "| --- | --- |"
+            echo "| Tests | ${{ needs.test.result }} |"
+            echo "| Lint | ${{ needs.lint.result }} |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [[ "${{ needs.test.result }}" != "success" || "${{ needs.lint.result }}" != "success" ]]; then
+            echo "::error::One or more CI checks failed."
+            exit 1
+          fi
