@@ -1,8 +1,6 @@
 module github.com/pterm/pterm
 
-go 1.24.0
-
-toolchain go1.24.3
+go 1.25.0
 
 require (
 	atomicgo.dev/cursor v0.2.0
@@ -13,7 +11,7 @@ require (
 	github.com/lithammer/fuzzysearch v1.1.8
 	github.com/mattn/go-runewidth v0.0.20
 	golang.org/x/term v0.40.0
-	golang.org/x/text v0.34.0
+	golang.org/x/text v0.36.0
 )
 
 require (
@@ -22,7 +20,6 @@ require (
 	github.com/containerd/console v1.0.5 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.3 // indirect
-	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/sergi/go-diff v1.2.0 // indirect
 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
 	golang.org/x/sys v0.41.0 // indirect
