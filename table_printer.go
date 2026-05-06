@@ -40,6 +40,7 @@ type TablePrinter struct {
 	Boxed                   bool
 	LeftAlignment           bool
 	RightAlignment          bool
+	Markdown                bool
 	Writer                  io.Writer
 	AlternateRowStyle       *Style
 }
@@ -95,6 +96,11 @@ func (p TablePrinter) WithRowSeparator(separator string) *TablePrinter {
 // WithRowSeparatorStyle returns a new TablePrinter with a specific RowSeparatorStyle.
 func (p TablePrinter) WithRowSeparatorStyle(style *Style) *TablePrinter {
 	p.RowSeparatorStyle = style
+	return &p
+}
+
+func (p TablePrinter) WithMarkdown(markdown bool) *TablePrinter {
+	p.Markdown = markdown
 	return &p
 }
 
@@ -223,34 +229,50 @@ func (p TablePrinter) Srender() (string, error) {
 	// render table
 	var ret strings.Builder
 
-	for i, r := range t.rows {
-		if i == 0 && p.HasHeader {
-			ret.WriteString(p.HeaderStyle.Sprint(p.renderRow(t, r)))
-
-			if p.HeaderRowSeparator != "" {
-				ret.WriteString(strings.Repeat(p.HeaderRowSeparatorStyle.Sprint(p.HeaderRowSeparator), maxRowWidth))
-				ret.WriteByte('\n')
+	if p.Markdown {
+		// Header
+		if p.HasHeader && len(p.Data) > 0 {
+			ret.WriteString("| " + strings.Join(p.Data[0], " | ") + " |\n")
+			ret.WriteString("|" + strings.Repeat(" --- |", len(p.Data[0])) + "\n")
+		}
+		// Rows
+		for i, row := range p.Data {
+			if i == 0 && p.HasHeader {
+				continue
 			}
-			continue
+			ret.WriteString("| " + strings.Join(row, " | ") + " |\n")
+		}
+		return ret.String(), nil
+	} else {
+		for i, r := range t.rows {
+			if i == 0 && p.HasHeader {
+				ret.WriteString(p.HeaderStyle.Sprint(p.renderRow(t, r)))
+
+				if p.HeaderRowSeparator != "" {
+					ret.WriteString(strings.Repeat(p.HeaderRowSeparatorStyle.Sprint(p.HeaderRowSeparator), maxRowWidth))
+					ret.WriteByte('\n')
+				}
+				continue
+			}
+
+			// Apply AlternateRowStyle if needed
+			if i%2 == 1 && p.AlternateRowStyle != nil {
+				ret.WriteString(p.AlternateRowStyle.Sprint(p.renderRow(t, r)))
+			} else {
+				ret.WriteString(p.renderRow(t, r))
+			}
+
+			if p.RowSeparator != "" && i < len(t.rows)-1 {
+				ret.WriteString(strings.Repeat(p.RowSeparatorStyle.Sprint(p.RowSeparator), maxRowWidth) + "\n")
+			}
 		}
 
-		// Apply AlternateRowStyle if needed
-		if i%2 == 1 && p.AlternateRowStyle != nil {
-			ret.WriteString(p.AlternateRowStyle.Sprint(p.renderRow(t, r)))
-		} else {
-			ret.WriteString(p.renderRow(t, r))
+		if p.Boxed {
+			return DefaultBox.Sprint(strings.TrimSuffix(ret.String(), "\n")), nil
 		}
 
-		if p.RowSeparator != "" && i < len(t.rows)-1 {
-			ret.WriteString(strings.Repeat(p.RowSeparatorStyle.Sprint(p.RowSeparator), maxRowWidth) + "\n")
-		}
+		return ret.String(), nil
 	}
-
-	if p.Boxed {
-		return DefaultBox.Sprint(strings.TrimSuffix(ret.String(), "\n")), nil
-	}
-
-	return ret.String(), nil
 }
 
 // renderRow renders a row.
