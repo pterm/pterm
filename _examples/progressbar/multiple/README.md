@@ -1,6 +1,6 @@
 # progressbar/multiple
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-2I9M18DhhJAUtFbFMGu68S.gif)
 
 ```go
 package main
@@ -51,5 +51,4 @@ func main() {
 	// Stop the multi printer
 	multi.Stop()
 }
-
 ```

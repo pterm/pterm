@@ -1,6 +1,6 @@
 # basictext/demo
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-25T1d3hhwrI27QeDNymk6f.gif)
 
 ```go
 package main
@@ -18,5 +18,4 @@ func main() {
 
 	// The DefaultBasicText is also useful for resolving progress bars and spinners.
 }
-
 ```

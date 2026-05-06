@@ -1,6 +1,6 @@
 # interactive_confirm/demo
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-369MF4fKJkA8Trb6dtr7vw.gif)
 
 ```go
 package main
@@ -29,5 +29,4 @@ func boolToText(b bool) string {
 	}
 	return pterm.Red("No")
 }
-
 ```

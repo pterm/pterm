@@ -1,6 +1,6 @@
 # barchart/custom-height
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-5vLTJ082V7bklOqcjLFHIR.gif)
 
 ```go
 package main
@@ -28,5 +28,4 @@ func main() {
 	// The Render method is used to display the chart in the terminal.
 	pterm.DefaultBarChart.WithBars(bars).WithHeight(5).Render()
 }
-
 ```

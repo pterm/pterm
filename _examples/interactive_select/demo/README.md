@@ -1,6 +1,6 @@
 # interactive_select/demo
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-41bPcowyhaFNU5vvWSIL7R.gif)
 
 ```go
 package main
@@ -31,5 +31,4 @@ func main() {
 	// Display the selected option to the user with a green color for emphasis
 	pterm.Info.Printfln("Selected option: %s", pterm.Green(selectedOption))
 }
-
 ```

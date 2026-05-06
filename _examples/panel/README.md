@@ -1,6 +1,6 @@
 ### panel/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/panel/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-5jDPQFYIn1Xy7WKHzpmlhr.gif)
 
 <details>
 
@@ -28,7 +28,6 @@ func main() {
 	// Render the panels with a padding of 5
 	_ = pterm.DefaultPanel.WithPanels(panels).WithPadding(5).Render()
 }
-
 ```
 
 </details>

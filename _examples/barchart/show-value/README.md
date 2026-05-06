@@ -1,6 +1,6 @@
 # barchart/show-value
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-Pur7MhOe8rCRcRX8LO4P6.gif)
 
 ```go
 package main
@@ -29,5 +29,4 @@ func main() {
 	// Finally, call the Render method to display the chart.
 	pterm.DefaultBarChart.WithBars(bars).WithShowValue().Render()
 }
-
 ```

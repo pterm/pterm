@@ -1,6 +1,6 @@
 # bigtext/colored
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-5lqFGFgHfY3LAZPMDqLtF.gif)
 
 ```go
 package main
@@ -18,5 +18,4 @@ func main() {
 		putils.LettersFromStringWithStyle("Term", pterm.FgLightMagenta.ToStyle())).
 		Render() // Render the big text to the terminal
 }
-
 ```

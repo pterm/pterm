@@ -1,6 +1,6 @@
 # style/demo
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-7e8elQAwo2XedISw4XaNL.gif)
 
 ```go
 package main
@@ -20,5 +20,4 @@ func main() {
 	// Print "Hello, World!" with the secondary style
 	secondary.Println("Hello, World!")
 }
-
 ```

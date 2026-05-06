@@ -1,6 +1,6 @@
 # interactive_textinput/demo
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-B8fA0qEGTTDmSrWZDNA3.gif)
 
 ```go
 package main
@@ -19,5 +19,4 @@ func main() {
 	// Print the user's answer with an info prefix
 	pterm.Info.Printfln("You answered: %s", result)
 }
-
 ```

@@ -1,6 +1,6 @@
 ### paragraph/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/paragraph/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-XzVRxEhdoNVjnMBSYcr3l.gif)
 
 <details>
 
@@ -27,14 +27,13 @@ func main() {
 	pterm.Println("This text is written with the default Println() function. No intelligent splitting here." +
 		"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam")
 }
-
 ```
 
 </details>
 
 ### paragraph/customized
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/paragraph/customized/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-3xLWMgbnFYKdGRsX2q6Ugh.gif)
 
 <details>
 
@@ -64,7 +63,6 @@ func main() {
 	// Print the long text without using a paragraph printer.
 	pterm.Println(longTextWithoutParagraph)
 }
-
 ```
 
 </details>

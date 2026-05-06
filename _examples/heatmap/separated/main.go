@@ -18,10 +18,6 @@ func main() {
 		YAxis: []string{"1", "2", "3", "4", "5"},
 	}
 
-	// Print an informational message.
-	pterm.Info.Println("The following table has no rgb (supported by every terminal), no axis data and no legend.")
-	pterm.Println()
-
 	// Create the heatmap with the specified data and options, and render it.
 	pterm.DefaultHeatmap.WithData(data).WithBoxed(false).WithAxisData(headerData).WithLegend(false).Render()
 }

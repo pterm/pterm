@@ -1,6 +1,6 @@
 ### coloring/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-1o5LppFpGpoqMHQK3kmjn6.gif)
 
 <details>
 
@@ -37,14 +37,13 @@ func main() {
 	// Print text using the created style.
 	style.Println("This text uses a style and is bold and light green with a red background!")
 }
-
 ```
 
 </details>
 
 ### coloring/disable-output
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/disable-output/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-66Cwz98xMAX0DwK6A3wZ4D.gif)
 
 <details>
 
@@ -73,14 +72,13 @@ func main() {
 		pterm.Printf("Printing something... [%d/%d]\n", i, 15)
 	}
 }
-
 ```
 
 </details>
 
 ### coloring/fade-colors
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/fade-colors/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-7HjCE1jhInLJAxVU15lslJ.gif)
 
 <details>
 
@@ -116,14 +114,13 @@ func main() {
 		currentColor.Println("Hello, World!")
 	}
 }
-
 ```
 
 </details>
 
 ### coloring/fade-colors-rgb-style
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/fade-colors-rgb-style/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-7Fip42EJG4WSZJJN1ZD2ex.gif)
 
 <details>
 
@@ -198,14 +195,13 @@ func printStyledString(str string, fgStart, fgEnd, bgStart, bgEnd pterm.RGB) {
 	}
 	pterm.Println(result)
 }
-
 ```
 
 </details>
 
 ### coloring/fade-multiple-colors
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/fade-multiple-colors/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-35y9qa1hwoU0T9QIVueo7D.gif)
 
 <details>
 
@@ -253,14 +249,13 @@ func main() {
 		startColor.Fade(0, float32(terminalHeight-2), float32(i), firstPoint, secondPoint, thirdPoint, endColor).Println("Hello, World!")
 	}
 }
-
 ```
 
 </details>
 
 ### coloring/override-default-printers
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/override-default-printers/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-5uqfqe2Y4nIt6DAahZxgrR.gif)
 
 <details>
 
@@ -281,14 +276,13 @@ func main() {
 	// Print the error message again, this time with the overridden prefix.
 	pterm.Error.Println("This is the default Error after the prefix was overridden")
 }
-
 ```
 
 </details>
 
 ### coloring/print-color-rgb
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/print-color-rgb/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-4Iok4H7S6qYWGRtf5H2dTf.gif)
 
 <details>
 
@@ -313,14 +307,13 @@ func main() {
 	// The 'true' argument indicates that the color is for the background.
 	pterm.NewRGB(201, 144, 30, true).Println("This text is printed with a custom RGB background!")
 }
-
 ```
 
 </details>
 
 ### coloring/print-color-rgb-style
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/print-color-rgb-style/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-63t83e2pmcTdMLQNHUvHt5.gif)
 
 <details>
 
@@ -350,7 +343,6 @@ func main() {
 	// Add the 'Italic' option to the RGB style and print a string with this style.
 	rgbStyle.AddOptions(pterm.Italic).Println("This text is italic.")
 }
-
 ```
 
 </details>

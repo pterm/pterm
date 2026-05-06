@@ -1,6 +1,6 @@
 ### center/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/center/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-3IMjlTNrnVWmLt4zChCmgN.gif)
 
 <details>
 
@@ -27,7 +27,6 @@ func main() {
 	// Print each line of the text separately centered in the terminal
 	pterm.DefaultCenter.WithCenterEachLineSeparately().Println("This text is centered!\nBut each line is\ncentered\nseparately")
 }
-
 ```
 
 </details>

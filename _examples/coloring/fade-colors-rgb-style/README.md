@@ -1,6 +1,6 @@
 # coloring/fade-colors-rgb-style
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-7Fip42EJG4WSZJJN1ZD2ex.gif)
 
 ```go
 package main
@@ -71,5 +71,4 @@ func printStyledString(str string, fgStart, fgEnd, bgStart, bgEnd pterm.RGB) {
 	}
 	pterm.Println(result)
 }
-
 ```

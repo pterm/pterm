@@ -1,6 +1,6 @@
 # interactive_textinput/password
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-3ROZC0UkqpmvnYhnwc5Ws.gif)
 
 ```go
 package main
@@ -21,5 +21,4 @@ func main() {
 	// Note: In a real-world application, you should never log passwords
 	logger.Info("Password received", logger.Args("password", result))
 }
-
 ```

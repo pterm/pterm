@@ -1,6 +1,6 @@
 # box/default
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-QVPtf5voQmddcwL3vosIS.gif)
 
 ```go
 package main
@@ -12,5 +12,4 @@ func main() {
 	// The DefaultBox.Println method automatically starts, prints the message, and stops the box.
 	pterm.DefaultBox.Println("Hello, World!")
 }
-
 ```

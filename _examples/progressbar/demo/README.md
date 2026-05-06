@@ -1,6 +1,6 @@
 # progressbar/demo
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-6HhPdzqi4jY5ZzjYij6FKT.gif)
 
 ```go
 package main
@@ -41,5 +41,4 @@ func main() {
 		time.Sleep(time.Millisecond * 350)
 	}
 }
-
 ```

@@ -1,6 +1,6 @@
 # section/demo
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-1Bm0QS1p5YdzEiIo4RFXGt.gif)
 
 ```go
 package main
@@ -20,5 +20,4 @@ func main() {
 	// Print another informational message.
 	pterm.Info.Println("And this is\nmore placeholder text")
 }
-
 ```

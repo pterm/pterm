@@ -1,6 +1,6 @@
 # bigtext/default
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-203C7xwJQYMYIXebRw1vtS.gif)
 
 ```go
 package main
@@ -20,5 +20,4 @@ func main() {
 	// Render the text using PTerm's default big text style
 	pterm.DefaultBigText.WithLetters(letters).Render()
 }
-
 ```

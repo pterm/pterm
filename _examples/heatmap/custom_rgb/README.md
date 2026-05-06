@@ -1,6 +1,6 @@
 # heatmap/custom_rgb
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-5gD43rIoUbSLhOoDXOsX4P.gif)
 
 ```go
 package main
@@ -46,5 +46,4 @@ func main() {
 		WithRGBRange(rgbRange...).
 		Render()
 }
-
 ```

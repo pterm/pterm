@@ -1,6 +1,6 @@
 # area/demo
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-6BFEFVArJQSAqhDMB3LQl6.gif)
 
 ```go
 package main
@@ -42,5 +42,4 @@ func main() {
 	// Stop the Area printer after all updates are done.
 	area.Stop()
 }
-
 ```

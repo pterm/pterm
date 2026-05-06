@@ -1,6 +1,6 @@
 ### barchart/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-48hC9kutzQcqurPjdprkey.gif)
 
 <details>
 
@@ -34,14 +34,13 @@ func main() {
 	// The Render function is then called to display the chart
 	pterm.DefaultBarChart.WithHorizontal().WithBars(bars).Render()
 }
-
 ```
 
 </details>
 
 ### barchart/custom-height
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/custom-height/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-5vLTJ082V7bklOqcjLFHIR.gif)
 
 <details>
 
@@ -73,14 +72,13 @@ func main() {
 	// The Render method is used to display the chart in the terminal.
 	pterm.DefaultBarChart.WithBars(bars).WithHeight(5).Render()
 }
-
 ```
 
 </details>
 
 ### barchart/custom-width
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/custom-width/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-471reYokQ5iNiKbyhQawvz.gif)
 
 <details>
 
@@ -110,14 +108,13 @@ func main() {
 	// The Render() function is called to display the chart
 	pterm.DefaultBarChart.WithBars(barData).WithHorizontal().WithWidth(5).Render()
 }
-
 ```
 
 </details>
 
 ### barchart/default
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/default/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-1l29HBVXZEKqB5fR20U7yg.gif)
 
 <details>
 
@@ -148,14 +145,13 @@ func main() {
 	// The `Render` method is used to display the chart.
 	pterm.DefaultBarChart.WithBars(bars).Render()
 }
-
 ```
 
 </details>
 
 ### barchart/horizontal
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/horizontal/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-42CW1xtORKZ1ZAg1r0Cv5X.gif)
 
 <details>
 
@@ -185,14 +181,13 @@ func main() {
 	// The Render() function is called to display the chart
 	pterm.DefaultBarChart.WithBars(bars).WithHorizontal().Render()
 }
-
 ```
 
 </details>
 
 ### barchart/horizontal-show-value
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/horizontal-show-value/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-3iDMaVYU1VnylxmagojVzt.gif)
 
 <details>
 
@@ -222,14 +217,13 @@ func main() {
 	// The Render() function is called to display the chart
 	pterm.DefaultBarChart.WithBars(barData).WithHorizontal().WithShowValue().Render()
 }
-
 ```
 
 </details>
 
 ### barchart/mixed-values
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/mixed-values/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-54klL5UuBaS89PN935LwvX.gif)
 
 <details>
 
@@ -267,14 +261,13 @@ func main() {
 	// The Render() function is called to display the chart.
 	pterm.DefaultBarChart.WithHorizontal().WithBars(bars).WithShowValue().Render()
 }
-
 ```
 
 </details>
 
 ### barchart/negative-values
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/negative-values/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-4cB5U3tsHOwMpArQkPR2t2.gif)
 
 <details>
 
@@ -309,14 +302,13 @@ func main() {
 	// The WithShowValue() option and Render() method are used in the same way as before.
 	_ = pterm.DefaultBarChart.WithHorizontal().WithBars(negativeBars).WithShowValue().Render()
 }
-
 ```
 
 </details>
 
 ### barchart/show-value
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/show-value/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-Pur7MhOe8rCRcRX8LO4P6.gif)
 
 <details>
 
@@ -349,7 +341,6 @@ func main() {
 	// Finally, call the Render method to display the chart.
 	pterm.DefaultBarChart.WithBars(bars).WithShowValue().Render()
 }
-
 ```
 
 </details>

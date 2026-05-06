@@ -15,7 +15,7 @@ func main() {
 	for i := 0; i < 5; i++ {
 		// Update the content of the area dynamically.
 		// Here we're just displaying the current count.
-		area.Update(pterm.Sprintf("Current count: %d\nAreas can update their content dynamically!", i))
+		area.Update(pterm.Sprintfln("Current count: %d\nAreas can update their content dynamically!", i))
 
 		// Pause for a second before the next update.
 		time.Sleep(time.Second)

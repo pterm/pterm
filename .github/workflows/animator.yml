@@ -1,17 +1,53 @@
 on:
   push:
-    branches: master
+    branches: [master]
 
 name: Update Animations
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-animations-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  animator:
+  animations:
     if: "!contains(github.event.head_commit.message, 'autoupdate')"
     runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      ANIMATE_JOBS: 2
+      TERM: xterm-256color
     steps:
-      - name: Git Setup
-        run: git config --global --add safe.directory /github/workspace
-      - name: Update Docs
-        uses: pterm/animation-ci@master
-        env:
-          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          TERM: xterm-256color
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.ACCESS_TOKEN || github.token }}
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Install VHS dependencies
+        run: scripts/install-vhs-deps.sh
+
+      - name: Render and publish animations
+        run: scripts/animate.sh
+
+      - name: Commit generated docs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A README.md _examples docs/index.html testdata/raw
+
+          if git diff --cached --quiet; then
+            echo "No generated changes to commit."
+            exit 0
+          fi
+
+          git commit -m "docs: autoupdate animations"
+          git push

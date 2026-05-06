@@ -1,4 +1,6 @@
-# interactive_multiselect/show_selected_options
+# interactive_multiselect/show-selected-options
+
+![Animation](https://vhs.charm.sh/vhs-4XI4oApCAUAzEHQcPe5FFY.gif)
 
 ```go
 package main
@@ -16,11 +18,6 @@ func main() {
 	// Populate the options slice with 100 options.
 	for i := 0; i < 100; i++ {
 		options = append(options, fmt.Sprintf("Option %d", i))
-	}
-
-	// Add 5 more options to the slice, indicating the availability of fuzzy searching.
-	for i := 0; i < 5; i++ {
-		options = append(options, fmt.Sprintf("You can use fuzzy searching (%d)", i))
 	}
 
 	// Use PTerm's interactive multiselect to present the options to the user and capture their selections.

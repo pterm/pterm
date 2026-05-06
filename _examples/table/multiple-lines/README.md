@@ -1,6 +1,6 @@
 # table/multiple-lines
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-2ZODMOw5xf1LyirhAchVr2.gif)
 
 ```go
 package main
@@ -22,5 +22,4 @@ func main() {
 	// The table has a header, a row separator, and a header row separator.
 	pterm.DefaultTable.WithHasHeader().WithRowSeparator("-").WithHeaderRowSeparator("-").WithData(data).Render()
 }
-
 ```

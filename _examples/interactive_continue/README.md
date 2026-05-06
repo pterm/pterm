@@ -1,6 +1,6 @@
 ### interactive_continue/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/interactive_continue/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-6hMsHXqe6NghZfGaLNplsV.gif)
 
 <details>
 
@@ -31,7 +31,6 @@ func main() {
 	// As this is a continue prompt, the input should be empty
 	pterm.Info.Printfln("You answered: %s", result)
 }
-
 ```
 
 </details>

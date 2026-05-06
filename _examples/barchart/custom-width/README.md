@@ -1,6 +1,6 @@
 # barchart/custom-width
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-471reYokQ5iNiKbyhQawvz.gif)
 
 ```go
 package main
@@ -26,5 +26,4 @@ func main() {
 	// The Render() function is called to display the chart
 	pterm.DefaultBarChart.WithBars(barData).WithHorizontal().WithWidth(5).Render()
 }
-
 ```

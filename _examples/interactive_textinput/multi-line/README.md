@@ -1,6 +1,6 @@
 # interactive_textinput/multi-line
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-5lCjIPFgeGrVP0sz9Du9aq.gif)
 
 ```go
 package main
@@ -25,5 +25,4 @@ func main() {
 	// The '%s' placeholder is replaced with the user's input.
 	pterm.Info.Printfln("You answered: %s", result)
 }
-
 ```

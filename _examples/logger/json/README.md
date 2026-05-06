@@ -1,6 +1,6 @@
 # logger/json
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-5pZsdHaBLSX6yTOhlHwQZz.gif)
 
 ```go
 package main
@@ -31,5 +31,4 @@ func main() {
 	logger.Info("But what's really cool is, that you can print very long logs, and PTerm will automatically wrap them for you! Say goodbye to text, that has weird line breaks!", logger.Args("very", "long"))
 	logger.Fatal("Oh no, this process is getting killed!", logger.Args("fatal", true))
 }
-
 ```

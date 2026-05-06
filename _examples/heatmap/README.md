@@ -1,6 +1,6 @@
 ### heatmap/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/heatmap/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-5Gg9cnXkTW44HZiZqIKaM1.gif)
 
 <details>
 
@@ -33,14 +33,13 @@ func main() {
 	// Then render the heatmap.
 	pterm.DefaultHeatmap.WithAxisData(headerData).WithData(data).WithEnableRGB().Render()
 }
-
 ```
 
 </details>
 
 ### heatmap/custom_colors
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/heatmap/custom_colors/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-31y7AvLKclklj1MfSXW9wq.gif)
 
 <details>
 
@@ -83,14 +82,13 @@ func main() {
 		WithLegend().
 		Render()
 }
-
 ```
 
 </details>
 
 ### heatmap/custom_legend
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/heatmap/custom_legend/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-1R4ftXBA6ji3DRObytiIPh.gif)
 
 <details>
 
@@ -134,14 +132,13 @@ func main() {
 		WithLegendOnlyColoredCells().
 		Render() // Render the heatmap
 }
-
 ```
 
 </details>
 
 ### heatmap/custom_rgb
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/heatmap/custom_rgb/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-5gD43rIoUbSLhOoDXOsX4P.gif)
 
 <details>
 
@@ -191,14 +188,13 @@ func main() {
 		WithRGBRange(rgbRange...).
 		Render()
 }
-
 ```
 
 </details>
 
 ### heatmap/no_grid
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/heatmap/no_grid/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-GCMu734z7KipKZyJkJAKQ.gif)
 
 <details>
 
@@ -234,14 +230,13 @@ func main() {
 	// Create the heatmap with the defined data and options, then render it.
 	pterm.DefaultHeatmap.WithData(data).WithBoxed(false).WithAxisData(axisData).WithEnableRGB().WithLegend().WithGrid(false).Render()
 }
-
 ```
 
 </details>
 
 ### heatmap/separated
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/heatmap/separated/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-7tVQlAJIY38qZzmqnxXWTB.gif)
 
 <details>
 
@@ -275,7 +270,6 @@ func main() {
 	// Create the heatmap with the specified data and options, and render it.
 	pterm.DefaultHeatmap.WithData(data).WithBoxed(false).WithAxisData(headerData).WithLegend(false).Render()
 }
-
 ```
 
 </details>

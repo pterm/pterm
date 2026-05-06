@@ -1,6 +1,6 @@
 # coloring/fade-multiple-colors
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-35y9qa1hwoU0T9QIVueo7D.gif)
 
 ```go
 package main
@@ -44,5 +44,4 @@ func main() {
 		startColor.Fade(0, float32(terminalHeight-2), float32(i), firstPoint, secondPoint, thirdPoint, endColor).Println("Hello, World!")
 	}
 }
-
 ```

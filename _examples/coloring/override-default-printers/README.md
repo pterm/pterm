@@ -1,6 +1,6 @@
 # coloring/override-default-printers
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-5uqfqe2Y4nIt6DAahZxgrR.gif)
 
 ```go
 package main
@@ -17,5 +17,4 @@ func main() {
 	// Print the error message again, this time with the overridden prefix.
 	pterm.Error.Println("This is the default Error after the prefix was overridden")
 }
-
 ```

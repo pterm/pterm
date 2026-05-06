@@ -1,6 +1,6 @@
 ### interactive_confirm/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/interactive_confirm/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-369MF4fKJkA8Trb6dtr7vw.gif)
 
 <details>
 
@@ -33,7 +33,6 @@ func boolToText(b bool) string {
 	}
 	return pterm.Red("No")
 }
-
 ```
 
 </details>

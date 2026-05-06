@@ -1,6 +1,6 @@
 # header/demo
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-41l3x0NGuRGy2lR41m5S8x.gif)
 
 ```go
 package main
@@ -19,5 +19,4 @@ func main() {
 	// This uses the WithFullWidth() option of PTerm to print a header that spans the full width of the terminal.
 	pterm.DefaultHeader.WithFullWidth().Println("This is a full-width header.")
 }
-
 ```

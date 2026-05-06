@@ -1,6 +1,6 @@
 # spinner/multiple
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-4QUfdRQthIpsPvGGUM009s.gif)
 
 ```go
 package main
@@ -51,5 +51,4 @@ func main() {
 	// Stop the multi printer. This will stop printing all the spinners.
 	multi.Stop()
 }
-
 ```

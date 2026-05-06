@@ -1,6 +1,6 @@
 # table/right-alignment
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-2w0inKSgt3JQLFYx3q3T64.gif)
 
 ```go
 package main
@@ -24,5 +24,4 @@ func main() {
 	// The Render() method is used to print the table to the console.
 	pterm.DefaultTable.WithHasHeader().WithRightAlignment().WithData(tableData).Render()
 }
-
 ```

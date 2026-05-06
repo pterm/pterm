@@ -3,9 +3,6 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Print an informational message.
-	pterm.Info.Println("This might not be rendered correctly on GitHub,\nbut it will work in a real terminal.\nThis is because GitHub does not use a monospaced font by default for SVGs")
-
 	// Create three panels with text, some of them with titles.
 	// The panels are created using the DefaultBox style.
 	panel1 := pterm.DefaultBox.Sprint("Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit,\nsed do eiusmod tempor incididunt\nut labore et dolore\nmagna aliqua.")

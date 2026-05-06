@@ -1,6 +1,6 @@
 # coloring/fade-colors
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-7HjCE1jhInLJAxVU15lslJ.gif)
 
 ```go
 package main
@@ -32,5 +32,4 @@ func main() {
 		currentColor.Println("Hello, World!")
 	}
 }
-
 ```

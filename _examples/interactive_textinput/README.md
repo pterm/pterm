@@ -1,6 +1,6 @@
 ### interactive_textinput/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/interactive_textinput/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-B8fA0qEGTTDmSrWZDNA3.gif)
 
 <details>
 
@@ -23,14 +23,13 @@ func main() {
 	// Print the user's answer with an info prefix
 	pterm.Info.Printfln("You answered: %s", result)
 }
-
 ```
 
 </details>
 
 ### interactive_textinput/default-value
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/interactive_textinput/default-value/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-4xULLP7ugZkEcFsvi7O9r1.gif)
 
 <details>
 
@@ -53,14 +52,13 @@ func main() {
 	// Print the user's answer with an info prefix
 	pterm.Info.Printfln("You answered: %s", result)
 }
-
 ```
 
 </details>
 
 ### interactive_textinput/multi-line
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/interactive_textinput/multi-line/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-5lCjIPFgeGrVP0sz9Du9aq.gif)
 
 <details>
 
@@ -89,14 +87,13 @@ func main() {
 	// The '%s' placeholder is replaced with the user's input.
 	pterm.Info.Printfln("You answered: %s", result)
 }
-
 ```
 
 </details>
 
 ### interactive_textinput/password
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/interactive_textinput/password/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-3ROZC0UkqpmvnYhnwc5Ws.gif)
 
 <details>
 
@@ -121,7 +118,6 @@ func main() {
 	// Note: In a real-world application, you should never log passwords
 	logger.Info("Password received", logger.Args("password", result))
 }
-
 ```
 
 </details>

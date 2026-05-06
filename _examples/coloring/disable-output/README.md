@@ -1,6 +1,6 @@
 # coloring/disable-output
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-66Cwz98xMAX0DwK6A3wZ4D.gif)
 
 ```go
 package main
@@ -25,5 +25,4 @@ func main() {
 		pterm.Printf("Printing something... [%d/%d]\n", i, 15)
 	}
 }
-
 ```

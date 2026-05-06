@@ -1,6 +1,6 @@
 # heatmap/demo
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-5Gg9cnXkTW44HZiZqIKaM1.gif)
 
 ```go
 package main
@@ -29,5 +29,4 @@ func main() {
 	// Then render the heatmap.
 	pterm.DefaultHeatmap.WithAxisData(headerData).WithData(data).WithEnableRGB().Render()
 }
-
 ```

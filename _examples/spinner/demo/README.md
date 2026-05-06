@@ -1,6 +1,6 @@
 # spinner/demo
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-4WGvqxFHjBF9WV9oWwOYis.gif)
 
 ```go
 package main
@@ -54,5 +54,4 @@ func main() {
 	time.Sleep(time.Second)                          // Simulate 2 seconds of processing something.
 	spinnerLiveText.Success("Finally!")              // Resolve spinner with success message.
 }
-
 ```

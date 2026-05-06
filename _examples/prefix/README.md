@@ -1,6 +1,6 @@
 ### prefix/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/prefix/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-1iOTkR1cx1xrUxeoOFYvIf.gif)
 
 <details>
 
@@ -38,7 +38,6 @@ func main() {
 	// This will print a fatal message with PTerm, but won't terminate the program.
 	pterm.Fatal.WithFatal(false).Println("Hello, World!")
 }
-
 ```
 
 </details>

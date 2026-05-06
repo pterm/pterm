@@ -1,6 +1,6 @@
 ### logger/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/logger/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-4mLT9fy0duDGy76Y2RcqXt.gif)
 
 <details>
 
@@ -69,14 +69,13 @@ func main() {
 func sleep() {
 	time.Sleep(time.Second * 3)
 }
-
 ```
 
 </details>
 
 ### logger/custom-key-styles
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/logger/custom-key-styles/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-4Km8B04pvnop5U2eUYiqB5.gif)
 
 <details>
 
@@ -111,14 +110,13 @@ func main() {
 	// Log another info message. The "foo" key will be displayed in blue.
 	logger.Info("The foo key should now be blue", logger.Args("priority", "low", "foo", "bar"))
 }
-
 ```
 
 </details>
 
 ### logger/default
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/logger/default/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-4JeKCSLdG8p687vQFDcHby.gif)
 
 <details>
 
@@ -167,14 +165,13 @@ func main() {
 	// Log a fatal message with additional arguments. This will terminate the process.
 	logger.Fatal("Oh no, this process is getting killed!", logger.Args("fatal", true))
 }
-
 ```
 
 </details>
 
 ### logger/json
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/logger/json/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-5pZsdHaBLSX6yTOhlHwQZz.gif)
 
 <details>
 
@@ -209,14 +206,13 @@ func main() {
 	logger.Info("But what's really cool is, that you can print very long logs, and PTerm will automatically wrap them for you! Say goodbye to text, that has weird line breaks!", logger.Args("very", "long"))
 	logger.Fatal("Oh no, this process is getting killed!", logger.Args("fatal", true))
 }
-
 ```
 
 </details>
 
 ### logger/with-caller
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/logger/with-caller/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-2LoJwXyihXvnJ2wyZRFP7g.gif)
 
 <details>
 
@@ -259,7 +255,6 @@ func main() {
 	// Log a fatal message with additional arguments. This will terminate the process.
 	logger.Fatal("Oh no, this process is getting killed!", logger.Args("fatal", true))
 }
-
 ```
 
 </details>

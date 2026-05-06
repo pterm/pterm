@@ -1,6 +1,6 @@
 # barchart/demo
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-48hC9kutzQcqurPjdprkey.gif)
 
 ```go
 package main
@@ -30,5 +30,4 @@ func main() {
 	// The Render function is then called to display the chart
 	pterm.DefaultBarChart.WithHorizontal().WithBars(bars).Render()
 }
-
 ```

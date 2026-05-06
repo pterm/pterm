@@ -1,6 +1,6 @@
 # demo/demo
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-476CDsxMFljwWYNGBXkb9X.gif)
 
 ```go
 package main
@@ -44,7 +44,7 @@ func main() {
 
 		logger.Trace("Doing not so important stuff", logger.Args("priority", "super low"))
 
-		time.Sleep(time.Second * 3)
+		time.Sleep(second * 3)
 
 		interstingStuff := map[string]any{
 			"when were crayons invented":  "1903",
@@ -52,14 +52,14 @@ func main() {
 			"is this interesting":         true,
 		}
 		logger.Debug("This might be interesting", logger.ArgsFromMap(interstingStuff))
-		time.Sleep(time.Second * 3)
+		time.Sleep(second * 3)
 
 		logger.Info("That was actually interesting", logger.Args("such", "wow"))
-		time.Sleep(time.Second * 3)
+		time.Sleep(second * 3)
 		logger.Warn("Oh no, I see an error coming to us!", logger.Args("speed", 88, "measures", "mph"))
-		time.Sleep(time.Second * 3)
+		time.Sleep(second * 3)
 		logger.Error("Damn, here it is!", logger.Args("error", "something went wrong"))
-		time.Sleep(time.Second * 3)
+		time.Sleep(second * 3)
 		logger.Info("But what's really cool is, that you can print very long logs, and PTerm will automatically wrap them for you! Say goodbye to text, that has weird line breaks!", logger.Args("very", "long"))
 	})
 
@@ -100,7 +100,7 @@ func main() {
 		for i := 0; i < 10; i++ {
 			str, _ := pterm.DefaultBigText.WithLetters(putils.LettersFromString(time.Now().Format("15:04:05"))).Srender() // Save current time in str.
 			area.Update(str)                                                                                              // Update Area contents.
-			time.Sleep(time.Second)
+			time.Sleep(second)
 		}
 		area.Stop()
 	})
@@ -197,7 +197,7 @@ func main() {
 				if ok {
 					field.Println(typeOfS.Field(i).Name)
 				}
-				time.Sleep(time.Millisecond * 250)
+				time.Sleep(second / 4)
 			}
 		}
 	})
@@ -271,5 +271,4 @@ func randomInt(min, max int) int {
 	rand.Seed(time.Now().UnixNano())
 	return rand.Intn(max-min+1) + min
 }
-
 ```

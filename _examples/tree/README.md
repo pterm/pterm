@@ -1,6 +1,6 @@
 ### tree/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/tree/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-3Tmr0W1BGVIsXEPYqfSpGa.gif)
 
 <details>
 
@@ -35,14 +35,13 @@ func main() {
 	// Render the tree with the defined structure as the root
 	pterm.DefaultTree.WithRoot(tree).Render()
 }
-
 ```
 
 </details>
 
 ### tree/from-leveled-list
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/tree/from-leveled-list/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-2bm3GXfPOGQxsVAIevSXyV.gif)
 
 <details>
 
@@ -90,7 +89,6 @@ func main() {
 	// Render the tree structure using the default tree printer.
 	pterm.DefaultTree.WithRoot(root).Render()
 }
-
 ```
 
 </details>

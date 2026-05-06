@@ -1,6 +1,6 @@
 # heatmap/no_grid
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-GCMu734z7KipKZyJkJAKQ.gif)
 
 ```go
 package main
@@ -32,5 +32,4 @@ func main() {
 	// Create the heatmap with the defined data and options, then render it.
 	pterm.DefaultHeatmap.WithData(data).WithBoxed(false).WithAxisData(axisData).WithEnableRGB().WithLegend().WithGrid(false).Render()
 }
-
 ```

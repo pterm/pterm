@@ -1,6 +1,6 @@
 # prefix/demo
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-1iOTkR1cx1xrUxeoOFYvIf.gif)
 
 ```go
 package main
@@ -34,5 +34,4 @@ func main() {
 	// This will print a fatal message with PTerm, but won't terminate the program.
 	pterm.Fatal.WithFatal(false).Println("Hello, World!")
 }
-
 ```

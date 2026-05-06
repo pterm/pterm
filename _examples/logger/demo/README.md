@@ -1,6 +1,6 @@
 # logger/demo
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-4mLT9fy0duDGy76Y2RcqXt.gif)
 
 ```go
 package main
@@ -65,5 +65,4 @@ func main() {
 func sleep() {
 	time.Sleep(time.Second * 3)
 }
-
 ```

@@ -1,6 +1,6 @@
 # coloring/print-color-rgb
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-4Iok4H7S6qYWGRtf5H2dTf.gif)
 
 ```go
 package main
@@ -21,5 +21,4 @@ func main() {
 	// The 'true' argument indicates that the color is for the background.
 	pterm.NewRGB(201, 144, 30, true).Println("This text is printed with a custom RGB background!")
 }
-
 ```

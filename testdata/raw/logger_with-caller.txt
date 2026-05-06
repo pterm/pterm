@@ -1,0 +1,464 @@
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+2026-05-06 20:51:09 TRACE Doing not so important stuff
+                      ├ priority: super low
+                      └ caller: /_examples/logger/with-caller/main.go:10
+2026-05-06 20:51:09 DEBUG This might be interesting
+                      ├ when were crayons invented: 1903
+                      ├ what is the meaning of life: 42
+                      ├ is this interesting: true
+                      └ caller: /_examples/logger/with-caller/main.go:20
+2026-05-06 20:51:09 INFO  That was actually interesting
+                      ├ such: wow
+                      └ caller: /_examples/logger/with-caller/main.go:23
+2026-05-06 20:51:09 WARN  Oh no, I see an error coming to us!
+                      ├ speed: 88
+                      ├ measures: mph
+                      └ caller: /_examples/logger/with-caller/main.go:26
+2026-05-06 20:51:09 ERROR Damn, here it is!
+                      ├ error: something went wrong
+                      └ caller: /_examples/logger/with-caller/main.go:29
+2026-05-06 20:51:09 INFO  But what's really cool is, that you can print
+                      │   very long logs, and PTerm will automatically wrap
+                      │   them for you! Say goodbye to text, that has weird
+                      │   line breaks!
+                      ├ very: long
+                      └ caller: /_examples/logger/with-caller/main.go:32
+2026-05-06 20:51:09 FATAL Oh no, this process is getting killed!
+                      ├ fatal: true
+                      └ caller: /_examples/logger/with-caller/main.go:35
+>
+
+
+────────────────────────────────────────────────────────────────────────────────
+2026-05-06 20:51:09 TRACE Doing not so important stuff
+                      ├ priority: super low
+                      └ caller: /_examples/logger/with-caller/main.go:10
+2026-05-06 20:51:09 DEBUG This might be interesting
+                      ├ when were crayons invented: 1903
+                      ├ what is the meaning of life: 42
+                      ├ is this interesting: true
+                      └ caller: /_examples/logger/with-caller/main.go:20
+2026-05-06 20:51:09 INFO  That was actually interesting
+                      ├ such: wow
+                      └ caller: /_examples/logger/with-caller/main.go:23
+2026-05-06 20:51:09 WARN  Oh no, I see an error coming to us!
+                      ├ speed: 88
+                      ├ measures: mph
+                      └ caller: /_examples/logger/with-caller/main.go:26
+2026-05-06 20:51:09 ERROR Damn, here it is!
+                      ├ error: something went wrong
+                      └ caller: /_examples/logger/with-caller/main.go:29
+2026-05-06 20:51:09 INFO  But what's really cool is, that you can print
+                      │   very long logs, and PTerm will automatically wrap
+                      │   them for you! Say goodbye to text, that has weird
+                      │   line breaks!
+                      ├ very: long
+                      └ caller: /_examples/logger/with-caller/main.go:32
+2026-05-06 20:51:09 FATAL Oh no, this process is getting killed!
+                      ├ fatal: true
+                      └ caller: /_examples/logger/with-caller/main.go:35
+>
+
+
+────────────────────────────────────────────────────────────────────────────────
+2026-05-06 20:51:09 TRACE Doing not so important stuff
+                      ├ priority: super low
+                      └ caller: /_examples/logger/with-caller/main.go:10
+2026-05-06 20:51:09 DEBUG This might be interesting
+                      ├ when were crayons invented: 1903
+                      ├ what is the meaning of life: 42
+                      ├ is this interesting: true
+                      └ caller: /_examples/logger/with-caller/main.go:20
+2026-05-06 20:51:09 INFO  That was actually interesting
+                      ├ such: wow
+                      └ caller: /_examples/logger/with-caller/main.go:23
+2026-05-06 20:51:09 WARN  Oh no, I see an error coming to us!
+                      ├ speed: 88
+                      ├ measures: mph
+                      └ caller: /_examples/logger/with-caller/main.go:26
+2026-05-06 20:51:09 ERROR Damn, here it is!
+                      ├ error: something went wrong
+                      └ caller: /_examples/logger/with-caller/main.go:29
+2026-05-06 20:51:09 INFO  But what's really cool is, that you can print
+                      │   very long logs, and PTerm will automatically wrap
+                      │   them for you! Say goodbye to text, that has weird
+                      │   line breaks!
+                      ├ very: long
+                      └ caller: /_examples/logger/with-caller/main.go:32
+2026-05-06 20:51:09 FATAL Oh no, this process is getting killed!
+                      ├ fatal: true
+                      └ caller: /_examples/logger/with-caller/main.go:35
+>
+
+
+────────────────────────────────────────────────────────────────────────────────

@@ -1,6 +1,6 @@
 # paragraph/demo
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-XzVRxEhdoNVjnMBSYcr3l.gif)
 
 ```go
 package main
@@ -23,5 +23,4 @@ func main() {
 	pterm.Println("This text is written with the default Println() function. No intelligent splitting here." +
 		"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam")
 }
-
 ```

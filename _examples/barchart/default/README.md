@@ -1,6 +1,6 @@
 # barchart/default
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-1l29HBVXZEKqB5fR20U7yg.gif)
 
 ```go
 package main
@@ -27,5 +27,4 @@ func main() {
 	// The `Render` method is used to display the chart.
 	pterm.DefaultBarChart.WithBars(bars).Render()
 }
-
 ```

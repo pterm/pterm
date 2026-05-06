@@ -1,6 +1,6 @@
 ### bigtext/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/bigtext/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-Mx7g40UDxZku0rPbGiHC5.gif)
 
 <details>
 
@@ -34,14 +34,13 @@ func main() {
 		putils.LettersFromStringWithRGB("PTerm", pterm.NewRGB(255, 215, 0)),
 	).Render()
 }
-
 ```
 
 </details>
 
 ### bigtext/colored
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/bigtext/colored/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-5lqFGFgHfY3LAZPMDqLtF.gif)
 
 <details>
 
@@ -63,14 +62,13 @@ func main() {
 		putils.LettersFromStringWithStyle("Term", pterm.FgLightMagenta.ToStyle())).
 		Render() // Render the big text to the terminal
 }
-
 ```
 
 </details>
 
 ### bigtext/default
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/bigtext/default/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-203C7xwJQYMYIXebRw1vtS.gif)
 
 <details>
 
@@ -94,7 +92,6 @@ func main() {
 	// Render the text using PTerm's default big text style
 	pterm.DefaultBigText.WithLetters(letters).Render()
 }
-
 ```
 
 </details>

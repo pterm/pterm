@@ -5,7 +5,7 @@
 <!-- examples:start -->
 ### area/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/area/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-6BFEFVArJQSAqhDMB3LQl6.gif)
 
 <details>
 
@@ -51,14 +51,13 @@ func main() {
 	// Stop the Area printer after all updates are done.
 	area.Stop()
 }
-
 ```
 
 </details>
 
 ### area/center
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/area/center/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-1cyd8YnCir7Mrwu7DyRiCP.gif)
 
 <details>
 
@@ -91,14 +90,13 @@ func main() {
 	// Stop the area after all updates are done.
 	area.Stop()
 }
-
 ```
 
 </details>
 
 ### area/default
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/area/default/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-7IhCjsQA6e5Rp11e8eAxNG.gif)
 
 <details>
 
@@ -132,14 +130,13 @@ func main() {
 	// This will clean up and free resources used by the area.
 	area.Stop()
 }
-
 ```
 
 </details>
 
 ### area/dynamic-chart
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/area/dynamic-chart/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-2cQvhvuQ3B9pBj4FFQhHfa.gif)
 
 <details>
 
@@ -186,14 +183,13 @@ func dynamicBars(i int) pterm.Bars {
 		{Label: "D", Value: 40 + i}, // A bar that grows slowly with each iteration.
 	}
 }
-
 ```
 
 </details>
 
 ### area/fullscreen
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/area/fullscreen/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-2FCFVs5NSV0kYMRVzRCr34.gif)
 
 <details>
 
@@ -226,14 +222,13 @@ func main() {
 	// Stop the area after all updates are done.
 	area.Stop()
 }
-
 ```
 
 </details>
 
 ### area/fullscreen-center
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/area/fullscreen-center/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-2YvXZ3kek6XOaIGPQKpNbP.gif)
 
 <details>
 
@@ -267,14 +262,13 @@ func main() {
 	// This will clear the area and return the terminal to its normal state
 	area.Stop()
 }
-
 ```
 
 </details>
 
 ### barchart/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-48hC9kutzQcqurPjdprkey.gif)
 
 <details>
 
@@ -308,14 +302,13 @@ func main() {
 	// The Render function is then called to display the chart
 	pterm.DefaultBarChart.WithHorizontal().WithBars(bars).Render()
 }
-
 ```
 
 </details>
 
 ### barchart/custom-height
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/custom-height/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-5vLTJ082V7bklOqcjLFHIR.gif)
 
 <details>
 
@@ -347,14 +340,13 @@ func main() {
 	// The Render method is used to display the chart in the terminal.
 	pterm.DefaultBarChart.WithBars(bars).WithHeight(5).Render()
 }
-
 ```
 
 </details>
 
 ### barchart/custom-width
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/custom-width/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-471reYokQ5iNiKbyhQawvz.gif)
 
 <details>
 
@@ -384,14 +376,13 @@ func main() {
 	// The Render() function is called to display the chart
 	pterm.DefaultBarChart.WithBars(barData).WithHorizontal().WithWidth(5).Render()
 }
-
 ```
 
 </details>
 
 ### barchart/default
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/default/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-1l29HBVXZEKqB5fR20U7yg.gif)
 
 <details>
 
@@ -422,14 +413,13 @@ func main() {
 	// The `Render` method is used to display the chart.
 	pterm.DefaultBarChart.WithBars(bars).Render()
 }
-
 ```
 
 </details>
 
 ### barchart/horizontal
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/horizontal/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-42CW1xtORKZ1ZAg1r0Cv5X.gif)
 
 <details>
 
@@ -459,14 +449,13 @@ func main() {
 	// The Render() function is called to display the chart
 	pterm.DefaultBarChart.WithBars(bars).WithHorizontal().Render()
 }
-
 ```
 
 </details>
 
 ### barchart/horizontal-show-value
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/horizontal-show-value/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-3iDMaVYU1VnylxmagojVzt.gif)
 
 <details>
 
@@ -496,14 +485,13 @@ func main() {
 	// The Render() function is called to display the chart
 	pterm.DefaultBarChart.WithBars(barData).WithHorizontal().WithShowValue().Render()
 }
-
 ```
 
 </details>
 
 ### barchart/mixed-values
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/mixed-values/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-54klL5UuBaS89PN935LwvX.gif)
 
 <details>
 
@@ -541,14 +529,13 @@ func main() {
 	// The Render() function is called to display the chart.
 	pterm.DefaultBarChart.WithHorizontal().WithBars(bars).WithShowValue().Render()
 }
-
 ```
 
 </details>
 
 ### barchart/negative-values
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/negative-values/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-4cB5U3tsHOwMpArQkPR2t2.gif)
 
 <details>
 
@@ -583,14 +570,13 @@ func main() {
 	// The WithShowValue() option and Render() method are used in the same way as before.
 	_ = pterm.DefaultBarChart.WithHorizontal().WithBars(negativeBars).WithShowValue().Render()
 }
-
 ```
 
 </details>
 
 ### barchart/show-value
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/barchart/show-value/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-Pur7MhOe8rCRcRX8LO4P6.gif)
 
 <details>
 
@@ -623,14 +609,13 @@ func main() {
 	// Finally, call the Render method to display the chart.
 	pterm.DefaultBarChart.WithBars(bars).WithShowValue().Render()
 }
-
 ```
 
 </details>
 
 ### basictext/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/basictext/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-25T1d3hhwrI27QeDNymk6f.gif)
 
 <details>
 
@@ -652,14 +637,13 @@ func main() {
 
 	// The DefaultBasicText is also useful for resolving progress bars and spinners.
 }
-
 ```
 
 </details>
 
 ### bigtext/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/bigtext/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-Mx7g40UDxZku0rPbGiHC5.gif)
 
 <details>
 
@@ -693,14 +677,13 @@ func main() {
 		putils.LettersFromStringWithRGB("PTerm", pterm.NewRGB(255, 215, 0)),
 	).Render()
 }
-
 ```
 
 </details>
 
 ### bigtext/colored
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/bigtext/colored/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-5lqFGFgHfY3LAZPMDqLtF.gif)
 
 <details>
 
@@ -722,14 +705,13 @@ func main() {
 		putils.LettersFromStringWithStyle("Term", pterm.FgLightMagenta.ToStyle())).
 		Render() // Render the big text to the terminal
 }
-
 ```
 
 </details>
 
 ### bigtext/default
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/bigtext/default/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-203C7xwJQYMYIXebRw1vtS.gif)
 
 <details>
 
@@ -753,14 +735,13 @@ func main() {
 	// Render the text using PTerm's default big text style
 	pterm.DefaultBigText.WithLetters(letters).Render()
 }
-
 ```
 
 </details>
 
 ### box/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/box/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-43DUmCj6psdTlGZCIzKCkr.gif)
 
 <details>
 
@@ -793,14 +774,13 @@ func main() {
 	// The box is created using the DefaultBox style, with the title positioned at the bottom right.
 	pterm.DefaultBox.WithTitle("Lorem Ipsum").WithTitleBottomRight().WithRightPadding(0).WithBottomPadding(0).Println(panels)
 }
-
 ```
 
 </details>
 
 ### box/custom-padding
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/box/custom-padding/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-i8JKBbJhrtKmtrcIN2uCr.gif)
 
 <details>
 
@@ -815,14 +795,13 @@ func main() {
 	// Create a default box with custom padding options and print "Hello, World!" inside it.
 	pterm.DefaultBox.WithRightPadding(10).WithLeftPadding(10).WithTopPadding(2).WithBottomPadding(2).Println("Hello, World!")
 }
-
 ```
 
 </details>
 
 ### box/default
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/box/default/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-QVPtf5voQmddcwL3vosIS.gif)
 
 <details>
 
@@ -838,14 +817,13 @@ func main() {
 	// The DefaultBox.Println method automatically starts, prints the message, and stops the box.
 	pterm.DefaultBox.Println("Hello, World!")
 }
-
 ```
 
 </details>
 
 ### box/title
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/box/title/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-4Que0JUommpulZ4oifPCxv.gif)
 
 <details>
 
@@ -879,14 +857,13 @@ func main() {
 		{{box7}},
 	}).Render()
 }
-
 ```
 
 </details>
 
 ### bulletlist/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/bulletlist/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-5VyjQrMRgVzF8GolGYYK7x.gif)
 
 <details>
 
@@ -920,14 +897,13 @@ func main() {
 	// Convert the indented string to a bullet list and render it.
 	putils.BulletListFromString(text, " ").Render()
 }
-
 ```
 
 </details>
 
 ### bulletlist/customized
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/bulletlist/customized/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-2eWtEghPEkDYALoMcOw9Sz.gif)
 
 <details>
 
@@ -968,14 +944,13 @@ func main() {
 	// Create a bullet list with the defined items and render it.
 	pterm.DefaultBulletList.WithItems(bulletListItems).Render()
 }
-
 ```
 
 </details>
 
 ### center/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/center/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-3IMjlTNrnVWmLt4zChCmgN.gif)
 
 <details>
 
@@ -1002,14 +977,13 @@ func main() {
 	// Print each line of the text separately centered in the terminal
 	pterm.DefaultCenter.WithCenterEachLineSeparately().Println("This text is centered!\nBut each line is\ncentered\nseparately")
 }
-
 ```
 
 </details>
 
 ### coloring/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-1o5LppFpGpoqMHQK3kmjn6.gif)
 
 <details>
 
@@ -1046,14 +1020,13 @@ func main() {
 	// Print text using the created style.
 	style.Println("This text uses a style and is bold and light green with a red background!")
 }
-
 ```
 
 </details>
 
 ### coloring/disable-output
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/disable-output/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-66Cwz98xMAX0DwK6A3wZ4D.gif)
 
 <details>
 
@@ -1082,14 +1055,13 @@ func main() {
 		pterm.Printf("Printing something... [%d/%d]\n", i, 15)
 	}
 }
-
 ```
 
 </details>
 
 ### coloring/fade-colors
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/fade-colors/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-7HjCE1jhInLJAxVU15lslJ.gif)
 
 <details>
 
@@ -1125,14 +1097,13 @@ func main() {
 		currentColor.Println("Hello, World!")
 	}
 }
-
 ```
 
 </details>
 
 ### coloring/fade-colors-rgb-style
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/fade-colors-rgb-style/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-7Fip42EJG4WSZJJN1ZD2ex.gif)
 
 <details>
 
@@ -1207,14 +1178,13 @@ func printStyledString(str string, fgStart, fgEnd, bgStart, bgEnd pterm.RGB) {
 	}
 	pterm.Println(result)
 }
-
 ```
 
 </details>
 
 ### coloring/fade-multiple-colors
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/fade-multiple-colors/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-35y9qa1hwoU0T9QIVueo7D.gif)
 
 <details>
 
@@ -1262,14 +1232,13 @@ func main() {
 		startColor.Fade(0, float32(terminalHeight-2), float32(i), firstPoint, secondPoint, thirdPoint, endColor).Println("Hello, World!")
 	}
 }
-
 ```
 
 </details>
 
 ### coloring/override-default-printers
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/override-default-printers/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-5uqfqe2Y4nIt6DAahZxgrR.gif)
 
 <details>
 
@@ -1290,14 +1259,13 @@ func main() {
 	// Print the error message again, this time with the overridden prefix.
 	pterm.Error.Println("This is the default Error after the prefix was overridden")
 }
-
 ```
 
 </details>
 
 ### coloring/print-color-rgb
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/print-color-rgb/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-4Iok4H7S6qYWGRtf5H2dTf.gif)
 
 <details>
 
@@ -1322,14 +1290,13 @@ func main() {
 	// The 'true' argument indicates that the color is for the background.
 	pterm.NewRGB(201, 144, 30, true).Println("This text is printed with a custom RGB background!")
 }
-
 ```
 
 </details>
 
 ### coloring/print-color-rgb-style
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/coloring/print-color-rgb-style/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-63t83e2pmcTdMLQNHUvHt5.gif)
 
 <details>
 
@@ -1359,14 +1326,13 @@ func main() {
 	// Add the 'Italic' option to the RGB style and print a string with this style.
 	rgbStyle.AddOptions(pterm.Italic).Println("This text is italic.")
 }
-
 ```
 
 </details>
 
 ### demo/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/demo/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-476CDsxMFljwWYNGBXkb9X.gif)
 
 <details>
 
@@ -1414,7 +1380,7 @@ func main() {
 
 		logger.Trace("Doing not so important stuff", logger.Args("priority", "super low"))
 
-		time.Sleep(time.Second * 3)
+		time.Sleep(second * 3)
 
 		interstingStuff := map[string]any{
 			"when were crayons invented":  "1903",
@@ -1422,14 +1388,14 @@ func main() {
 			"is this interesting":         true,
 		}
 		logger.Debug("This might be interesting", logger.ArgsFromMap(interstingStuff))
-		time.Sleep(time.Second * 3)
+		time.Sleep(second * 3)
 
 		logger.Info("That was actually interesting", logger.Args("such", "wow"))
-		time.Sleep(time.Second * 3)
+		time.Sleep(second * 3)
 		logger.Warn("Oh no, I see an error coming to us!", logger.Args("speed", 88, "measures", "mph"))
-		time.Sleep(time.Second * 3)
+		time.Sleep(second * 3)
 		logger.Error("Damn, here it is!", logger.Args("error", "something went wrong"))
-		time.Sleep(time.Second * 3)
+		time.Sleep(second * 3)
 		logger.Info("But what's really cool is, that you can print very long logs, and PTerm will automatically wrap them for you! Say goodbye to text, that has weird line breaks!", logger.Args("very", "long"))
 	})
 
@@ -1470,7 +1436,7 @@ func main() {
 		for i := 0; i < 10; i++ {
 			str, _ := pterm.DefaultBigText.WithLetters(putils.LettersFromString(time.Now().Format("15:04:05"))).Srender() // Save current time in str.
 			area.Update(str)                                                                                              // Update Area contents.
-			time.Sleep(time.Second)
+			time.Sleep(second)
 		}
 		area.Stop()
 	})
@@ -1567,7 +1533,7 @@ func main() {
 				if ok {
 					field.Println(typeOfS.Field(i).Name)
 				}
-				time.Sleep(time.Millisecond * 250)
+				time.Sleep(second / 4)
 			}
 		}
 	})
@@ -1641,14 +1607,13 @@ func randomInt(min, max int) int {
 	rand.Seed(time.Now().UnixNano())
 	return rand.Intn(max-min+1) + min
 }
-
 ```
 
 </details>
 
 ### header/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/header/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-41l3x0NGuRGy2lR41m5S8x.gif)
 
 <details>
 
@@ -1671,14 +1636,13 @@ func main() {
 	// This uses the WithFullWidth() option of PTerm to print a header that spans the full width of the terminal.
 	pterm.DefaultHeader.WithFullWidth().Println("This is a full-width header.")
 }
-
 ```
 
 </details>
 
 ### header/custom
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/header/custom/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-5c8QzHYrjymhxB5DTG6XEF.gif)
 
 <details>
 
@@ -1703,14 +1667,13 @@ func main() {
 	// Print the custom header using the new HeaderPrinter.
 	newHeader.Println("This is a custom header!")
 }
-
 ```
 
 </details>
 
 ### heatmap/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/heatmap/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-5Gg9cnXkTW44HZiZqIKaM1.gif)
 
 <details>
 
@@ -1743,14 +1706,13 @@ func main() {
 	// Then render the heatmap.
 	pterm.DefaultHeatmap.WithAxisData(headerData).WithData(data).WithEnableRGB().Render()
 }
-
 ```
 
 </details>
 
 ### heatmap/custom_colors
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/heatmap/custom_colors/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-31y7AvLKclklj1MfSXW9wq.gif)
 
 <details>
 
@@ -1793,14 +1755,13 @@ func main() {
 		WithLegend().
 		Render()
 }
-
 ```
 
 </details>
 
 ### heatmap/custom_legend
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/heatmap/custom_legend/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-1R4ftXBA6ji3DRObytiIPh.gif)
 
 <details>
 
@@ -1844,14 +1805,13 @@ func main() {
 		WithLegendOnlyColoredCells().
 		Render() // Render the heatmap
 }
-
 ```
 
 </details>
 
 ### heatmap/custom_rgb
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/heatmap/custom_rgb/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-5gD43rIoUbSLhOoDXOsX4P.gif)
 
 <details>
 
@@ -1901,14 +1861,13 @@ func main() {
 		WithRGBRange(rgbRange...).
 		Render()
 }
-
 ```
 
 </details>
 
 ### heatmap/no_grid
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/heatmap/no_grid/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-GCMu734z7KipKZyJkJAKQ.gif)
 
 <details>
 
@@ -1944,14 +1903,13 @@ func main() {
 	// Create the heatmap with the defined data and options, then render it.
 	pterm.DefaultHeatmap.WithData(data).WithBoxed(false).WithAxisData(axisData).WithEnableRGB().WithLegend().WithGrid(false).Render()
 }
-
 ```
 
 </details>
 
 ### heatmap/separated
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/heatmap/separated/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-7tVQlAJIY38qZzmqnxXWTB.gif)
 
 <details>
 
@@ -1985,14 +1943,13 @@ func main() {
 	// Create the heatmap with the specified data and options, and render it.
 	pterm.DefaultHeatmap.WithData(data).WithBoxed(false).WithAxisData(headerData).WithLegend(false).Render()
 }
-
 ```
 
 </details>
 
 ### interactive_confirm/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/interactive_confirm/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-369MF4fKJkA8Trb6dtr7vw.gif)
 
 <details>
 
@@ -2025,14 +1982,13 @@ func boolToText(b bool) string {
 	}
 	return pterm.Red("No")
 }
-
 ```
 
 </details>
 
 ### interactive_continue/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/interactive_continue/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-6hMsHXqe6NghZfGaLNplsV.gif)
 
 <details>
 
@@ -2063,14 +2019,13 @@ func main() {
 	// As this is a continue prompt, the input should be empty
 	pterm.Info.Printfln("You answered: %s", result)
 }
-
 ```
 
 </details>
 
 ### interactive_multiselect/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/interactive_multiselect/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-5Ab3fT3ObEBGkEpU2Bp6u4.gif)
 
 <details>
 
@@ -2105,14 +2060,13 @@ func main() {
 	// Print the selected options, highlighted in green.
 	pterm.Info.Printfln("Selected options: %s", pterm.Green(selectedOptions))
 }
-
 ```
 
 </details>
 
 ### interactive_multiselect/custom-checkmarks
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/interactive_multiselect/custom-checkmarks/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-1qHwd2WmvXUm3zoVAgFGPm.gif)
 
 <details>
 
@@ -2148,14 +2102,61 @@ func main() {
 	// Print the selected options
 	pterm.Info.Printfln("Selected options: %s", pterm.Green(selectedOptions))
 }
+```
 
+</details>
+
+### interactive_multiselect/custom-filter-placeholder
+
+![Animation](https://vhs.charm.sh/vhs-3NtvedqCpBJW1DRt8jMg4q.gif)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	// Initialize an empty slice to hold the options
+	var options []string
+
+	// Generate 100 options and add them to the options slice
+	for i := 0; i < 100; i++ {
+		options = append(options, fmt.Sprintf("Option %d", i))
+	}
+
+	// Generate 5 additional options with a specific message and add them to the options slice
+	for i := 0; i < 5; i++ {
+		options = append(options, fmt.Sprintf("You can use fuzzy searching (%d)", i))
+	}
+
+	// Create a new interactive multiselect printer with custom filter placeholder text
+	// The WithFilterInputPlaceholder method allows you to customize the placeholder text shown when filtering
+	printer := pterm.DefaultInteractiveMultiselect.
+		WithOptions(options).
+		WithFilterInputPlaceholder("🔍 Start typing")
+
+	// Use PTerm's interactive multiselect feature to present the options to the user and capture their selections
+	// The Show() method displays the options and waits for the user's input
+	selectedOptions, _ := printer.Show()
+
+	// Display the selected options to the user with a green color for emphasis
+	pterm.Info.Printfln("Selected options: %s", pterm.Green(selectedOptions))
+}
 ```
 
 </details>
 
 ### interactive_multiselect/custom-keys
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/interactive_multiselect/custom-keys/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-4OZy3vP4kGVWAAvhaZlp4G.gif)
 
 <details>
 
@@ -2193,14 +2194,53 @@ func main() {
 	// Print the selected options
 	pterm.Info.Printfln("Selected options: %s", pterm.Green(selectedOptions))
 }
+```
 
+</details>
+
+### interactive_multiselect/show-selected-options
+
+![Animation](https://vhs.charm.sh/vhs-4XI4oApCAUAzEHQcPe5FFY.gif)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	// Initialize an empty slice to hold the options.
+	var options []string
+
+	// Populate the options slice with 100 options.
+	for i := 0; i < 100; i++ {
+		options = append(options, fmt.Sprintf("Option %d", i))
+	}
+
+	// Use PTerm's interactive multiselect to present the options to the user and capture their selections.
+	// The Show() method displays the options and waits for user input.
+	selectedOptions, _ := pterm.DefaultInteractiveMultiselect.
+		WithOptions(options).
+		WithShowSelectedOptions(true).
+		Show()
+
+	// Print the selected options, highlighted in green.
+	pterm.Info.Printfln("Selected options: %s", pterm.Green(selectedOptions))
+}
 ```
 
 </details>
 
 ### interactive_select/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/interactive_select/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-41bPcowyhaFNU5vvWSIL7R.gif)
 
 <details>
 
@@ -2235,14 +2275,61 @@ func main() {
 	// Display the selected option to the user with a green color for emphasis
 	pterm.Info.Printfln("Selected option: %s", pterm.Green(selectedOption))
 }
+```
 
+</details>
+
+### interactive_select/custom-filter-placeholder
+
+![Animation](https://vhs.charm.sh/vhs-2Bip74m8wIQdkeK2FjH86G.gif)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	// Initialize an empty slice to hold the options
+	var options []string
+
+	// Generate 100 options and add them to the options slice
+	for i := 0; i < 100; i++ {
+		options = append(options, fmt.Sprintf("Option %d", i))
+	}
+
+	// Generate 5 additional options with a specific message and add them to the options slice
+	for i := 0; i < 5; i++ {
+		options = append(options, fmt.Sprintf("You can use fuzzy searching (%d)", i))
+	}
+
+	// Create a new interactive select printer with custom filter placeholder text
+	// The WithFilterInputPlaceholder method allows you to customize the placeholder text shown when filtering
+	printer := pterm.DefaultInteractiveSelect.
+		WithOptions(options).
+		WithFilterInputPlaceholder("🔍 Start typing")
+
+	// Use PTerm's interactive select feature to present the options to the user and capture their selection
+	// The Show() method displays the options and waits for the user's input
+	selectedOption, _ := printer.Show()
+
+	// Display the selected option to the user with a green color for emphasis
+	pterm.Info.Printfln("Selected option: %s", pterm.Green(selectedOption))
+}
 ```
 
 </details>
 
 ### interactive_textinput/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/interactive_textinput/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-B8fA0qEGTTDmSrWZDNA3.gif)
 
 <details>
 
@@ -2265,14 +2352,13 @@ func main() {
 	// Print the user's answer with an info prefix
 	pterm.Info.Printfln("You answered: %s", result)
 }
-
 ```
 
 </details>
 
 ### interactive_textinput/default-value
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/interactive_textinput/default-value/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-4xULLP7ugZkEcFsvi7O9r1.gif)
 
 <details>
 
@@ -2295,14 +2381,13 @@ func main() {
 	// Print the user's answer with an info prefix
 	pterm.Info.Printfln("You answered: %s", result)
 }
-
 ```
 
 </details>
 
 ### interactive_textinput/multi-line
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/interactive_textinput/multi-line/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-5lCjIPFgeGrVP0sz9Du9aq.gif)
 
 <details>
 
@@ -2331,14 +2416,13 @@ func main() {
 	// The '%s' placeholder is replaced with the user's input.
 	pterm.Info.Printfln("You answered: %s", result)
 }
-
 ```
 
 </details>
 
 ### interactive_textinput/password
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/interactive_textinput/password/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-3ROZC0UkqpmvnYhnwc5Ws.gif)
 
 <details>
 
@@ -2363,14 +2447,13 @@ func main() {
 	// Note: In a real-world application, you should never log passwords
 	logger.Info("Password received", logger.Args("password", result))
 }
-
 ```
 
 </details>
 
 ### logger/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/logger/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-4mLT9fy0duDGy76Y2RcqXt.gif)
 
 <details>
 
@@ -2439,14 +2522,13 @@ func main() {
 func sleep() {
 	time.Sleep(time.Second * 3)
 }
-
 ```
 
 </details>
 
 ### logger/custom-key-styles
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/logger/custom-key-styles/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-4Km8B04pvnop5U2eUYiqB5.gif)
 
 <details>
 
@@ -2481,14 +2563,13 @@ func main() {
 	// Log another info message. The "foo" key will be displayed in blue.
 	logger.Info("The foo key should now be blue", logger.Args("priority", "low", "foo", "bar"))
 }
-
 ```
 
 </details>
 
 ### logger/default
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/logger/default/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-4JeKCSLdG8p687vQFDcHby.gif)
 
 <details>
 
@@ -2537,14 +2618,13 @@ func main() {
 	// Log a fatal message with additional arguments. This will terminate the process.
 	logger.Fatal("Oh no, this process is getting killed!", logger.Args("fatal", true))
 }
-
 ```
 
 </details>
 
 ### logger/json
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/logger/json/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-5pZsdHaBLSX6yTOhlHwQZz.gif)
 
 <details>
 
@@ -2579,14 +2659,13 @@ func main() {
 	logger.Info("But what's really cool is, that you can print very long logs, and PTerm will automatically wrap them for you! Say goodbye to text, that has weird line breaks!", logger.Args("very", "long"))
 	logger.Fatal("Oh no, this process is getting killed!", logger.Args("fatal", true))
 }
-
 ```
 
 </details>
 
 ### logger/with-caller
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/logger/with-caller/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-2LoJwXyihXvnJ2wyZRFP7g.gif)
 
 <details>
 
@@ -2629,14 +2708,13 @@ func main() {
 	// Log a fatal message with additional arguments. This will terminate the process.
 	logger.Fatal("Oh no, this process is getting killed!", logger.Args("fatal", true))
 }
-
 ```
 
 </details>
 
 ### multiple-live-printers/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/multiple-live-printers/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-39j4YJq7Bo9hlTFBSRtGje.gif)
 
 <details>
 
@@ -2703,14 +2781,13 @@ func main() {
 	// Stop the multi printer
 	multi.Stop()
 }
-
 ```
 
 </details>
 
 ### panel/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/panel/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-5jDPQFYIn1Xy7WKHzpmlhr.gif)
 
 <details>
 
@@ -2738,14 +2815,13 @@ func main() {
 	// Render the panels with a padding of 5
 	_ = pterm.DefaultPanel.WithPanels(panels).WithPadding(5).Render()
 }
-
 ```
 
 </details>
 
 ### paragraph/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/paragraph/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-XzVRxEhdoNVjnMBSYcr3l.gif)
 
 <details>
 
@@ -2772,14 +2848,13 @@ func main() {
 	pterm.Println("This text is written with the default Println() function. No intelligent splitting here." +
 		"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam")
 }
-
 ```
 
 </details>
 
 ### paragraph/customized
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/paragraph/customized/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-3xLWMgbnFYKdGRsX2q6Ugh.gif)
 
 <details>
 
@@ -2809,14 +2884,13 @@ func main() {
 	// Print the long text without using a paragraph printer.
 	pterm.Println(longTextWithoutParagraph)
 }
-
 ```
 
 </details>
 
 ### prefix/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/prefix/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-1iOTkR1cx1xrUxeoOFYvIf.gif)
 
 <details>
 
@@ -2854,14 +2928,13 @@ func main() {
 	// This will print a fatal message with PTerm, but won't terminate the program.
 	pterm.Fatal.WithFatal(false).Println("Hello, World!")
 }
-
 ```
 
 </details>
 
 ### progressbar/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/progressbar/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-6HhPdzqi4jY5ZzjYij6FKT.gif)
 
 <details>
 
@@ -2906,14 +2979,13 @@ func main() {
 		time.Sleep(time.Millisecond * 350)
 	}
 }
-
 ```
 
 </details>
 
 ### progressbar/multiple
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/progressbar/multiple/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-2I9M18DhhJAUtFbFMGu68S.gif)
 
 <details>
 
@@ -2968,14 +3040,13 @@ func main() {
 	// Stop the multi printer
 	multi.Stop()
 }
-
 ```
 
 </details>
 
 ### section/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/section/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-1Bm0QS1p5YdzEiIo4RFXGt.gif)
 
 <details>
 
@@ -2999,14 +3070,13 @@ func main() {
 	// Print another informational message.
 	pterm.Info.Println("And this is\nmore placeholder text")
 }
-
 ```
 
 </details>
 
 ### slog/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/slog/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-9t83xQJ4ILYyhj3jxjLZB.gif)
 
 <details>
 
@@ -3046,14 +3116,13 @@ func main() {
 	// Log an error message
 	logger.Error("This is an error message")
 }
-
 ```
 
 </details>
 
 ### spinner/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/spinner/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-4WGvqxFHjBF9WV9oWwOYis.gif)
 
 <details>
 
@@ -3111,14 +3180,13 @@ func main() {
 	time.Sleep(time.Second)                          // Simulate 2 seconds of processing something.
 	spinnerLiveText.Success("Finally!")              // Resolve spinner with success message.
 }
-
 ```
 
 </details>
 
 ### spinner/multiple
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/spinner/multiple/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-4QUfdRQthIpsPvGGUM009s.gif)
 
 <details>
 
@@ -3173,14 +3241,13 @@ func main() {
 	// Stop the multi printer. This will stop printing all the spinners.
 	multi.Stop()
 }
-
 ```
 
 </details>
 
 ### style/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/style/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-7e8elQAwo2XedISw4XaNL.gif)
 
 <details>
 
@@ -3204,14 +3271,13 @@ func main() {
 	// Print "Hello, World!" with the secondary style
 	secondary.Println("Hello, World!")
 }
-
 ```
 
 </details>
 
 ### table/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/table/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-6aonUdpPit5uyKAFBG2YLz.gif)
 
 <details>
 
@@ -3249,14 +3315,13 @@ func main() {
 	// Create another table with a header and the defined data, then render it
 	pterm.DefaultTable.WithHasHeader().WithData(tableData2).Render()
 }
-
 ```
 
 </details>
 
 ### table/alternate-row-style
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/table/alternate-row-style/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-rWGNET95xSNwLzjSdKlUc.gif)
 
 <details>
 
@@ -3286,14 +3351,13 @@ func main() {
 	// Finally, render the table to print it.
 	pterm.DefaultTable.WithHasHeader().WithBoxed().WithData(tableData).WithAlternateRowStyle(alternateStyle).Render()
 }
-
 ```
 
 </details>
 
 ### table/boxed
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/table/boxed/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-17tWYbTxs0YTbytFpZcM95.gif)
 
 <details>
 
@@ -3321,14 +3385,13 @@ func main() {
 	// Finally, render the table to print it.
 	pterm.DefaultTable.WithHasHeader().WithBoxed().WithData(tableData).Render()
 }
-
 ```
 
 </details>
 
 ### table/multiple-lines
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/table/multiple-lines/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-2ZODMOw5xf1LyirhAchVr2.gif)
 
 <details>
 
@@ -3354,14 +3417,13 @@ func main() {
 	// The table has a header, a row separator, and a header row separator.
 	pterm.DefaultTable.WithHasHeader().WithRowSeparator("-").WithHeaderRowSeparator("-").WithData(data).Render()
 }
-
 ```
 
 </details>
 
 ### table/right-alignment
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/table/right-alignment/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-2w0inKSgt3JQLFYx3q3T64.gif)
 
 <details>
 
@@ -3389,14 +3451,13 @@ func main() {
 	// The Render() method is used to print the table to the console.
 	pterm.DefaultTable.WithHasHeader().WithRightAlignment().WithData(tableData).Render()
 }
-
 ```
 
 </details>
 
 ### theme/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/theme/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-4ZgBDHqqntaY38Dkdj50Nh.gif)
 
 <details>
 
@@ -3437,14 +3498,13 @@ func main() {
 		}
 	}
 }
-
 ```
 
 </details>
 
 ### tree/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/tree/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-3Tmr0W1BGVIsXEPYqfSpGa.gif)
 
 <details>
 
@@ -3479,14 +3539,13 @@ func main() {
 	// Render the tree with the defined structure as the root
 	pterm.DefaultTree.WithRoot(tree).Render()
 }
-
 ```
 
 </details>
 
 ### tree/from-leveled-list
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/tree/from-leveled-list/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-2bm3GXfPOGQxsVAIevSXyV.gif)
 
 <details>
 
@@ -3534,10 +3593,8 @@ func main() {
 	// Render the tree structure using the default tree printer.
 	pterm.DefaultTree.WithRoot(root).Render()
 }
-
 ```
 
 </details>
-
 
 <!-- examples:end -->

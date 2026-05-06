@@ -1,6 +1,6 @@
 ### progressbar/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/progressbar/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-6HhPdzqi4jY5ZzjYij6FKT.gif)
 
 <details>
 
@@ -45,14 +45,13 @@ func main() {
 		time.Sleep(time.Millisecond * 350)
 	}
 }
-
 ```
 
 </details>
 
 ### progressbar/multiple
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/progressbar/multiple/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-2I9M18DhhJAUtFbFMGu68S.gif)
 
 <details>
 
@@ -107,7 +106,6 @@ func main() {
 	// Stop the multi printer
 	multi.Stop()
 }
-
 ```
 
 </details>

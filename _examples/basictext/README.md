@@ -1,6 +1,6 @@
 ### basictext/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/basictext/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-25T1d3hhwrI27QeDNymk6f.gif)
 
 <details>
 
@@ -22,7 +22,6 @@ func main() {
 
 	// The DefaultBasicText is also useful for resolving progress bars and spinners.
 }
-
 ```
 
 </details>

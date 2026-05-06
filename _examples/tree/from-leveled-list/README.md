@@ -1,6 +1,6 @@
 # tree/from-leveled-list
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-2bm3GXfPOGQxsVAIevSXyV.gif)
 
 ```go
 package main
@@ -44,5 +44,4 @@ func main() {
 	// Render the tree structure using the default tree printer.
 	pterm.DefaultTree.WithRoot(root).Render()
 }
-
 ```

@@ -1,6 +1,6 @@
 # heatmap/custom_legend
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-1R4ftXBA6ji3DRObytiIPh.gif)
 
 ```go
 package main
@@ -40,5 +40,4 @@ func main() {
 		WithLegendOnlyColoredCells().
 		Render() // Render the heatmap
 }
-
 ```

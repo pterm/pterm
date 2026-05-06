@@ -1,6 +1,6 @@
 # area/fullscreen
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-2FCFVs5NSV0kYMRVzRCr34.gif)
 
 ```go
 package main
@@ -29,5 +29,4 @@ func main() {
 	// Stop the area after all updates are done.
 	area.Stop()
 }
-
 ```

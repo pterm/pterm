@@ -1,6 +1,6 @@
 # bigtext/demo
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-Mx7g40UDxZku0rPbGiHC5.gif)
 
 ```go
 package main
@@ -30,5 +30,4 @@ func main() {
 		putils.LettersFromStringWithRGB("PTerm", pterm.NewRGB(255, 215, 0)),
 	).Render()
 }
-
 ```

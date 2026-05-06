@@ -1,6 +1,6 @@
 # area/default
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-7IhCjsQA6e5Rp11e8eAxNG.gif)
 
 ```go
 package main
@@ -30,5 +30,4 @@ func main() {
 	// This will clean up and free resources used by the area.
 	area.Stop()
 }
-
 ```

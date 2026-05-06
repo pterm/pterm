@@ -1,6 +1,6 @@
 ### style/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/style/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-7e8elQAwo2XedISw4XaNL.gif)
 
 <details>
 
@@ -24,7 +24,6 @@ func main() {
 	// Print "Hello, World!" with the secondary style
 	secondary.Println("Hello, World!")
 }
-
 ```
 
 </details>

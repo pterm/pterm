@@ -1,6 +1,6 @@
 # paragraph/customized
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-3xLWMgbnFYKdGRsX2q6Ugh.gif)
 
 ```go
 package main
@@ -26,5 +26,4 @@ func main() {
 	// Print the long text without using a paragraph printer.
 	pterm.Println(longTextWithoutParagraph)
 }
-
 ```

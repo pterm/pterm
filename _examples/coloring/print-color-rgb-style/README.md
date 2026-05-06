@@ -1,6 +1,6 @@
 # coloring/print-color-rgb-style
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-63t83e2pmcTdMLQNHUvHt5.gif)
 
 ```go
 package main
@@ -26,5 +26,4 @@ func main() {
 	// Add the 'Italic' option to the RGB style and print a string with this style.
 	rgbStyle.AddOptions(pterm.Italic).Println("This text is italic.")
 }
-
 ```

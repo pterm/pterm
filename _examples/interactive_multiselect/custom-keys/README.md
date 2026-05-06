@@ -1,6 +1,6 @@
 # interactive_multiselect/custom-keys
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-4OZy3vP4kGVWAAvhaZlp4G.gif)
 
 ```go
 package main
@@ -34,5 +34,4 @@ func main() {
 	// Print the selected options
 	pterm.Info.Printfln("Selected options: %s", pterm.Green(selectedOptions))
 }
-
 ```

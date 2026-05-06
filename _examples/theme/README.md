@@ -1,6 +1,6 @@
 ### theme/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/theme/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-4ZgBDHqqntaY38Dkdj50Nh.gif)
 
 <details>
 
@@ -41,7 +41,6 @@ func main() {
 		}
 	}
 }
-
 ```
 
 </details>

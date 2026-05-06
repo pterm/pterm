@@ -1,6 +1,6 @@
 ### spinner/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/spinner/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-4WGvqxFHjBF9WV9oWwOYis.gif)
 
 <details>
 
@@ -58,14 +58,13 @@ func main() {
 	time.Sleep(time.Second)                          // Simulate 2 seconds of processing something.
 	spinnerLiveText.Success("Finally!")              // Resolve spinner with success message.
 }
-
 ```
 
 </details>
 
 ### spinner/multiple
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/spinner/multiple/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-4QUfdRQthIpsPvGGUM009s.gif)
 
 <details>
 
@@ -120,7 +119,6 @@ func main() {
 	// Stop the multi printer. This will stop printing all the spinners.
 	multi.Stop()
 }
-
 ```
 
 </details>

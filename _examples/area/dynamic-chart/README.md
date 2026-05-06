@@ -1,6 +1,6 @@
 # area/dynamic-chart
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-2cQvhvuQ3B9pBj4FFQhHfa.gif)
 
 ```go
 package main
@@ -43,5 +43,4 @@ func dynamicBars(i int) pterm.Bars {
 		{Label: "D", Value: 40 + i}, // A bar that grows slowly with each iteration.
 	}
 }
-
 ```

@@ -1,6 +1,6 @@
 # logger/custom-key-styles
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-4Km8B04pvnop5U2eUYiqB5.gif)
 
 ```go
 package main
@@ -31,5 +31,4 @@ func main() {
 	// Log another info message. The "foo" key will be displayed in blue.
 	logger.Info("The foo key should now be blue", logger.Args("priority", "low", "foo", "bar"))
 }
-
 ```

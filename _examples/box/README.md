@@ -1,6 +1,6 @@
 ### box/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/box/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-43DUmCj6psdTlGZCIzKCkr.gif)
 
 <details>
 
@@ -33,14 +33,13 @@ func main() {
 	// The box is created using the DefaultBox style, with the title positioned at the bottom right.
 	pterm.DefaultBox.WithTitle("Lorem Ipsum").WithTitleBottomRight().WithRightPadding(0).WithBottomPadding(0).Println(panels)
 }
-
 ```
 
 </details>
 
 ### box/custom-padding
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/box/custom-padding/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-i8JKBbJhrtKmtrcIN2uCr.gif)
 
 <details>
 
@@ -55,14 +54,13 @@ func main() {
 	// Create a default box with custom padding options and print "Hello, World!" inside it.
 	pterm.DefaultBox.WithRightPadding(10).WithLeftPadding(10).WithTopPadding(2).WithBottomPadding(2).Println("Hello, World!")
 }
-
 ```
 
 </details>
 
 ### box/default
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/box/default/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-QVPtf5voQmddcwL3vosIS.gif)
 
 <details>
 
@@ -78,14 +76,13 @@ func main() {
 	// The DefaultBox.Println method automatically starts, prints the message, and stops the box.
 	pterm.DefaultBox.Println("Hello, World!")
 }
-
 ```
 
 </details>
 
 ### box/title
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/box/title/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-4Que0JUommpulZ4oifPCxv.gif)
 
 <details>
 
@@ -119,7 +116,6 @@ func main() {
 		{{box7}},
 	}).Render()
 }
-
 ```
 
 </details>

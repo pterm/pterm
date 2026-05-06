@@ -1,6 +1,6 @@
 # multiple-live-printers/demo
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-39j4YJq7Bo9hlTFBSRtGje.gif)
 
 ```go
 package main
@@ -63,5 +63,4 @@ func main() {
 	// Stop the multi printer
 	multi.Stop()
 }
-
 ```

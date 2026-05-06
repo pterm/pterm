@@ -1,6 +1,6 @@
 # interactive_multiselect/demo
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-5Ab3fT3ObEBGkEpU2Bp6u4.gif)
 
 ```go
 package main
@@ -31,5 +31,4 @@ func main() {
 	// Print the selected options, highlighted in green.
 	pterm.Info.Printfln("Selected options: %s", pterm.Green(selectedOptions))
 }
-
 ```

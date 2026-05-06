@@ -1,6 +1,6 @@
 # box/title
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-4Que0JUommpulZ4oifPCxv.gif)
 
 ```go
 package main
@@ -30,5 +30,4 @@ func main() {
 		{{box7}},
 	}).Render()
 }
-
 ```

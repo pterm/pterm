@@ -1,6 +1,6 @@
 # slog/demo
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-9t83xQJ4ILYyhj3jxjLZB.gif)
 
 ```go
 package main
@@ -36,5 +36,4 @@ func main() {
 	// Log an error message
 	logger.Error("This is an error message")
 }
-
 ```

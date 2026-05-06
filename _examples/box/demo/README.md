@@ -1,6 +1,6 @@
 # box/demo
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-43DUmCj6psdTlGZCIzKCkr.gif)
 
 ```go
 package main
@@ -29,5 +29,4 @@ func main() {
 	// The box is created using the DefaultBox style, with the title positioned at the bottom right.
 	pterm.DefaultBox.WithTitle("Lorem Ipsum").WithTitleBottomRight().WithRightPadding(0).WithBottomPadding(0).Println(panels)
 }
-
 ```

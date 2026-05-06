@@ -1,6 +1,6 @@
 # coloring/demo
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-1o5LppFpGpoqMHQK3kmjn6.gif)
 
 ```go
 package main
@@ -33,5 +33,4 @@ func main() {
 	// Print text using the created style.
 	style.Println("This text uses a style and is bold and light green with a red background!")
 }
-
 ```

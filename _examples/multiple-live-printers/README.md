@@ -1,6 +1,6 @@
 ### multiple-live-printers/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/multiple-live-printers/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-39j4YJq7Bo9hlTFBSRtGje.gif)
 
 <details>
 
@@ -67,7 +67,6 @@ func main() {
 	// Stop the multi printer
 	multi.Stop()
 }
-
 ```
 
 </details>

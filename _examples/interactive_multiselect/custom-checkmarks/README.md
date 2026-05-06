@@ -1,6 +1,6 @@
 # interactive_multiselect/custom-checkmarks
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-1qHwd2WmvXUm3zoVAgFGPm.gif)
 
 ```go
 package main
@@ -32,5 +32,4 @@ func main() {
 	// Print the selected options
 	pterm.Info.Printfln("Selected options: %s", pterm.Green(selectedOptions))
 }
-
 ```

@@ -1,6 +1,6 @@
 # tree/demo
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-3Tmr0W1BGVIsXEPYqfSpGa.gif)
 
 ```go
 package main
@@ -31,5 +31,4 @@ func main() {
 	// Render the tree with the defined structure as the root
 	pterm.DefaultTree.WithRoot(tree).Render()
 }
-
 ```

@@ -1,6 +1,6 @@
 ### area/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/area/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-6BFEFVArJQSAqhDMB3LQl6.gif)
 
 <details>
 
@@ -46,14 +46,13 @@ func main() {
 	// Stop the Area printer after all updates are done.
 	area.Stop()
 }
-
 ```
 
 </details>
 
 ### area/center
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/area/center/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-1cyd8YnCir7Mrwu7DyRiCP.gif)
 
 <details>
 
@@ -86,14 +85,13 @@ func main() {
 	// Stop the area after all updates are done.
 	area.Stop()
 }
-
 ```
 
 </details>
 
 ### area/default
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/area/default/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-7IhCjsQA6e5Rp11e8eAxNG.gif)
 
 <details>
 
@@ -127,14 +125,13 @@ func main() {
 	// This will clean up and free resources used by the area.
 	area.Stop()
 }
-
 ```
 
 </details>
 
 ### area/dynamic-chart
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/area/dynamic-chart/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-2cQvhvuQ3B9pBj4FFQhHfa.gif)
 
 <details>
 
@@ -181,14 +178,13 @@ func dynamicBars(i int) pterm.Bars {
 		{Label: "D", Value: 40 + i}, // A bar that grows slowly with each iteration.
 	}
 }
-
 ```
 
 </details>
 
 ### area/fullscreen
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/area/fullscreen/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-2FCFVs5NSV0kYMRVzRCr34.gif)
 
 <details>
 
@@ -221,14 +217,13 @@ func main() {
 	// Stop the area after all updates are done.
 	area.Stop()
 }
-
 ```
 
 </details>
 
 ### area/fullscreen-center
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/area/fullscreen-center/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-2YvXZ3kek6XOaIGPQKpNbP.gif)
 
 <details>
 
@@ -262,7 +257,6 @@ func main() {
 	// This will clear the area and return the terminal to its normal state
 	area.Stop()
 }
-
 ```
 
 </details>

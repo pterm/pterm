@@ -1,6 +1,6 @@
 # bulletlist/customized
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-2eWtEghPEkDYALoMcOw9Sz.gif)
 
 ```go
 package main
@@ -37,5 +37,4 @@ func main() {
 	// Create a bullet list with the defined items and render it.
 	pterm.DefaultBulletList.WithItems(bulletListItems).Render()
 }
-
 ```

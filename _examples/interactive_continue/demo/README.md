@@ -1,6 +1,6 @@
 # interactive_continue/demo
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-6hMsHXqe6NghZfGaLNplsV.gif)
 
 ```go
 package main
@@ -27,5 +27,4 @@ func main() {
 	// As this is a continue prompt, the input should be empty
 	pterm.Info.Printfln("You answered: %s", result)
 }
-
 ```

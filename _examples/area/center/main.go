@@ -15,7 +15,7 @@ func main() {
 	for i := 0; i < 5; i++ {
 		// Update the content of the area with the current count.
 		// The Sprintf function is used to format the string.
-		area.Update(pterm.Sprintf("Current count: %d\nAreas can update their content dynamically!", i))
+		area.Update(pterm.Sprintln("Current count: %d\nAreas can update their content dynamically!", i))
 
 		// Pause for a second to simulate a time-consuming task.
 		time.Sleep(time.Second)

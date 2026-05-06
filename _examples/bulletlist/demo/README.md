@@ -1,6 +1,6 @@
 # bulletlist/demo
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-5VyjQrMRgVzF8GolGYYK7x.gif)
 
 ```go
 package main
@@ -30,5 +30,4 @@ func main() {
 	// Convert the indented string to a bullet list and render it.
 	putils.BulletListFromString(text, " ").Render()
 }
-
 ```

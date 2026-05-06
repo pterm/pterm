@@ -1,6 +1,6 @@
 ### bulletlist/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/bulletlist/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-5VyjQrMRgVzF8GolGYYK7x.gif)
 
 <details>
 
@@ -34,14 +34,13 @@ func main() {
 	// Convert the indented string to a bullet list and render it.
 	putils.BulletListFromString(text, " ").Render()
 }
-
 ```
 
 </details>
 
 ### bulletlist/customized
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/bulletlist/customized/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-2eWtEghPEkDYALoMcOw9Sz.gif)
 
 <details>
 
@@ -82,7 +81,6 @@ func main() {
 	// Create a bullet list with the defined items and render it.
 	pterm.DefaultBulletList.WithItems(bulletListItems).Render()
 }
-
 ```
 
 </details>

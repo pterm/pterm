@@ -1,6 +1,6 @@
 # panel/demo
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-5jDPQFYIn1Xy7WKHzpmlhr.gif)
 
 ```go
 package main
@@ -24,5 +24,4 @@ func main() {
 	// Render the panels with a padding of 5
 	_ = pterm.DefaultPanel.WithPanels(panels).WithPadding(5).Render()
 }
-
 ```

@@ -1,6 +1,6 @@
 # logger/with-caller
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-2LoJwXyihXvnJ2wyZRFP7g.gif)
 
 ```go
 package main
@@ -39,5 +39,4 @@ func main() {
 	// Log a fatal message with additional arguments. This will terminate the process.
 	logger.Fatal("Oh no, this process is getting killed!", logger.Args("fatal", true))
 }
-
 ```

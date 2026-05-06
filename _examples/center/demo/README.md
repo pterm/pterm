@@ -1,6 +1,6 @@
 # center/demo
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-3IMjlTNrnVWmLt4zChCmgN.gif)
 
 ```go
 package main
@@ -23,5 +23,4 @@ func main() {
 	// Print each line of the text separately centered in the terminal
 	pterm.DefaultCenter.WithCenterEachLineSeparately().Println("This text is centered!\nBut each line is\ncentered\nseparately")
 }
-
 ```

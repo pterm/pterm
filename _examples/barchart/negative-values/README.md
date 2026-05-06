@@ -1,6 +1,6 @@
 # barchart/negative-values
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-4cB5U3tsHOwMpArQkPR2t2.gif)
 
 ```go
 package main
@@ -31,5 +31,4 @@ func main() {
 	// The WithShowValue() option and Render() method are used in the same way as before.
 	_ = pterm.DefaultBarChart.WithHorizontal().WithBars(negativeBars).WithShowValue().Render()
 }
-
 ```

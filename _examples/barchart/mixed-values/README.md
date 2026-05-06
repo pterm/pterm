@@ -1,6 +1,6 @@
 # barchart/mixed-values
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-54klL5UuBaS89PN935LwvX.gif)
 
 ```go
 package main
@@ -34,5 +34,4 @@ func main() {
 	// The Render() function is called to display the chart.
 	pterm.DefaultBarChart.WithHorizontal().WithBars(bars).WithShowValue().Render()
 }
-
 ```

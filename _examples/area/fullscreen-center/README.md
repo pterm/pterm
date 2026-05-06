@@ -1,6 +1,6 @@
 # area/fullscreen-center
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-2YvXZ3kek6XOaIGPQKpNbP.gif)
 
 ```go
 package main
@@ -30,5 +30,4 @@ func main() {
 	// This will clear the area and return the terminal to its normal state
 	area.Stop()
 }
-
 ```

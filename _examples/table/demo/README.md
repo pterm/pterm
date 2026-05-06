@@ -1,6 +1,6 @@
 # table/demo
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-6aonUdpPit5uyKAFBG2YLz.gif)
 
 ```go
 package main
@@ -34,5 +34,4 @@ func main() {
 	// Create another table with a header and the defined data, then render it
 	pterm.DefaultTable.WithHasHeader().WithData(tableData2).Render()
 }
-
 ```

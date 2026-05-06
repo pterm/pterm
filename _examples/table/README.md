@@ -1,6 +1,6 @@
 ### table/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/table/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-6aonUdpPit5uyKAFBG2YLz.gif)
 
 <details>
 
@@ -38,14 +38,13 @@ func main() {
 	// Create another table with a header and the defined data, then render it
 	pterm.DefaultTable.WithHasHeader().WithData(tableData2).Render()
 }
-
 ```
 
 </details>
 
 ### table/alternate-row-style
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/table/alternate-row-style/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-rWGNET95xSNwLzjSdKlUc.gif)
 
 <details>
 
@@ -75,14 +74,13 @@ func main() {
 	// Finally, render the table to print it.
 	pterm.DefaultTable.WithHasHeader().WithBoxed().WithData(tableData).WithAlternateRowStyle(alternateStyle).Render()
 }
-
 ```
 
 </details>
 
 ### table/boxed
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/table/boxed/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-17tWYbTxs0YTbytFpZcM95.gif)
 
 <details>
 
@@ -110,14 +108,13 @@ func main() {
 	// Finally, render the table to print it.
 	pterm.DefaultTable.WithHasHeader().WithBoxed().WithData(tableData).Render()
 }
-
 ```
 
 </details>
 
 ### table/multiple-lines
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/table/multiple-lines/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-2ZODMOw5xf1LyirhAchVr2.gif)
 
 <details>
 
@@ -143,14 +140,13 @@ func main() {
 	// The table has a header, a row separator, and a header row separator.
 	pterm.DefaultTable.WithHasHeader().WithRowSeparator("-").WithHeaderRowSeparator("-").WithData(data).Render()
 }
-
 ```
 
 </details>
 
 ### table/right-alignment
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/table/right-alignment/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-2w0inKSgt3JQLFYx3q3T64.gif)
 
 <details>
 
@@ -178,7 +174,6 @@ func main() {
 	// The Render() method is used to print the table to the console.
 	pterm.DefaultTable.WithHasHeader().WithRightAlignment().WithData(tableData).Render()
 }
-
 ```
 
 </details>

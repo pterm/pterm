@@ -1,6 +1,6 @@
 # theme/demo
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-4ZgBDHqqntaY38Dkdj50Nh.gif)
 
 ```go
 package main
@@ -37,5 +37,4 @@ func main() {
 		}
 	}
 }
-
 ```

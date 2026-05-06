@@ -1,6 +1,6 @@
 ### header/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/header/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-41l3x0NGuRGy2lR41m5S8x.gif)
 
 <details>
 
@@ -23,14 +23,13 @@ func main() {
 	// This uses the WithFullWidth() option of PTerm to print a header that spans the full width of the terminal.
 	pterm.DefaultHeader.WithFullWidth().Println("This is a full-width header.")
 }
-
 ```
 
 </details>
 
 ### header/custom
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/header/custom/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-5c8QzHYrjymhxB5DTG6XEF.gif)
 
 <details>
 
@@ -55,7 +54,6 @@ func main() {
 	// Print the custom header using the new HeaderPrinter.
 	newHeader.Println("This is a custom header!")
 }
-
 ```
 
 </details>

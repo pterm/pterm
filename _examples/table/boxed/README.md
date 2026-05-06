@@ -1,6 +1,6 @@
 # table/boxed
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-17tWYbTxs0YTbytFpZcM95.gif)
 
 ```go
 package main
@@ -24,5 +24,4 @@ func main() {
 	// Finally, render the table to print it.
 	pterm.DefaultTable.WithHasHeader().WithBoxed().WithData(tableData).Render()
 }
-
 ```

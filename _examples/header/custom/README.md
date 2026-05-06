@@ -1,6 +1,6 @@
 # header/custom
 
-![Animation](animation.svg)
+![Animation](https://vhs.charm.sh/vhs-5c8QzHYrjymhxB5DTG6XEF.gif)
 
 ```go
 package main
@@ -21,5 +21,4 @@ func main() {
 	// Print the custom header using the new HeaderPrinter.
 	newHeader.Println("This is a custom header!")
 }
-
 ```

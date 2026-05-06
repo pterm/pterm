@@ -1,6 +1,6 @@
 ### slog/demo
 
-![Animation](https://raw.githubusercontent.com/pterm/pterm/master/_examples/slog/demo/animation.svg)
+![Animation](https://vhs.charm.sh/vhs-9t83xQJ4ILYyhj3jxjLZB.gif)
 
 <details>
 
@@ -40,7 +40,6 @@ func main() {
 	// Log an error message
 	logger.Error("This is an error message")
 }
-
 ```
 
 </details>
