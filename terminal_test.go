@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/MarvinJWendt/testza"
+	"github.com/pterm/pterm/internal/testhelper"
 	"github.com/pterm/pterm"
 	"golang.org/x/term"
 )
@@ -13,14 +13,14 @@ func TestSetForcedTerminalSize(t *testing.T) {
 	pterm.SetForcedTerminalSize(1, 1)
 
 	w, h, _ := pterm.GetTerminalSize()
-	testza.AssertEqual(t, w, 1)
-	testza.AssertEqual(t, h, 1)
+	testhelper.AssertEqual(t, w, 1)
+	testhelper.AssertEqual(t, h, 1)
 
 	w = pterm.GetTerminalWidth()
 	h = pterm.GetTerminalHeight()
 
-	testza.AssertEqual(t, w, 1)
-	testza.AssertEqual(t, h, 1)
+	testhelper.AssertEqual(t, w, 1)
+	testhelper.AssertEqual(t, h, 1)
 }
 
 func autodetectTerminalSize() (int, int) {
@@ -40,8 +40,8 @@ func TestGetTerminalSizeAutodetect(t *testing.T) {
 
 	expectedW, expectedH := autodetectTerminalSize()
 	w, h, _ := pterm.GetTerminalSize()
-	testza.AssertEqual(t, expectedW, w)
-	testza.AssertEqual(t, expectedH, h)
+	testhelper.AssertEqual(t, expectedW, w)
+	testhelper.AssertEqual(t, expectedH, h)
 	// disable autodetection
 	pterm.SetForcedTerminalSize(terminalWidth, terminalHeight)
 }
@@ -54,8 +54,8 @@ func TestGetTerminalSizeAutodetect2(t *testing.T) {
 	w := pterm.GetTerminalWidth()
 	h := pterm.GetTerminalHeight()
 
-	testza.AssertEqual(t, expectedW, w)
-	testza.AssertEqual(t, expectedH, h)
+	testhelper.AssertEqual(t, expectedW, w)
+	testhelper.AssertEqual(t, expectedH, h)
 	// disable autodetection
 	pterm.SetForcedTerminalSize(terminalWidth, terminalHeight)
 }

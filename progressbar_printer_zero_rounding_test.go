@@ -4,7 +4,7 @@ import (
 	"io"
 	"testing"
 
-	"github.com/MarvinJWendt/testza"
+	"github.com/pterm/pterm/internal/testhelper"
 
 	"github.com/pterm/pterm"
 )
@@ -15,8 +15,8 @@ func TestProgressbarPrinter_NoPanicOnZeroRoundingFactor(t *testing.T) {
 	p.ShowElapsedTime = true
 	p.Writer = io.Discard
 	pb, err := p.Start()
-	testza.AssertNoError(t, err)
-	testza.AssertNotPanics(t, func() {
+	testhelper.AssertNoError(t, err)
+	testhelper.AssertNotPanics(t, func() {
 		pb.Add(1)
 	})
 	pb.Stop()

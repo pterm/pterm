@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/MarvinJWendt/testza"
+	"github.com/pterm/pterm/internal/testhelper"
 
 	"github.com/pterm/pterm"
 )
@@ -83,28 +83,28 @@ func TestBoxPrinterPrintMethods(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			p.PrintOnError(errors.New("hello world"))
 		})
-		testza.AssertContains(t, result, "hello world")
+		testhelper.AssertContains(t, result, "hello world")
 	})
 
 	t.Run("PrintIfError_WithoutError", func(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			p.PrintOnError(nil)
 		})
-		testza.AssertZero(t, result)
+		testhelper.AssertZero(t, result)
 	})
 
 	t.Run("PrintOnErrorf", func(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			p.PrintOnErrorf("wrapping error : %w", errors.New("hello world"))
 		})
-		testza.AssertContains(t, result, "hello world")
+		testhelper.AssertContains(t, result, "hello world")
 	})
 
 	t.Run("PrintIfError_WithoutErrorf", func(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			p.PrintOnErrorf("", nil)
 		})
-		testza.AssertZero(t, result)
+		testhelper.AssertZero(t, result)
 	})
 }
 
@@ -112,122 +112,122 @@ func TestBoxPrinter_WithBottomLeftCornerString(t *testing.T) {
 	p := pterm.BoxPrinter{}
 	p2 := p.WithBottomLeftCornerString("-")
 
-	testza.AssertEqual(t, "-", p2.BottomLeftCornerString)
-	testza.AssertZero(t, p.BottomLeftCornerString)
+	testhelper.AssertEqual(t, "-", p2.BottomLeftCornerString)
+	testhelper.AssertZero(t, p.BottomLeftCornerString)
 }
 
 func TestBoxPrinter_WithBottomPadding(t *testing.T) {
 	p := pterm.BoxPrinter{}
 	p2 := p.WithBottomPadding(5)
 
-	testza.AssertEqual(t, 5, p2.BottomPadding)
-	testza.AssertZero(t, p.BottomPadding)
+	testhelper.AssertEqual(t, 5, p2.BottomPadding)
+	testhelper.AssertZero(t, p.BottomPadding)
 }
 
 func TestBoxPrinter_WithBottomRightCornerString(t *testing.T) {
 	p := pterm.BoxPrinter{}
 	p2 := p.WithBottomRightCornerString("-")
 
-	testza.AssertEqual(t, "-", p2.BottomRightCornerString)
-	testza.AssertZero(t, p.BottomRightCornerString)
+	testhelper.AssertEqual(t, "-", p2.BottomRightCornerString)
+	testhelper.AssertZero(t, p.BottomRightCornerString)
 }
 
 func TestBoxPrinter_WithTitle(t *testing.T) {
 	p := pterm.BoxPrinter{}
 	p2 := p.WithTitle("-")
 
-	testza.AssertEqual(t, "-", p2.Title)
-	testza.AssertZero(t, p.Title)
+	testhelper.AssertEqual(t, "-", p2.Title)
+	testhelper.AssertZero(t, p.Title)
 }
 
 func TestBoxPrinter_WithTitleTopLeft(t *testing.T) {
 	p := pterm.BoxPrinter{}
 	p2 := p.WithTitleTopLeft()
 
-	testza.AssertEqual(t, true, p2.TitleTopLeft)
-	testza.AssertEqual(t, false, p.TitleTopLeft)
+	testhelper.AssertEqual(t, true, p2.TitleTopLeft)
+	testhelper.AssertEqual(t, false, p.TitleTopLeft)
 }
 
 func TestBoxPrinter_WithTitleTopRight(t *testing.T) {
 	p := pterm.BoxPrinter{}
 	p2 := p.WithTitleTopRight()
 
-	testza.AssertEqual(t, true, p2.TitleTopRight)
-	testza.AssertEqual(t, false, p.TitleTopRight)
+	testhelper.AssertEqual(t, true, p2.TitleTopRight)
+	testhelper.AssertEqual(t, false, p.TitleTopRight)
 }
 
 func TestBoxPrinter_WithTitleTopCenter(t *testing.T) {
 	p := pterm.BoxPrinter{}
 	p2 := p.WithTitleTopCenter()
 
-	testza.AssertEqual(t, true, p2.TitleTopCenter)
-	testza.AssertEqual(t, false, p.TitleTopCenter)
+	testhelper.AssertEqual(t, true, p2.TitleTopCenter)
+	testhelper.AssertEqual(t, false, p.TitleTopCenter)
 }
 
 func TestBoxPrinter_WithTitleBottomRight(t *testing.T) {
 	p := pterm.BoxPrinter{}
 	p2 := p.WithTitleBottomRight()
 
-	testza.AssertEqual(t, true, p2.TitleBottomRight)
-	testza.AssertEqual(t, false, p.TitleBottomRight)
+	testhelper.AssertEqual(t, true, p2.TitleBottomRight)
+	testhelper.AssertEqual(t, false, p.TitleBottomRight)
 }
 
 func TestBoxPrinter_WithTitleBottomLeft(t *testing.T) {
 	p := pterm.BoxPrinter{}
 	p2 := p.WithTitleBottomLeft()
 
-	testza.AssertEqual(t, true, p2.TitleBottomLeft)
-	testza.AssertEqual(t, false, p.TitleBottomLeft)
+	testhelper.AssertEqual(t, true, p2.TitleBottomLeft)
+	testhelper.AssertEqual(t, false, p.TitleBottomLeft)
 }
 
 func TestBoxPrinter_WithTitleBottomCenter(t *testing.T) {
 	p := pterm.BoxPrinter{}
 	p2 := p.WithTitleBottomCenter()
 
-	testza.AssertEqual(t, true, p2.TitleBottomCenter)
-	testza.AssertEqual(t, false, p.TitleBottomCenter)
+	testhelper.AssertEqual(t, true, p2.TitleBottomCenter)
+	testhelper.AssertEqual(t, false, p.TitleBottomCenter)
 }
 
 func TestBoxPrinter_WithTitleWithTitleBottomLeft(t *testing.T) {
 	p := pterm.BoxPrinter{}
 	p2 := p.WithTitleBottomLeft().WithTitle("a").Sprint("Lorem Ipsum")
 
-	testza.AssertContains(t, p2, "Lorem Ipsum")
+	testhelper.AssertContains(t, p2, "Lorem Ipsum")
 }
 
 func TestBoxPrinter_WithTitleWithTitleTopLeft(t *testing.T) {
 	p := pterm.BoxPrinter{}
 	p2 := p.WithTitleTopLeft().WithTitle("a").Sprint("Lorem Ipsum")
 
-	testza.AssertContains(t, p2, "Lorem Ipsum")
+	testhelper.AssertContains(t, p2, "Lorem Ipsum")
 }
 
 func TestBoxPrinter_WithTitleWithTitleBottomRight(t *testing.T) {
 	p := pterm.BoxPrinter{}
 	p2 := p.WithTitleBottomRight().WithTitle("a").Sprint("Lorem Ipsum")
 
-	testza.AssertContains(t, p2, "Lorem Ipsum")
+	testhelper.AssertContains(t, p2, "Lorem Ipsum")
 }
 
 func TestBoxPrinter_WithTitleWithTitleTopRight(t *testing.T) {
 	p := pterm.BoxPrinter{}
 	p2 := p.WithTitleTopRight().WithTitle("a").Sprint("Lorem Ipsum")
 
-	testza.AssertContains(t, p2, "Lorem Ipsum")
+	testhelper.AssertContains(t, p2, "Lorem Ipsum")
 }
 
 func TestBoxPrinter_WithTitleWithTitleTopCenter(t *testing.T) {
 	p := pterm.BoxPrinter{}
 	p2 := p.WithTitleTopCenter().WithTitle("a").Sprint("Lorem Ipsum")
 
-	testza.AssertContains(t, p2, "Lorem Ipsum")
+	testhelper.AssertContains(t, p2, "Lorem Ipsum")
 }
 
 func TestBoxPrinter_WithTitleWithTitleBottomCenter(t *testing.T) {
 	p := pterm.BoxPrinter{}
 	p2 := p.WithTitleBottomCenter().WithTitle("a").Sprint("Lorem Ipsum")
 
-	testza.AssertContains(t, p2, "Lorem Ipsum")
+	testhelper.AssertContains(t, p2, "Lorem Ipsum")
 }
 
 func TestBoxPrinter_WithBoxStyle(t *testing.T) {
@@ -235,24 +235,24 @@ func TestBoxPrinter_WithBoxStyle(t *testing.T) {
 	s := pterm.NewStyle(pterm.FgRed, pterm.BgRed, pterm.Bold)
 	p2 := p.WithBoxStyle(s)
 
-	testza.AssertEqual(t, s, p2.BoxStyle)
-	testza.AssertZero(t, p.BoxStyle)
+	testhelper.AssertEqual(t, s, p2.BoxStyle)
+	testhelper.AssertZero(t, p.BoxStyle)
 }
 
 func TestBoxPrinter_WithLeftPadding(t *testing.T) {
 	p := pterm.BoxPrinter{}
 	p2 := p.WithLeftPadding(5)
 
-	testza.AssertEqual(t, 5, p2.LeftPadding)
-	testza.AssertZero(t, p.LeftPadding)
+	testhelper.AssertEqual(t, 5, p2.LeftPadding)
+	testhelper.AssertZero(t, p.LeftPadding)
 }
 
 func TestBoxPrinter_WithRightPadding(t *testing.T) {
 	p := pterm.BoxPrinter{}
 	p2 := p.WithRightPadding(5)
 
-	testza.AssertEqual(t, 5, p2.RightPadding)
-	testza.AssertZero(t, p.RightPadding)
+	testhelper.AssertEqual(t, 5, p2.RightPadding)
+	testhelper.AssertZero(t, p.RightPadding)
 }
 
 func TestBoxPrinter_WithTextStyle(t *testing.T) {
@@ -260,114 +260,114 @@ func TestBoxPrinter_WithTextStyle(t *testing.T) {
 	s := pterm.NewStyle(pterm.FgRed, pterm.BgRed, pterm.Bold)
 	p2 := p.WithTextStyle(s)
 
-	testza.AssertEqual(t, s, p2.TextStyle)
-	testza.AssertZero(t, p.TextStyle)
+	testhelper.AssertEqual(t, s, p2.TextStyle)
+	testhelper.AssertZero(t, p.TextStyle)
 }
 
 func TestBoxPrinter_WithTopLeftCornerString(t *testing.T) {
 	p := pterm.BoxPrinter{}
 	p2 := p.WithTopLeftCornerString("-")
 
-	testza.AssertEqual(t, "-", p2.TopLeftCornerString)
-	testza.AssertZero(t, p.TopLeftCornerString)
+	testhelper.AssertEqual(t, "-", p2.TopLeftCornerString)
+	testhelper.AssertZero(t, p.TopLeftCornerString)
 }
 
 func TestBoxPrinter_WithTopPadding(t *testing.T) {
 	p := pterm.BoxPrinter{}
 	p2 := p.WithTopPadding(5)
 
-	testza.AssertEqual(t, 5, p2.TopPadding)
-	testza.AssertZero(t, p.TopPadding)
+	testhelper.AssertEqual(t, 5, p2.TopPadding)
+	testhelper.AssertZero(t, p.TopPadding)
 }
 
 func TestBoxPrinter_WithHorizontalPadding(t *testing.T) {
 	p := pterm.BoxPrinter{}
 	p2 := p.WithHorizontalPadding(5)
 
-	testza.AssertEqual(t, 5, p2.LeftPadding)
-	testza.AssertEqual(t, 5, p2.RightPadding)
-	testza.AssertEqual(t, 0, p.LeftPadding)
-	testza.AssertEqual(t, 0, p.RightPadding)
+	testhelper.AssertEqual(t, 5, p2.LeftPadding)
+	testhelper.AssertEqual(t, 5, p2.RightPadding)
+	testhelper.AssertEqual(t, 0, p.LeftPadding)
+	testhelper.AssertEqual(t, 0, p.RightPadding)
 }
 
 func TestBoxPrinter_WithVerticalPadding(t *testing.T) {
 	p := pterm.BoxPrinter{}
 	p2 := p.WithVerticalPadding(5)
 
-	testza.AssertEqual(t, 5, p2.TopPadding)
-	testza.AssertEqual(t, 5, p2.BottomPadding)
-	testza.AssertEqual(t, 0, p.TopPadding)
-	testza.AssertEqual(t, 0, p.BottomPadding)
+	testhelper.AssertEqual(t, 5, p2.TopPadding)
+	testhelper.AssertEqual(t, 5, p2.BottomPadding)
+	testhelper.AssertEqual(t, 0, p.TopPadding)
+	testhelper.AssertEqual(t, 0, p.BottomPadding)
 }
 
 func TestBoxPrinter_WithPadding(t *testing.T) {
 	p := pterm.BoxPrinter{}
 	p2 := p.WithPadding(5)
 
-	testza.AssertEqual(t, 5, p2.TopPadding)
-	testza.AssertEqual(t, 5, p2.BottomPadding)
-	testza.AssertEqual(t, 5, p2.LeftPadding)
-	testza.AssertEqual(t, 5, p2.RightPadding)
-	testza.AssertEqual(t, 0, p.TopPadding)
-	testza.AssertEqual(t, 0, p.BottomPadding)
-	testza.AssertEqual(t, 0, p.LeftPadding)
-	testza.AssertEqual(t, 0, p.RightPadding)
+	testhelper.AssertEqual(t, 5, p2.TopPadding)
+	testhelper.AssertEqual(t, 5, p2.BottomPadding)
+	testhelper.AssertEqual(t, 5, p2.LeftPadding)
+	testhelper.AssertEqual(t, 5, p2.RightPadding)
+	testhelper.AssertEqual(t, 0, p.TopPadding)
+	testhelper.AssertEqual(t, 0, p.BottomPadding)
+	testhelper.AssertEqual(t, 0, p.LeftPadding)
+	testhelper.AssertEqual(t, 0, p.RightPadding)
 }
 
 func TestBoxPrinter_WithInvalidTopPadding(t *testing.T) {
 	p := pterm.BoxPrinter{}
 	p2 := p.WithTopPadding(-5)
 
-	testza.AssertEqual(t, 0, p2.TopPadding)
-	testza.AssertZero(t, p.TopPadding)
+	testhelper.AssertEqual(t, 0, p2.TopPadding)
+	testhelper.AssertZero(t, p.TopPadding)
 }
 
 func TestBoxPrinter_WithInvalidBottomPadding(t *testing.T) {
 	p := pterm.BoxPrinter{}
 	p2 := p.WithBottomPadding(-5)
 
-	testza.AssertEqual(t, 0, p2.BottomPadding)
-	testza.AssertZero(t, p.BottomPadding)
+	testhelper.AssertEqual(t, 0, p2.BottomPadding)
+	testhelper.AssertZero(t, p.BottomPadding)
 }
 
 func TestBoxPrinter_WithInvalidLeftPadding(t *testing.T) {
 	p := pterm.BoxPrinter{}
 	p2 := p.WithLeftPadding(-5)
 
-	testza.AssertEqual(t, 0, p2.LeftPadding)
-	testza.AssertZero(t, p.LeftPadding)
+	testhelper.AssertEqual(t, 0, p2.LeftPadding)
+	testhelper.AssertZero(t, p.LeftPadding)
 }
 
 func TestBoxPrinter_WithInvalidRightPadding(t *testing.T) {
 	p := pterm.BoxPrinter{}
 	p2 := p.WithRightPadding(-5)
 
-	testza.AssertEqual(t, 0, p2.RightPadding)
-	testza.AssertZero(t, p.RightPadding)
+	testhelper.AssertEqual(t, 0, p2.RightPadding)
+	testhelper.AssertZero(t, p.RightPadding)
 }
 
 func TestBoxPrinter_WithTopRightCornerString(t *testing.T) {
 	p := pterm.BoxPrinter{}
 	p2 := p.WithTopRightCornerString("-")
 
-	testza.AssertEqual(t, "-", p2.TopRightCornerString)
-	testza.AssertZero(t, p.TopRightCornerString)
+	testhelper.AssertEqual(t, "-", p2.TopRightCornerString)
+	testhelper.AssertZero(t, p.TopRightCornerString)
 }
 
 func TestBoxPrinter_WithVerticalString(t *testing.T) {
 	p := pterm.BoxPrinter{}
 	p2 := p.WithVerticalString("-")
 
-	testza.AssertEqual(t, "-", p2.VerticalString)
-	testza.AssertZero(t, p.VerticalString)
+	testhelper.AssertEqual(t, "-", p2.VerticalString)
+	testhelper.AssertZero(t, p.VerticalString)
 }
 
 func TestBoxPrinter_WithHorizontalString(t *testing.T) {
 	p := pterm.BoxPrinter{}
 	p2 := p.WithHorizontalString("-")
 
-	testza.AssertEqual(t, "-", p2.HorizontalString)
-	testza.AssertZero(t, p.HorizontalString)
+	testhelper.AssertEqual(t, "-", p2.HorizontalString)
+	testhelper.AssertZero(t, p.HorizontalString)
 }
 
 func TestBoxPrinter_WithWriter(t *testing.T) {
@@ -375,6 +375,6 @@ func TestBoxPrinter_WithWriter(t *testing.T) {
 	s := os.Stderr
 	p2 := p.WithWriter(s)
 
-	testza.AssertEqual(t, s, p2.Writer)
-	testza.AssertZero(t, p.Writer)
+	testhelper.AssertEqual(t, s, p2.Writer)
+	testhelper.AssertZero(t, p.Writer)
 }

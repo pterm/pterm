@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/MarvinJWendt/testza"
+	"github.com/pterm/pterm/internal/testhelper"
 	"github.com/pterm/pterm"
 )
 
@@ -55,8 +55,8 @@ func TestBulletListPrinter_WithBullet(t *testing.T) {
 	p := pterm.BulletListPrinter{}
 	p2 := p.WithBullet("-")
 
-	testza.AssertEqual(t, "-", p2.Bullet)
-	testza.AssertZero(t, p.Bullet)
+	testhelper.AssertEqual(t, "-", p2.Bullet)
+	testhelper.AssertZero(t, p.Bullet)
 }
 
 func TestBulletListPrinter_WithBulletStyle(t *testing.T) {
@@ -64,8 +64,8 @@ func TestBulletListPrinter_WithBulletStyle(t *testing.T) {
 	s := pterm.NewStyle(pterm.FgRed, pterm.BgRed, pterm.Bold)
 	p2 := p.WithBulletStyle(s)
 
-	testza.AssertEqual(t, s, p2.BulletStyle)
-	testza.AssertZero(t, p.BulletStyle)
+	testhelper.AssertEqual(t, s, p2.BulletStyle)
+	testhelper.AssertZero(t, p.BulletStyle)
 }
 
 func TestBulletListPrinter_WithItems(t *testing.T) {
@@ -79,8 +79,8 @@ func TestBulletListPrinter_WithItems(t *testing.T) {
 	}}
 	p2 := p.WithItems(li)
 
-	testza.AssertEqual(t, li, p2.Items)
-	testza.AssertZero(t, p.Items)
+	testhelper.AssertEqual(t, li, p2.Items)
+	testhelper.AssertZero(t, p.Items)
 }
 
 func TestBulletListPrinter_WithTextStyle(t *testing.T) {
@@ -88,16 +88,16 @@ func TestBulletListPrinter_WithTextStyle(t *testing.T) {
 	s := pterm.NewStyle(pterm.FgRed, pterm.BgRed, pterm.Bold)
 	p2 := p.WithTextStyle(s)
 
-	testza.AssertEqual(t, s, p2.TextStyle)
-	testza.AssertZero(t, p.TextStyle)
+	testhelper.AssertEqual(t, s, p2.TextStyle)
+	testhelper.AssertZero(t, p.TextStyle)
 }
 
 func TestBulletListItem_WithBullet(t *testing.T) {
 	p := pterm.BulletListItem{}
 	p2 := p.WithBullet("-")
 
-	testza.AssertEqual(t, "-", p2.Bullet)
-	testza.AssertZero(t, p.Bullet)
+	testhelper.AssertEqual(t, "-", p2.Bullet)
+	testhelper.AssertZero(t, p.Bullet)
 }
 
 func TestBulletListItem_WithBulletStyle(t *testing.T) {
@@ -105,24 +105,24 @@ func TestBulletListItem_WithBulletStyle(t *testing.T) {
 	s := pterm.NewStyle(pterm.FgRed, pterm.BgRed, pterm.Bold)
 	p2 := p.WithBulletStyle(s)
 
-	testza.AssertEqual(t, s, p2.BulletStyle)
-	testza.AssertZero(t, p.BulletStyle)
+	testhelper.AssertEqual(t, s, p2.BulletStyle)
+	testhelper.AssertZero(t, p.BulletStyle)
 }
 
 func TestBulletListItem_WithLevel(t *testing.T) {
 	p := pterm.BulletListItem{}
 	p2 := p.WithLevel(1)
 
-	testza.AssertEqual(t, 1, p2.Level)
-	testza.AssertZero(t, p.Level)
+	testhelper.AssertEqual(t, 1, p2.Level)
+	testhelper.AssertZero(t, p.Level)
 }
 
 func TestBulletListItem_WithText(t *testing.T) {
 	p := pterm.BulletListItem{}
 	p2 := p.WithText("test")
 
-	testza.AssertEqual(t, "test", p2.Text)
-	testza.AssertZero(t, p.Text)
+	testhelper.AssertEqual(t, "test", p2.Text)
+	testhelper.AssertZero(t, p.Text)
 }
 
 func TestBulletListItem_WithTextStyle(t *testing.T) {
@@ -130,8 +130,8 @@ func TestBulletListItem_WithTextStyle(t *testing.T) {
 	s := pterm.NewStyle(pterm.FgRed, pterm.BgRed, pterm.Bold)
 	p2 := p.WithTextStyle(s)
 
-	testza.AssertEqual(t, s, p2.TextStyle)
-	testza.AssertZero(t, p.TextStyle)
+	testhelper.AssertEqual(t, s, p2.TextStyle)
+	testhelper.AssertZero(t, p.TextStyle)
 }
 
 func TestNewBulletListFromString(t *testing.T) {
@@ -152,7 +152,7 @@ func TestNewBulletListFromString(t *testing.T) {
      5`
 	p2 := pterm.NewBulletListFromString(s, " ")
 
-	testza.AssertEqual(t, p, p2)
+	testhelper.AssertEqual(t, p, p2)
 }
 
 func TestBulletListPrinter_WithWriter(t *testing.T) {
@@ -160,6 +160,6 @@ func TestBulletListPrinter_WithWriter(t *testing.T) {
 	s := os.Stderr
 	p2 := p.WithWriter(s)
 
-	testza.AssertEqual(t, s, p2.Writer)
-	testza.AssertZero(t, p.Writer)
+	testhelper.AssertEqual(t, s, p2.Writer)
+	testhelper.AssertZero(t, p.Writer)
 }

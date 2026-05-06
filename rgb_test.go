@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/MarvinJWendt/testza"
+	"github.com/pterm/pterm/internal/testhelper"
 
 	"github.com/pterm/pterm"
 )
@@ -54,8 +54,8 @@ func TestNewRGBFromHEX(t *testing.T) {
 	for _, test := range tests {
 		t.Run("", func(t *testing.T) {
 			rgb, err := pterm.NewRGBFromHEX(test.hex)
-			testza.AssertEqual(t, test.want, rgb)
-			testza.AssertNoError(t, err)
+			testhelper.AssertEqual(t, test.want, rgb)
+			testhelper.AssertNoError(t, err)
 		})
 	}
 
@@ -72,7 +72,7 @@ func TestNewRGBFromHEX(t *testing.T) {
 	for _, test := range testsFail {
 		t.Run("", func(t *testing.T) {
 			_, err := pterm.NewRGBFromHEX(test.hex)
-			testza.AssertTrue(t, errors.Is(err, test.want))
+			testhelper.AssertTrue(t, errors.Is(err, test.want))
 		})
 	}
 }
@@ -168,7 +168,7 @@ func TestRGB_Print(t *testing.T) {
 		t.Run(pterm.Sprintf("%v %v %v", rgb.R, rgb.G, rgb.B), func(t *testing.T) {
 			testPrintContains(t, func(w io.Writer, a any) {
 				p := rgb.Print(a)
-				testza.AssertNotNil(t, p)
+				testhelper.AssertNotNil(t, p)
 			})
 		})
 	}
@@ -181,7 +181,7 @@ func TestRGB_Printf(t *testing.T) {
 		t.Run(pterm.Sprintf("%v %v %v", rgb.R, rgb.G, rgb.B), func(t *testing.T) {
 			testPrintfContains(t, func(w io.Writer, format string, a any) {
 				p := rgb.Printf(format, a)
-				testza.AssertNotNil(t, p)
+				testhelper.AssertNotNil(t, p)
 			})
 		})
 	}
@@ -194,7 +194,7 @@ func TestRGB_Printfln(t *testing.T) {
 		t.Run(pterm.Sprintfln("%v %v %v", rgb.R, rgb.G, rgb.B), func(t *testing.T) {
 			testPrintflnContains(t, func(w io.Writer, format string, a any) {
 				p := rgb.Printfln(format, a)
-				testza.AssertNotNil(t, p)
+				testhelper.AssertNotNil(t, p)
 			})
 		})
 	}
@@ -207,7 +207,7 @@ func TestRGB_Println(t *testing.T) {
 		t.Run(pterm.Sprintf("%v %v %v", rgb.R, rgb.G, rgb.B), func(t *testing.T) {
 			testPrintlnContains(t, func(w io.Writer, a any) {
 				p := rgb.Println(a)
-				testza.AssertNotNil(t, p)
+				testhelper.AssertNotNil(t, p)
 			})
 		})
 	}
@@ -269,7 +269,7 @@ func TestRGB_PrintOnError(t *testing.T) {
 			result := captureStdout(func(w io.Writer) {
 				rgb.PrintOnError(errors.New("hello world"))
 			})
-			testza.AssertContains(t, result, "hello world")
+			testhelper.AssertContains(t, result, "hello world")
 		})
 	}
 }
@@ -282,7 +282,7 @@ func TestRGB_PrintIfError_WithoutError(t *testing.T) {
 			result := captureStdout(func(w io.Writer) {
 				rgb.PrintOnError(nil)
 			})
-			testza.AssertZero(t, result)
+			testhelper.AssertZero(t, result)
 		})
 	}
 }
@@ -295,7 +295,7 @@ func TestRGB_PrintOnErrorf(t *testing.T) {
 			result := captureStdout(func(w io.Writer) {
 				rgb.PrintOnErrorf("wrapping error : %w", errors.New("hello world"))
 			})
-			testza.AssertContains(t, result, "hello world")
+			testhelper.AssertContains(t, result, "hello world")
 		})
 	}
 }
@@ -308,7 +308,7 @@ func TestRGB_PrintIfError_WithoutErrorf(t *testing.T) {
 			result := captureStdout(func(w io.Writer) {
 				rgb.PrintOnErrorf("", nil)
 			})
-			testza.AssertZero(t, result)
+			testhelper.AssertZero(t, result)
 		})
 	}
 }
@@ -321,7 +321,7 @@ func TestRGBStyle_PrintOnError(t *testing.T) {
 			result := captureStdout(func(w io.Writer) {
 				rgb.PrintOnError(errors.New("hello world"))
 			})
-			testza.AssertContains(t, result, "hello world")
+			testhelper.AssertContains(t, result, "hello world")
 		})
 	}
 }
@@ -334,7 +334,7 @@ func TestRGBStyle_PrintIfError_WithoutError(t *testing.T) {
 			result := captureStdout(func(w io.Writer) {
 				rgb.PrintOnError(nil)
 			})
-			testza.AssertZero(t, result)
+			testhelper.AssertZero(t, result)
 		})
 	}
 }
@@ -347,7 +347,7 @@ func TestRGBStyle_PrintOnErrorf(t *testing.T) {
 			result := captureStdout(func(w io.Writer) {
 				rgb.PrintOnErrorf("wrapping error : %w", errors.New("hello world"))
 			})
-			testza.AssertContains(t, result, "hello world")
+			testhelper.AssertContains(t, result, "hello world")
 		})
 	}
 }
@@ -360,7 +360,7 @@ func TestRGBStyle_PrintIfError_WithoutErrorf(t *testing.T) {
 			result := captureStdout(func(w io.Writer) {
 				rgb.PrintOnErrorf("", nil)
 			})
-			testza.AssertZero(t, result)
+			testhelper.AssertZero(t, result)
 		})
 	}
 }
@@ -375,9 +375,9 @@ func TestRGBStyle_NewRGBStyle(t *testing.T) {
 				result = result.AddOptions(rgb.Options...)
 			}
 
-			testza.AssertEqual(t, rgb.Foreground, result.Foreground)
-			testza.AssertEqual(t, rgb.Background, result.Background)
-			testza.AssertEqual(t, rgb.Options, result.Options)
+			testhelper.AssertEqual(t, rgb.Foreground, result.Foreground)
+			testhelper.AssertEqual(t, rgb.Background, result.Background)
+			testhelper.AssertEqual(t, rgb.Options, result.Options)
 		})
 	}
 }

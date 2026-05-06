@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/MarvinJWendt/testza"
+	"github.com/pterm/pterm/internal/testhelper"
 	"github.com/pterm/pterm"
 )
 
@@ -83,7 +83,7 @@ func TestAreaPrinter_GetContent(t *testing.T) {
 
 	for _, printable := range printables {
 		a.Update(printable)
-		testza.AssertEqual(t, a.GetContent(), pterm.Sprint(printable))
+		testhelper.AssertEqual(t, a.GetContent(), pterm.Sprint(printable))
 	}
 
 	a.Stop()
@@ -98,7 +98,7 @@ func TestAreaPrinter_WithRemoveWhenDone(t *testing.T) {
 	p := pterm.AreaPrinter{}
 	p2 := p.WithRemoveWhenDone()
 
-	testza.AssertTrue(t, p2.RemoveWhenDone)
+	testhelper.AssertTrue(t, p2.RemoveWhenDone)
 
 	os.Stdout = originalStdout // Restore original os.Stdout
 }
@@ -110,7 +110,7 @@ func TestAreaPrinter_WithFullscreen(t *testing.T) {
 	p := pterm.AreaPrinter{}
 	p2 := p.WithFullscreen()
 
-	testza.AssertTrue(t, p2.Fullscreen)
+	testhelper.AssertTrue(t, p2.Fullscreen)
 
 	os.Stdout = originalStdout // Restore original os.Stdout
 }

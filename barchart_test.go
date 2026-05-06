@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/MarvinJWendt/testza"
+	"github.com/pterm/pterm/internal/testhelper"
 	"github.com/pterm/pterm"
 )
 
@@ -373,8 +373,8 @@ func TestBarChartPrinter_WithHorizontalBarCharacter(t *testing.T) {
 	s := "X"
 	p2 := p.WithHorizontalBarCharacter(s)
 
-	testza.AssertEqual(t, s, p2.HorizontalBarCharacter)
-	testza.AssertZero(t, p.HorizontalBarCharacter)
+	testhelper.AssertEqual(t, s, p2.HorizontalBarCharacter)
+	testhelper.AssertZero(t, p.HorizontalBarCharacter)
 }
 
 func TestBarChartPrinter_WithVerticalBarCharacter(t *testing.T) {
@@ -382,8 +382,8 @@ func TestBarChartPrinter_WithVerticalBarCharacter(t *testing.T) {
 	s := "X"
 	p2 := p.WithVerticalBarCharacter(s)
 
-	testza.AssertEqual(t, s, p2.VerticalBarCharacter)
-	testza.AssertZero(t, p.VerticalBarCharacter)
+	testhelper.AssertEqual(t, s, p2.VerticalBarCharacter)
+	testhelper.AssertZero(t, p.VerticalBarCharacter)
 }
 
 func TestBarChartPrinter_WithBars(t *testing.T) {
@@ -402,8 +402,8 @@ func TestBarChartPrinter_WithBars(t *testing.T) {
 	}
 	p2 := p.WithBars(s)
 
-	testza.AssertEqual(t, s, p2.Bars)
-	testza.AssertZero(t, p.Bars)
+	testhelper.AssertEqual(t, s, p2.Bars)
+	testhelper.AssertZero(t, p.Bars)
 }
 
 func TestBarChartPrinter_WithHeight(t *testing.T) {
@@ -411,8 +411,8 @@ func TestBarChartPrinter_WithHeight(t *testing.T) {
 	s := 1337
 	p2 := p.WithHeight(s)
 
-	testza.AssertEqual(t, s, p2.Height)
-	testza.AssertZero(t, p.Height)
+	testhelper.AssertEqual(t, s, p2.Height)
+	testhelper.AssertZero(t, p.Height)
 }
 
 func TestBarChartPrinter_WithHorizontal(t *testing.T) {
@@ -420,8 +420,8 @@ func TestBarChartPrinter_WithHorizontal(t *testing.T) {
 	s := true
 	p2 := p.WithHorizontal(s)
 
-	testza.AssertEqual(t, s, p2.Horizontal)
-	testza.AssertZero(t, p.Horizontal)
+	testhelper.AssertEqual(t, s, p2.Horizontal)
+	testhelper.AssertZero(t, p.Horizontal)
 }
 
 func TestBarChartPrinter_WithShowValue(t *testing.T) {
@@ -429,8 +429,8 @@ func TestBarChartPrinter_WithShowValue(t *testing.T) {
 	s := true
 	p2 := p.WithShowValue(s)
 
-	testza.AssertEqual(t, s, p2.ShowValue)
-	testza.AssertZero(t, p.ShowValue)
+	testhelper.AssertEqual(t, s, p2.ShowValue)
+	testhelper.AssertZero(t, p.ShowValue)
 }
 
 func TestBarChartPrinter_WithWidth(t *testing.T) {
@@ -438,8 +438,8 @@ func TestBarChartPrinter_WithWidth(t *testing.T) {
 	s := 1337
 	p2 := p.WithWidth(s)
 
-	testza.AssertEqual(t, s, p2.Width)
-	testza.AssertZero(t, p.Width)
+	testhelper.AssertEqual(t, s, p2.Width)
+	testhelper.AssertZero(t, p.Width)
 }
 
 func TestBarChartPrinter_WithWriter(t *testing.T) {
@@ -447,6 +447,6 @@ func TestBarChartPrinter_WithWriter(t *testing.T) {
 	s := os.Stderr
 	p2 := p.WithWriter(s)
 
-	testza.AssertEqual(t, s, p2.Writer)
-	testza.AssertZero(t, p.Writer)
+	testhelper.AssertEqual(t, s, p2.Writer)
+	testhelper.AssertZero(t, p.Writer)
 }

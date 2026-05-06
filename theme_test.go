@@ -3,7 +3,7 @@ package pterm_test
 import (
 	"testing"
 
-	"github.com/MarvinJWendt/testza"
+	"github.com/pterm/pterm/internal/testhelper"
 	"github.com/pterm/pterm"
 )
 
@@ -12,7 +12,7 @@ func TestTheme_WithDescriptionMessageStyle(t *testing.T) {
 	p := pterm.Theme{}
 	p2 := p.WithDescriptionMessageStyle(s)
 
-	testza.AssertEqual(t, s, p2.DescriptionMessageStyle)
+	testhelper.AssertEqual(t, s, p2.DescriptionMessageStyle)
 }
 
 func TestTheme_WithDescriptionPrefixStyle(t *testing.T) {
@@ -20,7 +20,7 @@ func TestTheme_WithDescriptionPrefixStyle(t *testing.T) {
 	p := pterm.Theme{}
 	p2 := p.WithDescriptionPrefixStyle(s)
 
-	testza.AssertEqual(t, s, p2.DescriptionPrefixStyle)
+	testhelper.AssertEqual(t, s, p2.DescriptionPrefixStyle)
 }
 
 func TestTheme_WithErrorMessageStyle(t *testing.T) {
@@ -28,7 +28,7 @@ func TestTheme_WithErrorMessageStyle(t *testing.T) {
 	p := pterm.Theme{}
 	p2 := p.WithErrorMessageStyle(s)
 
-	testza.AssertEqual(t, s, p2.ErrorMessageStyle)
+	testhelper.AssertEqual(t, s, p2.ErrorMessageStyle)
 }
 
 func TestTheme_WithErrorPrefixStyle(t *testing.T) {
@@ -36,7 +36,7 @@ func TestTheme_WithErrorPrefixStyle(t *testing.T) {
 	p := pterm.Theme{}
 	p2 := p.WithErrorPrefixStyle(s)
 
-	testza.AssertEqual(t, s, p2.ErrorPrefixStyle)
+	testhelper.AssertEqual(t, s, p2.ErrorPrefixStyle)
 }
 
 func TestTheme_WithFatalMessageStyle(t *testing.T) {
@@ -44,7 +44,7 @@ func TestTheme_WithFatalMessageStyle(t *testing.T) {
 	p := pterm.Theme{}
 	p2 := p.WithFatalMessageStyle(s)
 
-	testza.AssertEqual(t, s, p2.FatalMessageStyle)
+	testhelper.AssertEqual(t, s, p2.FatalMessageStyle)
 }
 
 func TestTheme_WithFatalPrefixStyle(t *testing.T) {
@@ -52,7 +52,7 @@ func TestTheme_WithFatalPrefixStyle(t *testing.T) {
 	p := pterm.Theme{}
 	p2 := p.WithFatalPrefixStyle(s)
 
-	testza.AssertEqual(t, s, p2.FatalPrefixStyle)
+	testhelper.AssertEqual(t, s, p2.FatalPrefixStyle)
 }
 
 func TestTheme_WithHighlightStyle(t *testing.T) {
@@ -60,7 +60,7 @@ func TestTheme_WithHighlightStyle(t *testing.T) {
 	p := pterm.Theme{}
 	p2 := p.WithHighlightStyle(s)
 
-	testza.AssertEqual(t, s, p2.HighlightStyle)
+	testhelper.AssertEqual(t, s, p2.HighlightStyle)
 }
 
 func TestTheme_WithInfoMessageStyle(t *testing.T) {
@@ -68,7 +68,7 @@ func TestTheme_WithInfoMessageStyle(t *testing.T) {
 	p := pterm.Theme{}
 	p2 := p.WithInfoMessageStyle(s)
 
-	testza.AssertEqual(t, s, p2.InfoMessageStyle)
+	testhelper.AssertEqual(t, s, p2.InfoMessageStyle)
 }
 
 func TestTheme_WithInfoPrefixStyle(t *testing.T) {
@@ -76,7 +76,7 @@ func TestTheme_WithInfoPrefixStyle(t *testing.T) {
 	p := pterm.Theme{}
 	p2 := p.WithInfoPrefixStyle(s)
 
-	testza.AssertEqual(t, s, p2.InfoPrefixStyle)
+	testhelper.AssertEqual(t, s, p2.InfoPrefixStyle)
 }
 
 func TestTheme_WithPrimaryStyle(t *testing.T) {
@@ -84,7 +84,7 @@ func TestTheme_WithPrimaryStyle(t *testing.T) {
 	p := pterm.Theme{}
 	p2 := p.WithPrimaryStyle(s)
 
-	testza.AssertEqual(t, s, p2.PrimaryStyle)
+	testhelper.AssertEqual(t, s, p2.PrimaryStyle)
 }
 
 func TestTheme_WithSecondaryStyle(t *testing.T) {
@@ -92,7 +92,7 @@ func TestTheme_WithSecondaryStyle(t *testing.T) {
 	p := pterm.Theme{}
 	p2 := p.WithSecondaryStyle(s)
 
-	testza.AssertEqual(t, s, p2.SecondaryStyle)
+	testhelper.AssertEqual(t, s, p2.SecondaryStyle)
 }
 
 func TestTheme_WithSuccessMessageStyle(t *testing.T) {
@@ -100,7 +100,7 @@ func TestTheme_WithSuccessMessageStyle(t *testing.T) {
 	p := pterm.Theme{}
 	p2 := p.WithSuccessMessageStyle(s)
 
-	testza.AssertEqual(t, s, p2.SuccessMessageStyle)
+	testhelper.AssertEqual(t, s, p2.SuccessMessageStyle)
 }
 
 func TestTheme_WithSuccessPrefixStyle(t *testing.T) {
@@ -108,7 +108,7 @@ func TestTheme_WithSuccessPrefixStyle(t *testing.T) {
 	p := pterm.Theme{}
 	p2 := p.WithSuccessPrefixStyle(s)
 
-	testza.AssertEqual(t, s, p2.SuccessPrefixStyle)
+	testhelper.AssertEqual(t, s, p2.SuccessPrefixStyle)
 }
 
 func TestTheme_WithWarningMessageStyle(t *testing.T) {
@@ -116,7 +116,7 @@ func TestTheme_WithWarningMessageStyle(t *testing.T) {
 	p := pterm.Theme{}
 	p2 := p.WithWarningMessageStyle(s)
 
-	testza.AssertEqual(t, s, p2.WarningMessageStyle)
+	testhelper.AssertEqual(t, s, p2.WarningMessageStyle)
 }
 
 func TestTheme_WithWarningPrefixStyle(t *testing.T) {
@@ -124,7 +124,7 @@ func TestTheme_WithWarningPrefixStyle(t *testing.T) {
 	p := pterm.Theme{}
 	p2 := p.WithWarningPrefixStyle(s)
 
-	testza.AssertEqual(t, s, p2.WarningPrefixStyle)
+	testhelper.AssertEqual(t, s, p2.WarningPrefixStyle)
 }
 
 func TestTheme_WithBulletListBulletStyle(t *testing.T) {
@@ -132,7 +132,7 @@ func TestTheme_WithBulletListBulletStyle(t *testing.T) {
 	p := pterm.Theme{}
 	p2 := p.WithBulletListBulletStyle(s)
 
-	testza.AssertEqual(t, s, p2.BulletListBulletStyle)
+	testhelper.AssertEqual(t, s, p2.BulletListBulletStyle)
 }
 
 func TestTheme_WithBulletListTextStyle(t *testing.T) {
@@ -140,7 +140,7 @@ func TestTheme_WithBulletListTextStyle(t *testing.T) {
 	p := pterm.Theme{}
 	p2 := p.WithBulletListTextStyle(s)
 
-	testza.AssertEqual(t, s, p2.BulletListTextStyle)
+	testhelper.AssertEqual(t, s, p2.BulletListTextStyle)
 }
 
 func TestTheme_WithLetterStyle(t *testing.T) {
@@ -148,7 +148,7 @@ func TestTheme_WithLetterStyle(t *testing.T) {
 	p := pterm.Theme{}
 	p2 := p.WithLetterStyle(s)
 
-	testza.AssertEqual(t, s, p2.LetterStyle)
+	testhelper.AssertEqual(t, s, p2.LetterStyle)
 }
 
 func TestTheme_WithDebugMessageStyle(t *testing.T) {
@@ -156,7 +156,7 @@ func TestTheme_WithDebugMessageStyle(t *testing.T) {
 	p := pterm.Theme{}
 	p2 := p.WithDebugMessageStyle(s)
 
-	testza.AssertEqual(t, s, p2.DebugMessageStyle)
+	testhelper.AssertEqual(t, s, p2.DebugMessageStyle)
 }
 
 func TestTheme_WithDebugPrefixStyle(t *testing.T) {
@@ -164,7 +164,7 @@ func TestTheme_WithDebugPrefixStyle(t *testing.T) {
 	p := pterm.Theme{}
 	p2 := p.WithDebugPrefixStyle(s)
 
-	testza.AssertEqual(t, s, p2.DebugPrefixStyle)
+	testhelper.AssertEqual(t, s, p2.DebugPrefixStyle)
 }
 
 func TestTheme_WithTreeStyle(t *testing.T) {
@@ -172,7 +172,7 @@ func TestTheme_WithTreeStyle(t *testing.T) {
 	p := pterm.Theme{}
 	p2 := p.WithTreeStyle(s)
 
-	testza.AssertEqual(t, s, p2.TreeStyle)
+	testhelper.AssertEqual(t, s, p2.TreeStyle)
 }
 
 func TestTheme_WithTreeTextStyle(t *testing.T) {
@@ -180,7 +180,7 @@ func TestTheme_WithTreeTextStyle(t *testing.T) {
 	p := pterm.Theme{}
 	p2 := p.WithTreeTextStyle(s)
 
-	testza.AssertEqual(t, s, p2.TreeTextStyle)
+	testhelper.AssertEqual(t, s, p2.TreeTextStyle)
 }
 
 func TestTheme_WithBoxStyle(t *testing.T) {
@@ -188,7 +188,7 @@ func TestTheme_WithBoxStyle(t *testing.T) {
 	p := pterm.Theme{}
 	p2 := p.WithBoxStyle(s)
 
-	testza.AssertEqual(t, s, p2.BoxStyle)
+	testhelper.AssertEqual(t, s, p2.BoxStyle)
 }
 
 func TestTheme_WithBoxTextStyle(t *testing.T) {
@@ -196,7 +196,7 @@ func TestTheme_WithBoxTextStyle(t *testing.T) {
 	p := pterm.Theme{}
 	p2 := p.WithBoxTextStyle(s)
 
-	testza.AssertEqual(t, s, p2.BoxTextStyle)
+	testhelper.AssertEqual(t, s, p2.BoxTextStyle)
 }
 
 func TestTheme_WithBarLabelStyle(t *testing.T) {
@@ -204,7 +204,7 @@ func TestTheme_WithBarLabelStyle(t *testing.T) {
 	p := pterm.Theme{}
 	p2 := p.WithBarLabelStyle(s)
 
-	testza.AssertEqual(t, s, p2.BarLabelStyle)
+	testhelper.AssertEqual(t, s, p2.BarLabelStyle)
 }
 
 func TestTheme_WithBarStyle(t *testing.T) {
@@ -212,5 +212,5 @@ func TestTheme_WithBarStyle(t *testing.T) {
 	p := pterm.Theme{}
 	p2 := p.WithBarStyle(s)
 
-	testza.AssertEqual(t, s, p2.BarStyle)
+	testhelper.AssertEqual(t, s, p2.BarStyle)
 }

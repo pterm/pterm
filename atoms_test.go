@@ -3,7 +3,7 @@ package pterm_test
 import (
 	"testing"
 
-	"github.com/MarvinJWendt/testza"
+	"github.com/pterm/pterm/internal/testhelper"
 	"github.com/pterm/pterm"
 )
 
@@ -12,8 +12,8 @@ func TestBar_WithLabel(t *testing.T) {
 	s := "X"
 	p2 := p.WithLabel(s)
 
-	testza.AssertEqual(t, s, p2.Label)
-	testza.AssertZero(t, p.Label)
+	testhelper.AssertEqual(t, s, p2.Label)
+	testhelper.AssertZero(t, p.Label)
 }
 
 func TestBar_WithStyle(t *testing.T) {
@@ -21,8 +21,8 @@ func TestBar_WithStyle(t *testing.T) {
 	s := pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold)
 	p2 := p.WithStyle(s)
 
-	testza.AssertEqual(t, s, p2.Style)
-	testza.AssertZero(t, p.Style)
+	testhelper.AssertEqual(t, s, p2.Style)
+	testhelper.AssertZero(t, p.Style)
 }
 
 func TestBar_WithValue(t *testing.T) {
@@ -30,8 +30,8 @@ func TestBar_WithValue(t *testing.T) {
 	s := 1337
 	p2 := p.WithValue(s)
 
-	testza.AssertEqual(t, s, p2.Value)
-	testza.AssertZero(t, p.Value)
+	testhelper.AssertEqual(t, s, p2.Value)
+	testhelper.AssertZero(t, p.Value)
 }
 
 func TestBar_WithLabelStyle(t *testing.T) {
@@ -39,6 +39,6 @@ func TestBar_WithLabelStyle(t *testing.T) {
 	s := pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold)
 	p2 := p.WithLabelStyle(s)
 
-	testza.AssertEqual(t, s, p2.LabelStyle)
-	testza.AssertZero(t, p.LabelStyle)
+	testhelper.AssertEqual(t, s, p2.LabelStyle)
+	testhelper.AssertZero(t, p.LabelStyle)
 }

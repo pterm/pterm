@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/MarvinJWendt/testza"
+	"github.com/pterm/pterm/internal/testhelper"
 
 	"github.com/pterm/pterm"
 )
@@ -29,43 +29,43 @@ func TestHeatmapPrinter_SRender(t *testing.T) {
 	printer := pterm.DefaultHeatmap.WithAxisData(hd).WithData(d)
 	content, err := printer.Srender()
 
-	testza.AssertNoError(t, err)
-	testza.AssertNotNil(t, content)
+	testhelper.AssertNoError(t, err)
+	testhelper.AssertNotNil(t, content)
 
 	// WithoutGrid
 	printer = pterm.DefaultHeatmap.WithAxisData(hd).WithData(d).WithGrid(false)
 	content, err = printer.Srender()
 
-	testza.AssertNoError(t, err)
-	testza.AssertNotNil(t, content)
+	testhelper.AssertNoError(t, err)
+	testhelper.AssertNotNil(t, content)
 
 	// WithColouredCells
 	printer = pterm.DefaultHeatmap.WithAxisData(hd).WithData(d).WithOnlyColoredCells()
 	content, err = printer.Srender()
 
-	testza.AssertNoError(t, err)
-	testza.AssertNotNil(t, content)
+	testhelper.AssertNoError(t, err)
+	testhelper.AssertNotNil(t, content)
 
 	// WithoutStyle
 	printer = pterm.DefaultHeatmap.WithAxisData(hd).WithData(d).WithAxisStyle(nil)
 	content, err = printer.Srender()
 
-	testza.AssertNoError(t, err)
-	testza.AssertNotNil(t, content)
+	testhelper.AssertNoError(t, err)
+	testhelper.AssertNotNil(t, content)
 
 	// WithoutSeparatorStyle
 	printer = pterm.DefaultHeatmap.WithAxisData(hd).WithData(d).WithSeparatorStyle(nil)
 	content, err = printer.Srender()
 
-	testza.AssertNoError(t, err)
-	testza.AssertNotNil(t, content)
+	testhelper.AssertNoError(t, err)
+	testhelper.AssertNotNil(t, content)
 
 	// WithEnableRGB
 	printer = pterm.DefaultHeatmap.WithAxisData(hd).WithData(d).WithEnableRGB(true)
 	content, err = printer.Srender()
 
-	testza.AssertNoError(t, err)
-	testza.AssertNotNil(t, content)
+	testhelper.AssertNoError(t, err)
+	testhelper.AssertNotNil(t, content)
 }
 
 func TestHeatmapPrinter_WithAxisData(t *testing.T) {
@@ -76,8 +76,8 @@ func TestHeatmapPrinter_WithAxisData(t *testing.T) {
 
 	h := pterm.DefaultHeatmap.WithAxisData(hd)
 
-	testza.AssertTrue(t, h.HasHeader)
-	testza.AssertEqual(t, hd, h.Axis)
+	testhelper.AssertTrue(t, h.HasHeader)
+	testhelper.AssertEqual(t, hd, h.Axis)
 }
 
 func TestHeatmapPrinter_WithAxisStyle(t *testing.T) {
@@ -85,7 +85,7 @@ func TestHeatmapPrinter_WithAxisStyle(t *testing.T) {
 	p := pterm.HeatmapPrinter{}
 	p2 := p.WithAxisStyle(s)
 
-	testza.AssertEqual(t, s, p2.AxisStyle)
+	testhelper.AssertEqual(t, s, p2.AxisStyle)
 }
 
 func TestHeatmapPrinter_WithSeparatorStyle(t *testing.T) {
@@ -93,7 +93,7 @@ func TestHeatmapPrinter_WithSeparatorStyle(t *testing.T) {
 	h := pterm.HeatmapPrinter{}
 	h2 := h.WithSeparatorStyle(s)
 
-	testza.AssertEqual(t, s, h2.SeparatorStyle)
+	testhelper.AssertEqual(t, s, h2.SeparatorStyle)
 }
 
 func TestHeatmapPrinter_WithData(t *testing.T) {
@@ -107,50 +107,50 @@ func TestHeatmapPrinter_WithData(t *testing.T) {
 	h := pterm.HeatmapPrinter{}
 	h2 := h.WithData(d)
 
-	testza.AssertEqualValues(t, d, h2.Data)
+	testhelper.AssertEqualValues(t, d, h2.Data)
 }
 
 func TestHeatmapPrinter_WithBoxed(t *testing.T) {
 	h := pterm.HeatmapPrinter{}
 	h2 := h.WithBoxed(true)
 
-	testza.AssertTrue(t, h2.Boxed)
+	testhelper.AssertTrue(t, h2.Boxed)
 }
 
 func TestHeatmapPrinter_WithGrid(t *testing.T) {
 	h := pterm.HeatmapPrinter{}
 	h2 := h.WithGrid(true)
 
-	testza.AssertTrue(t, h2.Grid)
+	testhelper.AssertTrue(t, h2.Grid)
 }
 
 func TestHeatmapPrinter_WithoutGrid(t *testing.T) {
 	h := pterm.DefaultHeatmap
 	h2 := h.WithGrid(false)
 
-	testza.AssertFalse(t, h2.Grid)
-	testza.AssertFalse(t, h2.Boxed)
+	testhelper.AssertFalse(t, h2.Grid)
+	testhelper.AssertFalse(t, h2.Boxed)
 }
 
 func TestHeatmapPrinter_WithRGB(t *testing.T) {
 	h := pterm.HeatmapPrinter{}
 	h2 := h.WithEnableRGB(true)
 
-	testza.AssertTrue(t, h2.EnableRGB)
+	testhelper.AssertTrue(t, h2.EnableRGB)
 }
 
 func TestHeatmapPrinter_WithOnlyColoredCells(t *testing.T) {
 	h := pterm.HeatmapPrinter{}
 	h2 := h.WithOnlyColoredCells(true)
 
-	testza.AssertTrue(t, h2.OnlyColoredCells)
+	testhelper.AssertTrue(t, h2.OnlyColoredCells)
 }
 
 func TestHeatmapPrinter_WithCellSize(t *testing.T) {
 	h := pterm.HeatmapPrinter{}
 	h2 := h.WithCellSize(1)
 
-	testza.AssertEqual(t, 1, h2.CellSize)
+	testhelper.AssertEqual(t, 1, h2.CellSize)
 }
 
 func TestHeatmapPrinter_WithWriter(t *testing.T) {
@@ -158,6 +158,6 @@ func TestHeatmapPrinter_WithWriter(t *testing.T) {
 	s := os.Stderr
 	h2 := h.WithWriter(s)
 
-	testza.AssertEqual(t, s, h2.Writer)
-	testza.AssertZero(t, h.Writer)
+	testhelper.AssertEqual(t, s, h2.Writer)
+	testhelper.AssertZero(t, h.Writer)
 }

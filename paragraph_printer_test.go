@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/MarvinJWendt/testza"
+	"github.com/pterm/pterm/internal/testhelper"
 
 	"github.com/pterm/pterm"
 )
@@ -27,12 +27,12 @@ func TestParagraphPrinterPrintMethods(t *testing.T) {
 
 	t.Run("PrintWithLongText", func(t *testing.T) {
 		proxyToDevNull()
-		testza.AssertNotZero(t, p.Print("This is a longer text to test the paragraph printer. I don't know when this text will be long enough so I will just write until I get the feeling that it's enough. Maybe about now."))
+		testhelper.AssertNotZero(t, p.Print("This is a longer text to test the paragraph printer. I don't know when this text will be long enough so I will just write until I get the feeling that it's enough. Maybe about now."))
 	})
 
 	t.Run("PrintWithoutText", func(t *testing.T) {
 		proxyToDevNull()
-		testza.AssertNotZero(t, p.Print(""))
+		testhelper.AssertNotZero(t, p.Print(""))
 	})
 
 	t.Run("Printf", func(t *testing.T) {
@@ -81,28 +81,28 @@ func TestParagraphPrinterPrintMethods(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			p.PrintOnError(errors.New("hello world"))
 		})
-		testza.AssertContains(t, result, "hello world")
+		testhelper.AssertContains(t, result, "hello world")
 	})
 
 	t.Run("PrintIfError_WithoutError", func(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			p.PrintOnError(nil)
 		})
-		testza.AssertZero(t, result)
+		testhelper.AssertZero(t, result)
 	})
 
 	t.Run("PrintOnErrorf", func(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			p.PrintOnErrorf("wrapping error : %w", errors.New("hello world"))
 		})
-		testza.AssertContains(t, result, "hello world")
+		testhelper.AssertContains(t, result, "hello world")
 	})
 
 	t.Run("PrintIfError_WithoutErrorf", func(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			p.PrintOnErrorf("", nil)
 		})
-		testza.AssertZero(t, result)
+		testhelper.AssertZero(t, result)
 	})
 }
 
@@ -110,7 +110,7 @@ func TestParagraphPrinter_WithMaxWidth(t *testing.T) {
 	p := pterm.ParagraphPrinter{}
 	p2 := p.WithMaxWidth(1337)
 
-	testza.AssertEqual(t, 1337, p2.MaxWidth)
+	testhelper.AssertEqual(t, 1337, p2.MaxWidth)
 }
 
 func TestParagraphPrinter_WithWriter(t *testing.T) {
@@ -118,6 +118,6 @@ func TestParagraphPrinter_WithWriter(t *testing.T) {
 	s := os.Stderr
 	p2 := p.WithWriter(s)
 
-	testza.AssertEqual(t, s, p2.Writer)
-	testza.AssertZero(t, p.Writer)
+	testhelper.AssertEqual(t, s, p2.Writer)
+	testhelper.AssertZero(t, p.Writer)
 }

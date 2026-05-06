@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/MarvinJWendt/testza"
+	"github.com/pterm/pterm/internal/testhelper"
 
 	"github.com/pterm/pterm"
 	"github.com/pterm/pterm/internal"
@@ -16,35 +16,35 @@ import (
 
 func TestSprint(t *testing.T) {
 	for _, randomString := range internal.RandomStrings {
-		testza.AssertEqual(t, randomString, pterm.Sprint(randomString))
+		testhelper.AssertEqual(t, randomString, pterm.Sprint(randomString))
 	}
 }
 
 func TestSprintf(t *testing.T) {
 	for _, randomString := range internal.RandomStrings {
-		testza.AssertEqual(t, randomString, pterm.Sprintf("%s", randomString))
+		testhelper.AssertEqual(t, randomString, pterm.Sprintf("%s", randomString))
 	}
 
-	testza.AssertEqual(t, "Hello, World!", pterm.Sprintf("Hello, %s!", "World"))
+	testhelper.AssertEqual(t, "Hello, World!", pterm.Sprintf("Hello, %s!", "World"))
 }
 
 func TestSprintfln(t *testing.T) {
 	for _, randomString := range internal.RandomStrings {
-		testza.AssertEqual(t, randomString+"\n", pterm.Sprintfln("%s", randomString))
+		testhelper.AssertEqual(t, randomString+"\n", pterm.Sprintfln("%s", randomString))
 	}
 
-	testza.AssertEqual(t, "Hello, World!\n", pterm.Sprintfln("Hello, %s!", "World"))
+	testhelper.AssertEqual(t, "Hello, World!\n", pterm.Sprintfln("Hello, %s!", "World"))
 }
 
 func TestSprintln(t *testing.T) {
 	for _, randomString := range internal.RandomStrings {
-		testza.AssertEqual(t, randomString+"\n", pterm.Sprintln(randomString))
+		testhelper.AssertEqual(t, randomString+"\n", pterm.Sprintln(randomString))
 	}
 }
 
 func TestSprinto(t *testing.T) {
 	for _, randomString := range internal.RandomStrings {
-		testza.AssertEqual(t, "\r"+randomString, pterm.Sprinto(randomString))
+		testhelper.AssertEqual(t, "\r"+randomString, pterm.Sprinto(randomString))
 	}
 }
 
@@ -58,7 +58,7 @@ func TestPrint(t *testing.T) {
 			out := captureStdout(func(w io.Writer) {
 				pterm.Print(randomString)
 			})
-			testza.AssertEqual(t, randomString, out)
+			testhelper.AssertEqual(t, randomString, out)
 		}
 	})
 
@@ -69,7 +69,7 @@ func TestPrint(t *testing.T) {
 			out := captureStdout(func(w io.Writer) {
 				pterm.Print(randomString)
 			})
-			testza.AssertEqual(t, "", out)
+			testhelper.AssertEqual(t, "", out)
 		}
 
 		pterm.Output = true
@@ -84,7 +84,7 @@ func TestPrintln(t *testing.T) {
 			out := captureStdout(func(w io.Writer) {
 				pterm.Println(randomString)
 			})
-			testza.AssertEqual(t, randomString+"\n", out)
+			testhelper.AssertEqual(t, randomString+"\n", out)
 		}
 	})
 
@@ -95,7 +95,7 @@ func TestPrintln(t *testing.T) {
 			out := captureStdout(func(w io.Writer) {
 				pterm.Println(randomString)
 			})
-			testza.AssertEqual(t, "", out)
+			testhelper.AssertEqual(t, "", out)
 		}
 
 		pterm.Output = true
@@ -110,13 +110,13 @@ func TestPrintf(t *testing.T) {
 			out := captureStdout(func(w io.Writer) {
 				pterm.Printf("%s", randomString)
 			})
-			testza.AssertEqual(t, randomString, out)
+			testhelper.AssertEqual(t, randomString, out)
 		}
 
 		out := captureStdout(func(w io.Writer) {
 			pterm.Printf("Hello, %s!", "World")
 		})
-		testza.AssertEqual(t, "Hello, World!", out)
+		testhelper.AssertEqual(t, "Hello, World!", out)
 	})
 
 	t.Run("disabled output", func(t *testing.T) {
@@ -126,13 +126,13 @@ func TestPrintf(t *testing.T) {
 			out := captureStdout(func(w io.Writer) {
 				pterm.Printf("%s", randomString)
 			})
-			testza.AssertEqual(t, "", out)
+			testhelper.AssertEqual(t, "", out)
 		}
 
 		out := captureStdout(func(w io.Writer) {
 			pterm.Printf("Hello, %s!", "World")
 		})
-		testza.AssertEqual(t, "", out)
+		testhelper.AssertEqual(t, "", out)
 
 		pterm.Output = true
 	})
@@ -146,13 +146,13 @@ func TestPrintfln(t *testing.T) {
 			out := captureStdout(func(w io.Writer) {
 				pterm.Printfln("%s", randomString)
 			})
-			testza.AssertEqual(t, randomString+"\n", out)
+			testhelper.AssertEqual(t, randomString+"\n", out)
 		}
 
 		out := captureStdout(func(w io.Writer) {
 			pterm.Printfln("Hello, %s!", "World")
 		})
-		testza.AssertEqual(t, "Hello, World!\n", out)
+		testhelper.AssertEqual(t, "Hello, World!\n", out)
 	})
 
 	t.Run("disabled output", func(t *testing.T) {
@@ -162,13 +162,13 @@ func TestPrintfln(t *testing.T) {
 			out := captureStdout(func(w io.Writer) {
 				pterm.Printfln("%s", randomString)
 			})
-			testza.AssertEqual(t, "", out)
+			testhelper.AssertEqual(t, "", out)
 		}
 
 		out := captureStdout(func(w io.Writer) {
 			pterm.Printfln("Hello, %s!", "World")
 		})
-		testza.AssertEqual(t, "", out)
+		testhelper.AssertEqual(t, "", out)
 
 		pterm.Output = true
 	})
@@ -184,7 +184,7 @@ func TestFprint(t *testing.T) {
 				pterm.SetDefaultOutput(nil)
 				pterm.Fprint(w, randomString)
 			})
-			testza.AssertEqual(t, randomString, out)
+			testhelper.AssertEqual(t, randomString, out)
 		}
 	})
 
@@ -195,7 +195,7 @@ func TestFprint(t *testing.T) {
 			out := captureStdout(func(w io.Writer) {
 				pterm.Fprint(nil, randomString)
 			})
-			testza.AssertEqual(t, randomString, out)
+			testhelper.AssertEqual(t, randomString, out)
 		}
 	})
 
@@ -206,7 +206,7 @@ func TestFprint(t *testing.T) {
 			out := captureStdout(func(w io.Writer) {
 				pterm.Fprint(w, randomString)
 			})
-			testza.AssertEqual(t, "", out)
+			testhelper.AssertEqual(t, "", out)
 		}
 
 		pterm.Output = true
@@ -223,7 +223,7 @@ func TestFprintln(t *testing.T) {
 				pterm.SetDefaultOutput(nil)
 				pterm.Fprintln(w, randomString)
 			})
-			testza.AssertEqual(t, randomString+"\n", out)
+			testhelper.AssertEqual(t, randomString+"\n", out)
 		}
 	})
 
@@ -234,7 +234,7 @@ func TestFprintln(t *testing.T) {
 			out := captureStdout(func(w io.Writer) {
 				pterm.Fprintln(nil, randomString)
 			})
-			testza.AssertEqual(t, randomString+"\n", out)
+			testhelper.AssertEqual(t, randomString+"\n", out)
 		}
 	})
 
@@ -245,7 +245,7 @@ func TestFprintln(t *testing.T) {
 			out := captureStdout(func(w io.Writer) {
 				pterm.Fprintln(w, randomString)
 			})
-			testza.AssertEqual(t, "", out)
+			testhelper.AssertEqual(t, "", out)
 		}
 
 		pterm.Output = true
@@ -260,7 +260,7 @@ func TestPrinto(t *testing.T) {
 			out := captureStdout(func(w io.Writer) {
 				pterm.Printo(randomString)
 			})
-			testza.AssertEqual(t, "\r"+randomString, out)
+			testhelper.AssertEqual(t, "\r"+randomString, out)
 		}
 	})
 
@@ -271,7 +271,7 @@ func TestPrinto(t *testing.T) {
 			out := captureStdout(func(w io.Writer) {
 				pterm.Printo(randomString)
 			})
-			testza.AssertEqual(t, "", out)
+			testhelper.AssertEqual(t, "", out)
 		}
 
 		pterm.Output = false
@@ -288,7 +288,7 @@ func TestFprinto(t *testing.T) {
 				pterm.SetDefaultOutput(nil)
 				pterm.Fprinto(w, randomString)
 			})
-			testza.AssertEqual(t, "\r"+randomString, out)
+			testhelper.AssertEqual(t, "\r"+randomString, out)
 		}
 	})
 
@@ -299,7 +299,7 @@ func TestFprinto(t *testing.T) {
 			out := captureStdout(func(w io.Writer) {
 				pterm.Fprinto(nil, randomString)
 			})
-			testza.AssertEqual(t, "\r"+randomString, out)
+			testhelper.AssertEqual(t, "\r"+randomString, out)
 		}
 	})
 
@@ -310,7 +310,7 @@ func TestFprinto(t *testing.T) {
 			out := captureStdout(func(w io.Writer) {
 				pterm.Fprinto(w, randomString)
 			})
-			testza.AssertEqual(t, "", out)
+			testhelper.AssertEqual(t, "", out)
 		}
 
 		pterm.Output = true
@@ -326,7 +326,7 @@ func TestPrintOnError(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			pterm.PrintOnError(errors.New("hello world"))
 		})
-		testza.AssertContains(t, result, "hello world")
+		testhelper.AssertContains(t, result, "hello world")
 	})
 }
 
@@ -335,7 +335,7 @@ func TestPrintIfError_WithoutError(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			pterm.PrintOnError(nil)
 		})
-		testza.AssertZero(t, result)
+		testhelper.AssertZero(t, result)
 	})
 }
 
@@ -344,7 +344,7 @@ func TestPrintOnErrorf(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			pterm.PrintOnErrorf("wrapping error : %w", errors.New("hello world"))
 		})
-		testza.AssertContains(t, result, "hello world")
+		testhelper.AssertContains(t, result, "hello world")
 	})
 }
 
@@ -353,6 +353,6 @@ func TestPrintIfErrorf_WithoutError(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			pterm.PrintOnErrorf("", nil)
 		})
-		testza.AssertZero(t, result)
+		testhelper.AssertZero(t, result)
 	})
 }

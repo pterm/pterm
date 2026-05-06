@@ -8,7 +8,7 @@ import (
 
 	"atomicgo.dev/keyboard"
 	"atomicgo.dev/keyboard/keys"
-	"github.com/MarvinJWendt/testza"
+	"github.com/pterm/pterm/internal/testhelper"
 
 	"github.com/pterm/pterm"
 	"github.com/pterm/pterm/internal"
@@ -16,33 +16,33 @@ import (
 
 func TestInteractiveTextInputPrinter_WithDefaultText(t *testing.T) {
 	p := pterm.DefaultInteractiveTextInput.WithDefaultText("default")
-	testza.AssertEqual(t, p.DefaultText, "default")
+	testhelper.AssertEqual(t, p.DefaultText, "default")
 }
 
 func TestInteractiveTextInputPrinter_WithDefaultValue(t *testing.T) {
 	p := pterm.DefaultInteractiveTextInput.WithDefaultValue("default")
-	testza.AssertEqual(t, p.DefaultValue, "default")
+	testhelper.AssertEqual(t, p.DefaultValue, "default")
 }
 
 func TestInteractiveTextInputPrinter_WithDelimiter(t *testing.T) {
 	p := pterm.DefaultInteractiveTextInput.WithDelimiter(">>")
-	testza.AssertEqual(t, p.Delimiter, ">>")
+	testhelper.AssertEqual(t, p.Delimiter, ">>")
 }
 
 func TestInteractiveTextInputPrinter_WithMultiLine_true(t *testing.T) {
 	p := pterm.DefaultInteractiveTextInput.WithMultiLine()
-	testza.AssertTrue(t, p.MultiLine)
+	testhelper.AssertTrue(t, p.MultiLine)
 }
 
 func TestInteractiveTextInputPrinter_WithMultiLine_false(t *testing.T) {
 	p := pterm.DefaultInteractiveTextInput.WithMultiLine(false)
-	testza.AssertFalse(t, p.MultiLine)
+	testhelper.AssertFalse(t, p.MultiLine)
 }
 
 func TestInteractiveTextInputPrinter_WithTextStyle(t *testing.T) {
 	style := pterm.NewStyle(pterm.FgRed)
 	p := pterm.DefaultInteractiveTextInput.WithTextStyle(style)
-	testza.AssertEqual(t, p.TextStyle, style)
+	testhelper.AssertEqual(t, p.TextStyle, style)
 }
 
 func TestInteractiveTextInputPrinter_WithMask(t *testing.T) {
@@ -55,7 +55,7 @@ func TestInteractiveTextInputPrinter_WithMask(t *testing.T) {
 	}()
 
 	result, _ := pterm.DefaultInteractiveTextInput.WithMask("*").Show()
-	testza.AssertEqual(t, "abc", result)
+	testhelper.AssertEqual(t, "abc", result)
 }
 
 func TestInteractiveTextInputPrinter_WithCancel(t *testing.T) {
@@ -72,7 +72,7 @@ func TestInteractiveTextInputPrinter_WithCancel(t *testing.T) {
 	}()
 
 	result, _ := pterm.DefaultInteractiveTextInput.WithMask("*").Show()
-	testza.AssertEqual(t, "", result)
+	testhelper.AssertEqual(t, "", result)
 
 	if !exitCalled {
 		t.Errorf("Expected exit to be called on Ctrl+C")
@@ -85,7 +85,7 @@ func TestInteractiveTextInputPrinter_OnEnter(t *testing.T) {
 	}()
 
 	result, _ := pterm.DefaultInteractiveTextInput.WithDefaultValue("default").Show()
-	testza.AssertEqual(t, "default", result)
+	testhelper.AssertEqual(t, "default", result)
 }
 
 func TestInteractiveTextInputPrinter_Editable(t *testing.T) {
@@ -105,7 +105,7 @@ func TestInteractiveTextInputPrinter_Editable(t *testing.T) {
 	}()
 
 	result, _ := pterm.DefaultInteractiveTextInput.WithDefaultValue("default").Show()
-	testza.AssertEqual(t, "deffaultt", result)
+	testhelper.AssertEqual(t, "deffaultt", result)
 }
 
 func TestInteractiveTextInputPrinter_WithMultiLineOnTab(t *testing.T) {
@@ -116,7 +116,7 @@ func TestInteractiveTextInputPrinter_WithMultiLineOnTab(t *testing.T) {
 	result, _ := pterm.DefaultInteractiveTextInput.
 		WithMultiLine(true).
 		WithDefaultValue("default").Show()
-	testza.AssertEqual(t, "default", result)
+	testhelper.AssertEqual(t, "default", result)
 }
 
 func TestInteractiveTextInputPrinter_WithMultiLineOnUp(t *testing.T) {
@@ -132,7 +132,7 @@ func TestInteractiveTextInputPrinter_WithMultiLineOnUp(t *testing.T) {
 
 	result, _ := pterm.DefaultInteractiveTextInput.
 		WithMultiLine(true).Show()
-	testza.AssertEqual(t, "first line\nsecond line", result)
+	testhelper.AssertEqual(t, "first line\nsecond line", result)
 }
 
 func TestInteractiveTextInputPrinter_WithMultiLineOnDown(t *testing.T) {
@@ -150,7 +150,7 @@ func TestInteractiveTextInputPrinter_WithMultiLineOnDown(t *testing.T) {
 
 	result, _ := pterm.DefaultInteractiveTextInput.
 		WithMultiLine(true).Show()
-	testza.AssertEqual(t, "a\nb\nc", result)
+	testhelper.AssertEqual(t, "a\nb\nc", result)
 }
 
 func TestInteractiveTextInputPrinter_WithMultiLineOnLeft(t *testing.T) {
@@ -167,7 +167,7 @@ func TestInteractiveTextInputPrinter_WithMultiLineOnLeft(t *testing.T) {
 
 	result, _ := pterm.DefaultInteractiveTextInput.
 		WithMultiLine(true).Show()
-	testza.AssertEqual(t, "b\na", result)
+	testhelper.AssertEqual(t, "b\na", result)
 }
 
 func TestInteractiveTextInputPrinter_WithMultiLineOnRight(t *testing.T) {
@@ -184,7 +184,7 @@ func TestInteractiveTextInputPrinter_WithMultiLineOnRight(t *testing.T) {
 
 	result, _ := pterm.DefaultInteractiveTextInput.
 		WithMultiLine(true).Show()
-	testza.AssertEqual(t, "a\nb", result)
+	testhelper.AssertEqual(t, "a\nb", result)
 }
 
 func TestInteractiveTextInputPrinter_OnBackspace(t *testing.T) {
@@ -195,7 +195,7 @@ func TestInteractiveTextInputPrinter_OnBackspace(t *testing.T) {
 
 	result, _ := pterm.DefaultInteractiveTextInput.
 		WithDefaultValue("a").Show()
-	testza.AssertEqual(t, "", result)
+	testhelper.AssertEqual(t, "", result)
 }
 
 func TestInteractiveTextInputPrinter_WithMultiLineOnDelete(t *testing.T) {
@@ -211,7 +211,7 @@ func TestInteractiveTextInputPrinter_WithMultiLineOnDelete(t *testing.T) {
 	result, _ := pterm.DefaultInteractiveTextInput.
 		WithMultiLine(true).
 		WithDefaultValue("a").Show()
-	testza.AssertEqual(t, "a", result)
+	testhelper.AssertEqual(t, "a", result)
 }
 
 func TestInteractiveTextInputPrinter_WithMultiLineOnBackspace(t *testing.T) {
@@ -225,7 +225,7 @@ func TestInteractiveTextInputPrinter_WithMultiLineOnBackspace(t *testing.T) {
 	result, _ := pterm.DefaultInteractiveTextInput.
 		WithMultiLine(true).
 		WithDefaultValue("a").Show()
-	testza.AssertEqual(t, "", result)
+	testhelper.AssertEqual(t, "", result)
 }
 
 func TestInteractiveTextInputPrinter_WithMultiLineOnLeftRight(t *testing.T) {
@@ -240,16 +240,16 @@ func TestInteractiveTextInputPrinter_WithMultiLineOnLeftRight(t *testing.T) {
 	result, _ := pterm.DefaultInteractiveTextInput.
 		WithMultiLine(true).
 		Show("Enter")
-	testza.AssertEqual(t, "a\nb", result)
+	testhelper.AssertEqual(t, "a\nb", result)
 }
 
 func TestInteractiveTextInputPrinter_WithOnInterruptFunc(t *testing.T) {
 	// OnInterrupt function defaults to nil
 	pd := pterm.InteractiveTextInputPrinter{}
-	testza.AssertNil(t, pd.OnInterruptFunc)
+	testhelper.AssertNil(t, pd.OnInterruptFunc)
 
 	// Verify OnInterrupt is set
 	exitfunc := func() {}
 	p := pterm.DefaultInteractiveTextInput.WithOnInterruptFunc(exitfunc)
-	testza.AssertEqual(t, reflect.ValueOf(p.OnInterruptFunc).Pointer(), reflect.ValueOf(exitfunc).Pointer())
+	testhelper.AssertEqual(t, reflect.ValueOf(p.OnInterruptFunc).Pointer(), reflect.ValueOf(exitfunc).Pointer())
 }

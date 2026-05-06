@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/MarvinJWendt/testza"
+	"github.com/pterm/pterm/internal/testhelper"
 
 	"github.com/pterm/pterm"
 )
@@ -71,28 +71,28 @@ func TestSectionPrinterPrintMethods(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			p.PrintOnError(errors.New("hello world"))
 		})
-		testza.AssertContains(t, result, "hello world")
+		testhelper.AssertContains(t, result, "hello world")
 	})
 
 	t.Run("PrintIfError_WithoutError", func(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			p.PrintOnError(nil)
 		})
-		testza.AssertZero(t, result)
+		testhelper.AssertZero(t, result)
 	})
 
 	t.Run("PrintOnErrorf", func(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			p.PrintOnErrorf("wrapping error : %w", errors.New("hello world"))
 		})
-		testza.AssertContains(t, result, "hello world")
+		testhelper.AssertContains(t, result, "hello world")
 	})
 
 	t.Run("PrintIfError_WithoutErrorf", func(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			p.PrintOnErrorf("", nil)
 		})
-		testza.AssertZero(t, result)
+		testhelper.AssertZero(t, result)
 	})
 }
 
@@ -100,16 +100,16 @@ func TestSectionPrinter_WithBottomPadding(t *testing.T) {
 	p := pterm.SectionPrinter{}
 	p2 := p.WithBottomPadding(1337)
 
-	testza.AssertEqual(t, 1337, p2.BottomPadding)
-	testza.AssertZero(t, p.BottomPadding)
+	testhelper.AssertEqual(t, 1337, p2.BottomPadding)
+	testhelper.AssertZero(t, p.BottomPadding)
 }
 
 func TestSectionPrinter_WithLevel(t *testing.T) {
 	p := pterm.SectionPrinter{}
 	p2 := p.WithLevel(1337)
 
-	testza.AssertEqual(t, 1337, p2.Level)
-	testza.AssertZero(t, p.Level)
+	testhelper.AssertEqual(t, 1337, p2.Level)
+	testhelper.AssertZero(t, p.Level)
 }
 
 func TestSectionPrinter_WithStyle(t *testing.T) {
@@ -117,24 +117,24 @@ func TestSectionPrinter_WithStyle(t *testing.T) {
 	s := pterm.NewStyle(pterm.FgRed, pterm.BgRed, pterm.Bold)
 	p2 := p.WithStyle(s)
 
-	testza.AssertEqual(t, s, p2.Style)
-	testza.AssertZero(t, p.Style)
+	testhelper.AssertEqual(t, s, p2.Style)
+	testhelper.AssertZero(t, p.Style)
 }
 
 func TestSectionPrinter_WithTopPadding(t *testing.T) {
 	p := pterm.SectionPrinter{}
 	p2 := p.WithTopPadding(1337)
 
-	testza.AssertEqual(t, 1337, p2.TopPadding)
-	testza.AssertZero(t, p.TopPadding)
+	testhelper.AssertEqual(t, 1337, p2.TopPadding)
+	testhelper.AssertZero(t, p.TopPadding)
 }
 
 func TestSectionPrinter_WithIndentCharacter(t *testing.T) {
 	p := pterm.SectionPrinter{}
 	p2 := p.WithIndentCharacter("#")
 
-	testza.AssertEqual(t, "#", p2.IndentCharacter)
-	testza.AssertZero(t, p.IndentCharacter)
+	testhelper.AssertEqual(t, "#", p2.IndentCharacter)
+	testhelper.AssertZero(t, p.IndentCharacter)
 }
 
 func TestSectionPrinter_WithWriter(t *testing.T) {
@@ -142,6 +142,6 @@ func TestSectionPrinter_WithWriter(t *testing.T) {
 	s := os.Stderr
 	p2 := p.WithWriter(s)
 
-	testza.AssertEqual(t, s, p2.Writer)
-	testza.AssertZero(t, p.Writer)
+	testhelper.AssertEqual(t, s, p2.Writer)
+	testhelper.AssertZero(t, p.Writer)
 }

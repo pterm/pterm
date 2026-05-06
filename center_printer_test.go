@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/MarvinJWendt/testza"
+	"github.com/pterm/pterm/internal/testhelper"
 
 	"github.com/pterm/pterm"
 )
@@ -15,8 +15,8 @@ func TestCenterPrinter_WithCenterEachLineSeparately(t *testing.T) {
 	p := pterm.CenterPrinter{}
 	p2 := p.WithCenterEachLineSeparately()
 
-	testza.AssertTrue(t, p2.CenterEachLineSeparately)
-	testza.AssertFalse(t, p.CenterEachLineSeparately)
+	testhelper.AssertTrue(t, p2.CenterEachLineSeparately)
+	testhelper.AssertFalse(t, p.CenterEachLineSeparately)
 }
 
 func TestCenterPrinterPrintMethods(t *testing.T) {
@@ -74,28 +74,28 @@ func TestCenterPrinterPrintMethods(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			p.PrintOnError(errors.New("hello world"))
 		})
-		testza.AssertContains(t, result, "hello world")
+		testhelper.AssertContains(t, result, "hello world")
 	})
 
 	t.Run("PrintIfError_WithoutError", func(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			p.PrintOnError(nil)
 		})
-		testza.AssertZero(t, result)
+		testhelper.AssertZero(t, result)
 	})
 
 	t.Run("PrintOnErrorf", func(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			p.PrintOnErrorf("wrapping error : %w", errors.New("hello world"))
 		})
-		testza.AssertContains(t, result, "hello world")
+		testhelper.AssertContains(t, result, "hello world")
 	})
 
 	t.Run("PrintIfError_WithoutErrorf", func(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			p.PrintOnErrorf("", nil)
 		})
-		testza.AssertZero(t, result)
+		testhelper.AssertZero(t, result)
 	})
 }
 
@@ -143,14 +143,14 @@ func TestCenterPrinter_SprintLineLongerThanTerminal(t *testing.T) {
 	p := pterm.DefaultCenter
 	p2 := p.Sprint("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 
-	testza.AssertContains(t, p2, "a")
+	testhelper.AssertContains(t, p2, "a")
 }
 
 func TestCenterPrinter_SprintLineLongerThanTerminalWithCenterEachLineSeparately(t *testing.T) {
 	p := pterm.DefaultCenter
 	p2 := p.WithCenterEachLineSeparately().Sprint("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 
-	testza.AssertContains(t, p2, "a")
+	testhelper.AssertContains(t, p2, "a")
 }
 
 func TestCenterPrinter_WithWriter(t *testing.T) {
@@ -158,6 +158,6 @@ func TestCenterPrinter_WithWriter(t *testing.T) {
 	s := os.Stderr
 	p2 := p.WithWriter(s)
 
-	testza.AssertEqual(t, s, p2.Writer)
-	testza.AssertZero(t, p.Writer)
+	testhelper.AssertEqual(t, s, p2.Writer)
+	testhelper.AssertZero(t, p.Writer)
 }

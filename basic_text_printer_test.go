@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/MarvinJWendt/testza"
+	"github.com/pterm/pterm/internal/testhelper"
 
 	"github.com/pterm/pterm"
 )
@@ -73,28 +73,28 @@ func TestBasicTextPrinterPrintMethods(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			p.PrintOnError(errors.New("hello world"))
 		})
-		testza.AssertContains(t, result, "hello world")
+		testhelper.AssertContains(t, result, "hello world")
 	})
 
 	t.Run("PrintIfError_WithoutError", func(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			p.PrintOnError(nil)
 		})
-		testza.AssertZero(t, result)
+		testhelper.AssertZero(t, result)
 	})
 
 	t.Run("PrintOnErrorf", func(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			p.PrintOnErrorf("wrapping error : %w", errors.New("hello world"))
 		})
-		testza.AssertContains(t, result, "hello world")
+		testhelper.AssertContains(t, result, "hello world")
 	})
 
 	t.Run("PrintIfError_WithoutErrorf", func(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			p.PrintOnErrorf("", nil)
 		})
-		testza.AssertZero(t, result)
+		testhelper.AssertZero(t, result)
 	})
 }
 
@@ -103,7 +103,7 @@ func TestBasicTextPrinter_WithStyle(t *testing.T) {
 	p := pterm.BasicTextPrinter{}
 	p2 := p.WithStyle(s)
 
-	testza.AssertEqual(t, s, p2.Style)
+	testhelper.AssertEqual(t, s, p2.Style)
 }
 
 func TestBasicTextPrinter_WithWriter(t *testing.T) {
@@ -111,6 +111,6 @@ func TestBasicTextPrinter_WithWriter(t *testing.T) {
 	s := os.Stderr
 	p2 := p.WithWriter(s)
 
-	testza.AssertEqual(t, s, p2.Writer)
-	testza.AssertZero(t, p.Writer)
+	testhelper.AssertEqual(t, s, p2.Writer)
+	testhelper.AssertZero(t, p.Writer)
 }

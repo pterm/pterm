@@ -5,7 +5,7 @@ import (
 	"io"
 	"testing"
 
-	"github.com/MarvinJWendt/testza"
+	"github.com/pterm/pterm/internal/testhelper"
 	"github.com/gookit/color"
 
 	"github.com/pterm/pterm"
@@ -67,7 +67,7 @@ func TestStylePrinterPrintMethods(t *testing.T) {
 func TestRemoveColorFromString(t *testing.T) {
 	for _, randomString := range internal.RandomStrings {
 		testString := pterm.Cyan(randomString)
-		testza.AssertEqual(t, randomString, pterm.RemoveColorFromString(testString))
+		testhelper.AssertEqual(t, randomString, pterm.RemoveColorFromString(testString))
 	}
 }
 
@@ -126,69 +126,69 @@ func TestColorPrinterPrintMethods(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			p.PrintOnError(errors.New("hello world"))
 		})
-		testza.AssertContains(t, result, "hello world")
+		testhelper.AssertContains(t, result, "hello world")
 	})
 
 	t.Run("PrintIfError_WithoutError", func(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			p.PrintOnError(nil)
 		})
-		testza.AssertZero(t, result)
+		testhelper.AssertZero(t, result)
 	})
 
 	t.Run("PrintOnErrorf", func(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			p.PrintOnErrorf("wrapping error : %w", errors.New("hello world"))
 		})
-		testza.AssertContains(t, result, "hello world")
+		testhelper.AssertContains(t, result, "hello world")
 	})
 
 	t.Run("PrintIfError_WithoutErrorf", func(t *testing.T) {
 		result := captureStdout(func(w io.Writer) {
 			p.PrintOnErrorf("", nil)
 		})
-		testza.AssertZero(t, result)
+		testhelper.AssertZero(t, result)
 	})
 }
 
 func TestNewStyle(t *testing.T) {
 	s := pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold)
-	testza.AssertEqual(t, s, &pterm.Style{pterm.FgRed, pterm.BgBlue, pterm.Bold})
+	testhelper.AssertEqual(t, s, &pterm.Style{pterm.FgRed, pterm.BgBlue, pterm.Bold})
 }
 
 func TestColor_ToStyle(t *testing.T) {
 	s := pterm.FgCyan.ToStyle()
-	testza.AssertEqual(t, s, &pterm.Style{pterm.FgCyan})
+	testhelper.AssertEqual(t, s, &pterm.Style{pterm.FgCyan})
 }
 
 func TestStyle_Add(t *testing.T) {
-	testza.AssertEqual(t, pterm.Style{pterm.FgRed, pterm.BgGreen}, pterm.Style{pterm.FgRed}.Add(pterm.Style{pterm.BgGreen}))
-	testza.AssertEqual(t, pterm.Style{pterm.FgRed, pterm.BgGreen, pterm.Bold}, pterm.Style{pterm.FgRed}.Add(pterm.Style{pterm.BgGreen}).Add(pterm.Style{pterm.Bold}))
-	testza.AssertEqual(t, pterm.Style{pterm.FgRed, pterm.BgGreen, pterm.Bold}, pterm.Style{pterm.FgRed}.Add(pterm.Style{pterm.BgGreen, pterm.Bold}))
-	testza.AssertEqual(t, pterm.Style{pterm.FgRed, pterm.BgGreen, pterm.Bold}, pterm.Style{pterm.FgRed}.Add(pterm.Style{pterm.BgGreen}, pterm.Style{pterm.Bold}))
+	testhelper.AssertEqual(t, pterm.Style{pterm.FgRed, pterm.BgGreen}, pterm.Style{pterm.FgRed}.Add(pterm.Style{pterm.BgGreen}))
+	testhelper.AssertEqual(t, pterm.Style{pterm.FgRed, pterm.BgGreen, pterm.Bold}, pterm.Style{pterm.FgRed}.Add(pterm.Style{pterm.BgGreen}).Add(pterm.Style{pterm.Bold}))
+	testhelper.AssertEqual(t, pterm.Style{pterm.FgRed, pterm.BgGreen, pterm.Bold}, pterm.Style{pterm.FgRed}.Add(pterm.Style{pterm.BgGreen, pterm.Bold}))
+	testhelper.AssertEqual(t, pterm.Style{pterm.FgRed, pterm.BgGreen, pterm.Bold}, pterm.Style{pterm.FgRed}.Add(pterm.Style{pterm.BgGreen}, pterm.Style{pterm.Bold}))
 }
 
 func TestStyle_Code(t *testing.T) {
-	testza.AssertNotZero(t, pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold).Code())
+	testhelper.AssertNotZero(t, pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold).Code())
 }
 
 func TestStyle_String(t *testing.T) {
-	testza.AssertNotZero(t, pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold).String())
+	testhelper.AssertNotZero(t, pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold).String())
 }
 
 func TestEnableColor(t *testing.T) {
 	pterm.EnableColor()
-	testza.AssertTrue(t, color.Enable)
-	testza.AssertTrue(t, pterm.PrintColor)
+	testhelper.AssertTrue(t, color.Enable)
+	testhelper.AssertTrue(t, pterm.PrintColor)
 }
 
 func TestDisableColor(t *testing.T) {
 	pterm.DisableColor()
-	testza.AssertFalse(t, color.Enable)
-	testza.AssertFalse(t, pterm.PrintColor)
+	testhelper.AssertFalse(t, color.Enable)
+	testhelper.AssertFalse(t, pterm.PrintColor)
 }
 
 func TestDisabledColorDoesPrintPlainString(t *testing.T) {
 	pterm.DisableColor()
-	testza.AssertEqual(t, "Hello, World!", pterm.FgRed.Sprint("Hello, World!"))
+	testhelper.AssertEqual(t, "Hello, World!", pterm.FgRed.Sprint("Hello, World!"))
 }

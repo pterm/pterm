@@ -5,7 +5,7 @@ import (
 
 	"atomicgo.dev/keyboard"
 	"atomicgo.dev/keyboard/keys"
-	"github.com/MarvinJWendt/testza"
+	"github.com/pterm/pterm/internal/testhelper"
 
 	"github.com/pterm/pterm"
 )
@@ -16,14 +16,14 @@ func TestInteractiveContinuePrinter_Show_yes(t *testing.T) {
 	}()
 
 	result, _ := pterm.DefaultInteractiveContinue.Show()
-	testza.AssertEqual(t, result, "yes")
+	testhelper.AssertEqual(t, result, "yes")
 
 	go func() {
 		keyboard.SimulateKeyPress('Y')
 	}()
 
 	result, _ = pterm.DefaultInteractiveContinue.Show()
-	testza.AssertEqual(t, result, "yes")
+	testhelper.AssertEqual(t, result, "yes")
 }
 
 func TestInteractiveContinuePrinter_Show_no(t *testing.T) {
@@ -32,12 +32,12 @@ func TestInteractiveContinuePrinter_Show_no(t *testing.T) {
 	}()
 
 	result, _ := pterm.DefaultInteractiveContinue.Show()
-	testza.AssertEqual(t, result, "no")
+	testhelper.AssertEqual(t, result, "no")
 }
 
 func TestInteractiveContinuePrinter_WithDefaultValueIndes(t *testing.T) {
 	p := pterm.DefaultInteractiveContinue.WithDefaultValueIndex(1)
-	testza.AssertEqual(t, p.DefaultValueIndex, 1)
+	testhelper.AssertEqual(t, p.DefaultValueIndex, 1)
 }
 
 func TestInteractiveContinuePrinter_WithDefaultValue_yes(t *testing.T) {
@@ -47,7 +47,7 @@ func TestInteractiveContinuePrinter_WithDefaultValue_yes(t *testing.T) {
 
 	p := pterm.DefaultInteractiveContinue.WithDefaultValue("yes")
 	result, _ := p.Show()
-	testza.AssertEqual(t, result, "yes")
+	testhelper.AssertEqual(t, result, "yes")
 }
 
 func TestInteractiveContinuePrinter_WithDefaultValue_no(t *testing.T) {
@@ -58,49 +58,49 @@ func TestInteractiveContinuePrinter_WithDefaultValue_no(t *testing.T) {
 	}()
 
 	result, _ := p.Show()
-	testza.AssertEqual(t, result, "no")
+	testhelper.AssertEqual(t, result, "no")
 
 	go func() {
 		keyboard.SimulateKeyPress('n')
 	}()
 
 	result, _ = p.Show()
-	testza.AssertEqual(t, result, "no")
+	testhelper.AssertEqual(t, result, "no")
 
 	go func() {
 		keyboard.SimulateKeyPress('N')
 	}()
 
 	result, _ = p.Show()
-	testza.AssertEqual(t, result, "no")
+	testhelper.AssertEqual(t, result, "no")
 }
 
 func TestInteractiveContinuePrinter_WithShowShortHandles(t *testing.T) {
 	p := pterm.DefaultInteractiveContinue.WithShowShortHandles()
-	testza.AssertTrue(t, p.ShowShortHandles)
+	testhelper.AssertTrue(t, p.ShowShortHandles)
 
 	go func() {
 		keyboard.SimulateKeyPress('n')
 	}()
 
 	result, _ := p.Show()
-	testza.AssertEqual(t, result, "no")
+	testhelper.AssertEqual(t, result, "no")
 }
 
 func TestInteractiveContinuePrinter_WithOptionsStyle(t *testing.T) {
 	style := pterm.NewStyle(pterm.FgRed)
 	p := pterm.DefaultInteractiveContinue.WithOptionsStyle(style)
-	testza.AssertEqual(t, p.OptionsStyle, style)
+	testhelper.AssertEqual(t, p.OptionsStyle, style)
 }
 
 func TestInteractiveContinuePrinter_WithOptions(t *testing.T) {
 	p := pterm.DefaultInteractiveContinue.WithOptions([]string{"next", "stop", "continue"})
-	testza.AssertEqual(t, p.Options, []string{"next", "stop", "continue"})
+	testhelper.AssertEqual(t, p.Options, []string{"next", "stop", "continue"})
 }
 
 func TestInteractiveContinuePrinter_WithHandles(t *testing.T) {
 	p := pterm.DefaultInteractiveContinue.WithOptions([]string{"yes", "no", "always", "never"}).WithHandles([]string{"y", "n", "a", "N"})
-	testza.AssertEqual(t, p.Handles, []string{"y", "n", "a", "N"})
+	testhelper.AssertEqual(t, p.Handles, []string{"y", "n", "a", "N"})
 
 	tests := []struct {
 		name     string
@@ -135,7 +135,7 @@ func TestInteractiveContinuePrinter_WithHandles(t *testing.T) {
 			}()
 
 			result, _ := p.Show()
-			testza.AssertEqual(t, result, tc.expected)
+			testhelper.AssertEqual(t, result, tc.expected)
 		})
 	}
 
@@ -146,17 +146,17 @@ func TestInteractiveContinuePrinter_WithHandles(t *testing.T) {
 	}()
 
 	result, _ := p.Show()
-	testza.AssertEqual(t, result, "no")
+	testhelper.AssertEqual(t, result, "no")
 }
 
 func TestInteractiveContinuePrinter_WithDefaultText(t *testing.T) {
 	p := pterm.DefaultInteractiveContinue.WithDefaultText("default")
-	testza.AssertEqual(t, p.DefaultText, "default")
+	testhelper.AssertEqual(t, p.DefaultText, "default")
 }
 
 func TestInteractiveContinuePrinter_WithDelimiter(t *testing.T) {
 	p := pterm.DefaultInteractiveContinue.WithDelimiter(">>")
-	testza.AssertEqual(t, p.Delimiter, ">>")
+	testhelper.AssertEqual(t, p.Delimiter, ">>")
 }
 
 func TestInteractiveContinuePrinter_CustomAnswers(t *testing.T) {
@@ -190,7 +190,7 @@ func TestInteractiveContinuePrinter_CustomAnswers(t *testing.T) {
 			}()
 
 			result, _ := p.Show()
-			testza.AssertEqual(t, result, tc.expected)
+			testhelper.AssertEqual(t, result, tc.expected)
 		})
 	}
 }
@@ -198,11 +198,11 @@ func TestInteractiveContinuePrinter_CustomAnswers(t *testing.T) {
 func TestInteractiveContinuePrinter_WithSuffixStyle(t *testing.T) {
 	style := pterm.NewStyle(pterm.FgRed)
 	p := pterm.DefaultInteractiveContinue.WithSuffixStyle(style)
-	testza.AssertEqual(t, p.SuffixStyle, style)
+	testhelper.AssertEqual(t, p.SuffixStyle, style)
 }
 
 func TestInteractiveContinuePrinter_WithTextStyle(t *testing.T) {
 	style := pterm.NewStyle(pterm.FgRed)
 	p := pterm.DefaultInteractiveContinue.WithTextStyle(style)
-	testza.AssertEqual(t, p.TextStyle, style)
+	testhelper.AssertEqual(t, p.TextStyle, style)
 }
