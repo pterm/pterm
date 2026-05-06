@@ -36,7 +36,7 @@ type BoxPrinter struct {
 
 // DefaultBox is the default BoxPrinter.
 var DefaultBox = BoxPrinter{
-	VerticalString:          "|",
+	VerticalString:          "│",
 	TopRightCornerString:    "└",
 	TopLeftCornerString:     "┘",
 	BottomLeftCornerString:  "┐",
