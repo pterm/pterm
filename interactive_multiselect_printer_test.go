@@ -49,6 +49,49 @@ func TestInteractiveMultiselectPrinter_Show_AlternateNavigationKeys(t *testing.T
 	testza.AssertEqual(t, []string{"b", "c"}, result)
 }
 
+// TestInteractiveMultiselectPrinter_Show_SelectAll verifies that pressing Right
+// Arrow without a filter selects all options.
+func TestInteractiveMultiselectPrinter_Show_SelectAll(t *testing.T) {
+	go func() {
+		keyboard.SimulateKeyPress(keys.Right) // select all
+		keyboard.SimulateKeyPress(keys.Tab)   // confirm
+	}()
+
+	result, _ := pterm.DefaultInteractiveMultiselect.WithOptions([]string{"a", "b", "c"}).Show()
+	testza.AssertEqual(t, []string{"a", "b", "c"}, result)
+}
+
+// TestInteractiveMultiselectPrinter_Show_DeselectAll verifies that pressing Left
+// Arrow without a filter deselects all options.
+func TestInteractiveMultiselectPrinter_Show_DeselectAll(t *testing.T) {
+	go func() {
+		keyboard.SimulateKeyPress(keys.Right) // select all
+		keyboard.SimulateKeyPress(keys.Left)  // deselect all
+		keyboard.SimulateKeyPress(keys.Tab)   // confirm
+	}()
+
+	result, _ := pterm.DefaultInteractiveMultiselect.WithOptions([]string{"a", "b", "c"}).Show()
+	testza.AssertNil(t, result)
+}
+
+// TestInteractiveMultiselectPrinter_Show_SelectAllWithFilter verifies that
+// pressing Right Arrow when a fuzzy filter is active selects only the matching
+// options, not all options.  Regression test for issue #761.
+func TestInteractiveMultiselectPrinter_Show_SelectAllWithFilter(t *testing.T) {
+	go func() {
+		// Type "a" to filter — only option "a" matches
+		keyboard.SimulateKeyPress('a')
+		keyboard.SimulateKeyPress(keys.Right) // select all visible (only "a")
+		// Clear the filter to confirm all options are visible at submit
+		keyboard.SimulateKeyPress(keys.Backspace)
+		keyboard.SimulateKeyPress(keys.Tab) // confirm
+	}()
+
+	result, _ := pterm.DefaultInteractiveMultiselect.WithOptions([]string{"a", "b", "c"}).Show()
+	// Only "a" should be selected; "b" and "c" were not visible when Right was pressed.
+	testza.AssertEqual(t, []string{"a"}, result)
+}
+
 func TestInteractiveMultiselectPrinter_WithDefaultText(t *testing.T) {
 	p := pterm.DefaultInteractiveMultiselect.WithDefaultText("default")
 	testza.AssertEqual(t, p.DefaultText, "default")
