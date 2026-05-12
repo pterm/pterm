@@ -98,6 +98,11 @@ func TestBasicTextPrinterPrintMethods(t *testing.T) {
 	})
 }
 
+func TestBasicTextPrinterSprintlnSingleNewline(t *testing.T) {
+	result := pterm.DefaultBasicText.Sprintln("hello")
+	testza.AssertEqual(t, "hello\n", result)
+}
+
 func TestBasicTextPrinter_WithStyle(t *testing.T) {
 	s := pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold)
 	p := pterm.BasicTextPrinter{}
