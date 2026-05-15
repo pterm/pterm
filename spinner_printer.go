@@ -3,6 +3,8 @@ package pterm
 import (
 	"io"
 	"os"
+	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/pterm/pterm/internal"
@@ -46,6 +48,14 @@ type SpinnerPrinter struct {
 
 	IsActive bool
 
+	// active mirrors IsActive but is safe to read concurrently with Stop.
+	// The animation goroutine reads it instead of IsActive to avoid the data
+	// race that -race flags between the goroutine and Stop().
+	active atomic.Bool
+
+	// mu guards Text and currentSequence so UpdateText can safely run while
+	// the animation goroutine is reading them.
+	mu              sync.Mutex
 	startedAt       time.Time
 	currentSequence string
 
@@ -136,17 +146,21 @@ func (s *SpinnerPrinter) SetStartedAt(t time.Time) {
 // UpdateText updates the message of the active SpinnerPrinter.
 // Can be used live.
 func (s *SpinnerPrinter) UpdateText(text string) {
+	s.mu.Lock()
 	s.Text = text
+	currentSequence := s.currentSequence
+	s.mu.Unlock()
 	if !RawOutput {
-		Fprinto(s.Writer, "\033[K"+s.Style.Sprint(s.currentSequence)+" "+s.MessageStyle.Sprint(s.Text))
+		Fprinto(s.Writer, "\033[K"+s.Style.Sprint(currentSequence)+" "+s.MessageStyle.Sprint(text))
 	} else {
-		Fprintln(s.Writer, s.Text)
+		Fprintln(s.Writer, text)
 	}
 }
 
 // Start the SpinnerPrinter.
 func (s SpinnerPrinter) Start(text ...any) (*SpinnerPrinter, error) {
 	s.IsActive = true
+	s.active.Store(true)
 	s.startedAt = time.Now()
 	activeSpinnerPrinters = append(activeSpinnerPrinters, &s)
 
@@ -154,41 +168,47 @@ func (s SpinnerPrinter) Start(text ...any) (*SpinnerPrinter, error) {
 		s.Text = Sprint(text...)
 	}
 
+	sp := &s
 	go func() {
-		for s.IsActive {
-			for _, seq := range s.Sequence {
-				if !s.IsActive {
+		for sp.active.Load() {
+			for _, seq := range sp.Sequence {
+				if !sp.active.Load() {
 					continue
 				}
 
 				if RawOutput {
-					time.Sleep(s.Delay)
+					time.Sleep(sp.Delay)
 					continue
 				}
 
 				var timer string
-				if s.ShowTimer {
-					timer = " (" + time.Since(s.startedAt).Round(s.TimerRoundingFactor).String() + ")"
+				if sp.ShowTimer {
+					timer = " (" + time.Since(sp.startedAt).Round(sp.TimerRoundingFactor).String() + ")"
 				}
 
-				Fprinto(s.Writer, s.Style.Sprint(seq)+" "+s.MessageStyle.Sprint(s.Text)+s.TimerStyle.Sprint(timer))
-				s.currentSequence = seq
-				time.Sleep(s.Delay)
+				sp.mu.Lock()
+				text := sp.Text
+				sp.currentSequence = seq
+				sp.mu.Unlock()
+
+				Fprinto(sp.Writer, sp.Style.Sprint(seq)+" "+sp.MessageStyle.Sprint(text)+sp.TimerStyle.Sprint(timer))
+				time.Sleep(sp.Delay)
 			}
 		}
 	}()
 
-	return &s, nil
+	return sp, nil
 }
 
 // Stop terminates the SpinnerPrinter immediately.
 // The SpinnerPrinter will not resolve into anything.
 func (s *SpinnerPrinter) Stop() error {
-	if !s.IsActive {
+	if !s.active.Load() {
 		return nil
 	}
 
 	s.IsActive = false
+	s.active.Store(false)
 
 	if RawOutput {
 		return nil
