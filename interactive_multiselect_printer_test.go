@@ -49,6 +49,28 @@ func TestInteractiveMultiselectPrinter_Show_AlternateNavigationKeys(t *testing.T
 	testza.AssertEqual(t, []string{"b", "c"}, result)
 }
 
+func TestInteractiveMultiselectPrinter_Show_SelectAllNoFilter(t *testing.T) {
+	go func() {
+		keyboard.SimulateKeyPress(keys.Right)
+		keyboard.SimulateKeyPress(keys.Tab)
+	}()
+
+	result, _ := pterm.DefaultInteractiveMultiselect.WithOptions([]string{"a", "b", "c"}).Show()
+	testza.AssertEqual(t, []string{"a", "b", "c"}, result)
+}
+
+func TestInteractiveMultiselectPrinter_Show_SelectAllRespectsFilter(t *testing.T) {
+	go func() {
+		keyboard.SimulateKeyPress('b')
+		keyboard.SimulateKeyPress(keys.Right)
+		keyboard.SimulateKeyPress(keys.Backspace)
+		keyboard.SimulateKeyPress(keys.Tab)
+	}()
+
+	result, _ := pterm.DefaultInteractiveMultiselect.WithOptions([]string{"apple", "banana", "cherry", "blueberry"}).Show()
+	testza.AssertEqual(t, []string{"banana", "blueberry"}, result)
+}
+
 func TestInteractiveMultiselectPrinter_WithDefaultText(t *testing.T) {
 	p := pterm.DefaultInteractiveMultiselect.WithDefaultText("default")
 	testza.AssertEqual(t, p.DefaultText, "default")
