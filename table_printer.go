@@ -14,7 +14,7 @@ var DefaultTable = TablePrinter{
 	HeaderStyle:             &ThemeDefault.TableHeaderStyle,
 	HeaderRowSeparator:      "",
 	HeaderRowSeparatorStyle: &ThemeDefault.TableSeparatorStyle,
-	Separator:               " | ",
+	Separator:               " │ ",
 	SeparatorStyle:          &ThemeDefault.TableSeparatorStyle,
 	RowSeparator:            "",
 	RowSeparatorStyle:       &ThemeDefault.TableSeparatorStyle,
