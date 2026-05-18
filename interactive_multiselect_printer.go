@@ -262,10 +262,25 @@ func (p *InteractiveMultiselectPrinter) Show(text ...string) ([]string, error) {
 			p.selectedOptions = []int{}
 			area.Update(p.renderSelectMenu())
 		case keys.Right:
-			// Select all options
+			// Select all options. If a filter is active, only the
+			// visible (matched) options are selected, mirroring what
+			// the user actually sees.
 			p.selectedOptions = []int{}
-			for i := 0; i < len(p.Options); i++ {
-				p.selectedOptions = append(p.selectedOptions, i)
+			if p.fuzzySearchString == "" {
+				for i := 0; i < len(p.Options); i++ {
+					p.selectedOptions = append(p.selectedOptions, i)
+				}
+			} else {
+				seen := make(map[int]bool, len(p.fuzzySearchMatches))
+				for _, match := range p.fuzzySearchMatches {
+					for i, opt := range p.Options {
+						if opt == match && !seen[i] {
+							p.selectedOptions = append(p.selectedOptions, i)
+							seen[i] = true
+							break
+						}
+					}
+				}
 			}
 
 			area.Update(p.renderSelectMenu())
