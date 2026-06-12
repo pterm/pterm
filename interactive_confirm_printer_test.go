@@ -127,6 +127,17 @@ func TestInteractiveConfirmPrinter_CustomAnswers(t *testing.T) {
 	}
 }
 
+func TestInteractiveConfirmPrinter_WithPrefixStyle(t *testing.T) {
+	style := pterm.NewStyle(pterm.FgGreen)
+	p := pterm.DefaultInteractiveConfirm.WithPrefixStyle(style)
+	testza.AssertEqual(t, p.PrefixStyle, style)
+}
+
+func TestInteractiveConfirmPrinter_WithPrefixText(t *testing.T) {
+        p := pterm.DefaultInteractiveConfirm.WithPrefixText("prefix")
+        testza.AssertEqual(t, p.PrefixText, "prefix")
+}
+
 func TestInteractiveConfirmPrinter_WithSuffixStyle(t *testing.T) {
 	style := pterm.NewStyle(pterm.FgRed)
 	p := pterm.DefaultInteractiveConfirm.WithSuffixStyle(style)
