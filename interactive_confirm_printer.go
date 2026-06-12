@@ -22,6 +22,8 @@ var DefaultInteractiveConfirm = InteractiveConfirmPrinter{
 	ConfirmStyle: &ThemeDefault.SuccessMessageStyle,
 	RejectText:   "No",
 	RejectStyle:  &ThemeDefault.ErrorMessageStyle,
+	PrefixText:   "",
+	PrefixStyle:  &ThemeDefault.SecondaryStyle,
 	SuffixStyle:  &ThemeDefault.SecondaryStyle,
 	Delimiter:    ": ",
 }
@@ -36,6 +38,8 @@ type InteractiveConfirmPrinter struct {
 	ConfirmStyle    *Style
 	RejectText      string
 	RejectStyle     *Style
+	PrefixText      string
+	PrefixStyle     *Style
 	SuffixStyle     *Style
 	OnInterruptFunc func()
 }
@@ -82,6 +86,18 @@ func (p InteractiveConfirmPrinter) WithRejectStyle(style *Style) *InteractiveCon
 	return &p
 }
 
+// WithPrefixText sets the prefix text.
+func (p InteractiveConfirmPrinter) WithPrefixText(text string) *InteractiveConfirmPrinter {
+	p.PrefixText = text
+	return &p
+}
+
+// WithPrefixStyle sets the prefix style.
+func (p InteractiveConfirmPrinter) WithPrefixStyle(style *Style) *InteractiveConfirmPrinter {
+	p.PrefixStyle = style
+	return &p
+}
+
 // WithSuffixStyle sets the suffix style.
 func (p InteractiveConfirmPrinter) WithSuffixStyle(style *Style) *InteractiveConfirmPrinter {
 	p.SuffixStyle = style
@@ -118,7 +134,12 @@ func (p InteractiveConfirmPrinter) Show(text ...string) (bool, error) {
 		text = []string{p.DefaultText}
 	}
 
-	p.TextStyle.Print(text[0] + " " + p.getSuffix() + p.Delimiter)
+	var line string
+	if p.PrefixText != "" {
+		line = p.getPrefix() + " "
+	}
+	line += text[0] + " " + p.getSuffix()
+	p.TextStyle.Print(line + p.Delimiter)
 	y, n := p.getShortHandles()
 
 	var interrupted bool
@@ -187,6 +208,11 @@ func (p InteractiveConfirmPrinter) getShortHandles() (string, string) {
 	n := strings.ToLower(string([]rune(p.RejectText)[0]))
 
 	return y, n
+}
+
+// getPrefix returns the confirmation prompt prefix
+func (p InteractiveConfirmPrinter) getPrefix() string {
+	return p.PrefixStyle.Sprint(p.PrefixText)
 }
 
 // getSuffix returns the confirmation prompt suffix
