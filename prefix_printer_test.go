@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/MarvinJWendt/testza"
+	"github.com/mattn/go-runewidth"
 
 	"github.com/pterm/pterm"
 )
@@ -453,6 +455,40 @@ func TestPrefixPrinter_GetWriter(t *testing.T) {
 			testza.AssertEqual(t, os.Stderr, p.GetWriter())
 			p2 := p.WithWriter(os.Stdout)
 			testza.AssertEqual(t, os.Stdout, p2.GetWriter())
+		})
+	}
+}
+
+// TestPrefixPrinter_MultilineWideRuneIndent verifies that continuation lines of
+// a multi-line message are indented by the display width of the prefix, not by
+// its rune count. With wide (East Asian) characters in the prefix the two
+// differ, so the message text on the second line must still line up with the
+// message text on the first line.
+func TestPrefixPrinter_MultilineWideRuneIndent(t *testing.T) {
+	pterm.EnableStyling()
+
+	tests := []struct {
+		name   string
+		prefix string
+	}{
+		{name: "ascii", prefix: "INFO"},
+		{name: "wide", prefix: "情報"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			p := pterm.PrefixPrinter{
+				MessageStyle: pterm.NewStyle(),
+				Prefix:       pterm.Prefix{Text: tt.prefix, Style: pterm.NewStyle()},
+			}
+
+			out := pterm.RemoveColorFromString(p.Sprint("first\nsecond"))
+			lines := strings.Split(strings.TrimRight(out, "\n"), "\n")
+			testza.AssertEqual(t, 2, len(lines))
+
+			col1 := runewidth.StringWidth(lines[0][:strings.Index(lines[0], "first")])
+			col2 := runewidth.StringWidth(lines[1][:strings.Index(lines[1], "second")])
+			testza.AssertEqual(t, col1, col2)
 		})
 	}
 }
