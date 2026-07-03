@@ -5,10 +5,14 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"runtime"
+	"strings"
+	"sync"
 	"testing"
+	"time"
 
-	"github.com/pterm/pterm/internal/testhelper"
 	"github.com/pterm/pterm"
+	"github.com/stretchr/testify/assert"
 )
 
 var printables = []any{"Hello, World!", 1337, true, false, -1337, 'c', 1.5, "\\", "%s"}
@@ -22,7 +26,47 @@ func TestMain(m *testing.M) {
 	exitVal := m.Run()
 
 	teardownStdoutCapture()
+
+	// A test that starts a live printer (spinner, progressbar, area) without
+	// stopping it leaks a goroutine that keeps writing into shared state and
+	// makes *later* tests fail in confusing ways. Fail deterministically here
+	// instead, with the stacks of the leaked goroutines.
+	if leaks := leakedPtermGoroutines(); leaks != "" && exitVal == 0 {
+		fmt.Fprintf(os.Stderr, "FAIL: leaked pterm goroutines after test run:\n\n%s\n", leaks)
+
+		exitVal = 1
+	}
+
 	os.Exit(exitVal)
+}
+
+// leakedPtermGoroutines returns the stacks of goroutines still running inside
+// the pterm package after all tests finished. It retries for a short grace
+// period so goroutines that are just shutting down are not reported.
+func leakedPtermGoroutines() string {
+	deadline := time.Now().Add(2 * time.Second)
+
+	for {
+		var leaks []string
+		buf := make([]byte, 1<<20)
+
+		n := runtime.Stack(buf, true)
+		for stack := range strings.SplitSeq(string(buf[:n]), "\n\n") {
+			if strings.Contains(stack, "github.com/pterm/pterm.") && !strings.Contains(stack, "pterm_test.TestMain") {
+				leaks = append(leaks, stack)
+			}
+		}
+
+		if len(leaks) == 0 {
+			return ""
+		}
+
+		if time.Now().After(deadline) {
+			return strings.Join(leaks, "\n\n")
+		}
+
+		time.Sleep(50 * time.Millisecond)
+	}
 }
 
 // testPrintContains can be used to test Print methods.
@@ -36,7 +80,7 @@ func testPrintContains(t *testing.T, logic func(w io.Writer, a any)) {
 			s := captureStdout(func(w io.Writer) {
 				logic(w, printable)
 			})
-			testhelper.AssertContains(t, s, fmt.Sprint(printable))
+			assert.Contains(t, s, fmt.Sprint(printable))
 		})
 		pterm.DisableStyling()
 		t.Run(fmt.Sprint(printable), func(t *testing.T) {
@@ -45,7 +89,7 @@ func testPrintContains(t *testing.T, logic func(w io.Writer, a any)) {
 			s := captureStdout(func(w io.Writer) {
 				logic(w, printable)
 			})
-			testhelper.AssertContains(t, s, fmt.Sprint(printable))
+			assert.Contains(t, s, fmt.Sprint(printable))
 		})
 		pterm.EnableStyling()
 	}
@@ -58,14 +102,14 @@ func testPrintfContains(t *testing.T, logic func(w io.Writer, format string, a a
 			s := captureStdout(func(w io.Writer) {
 				logic(w, "Hello, %v!", printable)
 			})
-			testhelper.AssertContains(t, s, fmt.Sprintf("Hello, %v!", fmt.Sprint(printable)))
+			assert.Contains(t, s, fmt.Sprintf("Hello, %v!", fmt.Sprint(printable)))
 		})
 		pterm.DisableStyling()
 		t.Run(fmt.Sprint(printable), func(t *testing.T) {
 			s := captureStdout(func(w io.Writer) {
 				logic(w, "Hello, %v!", printable)
 			})
-			testhelper.AssertContains(t, s, fmt.Sprintf("Hello, %v!", fmt.Sprint(printable)))
+			assert.Contains(t, s, fmt.Sprintf("Hello, %v!", fmt.Sprint(printable)))
 		})
 		pterm.EnableStyling()
 	}
@@ -107,11 +151,11 @@ func testPrintlnContains(t *testing.T, logic func(w io.Writer, a any)) {
 func testSprintContains(t *testing.T, logic func(a any) string) {
 	for _, printable := range printables {
 		t.Run(fmt.Sprint(printable), func(t *testing.T) {
-			testhelper.AssertContains(t, logic(printable), fmt.Sprint(printable))
+			assert.Contains(t, logic(printable), fmt.Sprint(printable))
 		})
 		pterm.DisableStyling()
 		t.Run(fmt.Sprint(printable), func(t *testing.T) {
-			testhelper.AssertContains(t, logic(printable), fmt.Sprint(printable))
+			assert.Contains(t, logic(printable), fmt.Sprint(printable))
 		})
 		pterm.EnableStyling()
 	}
@@ -122,14 +166,14 @@ func testSprintContainsWithoutError(t *testing.T, logic func(a any) (string, err
 	for _, printable := range printables {
 		t.Run(fmt.Sprint(printable), func(t *testing.T) {
 			s, err := logic(printable)
-			testhelper.AssertContains(t, s, fmt.Sprint(printable))
-			testhelper.AssertNoError(t, err)
+			assert.Contains(t, s, fmt.Sprint(printable))
+			assert.NoError(t, err)
 		})
 		pterm.DisableStyling()
 		t.Run(fmt.Sprint(printable), func(t *testing.T) {
 			s, err := logic(printable)
-			testhelper.AssertContains(t, s, fmt.Sprint(printable))
-			testhelper.AssertNoError(t, err)
+			assert.Contains(t, s, fmt.Sprint(printable))
+			assert.NoError(t, err)
 		})
 		pterm.EnableStyling()
 	}
@@ -139,11 +183,11 @@ func testSprintContainsWithoutError(t *testing.T, logic func(a any) (string, err
 func testSprintfContains(t *testing.T, logic func(format string, a any) string) {
 	for _, printable := range printables {
 		t.Run(fmt.Sprint(printable), func(t *testing.T) {
-			testhelper.AssertContains(t, logic("Hello, %v!", printable), fmt.Sprintf("Hello, %v!", printable))
+			assert.Contains(t, logic("Hello, %v!", printable), fmt.Sprintf("Hello, %v!", printable))
 		})
 		pterm.DisableStyling()
 		t.Run(fmt.Sprint(printable), func(t *testing.T) {
-			testhelper.AssertContains(t, logic("Hello, %v!", printable), fmt.Sprintf("Hello, %v!", printable))
+			assert.Contains(t, logic("Hello, %v!", printable), fmt.Sprintf("Hello, %v!", printable))
 		})
 		pterm.EnableStyling()
 	}
@@ -177,33 +221,73 @@ func testSprintlnContains(t *testing.T, logic func(a any) string) {
 	}
 }
 
-// testDoesOutput can be used to test if something is outputted to stdout.
-func testDoesOutput(t *testing.T, logic func(w io.Writer)) {
-	testhelper.AssertNotZero(t, captureStdout(logic))
-	pterm.DisableStyling()
-	testhelper.AssertNotZero(t, captureStdout(logic))
-	pterm.EnableStyling()
-}
-
 // testEmpty checks that a function does not return a string.
 func testEmpty(t *testing.T, logic func(a any) string) {
 	for _, printable := range printables {
-		testhelper.AssertZero(t, logic(printable))
+		assert.Zero(t, logic(printable))
 		pterm.DisableStyling()
-		testhelper.AssertZero(t, logic(printable))
+		assert.Zero(t, logic(printable))
 		pterm.EnableStyling()
 	}
 }
 
 // testDoesNotOutput can be used, to test that something does not output anything to stdout.
 func testDoesNotOutput(t *testing.T, logic func(w io.Writer)) {
-	testhelper.AssertZero(t, captureStdout(logic))
+	assert.Zero(t, captureStdout(logic))
 	pterm.DisableStyling()
-	testhelper.AssertZero(t, captureStdout(logic))
+	assert.Zero(t, captureStdout(logic))
 	pterm.EnableStyling()
 }
 
-var outBuf bytes.Buffer
+// syncBuffer wraps bytes.Buffer with a mutex so live printer goroutines
+// (progressbars, spinners) writing to it cannot race with the test goroutine
+// reading or resetting it. bytes.Buffer is not safe for concurrent use, so
+// without this, the race detector flags spinner/progressbar tests whenever a
+// printer goroutine is still alive while readStdout runs.
+type syncBuffer struct {
+	mu  sync.Mutex
+	buf bytes.Buffer
+}
+
+func (b *syncBuffer) Write(p []byte) (int, error) {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+
+	return b.buf.Write(p)
+}
+
+func (b *syncBuffer) String() string {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+
+	return b.buf.String()
+}
+
+func (b *syncBuffer) Reset() {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+
+	b.buf.Reset()
+}
+
+func (b *syncBuffer) Read(p []byte) (int, error) {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+
+	return b.buf.Read(p)
+}
+
+func (b *syncBuffer) Bytes() []byte {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+
+	out := make([]byte, b.buf.Len())
+	copy(out, b.buf.Bytes())
+
+	return out
+}
+
+var outBuf syncBuffer
 
 // setupStdoutCapture sets up a fake stdout capture.
 func setupStdoutCapture() {

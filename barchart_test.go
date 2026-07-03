@@ -4,11 +4,11 @@ import (
 	"os"
 	"testing"
 
-	"github.com/pterm/pterm/internal/testhelper"
 	"github.com/pterm/pterm"
+	"github.com/stretchr/testify/assert"
 )
 
-func TestBarChartPrinterNilPrint(t *testing.T) {
+func TestBarChartPrinterNilPrint(_ *testing.T) {
 	proxyToDevNull()
 
 	p := pterm.BarChartPrinter{}
@@ -19,7 +19,7 @@ func TestBarChartPrinterNilPrint(t *testing.T) {
 	}
 }
 
-func TestBarChartPrinter_NilStylePrint(t *testing.T) {
+func TestBarChartPrinter_NilStylePrint(_ *testing.T) {
 	bars := pterm.Bars{
 		pterm.Bar{
 			Label: "Bar 1",
@@ -35,11 +35,11 @@ func TestBarChartPrinter_NilStylePrint(t *testing.T) {
 		},
 	}
 
-	pterm.DefaultBarChart.WithBars(bars).Render()
+	_ = pterm.DefaultBarChart.WithBars(bars).Render()
 }
 
 // VERTICAL bars + MIXED values test
-func TestBarChartPrinter_RenderExample(t *testing.T) {
+func TestBarChartPrinter_RenderExample(_ *testing.T) {
 	bars := pterm.Bars{
 		pterm.Bar{
 			Label: "Bar 1",
@@ -73,12 +73,12 @@ func TestBarChartPrinter_RenderExample(t *testing.T) {
 		},
 	}
 
-	pterm.DefaultBarChart.WithBars(bars).Render()
+	_ = pterm.DefaultBarChart.WithBars(bars).Render()
 }
 
 // VERTICAL bars + NEGATIVE values test
-func TestBarChartPrinter_RenderNegativeBarValues(t *testing.T) {
-	pterm.DefaultBarChart.WithShowValue().WithBars(pterm.Bars{
+func TestBarChartPrinter_RenderNegativeBarValues(_ *testing.T) {
+	_ = pterm.DefaultBarChart.WithShowValue().WithBars(pterm.Bars{
 		pterm.Bar{
 			Label: "Test",
 			Value: -1337,
@@ -113,8 +113,8 @@ func TestBarChartPrinter_RenderNegativeBarValues(t *testing.T) {
 }
 
 // VERTICAL bars + POSITIVE values test
-func TestBarChartPrinter_RenderPositiveBarValues(t *testing.T) {
-	pterm.DefaultBarChart.WithShowValue().WithBars(pterm.Bars{
+func TestBarChartPrinter_RenderPositiveBarValues(_ *testing.T) {
+	_ = pterm.DefaultBarChart.WithShowValue().WithBars(pterm.Bars{
 		pterm.Bar{
 			Label: "Test",
 			Value: 1000,
@@ -134,8 +134,8 @@ func TestBarChartPrinter_RenderPositiveBarValues(t *testing.T) {
 }
 
 // VERTICAL bars + ZERO values test
-func TestBarChartPrinter_RenderZeroBarValues(t *testing.T) {
-	pterm.DefaultBarChart.WithShowValue().WithBars(pterm.Bars{
+func TestBarChartPrinter_RenderZeroBarValues(_ *testing.T) {
+	_ = pterm.DefaultBarChart.WithShowValue().WithBars(pterm.Bars{
 		pterm.Bar{
 			Label: "Test",
 			Value: 0,
@@ -150,8 +150,8 @@ func TestBarChartPrinter_RenderZeroBarValues(t *testing.T) {
 }
 
 // HORIZONTAL bars + MIXED values test
-func TestBarChartPrinter_RenderExampleHorizontal(t *testing.T) {
-	pterm.DefaultBarChart.WithShowValue().WithHorizontal().WithBars(pterm.Bars{
+func TestBarChartPrinter_RenderExampleHorizontal(_ *testing.T) {
+	_ = pterm.DefaultBarChart.WithShowValue().WithHorizontal().WithBars(pterm.Bars{
 		pterm.Bar{
 			Label: "Test",
 			Value: 1337,
@@ -181,8 +181,8 @@ func TestBarChartPrinter_RenderExampleHorizontal(t *testing.T) {
 }
 
 // HORIZONTAL bars + NEGATIVE values test
-func TestBarChartPrinter_RenderNegativeBarValuesHorizontal(t *testing.T) {
-	pterm.DefaultBarChart.WithShowValue().WithHorizontal().WithBars(pterm.Bars{
+func TestBarChartPrinter_RenderNegativeBarValuesHorizontal(_ *testing.T) {
+	_ = pterm.DefaultBarChart.WithShowValue().WithHorizontal().WithBars(pterm.Bars{
 		pterm.Bar{
 			Label: "Test",
 			Value: -999,
@@ -227,8 +227,8 @@ func TestBarChartPrinter_RenderNegativeBarValuesHorizontal(t *testing.T) {
 }
 
 // HORIZONTAL bars + POSITIVE values test
-func TestBarChartPrinter_RenderPositiveBarValuesHorizontal(t *testing.T) {
-	pterm.DefaultBarChart.WithShowValue().WithHorizontal().WithBars(pterm.Bars{
+func TestBarChartPrinter_RenderPositiveBarValuesHorizontal(_ *testing.T) {
+	_ = pterm.DefaultBarChart.WithShowValue().WithHorizontal().WithBars(pterm.Bars{
 		pterm.Bar{
 			Label: "Test",
 			Value: 30,
@@ -263,8 +263,8 @@ func TestBarChartPrinter_RenderPositiveBarValuesHorizontal(t *testing.T) {
 }
 
 // HORIZONTAL bars + ZERO values test
-func TestBarChartPrinter_RenderZeroBarValuesHorizontal(t *testing.T) {
-	pterm.DefaultBarChart.WithShowValue().WithHorizontal().WithBars(pterm.Bars{
+func TestBarChartPrinter_RenderZeroBarValuesHorizontal(_ *testing.T) {
+	_ = pterm.DefaultBarChart.WithShowValue().WithHorizontal().WithBars(pterm.Bars{
 		pterm.Bar{
 			Label: "Test",
 			Value: 0,
@@ -278,7 +278,7 @@ func TestBarChartPrinter_RenderZeroBarValuesHorizontal(t *testing.T) {
 	}).Render()
 }
 
-func TestBarChartPrinter_RenderExampleRawOutput(t *testing.T) {
+func TestBarChartPrinter_RenderExampleRawOutput(_ *testing.T) {
 	pterm.DisableStyling()
 
 	bars := pterm.Bars{
@@ -314,12 +314,13 @@ func TestBarChartPrinter_RenderExampleRawOutput(t *testing.T) {
 		},
 	}
 
-	pterm.DefaultBarChart.WithBars(bars).Render()
+	_ = pterm.DefaultBarChart.WithBars(bars).Render()
+
 	pterm.EnableStyling()
 }
 
-func TestBarChartPrinter_RenderMultipleLineLabel(t *testing.T) {
-	pterm.DefaultBarChart.WithShowValue().WithBars(pterm.Bars{
+func TestBarChartPrinter_RenderMultipleLineLabel(_ *testing.T) {
+	_ = pterm.DefaultBarChart.WithShowValue().WithBars(pterm.Bars{
 		pterm.Bar{
 			Label: "Test",
 			Value: -1337,
@@ -338,8 +339,8 @@ func TestBarChartPrinter_RenderMultipleLineLabel(t *testing.T) {
 	}).Render()
 }
 
-func TestBarChartPrinter_RenderLowBarValues(t *testing.T) {
-	pterm.DefaultBarChart.WithShowValue().WithBars(pterm.Bars{
+func TestBarChartPrinter_RenderLowBarValues(_ *testing.T) {
+	_ = pterm.DefaultBarChart.WithShowValue().WithBars(pterm.Bars{
 		pterm.Bar{
 			Label: "Test",
 			Value: 1,
@@ -353,8 +354,8 @@ func TestBarChartPrinter_RenderLowBarValues(t *testing.T) {
 	}).Render()
 }
 
-func TestBarChartPrinter_Render(t *testing.T) {
-	pterm.DefaultBarChart.WithShowValue().WithBars(pterm.Bars{
+func TestBarChartPrinter_Render(_ *testing.T) {
+	_ = pterm.DefaultBarChart.WithShowValue().WithBars(pterm.Bars{
 		pterm.Bar{
 			Label: "Test",
 			Value: 1337,
@@ -373,8 +374,8 @@ func TestBarChartPrinter_WithHorizontalBarCharacter(t *testing.T) {
 	s := "X"
 	p2 := p.WithHorizontalBarCharacter(s)
 
-	testhelper.AssertEqual(t, s, p2.HorizontalBarCharacter)
-	testhelper.AssertZero(t, p.HorizontalBarCharacter)
+	assert.Equal(t, s, p2.HorizontalBarCharacter)
+	assert.Zero(t, p.HorizontalBarCharacter)
 }
 
 func TestBarChartPrinter_WithVerticalBarCharacter(t *testing.T) {
@@ -382,8 +383,8 @@ func TestBarChartPrinter_WithVerticalBarCharacter(t *testing.T) {
 	s := "X"
 	p2 := p.WithVerticalBarCharacter(s)
 
-	testhelper.AssertEqual(t, s, p2.VerticalBarCharacter)
-	testhelper.AssertZero(t, p.VerticalBarCharacter)
+	assert.Equal(t, s, p2.VerticalBarCharacter)
+	assert.Zero(t, p.VerticalBarCharacter)
 }
 
 func TestBarChartPrinter_WithBars(t *testing.T) {
@@ -402,8 +403,8 @@ func TestBarChartPrinter_WithBars(t *testing.T) {
 	}
 	p2 := p.WithBars(s)
 
-	testhelper.AssertEqual(t, s, p2.Bars)
-	testhelper.AssertZero(t, p.Bars)
+	assert.Equal(t, s, p2.Bars)
+	assert.Zero(t, p.Bars)
 }
 
 func TestBarChartPrinter_WithHeight(t *testing.T) {
@@ -411,8 +412,8 @@ func TestBarChartPrinter_WithHeight(t *testing.T) {
 	s := 1337
 	p2 := p.WithHeight(s)
 
-	testhelper.AssertEqual(t, s, p2.Height)
-	testhelper.AssertZero(t, p.Height)
+	assert.Equal(t, s, p2.Height)
+	assert.Zero(t, p.Height)
 }
 
 func TestBarChartPrinter_WithHorizontal(t *testing.T) {
@@ -420,8 +421,8 @@ func TestBarChartPrinter_WithHorizontal(t *testing.T) {
 	s := true
 	p2 := p.WithHorizontal(s)
 
-	testhelper.AssertEqual(t, s, p2.Horizontal)
-	testhelper.AssertZero(t, p.Horizontal)
+	assert.Equal(t, s, p2.Horizontal)
+	assert.Zero(t, p.Horizontal)
 }
 
 func TestBarChartPrinter_WithShowValue(t *testing.T) {
@@ -429,8 +430,8 @@ func TestBarChartPrinter_WithShowValue(t *testing.T) {
 	s := true
 	p2 := p.WithShowValue(s)
 
-	testhelper.AssertEqual(t, s, p2.ShowValue)
-	testhelper.AssertZero(t, p.ShowValue)
+	assert.Equal(t, s, p2.ShowValue)
+	assert.Zero(t, p.ShowValue)
 }
 
 func TestBarChartPrinter_WithWidth(t *testing.T) {
@@ -438,8 +439,8 @@ func TestBarChartPrinter_WithWidth(t *testing.T) {
 	s := 1337
 	p2 := p.WithWidth(s)
 
-	testhelper.AssertEqual(t, s, p2.Width)
-	testhelper.AssertZero(t, p.Width)
+	assert.Equal(t, s, p2.Width)
+	assert.Zero(t, p.Width)
 }
 
 func TestBarChartPrinter_WithWriter(t *testing.T) {
@@ -447,6 +448,6 @@ func TestBarChartPrinter_WithWriter(t *testing.T) {
 	s := os.Stderr
 	p2 := p.WithWriter(s)
 
-	testhelper.AssertEqual(t, s, p2.Writer)
-	testhelper.AssertZero(t, p.Writer)
+	assert.Equal(t, s, p2.Writer)
+	assert.Zero(t, p.Writer)
 }

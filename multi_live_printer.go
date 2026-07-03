@@ -10,6 +10,7 @@ import (
 	"atomicgo.dev/schedule"
 )
 
+// DefaultMultiPrinter contains the default configuration for a MultiPrinter.
 var DefaultMultiPrinter = MultiPrinter{
 	printers:    []LivePrinter{},
 	Writer:      os.Stdout,
@@ -19,6 +20,8 @@ var DefaultMultiPrinter = MultiPrinter{
 	area:    DefaultArea,
 }
 
+// MultiPrinter is able to print the output of multiple live printers
+// (e.g. spinners and progressbars) at the same time.
 type MultiPrinter struct {
 	IsActive    bool
 	Writer      io.Writer
@@ -46,6 +49,8 @@ func (p MultiPrinter) WithUpdateDelay(delay time.Duration) *MultiPrinter {
 	return &p
 }
 
+// NewWriter returns a new writer that can be passed to a live printer
+// (e.g. via WithWriter) so its output is rendered inside the MultiPrinter.
 func (p *MultiPrinter) NewWriter() io.Writer {
 	buf := bytes.NewBufferString("")
 	p.buffers = append(p.buffers, buf)
@@ -79,10 +84,11 @@ func (p *MultiPrinter) getString() string {
 	return buffer.String()
 }
 
+// Start starts the MultiPrinter and all its registered live printers.
 func (p *MultiPrinter) Start() (*MultiPrinter, error) {
 	p.IsActive = true
 	for _, printer := range p.printers {
-		printer.GenericStart()
+		_, _ = printer.GenericStart()
 	}
 
 	schedule.Every(p.UpdateDelay, func() bool {
@@ -98,15 +104,16 @@ func (p *MultiPrinter) Start() (*MultiPrinter, error) {
 	return p, nil
 }
 
+// Stop stops the MultiPrinter and all its registered live printers.
 func (p *MultiPrinter) Stop() (*MultiPrinter, error) {
 	p.IsActive = false
 	for _, printer := range p.printers {
-		printer.GenericStop()
+		_, _ = printer.GenericStop()
 	}
 
 	time.Sleep(time.Millisecond * 20)
 	p.area.Update(p.getString())
-	p.area.Stop()
+	_ = p.area.Stop()
 
 	return p, nil
 }

@@ -1,0 +1,2 @@
+This is a longer paragraph text that will be wrapped by the paragraph printer to
+fit into the width of the terminal, demonstrating word wrapping behavior.

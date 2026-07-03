@@ -12,7 +12,7 @@ func RunWithSpinner(spinner *pterm.SpinnerPrinter, f func(spinner *pterm.Spinner
 	err = f(s)
 
 	if s.IsActive {
-		s.Stop()
+		_ = s.Stop()
 	}
 
 	return err

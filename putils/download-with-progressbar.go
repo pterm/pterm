@@ -35,13 +35,13 @@ func DownloadFileWithProgressbar(progressbar *pterm.ProgressbarPrinter, outputPa
 		return fmt.Errorf("could not create download path: %w", err)
 	}
 
-	defer out.Close()
+	defer func() { _ = out.Close() }()
 
 	resp, err := http.Get(url) //nolint:gosec
 	if err != nil {
 		return fmt.Errorf("error while downloading file: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	counter := &progressbarWriter{}
 

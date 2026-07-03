@@ -3,6 +3,7 @@ package pterm
 import (
 	"io"
 	"os"
+	"sync"
 	"time"
 
 	"github.com/pterm/pterm/internal"
@@ -50,6 +51,67 @@ type SpinnerPrinter struct {
 	currentSequence string
 
 	Writer io.Writer
+
+	// mu serializes access to the printer's mutable state once Start has run.
+	// It is a pointer so the value-receiver With* methods can copy the struct
+	// without tripping go vet's copylocks check; Start lazily allocates it.
+	mu *sync.RWMutex
+	// wg lets Stop block until the animation goroutine has fully exited,
+	// avoiding leaked goroutines that would otherwise accumulate across
+	// successive Start/Stop cycles (especially in tests).
+	wg *sync.WaitGroup
+	// stopCh is closed by Stop to interrupt the animation goroutine's sleep;
+	// without it the goroutine would not exit until its next Delay tick fires.
+	stopCh   chan struct{}
+	stopOnce *sync.Once
+}
+
+// lock locks the printer's runtime mutex, allocating it on first use so the
+// value-receiver builders can be used safely before Start.
+func (s *SpinnerPrinter) lock() {
+	if s.mu == nil {
+		s.mu = &sync.RWMutex{}
+	}
+
+	s.mu.Lock()
+}
+
+// unlock releases the printer's runtime mutex.
+func (s *SpinnerPrinter) unlock() {
+	s.mu.Unlock()
+}
+
+// rlock takes a read lock on the printer's runtime mutex, allocating it on
+// first use.
+func (s *SpinnerPrinter) rlock() {
+	if s.mu == nil {
+		s.mu = &sync.RWMutex{}
+	}
+
+	s.mu.RLock()
+}
+
+// runlock releases a read lock taken by rlock.
+func (s *SpinnerPrinter) runlock() {
+	s.mu.RUnlock()
+}
+
+// isActive returns whether the spinner is currently active. Used internally by
+// print.go to inspect spinners from another goroutine without racing with
+// Start/Stop.
+func (s *SpinnerPrinter) isActive() bool {
+	s.rlock()
+	defer s.runlock()
+
+	return s.IsActive
+}
+
+// writer returns the configured writer under the runtime lock.
+func (s *SpinnerPrinter) writer() io.Writer {
+	s.rlock()
+	defer s.runlock()
+
+	return s.Writer
 }
 
 // WithText adds a text to the SpinnerPrinter.
@@ -113,14 +175,14 @@ func (s SpinnerPrinter) WithTimerStyle(style *Style) *SpinnerPrinter {
 }
 
 // WithWriter sets the custom Writer.
-func (p SpinnerPrinter) WithWriter(writer io.Writer) *SpinnerPrinter {
-	p.Writer = writer
-	return &p
+func (s SpinnerPrinter) WithWriter(writer io.Writer) *SpinnerPrinter {
+	s.Writer = writer
+	return &s
 }
 
 // SetWriter sets the custom Writer.
-func (p *SpinnerPrinter) SetWriter(writer io.Writer) {
-	p.Writer = writer
+func (s *SpinnerPrinter) SetWriter(writer io.Writer) {
+	s.Writer = writer
 }
 
 // ResetTimer resets the timer of the SpinnerPrinter.
@@ -136,69 +198,156 @@ func (s *SpinnerPrinter) SetStartedAt(t time.Time) {
 // UpdateText updates the message of the active SpinnerPrinter.
 // Can be used live.
 func (s *SpinnerPrinter) UpdateText(text string) {
+	s.lock()
 	s.Text = text
-	if !RawOutput {
-		Fprinto(s.Writer, "\033[K"+s.Style.Sprint(s.currentSequence)+" "+s.MessageStyle.Sprint(s.Text))
+	style := s.Style
+	currentSequence := s.currentSequence
+	messageStyle := s.MessageStyle
+	writer := s.Writer
+	s.unlock()
+
+	if !rawOutput() {
+		Fprinto(writer, "\033[K"+style.Sprint(currentSequence)+" "+messageStyle.Sprint(text))
 	} else {
-		Fprintln(s.Writer, s.Text)
+		Fprintln(writer, text)
 	}
 }
 
 // Start the SpinnerPrinter.
 func (s SpinnerPrinter) Start(text ...any) (*SpinnerPrinter, error) {
+	// Allocate the runtime mutex eagerly so the spinner goroutine and any
+	// subsequent user calls share the same lock without racing on lazy init.
+	s.mu = &sync.RWMutex{}
+	s.wg = &sync.WaitGroup{}
+	s.stopCh = make(chan struct{})
+	s.stopOnce = &sync.Once{}
+
 	s.IsActive = true
 	s.startedAt = time.Now()
-	activeSpinnerPrinters = append(activeSpinnerPrinters, &s)
 
 	if len(text) != 0 {
 		s.Text = Sprint(text...)
 	}
 
-	go func() {
-		for s.IsActive {
-			for _, seq := range s.Sequence {
-				if !s.IsActive {
-					continue
+	registerSpinner(&s)
+
+	sp := &s
+	sp.wg.Go(func() {
+		sp.runAnimation()
+	})
+
+	return sp, nil
+}
+
+// sleepOrStop sleeps for d, returning early if stopCh is closed.
+// Returns true if the spinner was asked to stop.
+func (s *SpinnerPrinter) sleepOrStop(d time.Duration) bool {
+	t := time.NewTimer(d)
+	defer t.Stop()
+
+	select {
+	case <-s.stopCh:
+		return true
+	case <-t.C:
+		return false
+	}
+}
+
+// runAnimation drives the spinner frames. Reads fields under the runtime lock
+// so it is safe to call concurrently with UpdateText/Stop.
+func (s *SpinnerPrinter) runAnimation() {
+	for s.isActive() {
+		s.rlock()
+		sequence := s.Sequence
+		s.runlock()
+
+		for _, seq := range sequence {
+			if !s.isActive() {
+				return
+			}
+
+			if rawOutput() {
+				s.rlock()
+				delay := s.Delay
+				s.runlock()
+
+				if s.sleepOrStop(delay) {
+					return
 				}
 
-				if RawOutput {
-					time.Sleep(s.Delay)
-					continue
-				}
+				continue
+			}
 
-				var timer string
-				if s.ShowTimer {
-					timer = " (" + time.Since(s.startedAt).Round(s.TimerRoundingFactor).String() + ")"
-				}
+			s.lock()
+			style := s.Style
+			messageStyle := s.MessageStyle
+			timerStyle := s.TimerStyle
+			text := s.Text
+			showTimer := s.ShowTimer
+			startedAt := s.startedAt
+			rounding := s.TimerRoundingFactor
+			delay := s.Delay
+			writer := s.Writer
+			s.currentSequence = seq
+			s.unlock()
 
-				Fprinto(s.Writer, s.Style.Sprint(seq)+" "+s.MessageStyle.Sprint(s.Text)+s.TimerStyle.Sprint(timer))
-				s.currentSequence = seq
-				time.Sleep(s.Delay)
+			var timer string
+			if showTimer {
+				timer = " (" + time.Since(startedAt).Round(rounding).String() + ")"
+			}
+
+			Fprinto(writer, style.Sprint(seq)+" "+messageStyle.Sprint(text)+timerStyle.Sprint(timer))
+
+			if s.sleepOrStop(delay) {
+				return
 			}
 		}
-	}()
-
-	return &s, nil
+	}
 }
 
 // Stop terminates the SpinnerPrinter immediately.
 // The SpinnerPrinter will not resolve into anything.
+//
+// Stop signals the animation goroutine to exit (via stopCh) and waits for it
+// to finish before returning. Without this synchronization, leaked goroutines
+// would accumulate across Start/Stop cycles in tests and degrade the runtime
+// of subsequent tests under -race.
 func (s *SpinnerPrinter) Stop() error {
-	if !s.IsActive {
-		return nil
-	}
-
+	s.lock()
+	wasActive := s.IsActive
 	s.IsActive = false
+	removeWhenDone := s.RemoveWhenDone
+	writer := s.Writer
+	stopOnce := s.stopOnce
+	stopCh := s.stopCh
+	wg := s.wg
+	s.unlock()
 
-	if RawOutput {
+	// Signal the animation goroutine to stop. Stop may be called multiple
+	// times (e.g. by Warning followed by an explicit defer Stop), so the
+	// channel is closed via sync.Once.
+	if stopOnce != nil {
+		stopOnce.Do(func() { close(stopCh) })
+	}
+	// Wait for the goroutine to exit so any further writes from the spinner
+	// cannot race with the caller draining the writer.
+	if wg != nil {
+		wg.Wait()
+	}
+
+	if !wasActive {
 		return nil
 	}
 
-	if s.RemoveWhenDone {
-		fClearLine(s.Writer)
-		Fprinto(s.Writer)
+	if rawOutput() {
+		return nil
+	}
+
+	if removeWhenDone {
+		fClearLine(writer)
+		Fprinto(writer)
 	} else {
-		Fprintln(s.Writer)
+		Fprintln(writer)
 	}
 
 	return nil

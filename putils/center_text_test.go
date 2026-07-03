@@ -3,9 +3,9 @@ package putils
 import (
 	"testing"
 
-	"github.com/pterm/pterm/internal/testhelper"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestCenterText(t *testing.T) {
-	testhelper.AssertEqual(t, "Hello Wolrd\n    !!!    ", CenterText("Hello Wolrd\n!!!"))
+	assert.Equal(t, "Hello Wolrd\n    !!!    ", CenterText("Hello Wolrd\n!!!"))
 }

@@ -6,12 +6,12 @@ import (
 	"os"
 	"testing"
 
-	"github.com/pterm/pterm/internal/testhelper"
+	"github.com/stretchr/testify/assert"
 
 	"github.com/pterm/pterm"
 )
 
-func TestBasicTextPrinterNilPrint(t *testing.T) {
+func TestBasicTextPrinterNilPrint(_ *testing.T) {
 	proxyToDevNull()
 
 	p := pterm.BasicTextPrinter{}
@@ -22,25 +22,25 @@ func TestBasicTextPrinterPrintMethods(t *testing.T) {
 	p := pterm.DefaultBasicText
 
 	t.Run("Print", func(t *testing.T) {
-		testPrintContains(t, func(w io.Writer, a any) {
+		testPrintContains(t, func(_ io.Writer, a any) {
 			p.Print(a)
 		})
 	})
 
 	t.Run("Printf", func(t *testing.T) {
-		testPrintfContains(t, func(w io.Writer, format string, a any) {
+		testPrintfContains(t, func(_ io.Writer, format string, a any) {
 			p.Printf(format, a)
 		})
 	})
 
 	t.Run("Printfln", func(t *testing.T) {
-		testPrintflnContains(t, func(w io.Writer, format string, a any) {
+		testPrintflnContains(t, func(_ io.Writer, format string, a any) {
 			p.Printfln(format, a)
 		})
 	})
 
 	t.Run("Println", func(t *testing.T) {
-		testPrintlnContains(t, func(w io.Writer, a any) {
+		testPrintlnContains(t, func(_ io.Writer, a any) {
 			p.Println(a)
 		})
 	})
@@ -70,31 +70,31 @@ func TestBasicTextPrinterPrintMethods(t *testing.T) {
 	})
 
 	t.Run("PrintOnError", func(t *testing.T) {
-		result := captureStdout(func(w io.Writer) {
+		result := captureStdout(func(_ io.Writer) {
 			p.PrintOnError(errors.New("hello world"))
 		})
-		testhelper.AssertContains(t, result, "hello world")
+		assert.Contains(t, result, "hello world")
 	})
 
 	t.Run("PrintIfError_WithoutError", func(t *testing.T) {
-		result := captureStdout(func(w io.Writer) {
+		result := captureStdout(func(_ io.Writer) {
 			p.PrintOnError(nil)
 		})
-		testhelper.AssertZero(t, result)
+		assert.Zero(t, result)
 	})
 
 	t.Run("PrintOnErrorf", func(t *testing.T) {
-		result := captureStdout(func(w io.Writer) {
+		result := captureStdout(func(_ io.Writer) {
 			p.PrintOnErrorf("wrapping error : %w", errors.New("hello world"))
 		})
-		testhelper.AssertContains(t, result, "hello world")
+		assert.Contains(t, result, "hello world")
 	})
 
 	t.Run("PrintIfError_WithoutErrorf", func(t *testing.T) {
-		result := captureStdout(func(w io.Writer) {
+		result := captureStdout(func(_ io.Writer) {
 			p.PrintOnErrorf("", nil)
 		})
-		testhelper.AssertZero(t, result)
+		assert.Zero(t, result)
 	})
 }
 
@@ -103,7 +103,7 @@ func TestBasicTextPrinter_WithStyle(t *testing.T) {
 	p := pterm.BasicTextPrinter{}
 	p2 := p.WithStyle(s)
 
-	testhelper.AssertEqual(t, s, p2.Style)
+	assert.Equal(t, s, p2.Style)
 }
 
 func TestBasicTextPrinter_WithWriter(t *testing.T) {
@@ -111,6 +111,6 @@ func TestBasicTextPrinter_WithWriter(t *testing.T) {
 	s := os.Stderr
 	p2 := p.WithWriter(s)
 
-	testhelper.AssertEqual(t, s, p2.Writer)
-	testhelper.AssertZero(t, p.Writer)
+	assert.Equal(t, s, p2.Writer)
+	assert.Zero(t, p.Writer)
 }

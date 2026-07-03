@@ -4,7 +4,7 @@ import (
 	"io"
 	"testing"
 
-	"github.com/pterm/pterm/internal/testhelper"
+	"github.com/stretchr/testify/assert"
 
 	"github.com/pterm/pterm"
 )
@@ -15,9 +15,10 @@ func TestProgressbarPrinter_NoPanicOnZeroRoundingFactor(t *testing.T) {
 	p.ShowElapsedTime = true
 	p.Writer = io.Discard
 	pb, err := p.Start()
-	testhelper.AssertNoError(t, err)
-	testhelper.AssertNotPanics(t, func() {
+	assert.NoError(t, err)
+	assert.NotPanics(t, func() {
 		pb.Add(1)
 	})
-	pb.Stop()
+
+	_, _ = pb.Stop()
 }

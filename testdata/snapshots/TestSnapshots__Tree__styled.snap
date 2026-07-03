@@ -1,0 +1,5 @@
+\x1b[39mRoot\x1b[0m
+\x1b[90m├\x1b[0m\x1b[90m─\x1b[0m\x1b[90m┬\x1b[0m\x1b[39mFirst child\x1b[0m
+\x1b[90m│\x1b[0m \x1b[90m├\x1b[0m\x1b[90m─\x1b[0m\x1b[90m─\x1b[0m\x1b[39mFirst grandchild\x1b[0m
+\x1b[90m│\x1b[0m \x1b[90m└\x1b[0m\x1b[90m─\x1b[0m\x1b[90m─\x1b[0m\x1b[39mSecond grandchild\x1b[0m
+\x1b[90m└\x1b[0m\x1b[90m─\x1b[0m\x1b[90m─\x1b[0m\x1b[39mSecond child\x1b[0m

@@ -1,7 +1,6 @@
 package pterm
 
 import (
-	"fmt"
 	"io"
 	"strings"
 
@@ -64,7 +63,7 @@ func (p HeaderPrinter) WithWriter(writer io.Writer) *HeaderPrinter {
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
 func (p HeaderPrinter) Sprint(a ...any) string {
-	if RawOutput {
+	if rawOutput() {
 		return Sprint(a...)
 	}
 
@@ -109,7 +108,7 @@ func (p HeaderPrinter) Sprint(a ...any) string {
 	ret.WriteString(p.BackgroundStyle.Sprint(blankLine))
 	ret.WriteByte('\n')
 
-	for _, line := range strings.Split(text, "\n") {
+	for line := range strings.SplitSeq(text, "\n") {
 		line = strings.ReplaceAll(line, "\n", "")
 
 		line = marginString + line + marginString
@@ -130,8 +129,8 @@ func (p HeaderPrinter) Sprint(a ...any) string {
 func splitText(text string, width int) string {
 	var lines []string
 
-	linesTmp := strings.Split(text, "\n")
-	for _, line := range linesTmp {
+	linesTmp := strings.SplitSeq(text, "\n")
+	for line := range linesTmp {
 		if runewidth.StringWidth(RemoveColorFromString(line)) > width {
 			extraLines := []string{""}
 			extraLinesCounter := 0
@@ -156,12 +155,12 @@ func splitText(text string, width int) string {
 		}
 	}
 
-	var line string
+	var line strings.Builder
 	for _, s := range lines {
-		line += s
+		line.WriteString(s)
 	}
 
-	return strings.TrimSuffix(line, "\n")
+	return strings.TrimSuffix(line.String(), "\n")
 }
 
 // Sprintln formats using the default formats for its operands and returns the resulting string.
@@ -224,13 +223,7 @@ func (p *HeaderPrinter) Printfln(format string, a ...any) *TextPrinter {
 // If every error is nil, nothing will be printed.
 // This can be used for simple error checking.
 func (p *HeaderPrinter) PrintOnError(a ...any) *TextPrinter {
-	for _, arg := range a {
-		if err, ok := arg.(error); ok {
-			if err != nil {
-				p.Println(err)
-			}
-		}
-	}
+	printOnError(p, a...)
 
 	tp := TextPrinter(p)
 
@@ -241,13 +234,7 @@ func (p *HeaderPrinter) PrintOnError(a ...any) *TextPrinter {
 // If every error is nil, nothing will be printed.
 // This can be used for simple error checking.
 func (p *HeaderPrinter) PrintOnErrorf(format string, a ...any) *TextPrinter {
-	for _, arg := range a {
-		if err, ok := arg.(error); ok {
-			if err != nil {
-				p.Println(fmt.Errorf(format, err))
-			}
-		}
-	}
+	printOnErrorf(p, format, a...)
 
 	tp := TextPrinter(p)
 

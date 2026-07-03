@@ -1,3 +1,4 @@
+// Package internal contains helpers shared by pterm's printers.
 package internal
 
 // NewCancelationSignal for keeping track of a cancelation

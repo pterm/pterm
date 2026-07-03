@@ -7,14 +7,14 @@ import (
 	"os"
 	"testing"
 
-	"github.com/pterm/pterm/internal/testhelper"
+	"github.com/stretchr/testify/assert"
 
 	"github.com/pterm/pterm"
 )
 
 var prefixPrinters = []pterm.PrefixPrinter{pterm.Info, pterm.Success, pterm.Warning, pterm.Error, *pterm.Fatal.WithFatal(false)}
 
-func TestPrefixPrinterNilPrint(t *testing.T) {
+func TestPrefixPrinterNilPrint(_ *testing.T) {
 	proxyToDevNull()
 
 	p := pterm.PrefixPrinter{}
@@ -46,7 +46,7 @@ func TestPrefixPrinterPrintMethods(t *testing.T) {
 			})
 		})
 
-		t.Run("PrintWithMultipleLines", func(t *testing.T) {
+		t.Run("PrintWithMultipleLines", func(_ *testing.T) {
 			p2 := p.WithScope(pterm.Scope{
 				Text:  "test",
 				Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
@@ -100,28 +100,28 @@ func TestPrefixPrinterPrintMethods(t *testing.T) {
 			result := captureStdout(func(w io.Writer) {
 				p.WithWriter(w).PrintOnError(errors.New("hello world"))
 			})
-			testhelper.AssertContains(t, result, "hello world")
+			assert.Contains(t, result, "hello world")
 		})
 
 		t.Run("PrintIfError_WithoutError", func(t *testing.T) {
 			result := captureStdout(func(w io.Writer) {
 				p.WithWriter(w).PrintOnError(nil)
 			})
-			testhelper.AssertZero(t, result)
+			assert.Zero(t, result)
 		})
 
 		t.Run("PrintOnErrorf", func(t *testing.T) {
 			result := captureStdout(func(w io.Writer) {
 				p.WithWriter(w).PrintOnErrorf("wrapping error : %w", errors.New("hello world"))
 			})
-			testhelper.AssertContains(t, result, "hello world")
+			assert.Contains(t, result, "hello world")
 		})
 
 		t.Run("PrintIfError_WithoutErrorf", func(t *testing.T) {
 			result := captureStdout(func(w io.Writer) {
 				p.WithWriter(w).PrintOnErrorf("", nil)
 			})
-			testhelper.AssertZero(t, result)
+			assert.Zero(t, result)
 		})
 	}
 }
@@ -137,7 +137,7 @@ func TestPrefixPrinterWithoutPrefix(t *testing.T) {
 				ret := captureStdout(func(w io.Writer) {
 					p2.WithWriter(w).Print(printable)
 				})
-				testhelper.AssertEqual(t, ret, fmt.Sprint(printable))
+				assert.Equal(t, ret, fmt.Sprint(printable))
 			}
 		})
 	}
@@ -148,7 +148,7 @@ func TestPrefixPrinterWithoutPrefix(t *testing.T) {
 func TestSprintfWithNewLineEnding(t *testing.T) {
 	for _, p := range prefixPrinters {
 		t.Run("", func(t *testing.T) {
-			testhelper.AssertNotContains(t, "\n\n", p.Sprintf("%s\n\n\n\n", "Hello, World!"))
+			assert.NotContains(t, "\n\n", p.Sprintf("%s\n\n\n\n", "Hello, World!"))
 		})
 	}
 }
@@ -156,7 +156,7 @@ func TestSprintfWithNewLineEnding(t *testing.T) {
 func TestPrefixPrinter_GetFormattedPrefix(t *testing.T) {
 	for _, p := range prefixPrinters {
 		t.Run("", func(t *testing.T) {
-			testhelper.AssertNotZero(t, p.GetFormattedPrefix())
+			assert.NotZero(t, p.GetFormattedPrefix())
 		})
 	}
 }
@@ -166,7 +166,7 @@ func TestPrefixPrinter_WithFatal(t *testing.T) {
 		t.Run("", func(t *testing.T) {
 			p2 := p.WithFatal()
 
-			testhelper.AssertEqual(t, true, p2.Fatal)
+			assert.Equal(t, true, p2.Fatal)
 		})
 	}
 }
@@ -176,7 +176,7 @@ func TestPrefixPrinter_WithShowLineNumber(t *testing.T) {
 		t.Run("", func(t *testing.T) {
 			p2 := p.WithShowLineNumber()
 
-			testhelper.AssertEqual(t, true, p2.ShowLineNumber)
+			assert.Equal(t, true, p2.ShowLineNumber)
 		})
 	}
 }
@@ -187,7 +187,7 @@ func TestPrefixPrinter_WithMessageStyle(t *testing.T) {
 			s := pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold)
 			p2 := p.WithMessageStyle(s)
 
-			testhelper.AssertEqual(t, s, p2.MessageStyle)
+			assert.Equal(t, s, p2.MessageStyle)
 		})
 	}
 }
@@ -201,7 +201,7 @@ func TestPrefixPrinter_WithPrefix(t *testing.T) {
 			}
 			p2 := p.WithPrefix(s)
 
-			testhelper.AssertEqual(t, s, p2.Prefix)
+			assert.Equal(t, s, p2.Prefix)
 		})
 	}
 }
@@ -215,7 +215,7 @@ func TestPrefixPrinter_WithScope(t *testing.T) {
 			}
 			p2 := p.WithScope(s)
 
-			testhelper.AssertEqual(t, s, p2.Scope)
+			assert.Equal(t, s, p2.Scope)
 		})
 	}
 }
@@ -225,7 +225,7 @@ func Test_checkFatal(t *testing.T) {
 		t.Run("", func(t *testing.T) {
 			p2 := p.WithFatal()
 
-			testhelper.AssertPanics(t, func() {
+			assert.Panics(t, func() {
 				p2.Println("Hello, World!")
 			})
 		})
@@ -237,7 +237,7 @@ func TestPrefixPrinter_WithDebugger(t *testing.T) {
 		t.Run("", func(t *testing.T) {
 			p2 := p.WithDebugger()
 
-			testhelper.AssertTrue(t, p2.Debugger)
+			assert.True(t, p2.Debugger)
 		})
 	}
 }
@@ -326,7 +326,7 @@ func TestPrefixPrinter_PrintWithoutDebugger(t *testing.T) {
 			p2 := p.WithDebugger()
 
 			pterm.DisableDebugMessages()
-			testDoesNotOutput(t, func(w io.Writer) {
+			testDoesNotOutput(t, func(_ io.Writer) {
 				p2.Print("Hello, World!")
 			})
 		})
@@ -339,7 +339,7 @@ func TestPrefixPrinter_PrintlnWithoutDebugger(t *testing.T) {
 			p2 := p.WithDebugger()
 
 			pterm.DisableDebugMessages()
-			testDoesNotOutput(t, func(w io.Writer) {
+			testDoesNotOutput(t, func(_ io.Writer) {
 				p2.Println("Hello, World!")
 			})
 		})
@@ -352,7 +352,7 @@ func TestPrefixPrinter_PrintfWithoutDebugger(t *testing.T) {
 			p2 := p.WithDebugger()
 
 			pterm.DisableDebugMessages()
-			testDoesNotOutput(t, func(w io.Writer) {
+			testDoesNotOutput(t, func(_ io.Writer) {
 				p2.Printf("Hello, World!")
 			})
 		})
@@ -365,7 +365,7 @@ func TestPrefixPrinter_PrintflnWithoutDebugger(t *testing.T) {
 			p2 := p.WithDebugger()
 
 			pterm.DisableDebugMessages()
-			testDoesNotOutput(t, func(w io.Writer) {
+			testDoesNotOutput(t, func(_ io.Writer) {
 				p2.Printfln("Hello, World!")
 			})
 		})
@@ -428,7 +428,7 @@ func TestPrefixPrinter_WithLineNumberOffset(t *testing.T) {
 		t.Run("", func(t *testing.T) {
 			p2 := p.WithLineNumberOffset(1337)
 
-			testhelper.AssertEqual(t, 1337, p2.LineNumberOffset)
+			assert.Equal(t, 1337, p2.LineNumberOffset)
 		})
 	}
 }
@@ -439,7 +439,7 @@ func TestPrefixPrinter_WithWriter(t *testing.T) {
 			s := os.Stderr
 			p2 := p.WithWriter(s)
 
-			testhelper.AssertEqual(t, s, p2.GetWriter())
+			assert.Equal(t, s, p2.GetWriter())
 		})
 	}
 }
@@ -448,11 +448,11 @@ func TestPrefixPrinter_GetWriter(t *testing.T) {
 	for _, p := range prefixPrinters {
 		t.Run("", func(t *testing.T) {
 			pterm.SetDefaultOutput(os.Stdout)
-			testhelper.AssertEqual(t, os.Stdout, p.GetWriter())
+			assert.Equal(t, os.Stdout, p.GetWriter())
 			pterm.SetDefaultOutput(os.Stderr)
-			testhelper.AssertEqual(t, os.Stderr, p.GetWriter())
+			assert.Equal(t, os.Stderr, p.GetWriter())
 			p2 := p.WithWriter(os.Stdout)
-			testhelper.AssertEqual(t, os.Stdout, p2.GetWriter())
+			assert.Equal(t, os.Stdout, p2.GetWriter())
 		})
 	}
 }

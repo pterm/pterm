@@ -34,7 +34,6 @@ func TestMultiPrinterGetString(t *testing.T) {
 			want: "",
 		},
 	} {
-		test := test // pin for pre-go1.22 versions
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
 

@@ -140,29 +140,29 @@ func (p TreePrinter) Srender() (string, error) {
 // which analyzes a TreePrinter and connects the items with specific characters.
 // Returns TreePrinter as string.
 func walkOverTree(list []TreeNode, p TreePrinter, prefix string) string {
-	var ret string
+	var ret strings.Builder
 
 	for i, item := range list {
 		if len(list) > i+1 { // if not last in list
 			if len(item.Children) == 0 { // if there are no children
-				ret += prefix + p.TreeStyle.Sprint(p.TopRightDownString) + strings.Repeat(p.TreeStyle.Sprint(p.HorizontalString), p.Indent) +
-					p.TextStyle.Sprint(item.Text) + "\n"
+				ret.WriteString(prefix + p.TreeStyle.Sprint(p.TopRightDownString) + strings.Repeat(p.TreeStyle.Sprint(p.HorizontalString), p.Indent) +
+					p.TextStyle.Sprint(item.Text) + "\n")
 			} else { // if there are children
-				ret += prefix + p.TreeStyle.Sprint(p.TopRightDownString) + strings.Repeat(p.TreeStyle.Sprint(p.HorizontalString), p.Indent-1) +
-					p.TreeStyle.Sprint(p.RightDownLeftString) + p.TextStyle.Sprint(item.Text) + "\n"
-				ret += walkOverTree(item.Children, p, prefix+p.TreeStyle.Sprint(p.VerticalString)+strings.Repeat(" ", p.Indent-1))
+				ret.WriteString(prefix + p.TreeStyle.Sprint(p.TopRightDownString) + strings.Repeat(p.TreeStyle.Sprint(p.HorizontalString), p.Indent-1) +
+					p.TreeStyle.Sprint(p.RightDownLeftString) + p.TextStyle.Sprint(item.Text) + "\n")
+				ret.WriteString(walkOverTree(item.Children, p, prefix+p.TreeStyle.Sprint(p.VerticalString)+strings.Repeat(" ", p.Indent-1)))
 			}
 		} else if len(list) == i+1 { // if last in list
 			if len(item.Children) == 0 { // if there are no children
-				ret += prefix + p.TreeStyle.Sprint(p.TopRightCornerString) + strings.Repeat(p.TreeStyle.Sprint(p.HorizontalString), p.Indent) +
-					p.TextStyle.Sprint(item.Text) + "\n"
+				ret.WriteString(prefix + p.TreeStyle.Sprint(p.TopRightCornerString) + strings.Repeat(p.TreeStyle.Sprint(p.HorizontalString), p.Indent) +
+					p.TextStyle.Sprint(item.Text) + "\n")
 			} else { // if there are children
-				ret += prefix + p.TreeStyle.Sprint(p.TopRightCornerString) + strings.Repeat(p.TreeStyle.Sprint(p.HorizontalString), p.Indent-1) +
-					p.TreeStyle.Sprint(p.RightDownLeftString) + p.TextStyle.Sprint(item.Text) + "\n"
-				ret += walkOverTree(item.Children, p, prefix+strings.Repeat(" ", p.Indent))
+				ret.WriteString(prefix + p.TreeStyle.Sprint(p.TopRightCornerString) + strings.Repeat(p.TreeStyle.Sprint(p.HorizontalString), p.Indent-1) +
+					p.TreeStyle.Sprint(p.RightDownLeftString) + p.TextStyle.Sprint(item.Text) + "\n")
+				ret.WriteString(walkOverTree(item.Children, p, prefix+strings.Repeat(" ", p.Indent)))
 			}
 		}
 	}
 
-	return ret
+	return ret.String()
 }

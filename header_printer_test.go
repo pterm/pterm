@@ -6,12 +6,12 @@ import (
 	"os"
 	"testing"
 
-	"github.com/pterm/pterm/internal/testhelper"
+	"github.com/stretchr/testify/assert"
 
 	"github.com/pterm/pterm"
 )
 
-func TestHeaderPrinterNilPrint(t *testing.T) {
+func TestHeaderPrinterNilPrint(_ *testing.T) {
 	p := pterm.HeaderPrinter{}
 	p.Println("Hello, World!")
 }
@@ -20,32 +20,32 @@ func TestHeaderPrinterPrintMethods(t *testing.T) {
 	p := pterm.DefaultHeader
 
 	t.Run("Print", func(t *testing.T) {
-		testPrintContains(t, func(w io.Writer, a any) {
+		testPrintContains(t, func(_ io.Writer, a any) {
 			p.Print(a)
 		})
 	})
 
 	t.Run("PrintWithFullWidth", func(t *testing.T) {
-		testPrintContains(t, func(w io.Writer, a any) {
+		testPrintContains(t, func(_ io.Writer, a any) {
 			p2 := p.WithFullWidth()
 			p2.Print(a)
 		})
 	})
 
 	t.Run("Printf", func(t *testing.T) {
-		testPrintfContains(t, func(w io.Writer, format string, a any) {
+		testPrintfContains(t, func(_ io.Writer, format string, a any) {
 			p.Printf(format, a)
 		})
 	})
 
 	t.Run("Printfln", func(t *testing.T) {
-		testPrintflnContains(t, func(w io.Writer, format string, a any) {
+		testPrintflnContains(t, func(_ io.Writer, format string, a any) {
 			p.Printfln(format, a)
 		})
 	})
 
 	t.Run("Println", func(t *testing.T) {
-		testPrintlnContains(t, func(w io.Writer, a any) {
+		testPrintlnContains(t, func(_ io.Writer, a any) {
 			p.Println(a)
 		})
 	})
@@ -75,31 +75,31 @@ func TestHeaderPrinterPrintMethods(t *testing.T) {
 	})
 
 	t.Run("PrintOnError", func(t *testing.T) {
-		result := captureStdout(func(w io.Writer) {
+		result := captureStdout(func(_ io.Writer) {
 			p.PrintOnError(errors.New("hello world"))
 		})
-		testhelper.AssertContains(t, result, "hello world")
+		assert.Contains(t, result, "hello world")
 	})
 
 	t.Run("PrintIfError_WithoutError", func(t *testing.T) {
-		result := captureStdout(func(w io.Writer) {
+		result := captureStdout(func(_ io.Writer) {
 			p.PrintOnError(nil)
 		})
-		testhelper.AssertZero(t, result)
+		assert.Zero(t, result)
 	})
 
 	t.Run("PrintOnErrorf", func(t *testing.T) {
-		result := captureStdout(func(w io.Writer) {
+		result := captureStdout(func(_ io.Writer) {
 			p.PrintOnErrorf("wrapping error : %w", errors.New("hello world"))
 		})
-		testhelper.AssertContains(t, result, "hello world")
+		assert.Contains(t, result, "hello world")
 	})
 
 	t.Run("PrintIfError_WithoutErrorf", func(t *testing.T) {
-		result := captureStdout(func(w io.Writer) {
+		result := captureStdout(func(_ io.Writer) {
 			p.PrintOnErrorf("", nil)
 		})
-		testhelper.AssertZero(t, result)
+		assert.Zero(t, result)
 	})
 }
 
@@ -108,35 +108,35 @@ func TestHeaderPrinter_WithBackgroundStyle(t *testing.T) {
 	p := pterm.HeaderPrinter{}
 	p2 := p.WithBackgroundStyle(s)
 
-	testhelper.AssertEqual(t, s, p2.BackgroundStyle)
+	assert.Equal(t, s, p2.BackgroundStyle)
 }
 
 func TestHeaderPrinter_WithFullWidth(t *testing.T) {
 	p := pterm.HeaderPrinter{}
 	p2 := p.WithFullWidth()
 
-	testhelper.AssertEqual(t, true, p2.FullWidth)
+	assert.Equal(t, true, p2.FullWidth)
 }
 
 func TestHeaderPrinter_WithFullWidthToLongForTerminal(t *testing.T) {
 	p := pterm.HeaderPrinter{}
 	p2 := p.WithFullWidth().Sprint("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 
-	testhelper.AssertContains(t, p2, "a")
+	assert.Contains(t, p2, "a")
 }
 
 func TestHeaderPrinter_ToLongForTerminal(t *testing.T) {
 	p := pterm.HeaderPrinter{}
 	p2 := p.Sprint("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 
-	testhelper.AssertContains(t, p2, "a")
+	assert.Contains(t, p2, "a")
 }
 
 func TestHeaderPrinter_WithMargin(t *testing.T) {
 	p := pterm.HeaderPrinter{}
 	p2 := p.WithMargin(1337)
 
-	testhelper.AssertEqual(t, 1337, p2.Margin)
+	assert.Equal(t, 1337, p2.Margin)
 }
 
 func TestHeaderPrinter_WithTextStyle(t *testing.T) {
@@ -144,7 +144,7 @@ func TestHeaderPrinter_WithTextStyle(t *testing.T) {
 	p := pterm.HeaderPrinter{}
 	p2 := p.WithTextStyle(s)
 
-	testhelper.AssertEqual(t, s, p2.TextStyle)
+	assert.Equal(t, s, p2.TextStyle)
 }
 
 func TestHeaderPrinter_WithWriter(t *testing.T) {
@@ -152,6 +152,6 @@ func TestHeaderPrinter_WithWriter(t *testing.T) {
 	s := os.Stderr
 	p2 := p.WithWriter(s)
 
-	testhelper.AssertEqual(t, s, p2.Writer)
-	testhelper.AssertZero(t, p.Writer)
+	assert.Equal(t, s, p2.Writer)
+	assert.Zero(t, p.Writer)
 }

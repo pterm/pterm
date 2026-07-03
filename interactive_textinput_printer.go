@@ -34,7 +34,6 @@ type InteractiveTextInputPrinter struct {
 	cursorYPos    int
 	text          string
 	startedTyping bool
-	valueStyle    *Style
 }
 
 // WithDefaultText sets the default text.
@@ -220,10 +219,7 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 			}
 
 			if p.cursorYPos+1 < len(p.input) {
-				p.cursorXPos = (internal.GetStringMaxWidth(p.input[p.cursorYPos]) + p.cursorXPos) - internal.GetStringMaxWidth(p.input[p.cursorYPos+1])
-				if p.cursorXPos > 0 {
-					p.cursorXPos = 0
-				}
+				p.cursorXPos = min((internal.GetStringMaxWidth(p.input[p.cursorYPos])+p.cursorXPos)-internal.GetStringMaxWidth(p.input[p.cursorYPos+1]), 0)
 
 				p.cursorYPos++
 			}
@@ -239,10 +235,7 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 			}
 
 			if p.cursorYPos > 0 {
-				p.cursorXPos = (internal.GetStringMaxWidth(p.input[p.cursorYPos]) + p.cursorXPos) - internal.GetStringMaxWidth(p.input[p.cursorYPos-1])
-				if p.cursorXPos > 0 {
-					p.cursorXPos = 0
-				}
+				p.cursorXPos = min((internal.GetStringMaxWidth(p.input[p.cursorYPos])+p.cursorXPos)-internal.GetStringMaxWidth(p.input[p.cursorYPos-1]), 0)
 
 				p.cursorYPos--
 			}

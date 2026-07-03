@@ -15,7 +15,7 @@ func LettersFromString(text string) pterm.Letters {
 // LettersFromStringWithStyle creates a Letters object from a string and applies a Style to it.
 func LettersFromStringWithStyle(text string, style *pterm.Style) pterm.Letters {
 	s := strings.Split(text, "")
-	l := pterm.Letters{}
+	l := make(pterm.Letters, 0, len(s))
 
 	for _, s2 := range s {
 		l = append(l, pterm.Letter{
@@ -30,7 +30,7 @@ func LettersFromStringWithStyle(text string, style *pterm.Style) pterm.Letters {
 // LettersFromStringWithRGB creates a Letters object from a string and applies an RGB color to it (overwrites style).
 func LettersFromStringWithRGB(text string, rgb pterm.RGB) pterm.Letters {
 	s := strings.Split(text, "")
-	l := pterm.Letters{}
+	l := make(pterm.Letters, 0, len(s))
 
 	for _, s2 := range s {
 		l = append(l, pterm.Letter{

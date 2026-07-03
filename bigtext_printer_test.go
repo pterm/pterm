@@ -6,30 +6,30 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/pterm/pterm/internal/testhelper"
+	"github.com/stretchr/testify/assert"
 
 	"github.com/pterm/pterm"
 )
 
-func TestBigTextPrinterNilPrint(t *testing.T) {
+func TestBigTextPrinterNilPrint(_ *testing.T) {
 	p := pterm.BigTextPrinter{}
-	p.Render()
+	_ = p.Render()
 }
 
 func TestBigTextPrinter_Render(t *testing.T) {
 	printer := pterm.DefaultBigText.WithLetters(pterm.NewLettersFromString("Hello"))
 	content, err := printer.Srender()
 
-	testhelper.AssertNoError(t, err)
-	testhelper.AssertNotZero(t, content)
+	assert.NoError(t, err)
+	assert.NotZero(t, content)
 }
 
 func TestBigTextPrinter_RenderRGB(t *testing.T) {
 	printer := pterm.DefaultBigText.WithLetters(pterm.NewLettersFromStringWithRGB("Hello", pterm.NewRGB(255, 0, 0)))
 	content, err := printer.Srender()
 
-	testhelper.AssertNoError(t, err)
-	testhelper.AssertNotZero(t, content)
+	assert.NoError(t, err)
+	assert.NotZero(t, content)
 }
 
 func TestBigTextPrinter_RenderRawOutput(t *testing.T) {
@@ -41,8 +41,8 @@ func TestBigTextPrinter_RenderRawOutput(t *testing.T) {
 
 	pterm.EnableStyling()
 
-	testhelper.AssertNoError(t, err)
-	testhelper.AssertNotZero(t, content)
+	assert.NoError(t, err)
+	assert.NotZero(t, content)
 }
 
 func TestBigTextPrinter_WithBigCharacters(t *testing.T) {
@@ -50,8 +50,8 @@ func TestBigTextPrinter_WithBigCharacters(t *testing.T) {
 	p := pterm.BigTextPrinter{}
 	p2 := p.WithBigCharacters(e)
 
-	testhelper.AssertEqual(t, e, p2.BigCharacters)
-	testhelper.AssertZero(t, p.BigCharacters)
+	assert.Equal(t, e, p2.BigCharacters)
+	assert.Zero(t, p.BigCharacters)
 }
 
 func TestBigTextPrinter_WithLetters(t *testing.T) {
@@ -68,8 +68,8 @@ func TestBigTextPrinter_WithLetters(t *testing.T) {
 	p := pterm.BigTextPrinter{}
 	p2 := p.WithLetters(e)
 
-	testhelper.AssertEqual(t, e, p2.Letters)
-	testhelper.AssertZero(t, p.Letters)
+	assert.Equal(t, e, p2.Letters)
+	assert.Zero(t, p.Letters)
 }
 
 func TestLetter_WithString(t *testing.T) {
@@ -77,8 +77,8 @@ func TestLetter_WithString(t *testing.T) {
 	p := pterm.Letter{}
 	p2 := p.WithString(e)
 
-	testhelper.AssertEqual(t, e, p2.String)
-	testhelper.AssertZero(t, p.String)
+	assert.Equal(t, e, p2.String)
+	assert.Zero(t, p.String)
 }
 
 func TestLetter_WithStyle(t *testing.T) {
@@ -86,8 +86,8 @@ func TestLetter_WithStyle(t *testing.T) {
 	s := pterm.NewStyle(pterm.FgRed, pterm.BgRed, pterm.Bold)
 	p2 := p.WithStyle(s)
 
-	testhelper.AssertEqual(t, s, p2.Style)
-	testhelper.AssertZero(t, p.Style)
+	assert.Equal(t, s, p2.Style)
+	assert.Zero(t, p.Style)
 }
 
 func TestLetter_WithRGB(t *testing.T) {
@@ -95,8 +95,8 @@ func TestLetter_WithRGB(t *testing.T) {
 	rgb := pterm.NewRGB(0, 0, 0)
 	p2 := p.WithRGB(rgb)
 
-	testhelper.AssertEqual(t, rgb, p2.RGB)
-	testhelper.AssertZero(t, p.RGB)
+	assert.Equal(t, rgb, p2.RGB)
+	assert.Zero(t, p.RGB)
 }
 
 func TestNewLettersFromText(t *testing.T) {
@@ -112,7 +112,7 @@ func TestNewLettersFromText(t *testing.T) {
 	}
 	p := pterm.NewLettersFromString("ab")
 
-	testhelper.AssertEqual(t, e, p)
+	assert.Equal(t, e, p)
 }
 
 func TestNewLettersFromTextWithStyle(t *testing.T) {
@@ -128,7 +128,7 @@ func TestNewLettersFromTextWithStyle(t *testing.T) {
 	}
 	p := pterm.NewLettersFromStringWithStyle("ab", pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold))
 
-	testhelper.AssertEqual(t, e, p)
+	assert.Equal(t, e, p)
 }
 
 func TestNewLettersFromTextWithRGB(t *testing.T) {
@@ -146,7 +146,7 @@ func TestNewLettersFromTextWithRGB(t *testing.T) {
 	}
 	p := pterm.NewLettersFromStringWithRGB("ab", pterm.NewRGB(0, 0, 0))
 
-	testhelper.AssertEqual(t, e, p)
+	assert.Equal(t, e, p)
 }
 
 func TestDefaultLettersMaxHeight(t *testing.T) {
@@ -155,7 +155,7 @@ func TestDefaultLettersMaxHeight(t *testing.T) {
 	chars := pterm.DefaultBigText.BigCharacters
 	for s, l := range chars {
 		h := strings.Count(l, "\n")
-		testhelper.AssertTrue(t, h <= maxHeight, fmt.Sprintf("'%s' is too high", s))
+		assert.True(t, h <= maxHeight, fmt.Sprintf("'%s' is too high", s))
 	}
 }
 
@@ -164,6 +164,6 @@ func TestBigTextPrinter_WithWriter(t *testing.T) {
 	s := os.Stderr
 	p2 := p.WithWriter(s)
 
-	testhelper.AssertEqual(t, s, p2.Writer)
-	testhelper.AssertZero(t, p.Writer)
+	assert.Equal(t, s, p2.Writer)
+	assert.Zero(t, p.Writer)
 }

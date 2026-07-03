@@ -6,13 +6,14 @@ import (
 	"log/slog"
 )
 
+// SlogHandler is a slog.Handler that prints log records via a pterm Logger.
 type SlogHandler struct {
 	logger *Logger
 	attrs  []slog.Attr
 }
 
 // Enabled returns true if the given level is enabled.
-func (s *SlogHandler) Enabled(ctx context.Context, level slog.Level) bool {
+func (s *SlogHandler) Enabled(_ context.Context, level slog.Level) bool {
 	switch level {
 	case slog.LevelDebug:
 		return s.logger.CanPrint(LogLevelDebug)
@@ -28,7 +29,7 @@ func (s *SlogHandler) Enabled(ctx context.Context, level slog.Level) bool {
 }
 
 // Handle handles the given record.
-func (s *SlogHandler) Handle(ctx context.Context, record slog.Record) error {
+func (s *SlogHandler) Handle(_ context.Context, record slog.Record) error {
 	level := record.Level
 	message := record.Message
 
@@ -81,7 +82,7 @@ func (s *SlogHandler) WithAttrs(attrs []slog.Attr) slog.Handler {
 }
 
 // WithGroup is not yet supported.
-func (s *SlogHandler) WithGroup(name string) slog.Handler {
+func (s *SlogHandler) WithGroup(_ string) slog.Handler {
 	// Grouping is not yet supported by pterm.
 	return s
 }

@@ -11,7 +11,7 @@ import (
 func PrintAverageExecutionTime(count int, f func(i int) error) error {
 	var total time.Duration
 
-	for i := 0; i < count; i++ {
+	for i := range count {
 		start := time.Now()
 		err := f(i)
 		duration := time.Since(start)

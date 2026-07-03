@@ -4,11 +4,11 @@ import (
 	"os"
 	"testing"
 
-	"github.com/pterm/pterm/internal/testhelper"
 	"github.com/pterm/pterm"
+	"github.com/stretchr/testify/assert"
 )
 
-func TestAreaPrinter_NilPrint(t *testing.T) {
+func TestAreaPrinter_NilPrint(_ *testing.T) {
 	originalStdout := os.Stdout
 	os.Stdout = os.NewFile(0, os.DevNull) // Set os.Stdout to DevNull to hide output from cursor.Area
 
@@ -23,7 +23,10 @@ func TestAreaPrinter_GenericStart(t *testing.T) {
 	os.Stdout = os.NewFile(0, os.DevNull) // Set os.Stdout to DevNull to hide output from cursor.Area
 
 	p := pterm.DefaultArea
-	p.GenericStart()
+	started, err := p.GenericStart()
+	assert.NoError(t, err)
+
+	_, _ = (*started).GenericStop()
 
 	os.Stdout = originalStdout // Restore original os.Stdout
 }
@@ -34,43 +37,47 @@ func TestAreaPrinter_GenericStartRawOutput(t *testing.T) {
 
 	pterm.DisableStyling()
 
+	defer pterm.EnableStyling()
+
 	p := pterm.DefaultArea
-	p.GenericStart()
-	pterm.EnableStyling()
+	started, err := p.GenericStart()
+	assert.NoError(t, err)
+
+	_, _ = (*started).GenericStop()
 
 	os.Stdout = originalStdout // Restore original os.Stdout
 }
 
-func TestAreaPrinter_GenericStop(t *testing.T) {
+func TestAreaPrinter_GenericStop(_ *testing.T) {
 	originalStdout := os.Stdout
 	os.Stdout = os.NewFile(0, os.DevNull) // Set os.Stdout to DevNull to hide output from cursor.Area
 
 	p := pterm.DefaultArea
-	p.GenericStop()
+	_, _ = p.GenericStop()
 
 	os.Stdout = originalStdout // Restore original os.Stdout
 }
 
-func TestAreaPrinter_RemoveWhenDone(t *testing.T) {
+func TestAreaPrinter_RemoveWhenDone(_ *testing.T) {
 	originalStdout := os.Stdout
 	os.Stdout = os.NewFile(0, os.DevNull) // Set os.Stdout to DevNull to hide output from cursor.Area
 
 	a, _ := pterm.DefaultArea.WithRemoveWhenDone().Start()
 
 	a.Update("asd")
-	a.Stop()
+	_ = a.Stop()
 
 	os.Stdout = originalStdout // Restore original os.Stdout
 }
 
-func TestAreaPrinter_CenterFullscreen(t *testing.T) {
+func TestAreaPrinter_CenterFullscreen(_ *testing.T) {
 	originalStdout := os.Stdout
 	os.Stdout = os.NewFile(0, os.DevNull) // Set os.Stdout to DevNull to hide output from cursor.Area
 
 	a, _ := pterm.DefaultArea.WithRemoveWhenDone().WithFullscreen().WithCenter().Start()
 
 	a.Update("asd")
-	a.Stop()
+	_ = a.Stop()
 
 	os.Stdout = originalStdout // Restore original os.Stdout
 }
@@ -83,10 +90,10 @@ func TestAreaPrinter_GetContent(t *testing.T) {
 
 	for _, printable := range printables {
 		a.Update(printable)
-		testhelper.AssertEqual(t, a.GetContent(), pterm.Sprint(printable))
+		assert.Equal(t, a.GetContent(), pterm.Sprint(printable))
 	}
 
-	a.Stop()
+	_ = a.Stop()
 
 	os.Stdout = originalStdout // Restore original os.Stdout
 }
@@ -98,7 +105,7 @@ func TestAreaPrinter_WithRemoveWhenDone(t *testing.T) {
 	p := pterm.AreaPrinter{}
 	p2 := p.WithRemoveWhenDone()
 
-	testhelper.AssertTrue(t, p2.RemoveWhenDone)
+	assert.True(t, p2.RemoveWhenDone)
 
 	os.Stdout = originalStdout // Restore original os.Stdout
 }
@@ -110,12 +117,12 @@ func TestAreaPrinter_WithFullscreen(t *testing.T) {
 	p := pterm.AreaPrinter{}
 	p2 := p.WithFullscreen()
 
-	testhelper.AssertTrue(t, p2.Fullscreen)
+	assert.True(t, p2.Fullscreen)
 
 	os.Stdout = originalStdout // Restore original os.Stdout
 }
 
-func TestAreaPrinter_Clear(t *testing.T) {
+func TestAreaPrinter_Clear(_ *testing.T) {
 	originalStdout := os.Stdout
 	os.Stdout = os.NewFile(0, os.DevNull) // Set os.Stdout to DevNull to hide output from cursor.Area
 

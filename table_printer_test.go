@@ -6,14 +6,14 @@ import (
 	"os"
 	"testing"
 
-	"github.com/pterm/pterm/internal/testhelper"
+	"github.com/stretchr/testify/assert"
 
 	"github.com/pterm/pterm"
 )
 
-func TestTablePrinter_NilPrint(t *testing.T) {
+func TestTablePrinter_NilPrint(_ *testing.T) {
 	p := pterm.TablePrinter{}
-	p.Render()
+	_ = p.Render()
 }
 
 func TestTablePrinter_Render(t *testing.T) {
@@ -27,14 +27,14 @@ func TestTablePrinter_Render(t *testing.T) {
 	printer := pterm.DefaultTable.WithHasHeader().WithLeftAlignment().WithData(d)
 	content, err := printer.Srender()
 
-	testhelper.AssertNoError(t, err)
-	testhelper.AssertNotNil(t, content)
+	assert.NoError(t, err)
+	assert.NotNil(t, content)
 	// WithRightAlignment
 	printer = pterm.DefaultTable.WithHasHeader().WithRightAlignment().WithData(d)
 	content, err = printer.Srender()
 
-	testhelper.AssertNoError(t, err)
-	testhelper.AssertNotNil(t, content)
+	assert.NoError(t, err)
+	assert.NotNil(t, content)
 }
 
 func TestTablePrinterWithAlternateStyle_Render(t *testing.T) {
@@ -51,8 +51,8 @@ func TestTablePrinterWithAlternateStyle_Render(t *testing.T) {
 	// Create a printer with the alternate row style
 	printer := pterm.DefaultTable.WithHasHeader().WithAlternateRowStyle(alternateStyle).WithData(d)
 	content, err := printer.Srender()
-	testhelper.AssertNoError(t, err)
-	testhelper.AssertNotNil(t, content)
+	assert.NoError(t, err)
+	assert.NotNil(t, content)
 }
 
 func TestTablePrinterWithRowSeparators_Render(t *testing.T) {
@@ -65,27 +65,27 @@ func TestTablePrinterWithRowSeparators_Render(t *testing.T) {
 	// WithHeaderSeparator
 	printer := pterm.DefaultTable.WithHasHeader().WithHeaderRowSeparator("=").WithData(d)
 	content, err := printer.Srender()
-	testhelper.AssertNoError(t, err)
-	testhelper.AssertNotNil(t, content)
+	assert.NoError(t, err)
+	assert.NotNil(t, content)
 	// WithRowSeparator
 	printer = pterm.DefaultTable.WithHasHeader().WithRowSeparator("-").WithData(d)
 	content, err = printer.Srender()
-	testhelper.AssertNoError(t, err)
-	testhelper.AssertNotNil(t, content)
+	assert.NoError(t, err)
+	assert.NotNil(t, content)
 	// WithHeaderRowSeparator & WithRowSeparator
 	printer = pterm.DefaultTable.WithHasHeader().WithHeaderRowSeparator("=").WithRowSeparator("-").WithData(d)
 	content, err = printer.Srender()
-	testhelper.AssertNoError(t, err)
-	testhelper.AssertNotNil(t, content)
+	assert.NoError(t, err)
+	assert.NotNil(t, content)
 }
 
 func TestTablePrinter_WithCSVReader(t *testing.T) {
-	content := captureStdout(func(w io.Writer) {
+	content := captureStdout(func(_ io.Writer) {
 		r := csv.NewReader(&outBuf)
 		p := pterm.TablePrinter{}
 		p.WithCSVReader(r)
 	})
-	testhelper.AssertNotNil(t, content)
+	assert.NotNil(t, content)
 }
 
 func TestTablePrinter_WithBoxed(t *testing.T) {
@@ -107,14 +107,14 @@ func TestTablePrinter_WithData(t *testing.T) {
 	p := pterm.TablePrinter{}
 	p2 := p.WithData(d)
 
-	testhelper.AssertEqual(t, d, p2.Data)
+	assert.Equal(t, d, p2.Data)
 }
 
 func TestTablePrinter_WithHasHeader(t *testing.T) {
 	p := pterm.TablePrinter{}
 	p2 := p.WithHasHeader()
 
-	testhelper.AssertTrue(t, p2.HasHeader)
+	assert.True(t, p2.HasHeader)
 }
 
 func TestTablePrinter_WithHeaderStyle(t *testing.T) {
@@ -122,14 +122,14 @@ func TestTablePrinter_WithHeaderStyle(t *testing.T) {
 	p := pterm.TablePrinter{}
 	p2 := p.WithHeaderStyle(s)
 
-	testhelper.AssertEqual(t, s, p2.HeaderStyle)
+	assert.Equal(t, s, p2.HeaderStyle)
 }
 
 func TestTablePrinter_WithSeparator(t *testing.T) {
 	p := pterm.TablePrinter{}
 	p2 := p.WithSeparator("-")
 
-	testhelper.AssertEqual(t, "-", p2.Separator)
+	assert.Equal(t, "-", p2.Separator)
 }
 
 func TestTablePrinter_WithSeparatorStyle(t *testing.T) {
@@ -137,14 +137,14 @@ func TestTablePrinter_WithSeparatorStyle(t *testing.T) {
 	p := pterm.TablePrinter{}
 	p2 := p.WithSeparatorStyle(s)
 
-	testhelper.AssertEqual(t, s, p2.SeparatorStyle)
+	assert.Equal(t, s, p2.SeparatorStyle)
 }
 
 func TestTablePrinter_WithHeaderRowSeparator(t *testing.T) {
 	p := pterm.TablePrinter{}
 	p2 := p.WithHeaderRowSeparator("-")
 
-	testhelper.AssertEqual(t, "-", p2.HeaderRowSeparator)
+	assert.Equal(t, "-", p2.HeaderRowSeparator)
 }
 
 func TestTablePrinter_WithHeaderRowSeparatorStyle(t *testing.T) {
@@ -152,14 +152,14 @@ func TestTablePrinter_WithHeaderRowSeparatorStyle(t *testing.T) {
 	p := pterm.TablePrinter{}
 	p2 := p.WithHeaderRowSeparatorStyle(s)
 
-	testhelper.AssertEqual(t, s, p2.HeaderRowSeparatorStyle)
+	assert.Equal(t, s, p2.HeaderRowSeparatorStyle)
 }
 
 func TestTablePrinter_WithRowSeparator(t *testing.T) {
 	p := pterm.TablePrinter{}
 	p2 := p.WithRowSeparator("-")
 
-	testhelper.AssertEqual(t, "-", p2.RowSeparator)
+	assert.Equal(t, "-", p2.RowSeparator)
 }
 
 func TestTablePrinter_WithRowSeparatorStyle(t *testing.T) {
@@ -167,7 +167,7 @@ func TestTablePrinter_WithRowSeparatorStyle(t *testing.T) {
 	p := pterm.TablePrinter{}
 	p2 := p.WithRowSeparatorStyle(s)
 
-	testhelper.AssertEqual(t, s, p2.RowSeparatorStyle)
+	assert.Equal(t, s, p2.RowSeparatorStyle)
 }
 
 func TestTablePrinter_WithStyle(t *testing.T) {
@@ -175,7 +175,7 @@ func TestTablePrinter_WithStyle(t *testing.T) {
 	p := pterm.TablePrinter{}
 	p2 := p.WithStyle(s)
 
-	testhelper.AssertEqual(t, s, p2.Style)
+	assert.Equal(t, s, p2.Style)
 }
 
 func TestTablePrinter_WithLeftAlignment(t *testing.T) {
@@ -183,7 +183,7 @@ func TestTablePrinter_WithLeftAlignment(t *testing.T) {
 	p := pterm.TablePrinter{}
 	p2 := p.WithLeftAlignment(s)
 
-	testhelper.AssertEqual(t, s, p2.LeftAlignment)
+	assert.Equal(t, s, p2.LeftAlignment)
 }
 
 func TestTablePrinter_WithRightAlignment(t *testing.T) {
@@ -191,7 +191,7 @@ func TestTablePrinter_WithRightAlignment(t *testing.T) {
 	p := pterm.TablePrinter{}
 	p2 := p.WithRightAlignment(s)
 
-	testhelper.AssertEqual(t, s, p2.RightAlignment)
+	assert.Equal(t, s, p2.RightAlignment)
 }
 
 func TestTablePrinter_WithWriter(t *testing.T) {
@@ -199,6 +199,6 @@ func TestTablePrinter_WithWriter(t *testing.T) {
 	s := os.Stderr
 	p2 := p.WithWriter(s)
 
-	testhelper.AssertEqual(t, s, p2.Writer)
-	testhelper.AssertZero(t, p.Writer)
+	assert.Equal(t, s, p2.Writer)
+	assert.Zero(t, p.Writer)
 }

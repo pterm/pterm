@@ -40,6 +40,7 @@ var DefaultHeatmap = HeatmapPrinter{
 // HeatmapData is the type that contains the data of a HeatmapPrinter.
 type HeatmapData [][]float32
 
+// HeatmapAxis contains the labels of the X and Y axis of a HeatmapPrinter.
 type HeatmapAxis struct {
 	XAxis []string
 	YAxis []string
@@ -259,7 +260,7 @@ func (p HeatmapPrinter) Srender() (string, error) {
 		p.AxisStyle = DefaultHeatmap.AxisStyle
 	}
 
-	if RawOutput {
+	if rawOutput() {
 		p.Legend = false
 	}
 
@@ -311,19 +312,19 @@ func (p HeatmapPrinter) Srender() (string, error) {
 }
 
 func (p HeatmapPrinter) computeAxisData(data string, xAmount, yAmount int) (string, int, int) {
-	var header string
+	var header strings.Builder
 	for _, h := range p.Axis.XAxis {
-		header += h + "\n"
+		header.WriteString(h + "\n")
 	}
 
 	for _, h := range p.Axis.YAxis {
-		header += h + "\n"
+		header.WriteString(h + "\n")
 	}
 
 	if p.OnlyColoredCells {
-		data = header
+		data = header.String()
 	} else {
-		data += header
+		data += header.String()
 	}
 
 	xAmount++
@@ -491,7 +492,7 @@ func (p HeatmapPrinter) renderData(buffer *bytes.Buffer, colWidth int, xAmount i
 					fgColor = complementaryColors[color]
 				}
 
-				buffer.WriteString(fgColor.Sprint(color.Sprintf("%s", ct)))
+				buffer.WriteString(fgColor.Sprint(ct))
 			}
 
 			if j < xAmount {
@@ -561,11 +562,15 @@ func (p HeatmapPrinter) generateColorLegend(buffer *bytes.Buffer, legendColWidth
 	for i, color := range p.Colors {
 		// the first color is the min value and the last color is the max value
 		var f float32
-		if i == 0 {
+
+		switch {
+		case i == 0:
 			f = p.minValue
-		} else if i == len(p.Colors)-1 {
+
+		case i == len(p.Colors)-1:
 			f = p.maxValue
-		} else {
+
+		default:
 			f = p.minValue + (p.maxValue-p.minValue)*float32(i)/float32(len(p.Colors)-1)
 		}
 
@@ -574,7 +579,7 @@ func (p HeatmapPrinter) generateColorLegend(buffer *bytes.Buffer, legendColWidth
 			fgColor = complementaryColors[color]
 		}
 
-		buffer.WriteString(fgColor.Sprint(color.Sprint(centerAndShorten(f, legendColWidth, p.LegendOnlyColoredCells))))
+		buffer.WriteString(fgColor.Sprint(centerAndShorten(f, legendColWidth, p.LegendOnlyColoredCells)))
 
 		if p.Grid && i < len(p.Colors)-1 && !p.LegendOnlyColoredCells {
 			buffer.WriteString(p.SeparatorStyle.Sprintf("%s", p.VerticalSeparator))
@@ -585,10 +590,7 @@ func (p HeatmapPrinter) generateColorLegend(buffer *bytes.Buffer, legendColWidth
 func (p HeatmapPrinter) generateRGBLegend(buffer *bytes.Buffer, legendColWidth int) {
 	p.rgbLegendValue = 10
 
-	steps := len(p.RGBRange)
-	if steps < p.rgbLegendValue {
-		steps = p.rgbLegendValue
-	}
+	steps := max(len(p.RGBRange), p.rgbLegendValue)
 
 	if p.LegendOnlyColoredCells {
 		steps *= 3
@@ -651,10 +653,7 @@ func (p HeatmapPrinter) boxLegend(buffer *bytes.Buffer, legend string, legendCol
 func (p HeatmapPrinter) generateSeparatorRow(buffer *bytes.Buffer, legend string, legendColWidth int, top bool) {
 	p.rgbLegendValue = 10
 
-	steps := len(p.RGBRange)
-	if steps < p.rgbLegendValue {
-		steps = p.rgbLegendValue
-	}
+	steps := max(len(p.RGBRange), p.rgbLegendValue)
 
 	if p.LegendOnlyColoredCells {
 		steps *= 3
@@ -662,10 +661,7 @@ func (p HeatmapPrinter) generateSeparatorRow(buffer *bytes.Buffer, legend string
 
 	var xValue int
 	if p.EnableRGB {
-		xValue = len(p.RGBRange)
-		if xValue < p.rgbLegendValue {
-			xValue = p.rgbLegendValue
-		}
+		xValue = max(len(p.RGBRange), p.rgbLegendValue)
 	} else {
 		xValue = len(p.Colors)
 	}

@@ -23,6 +23,7 @@ func (p BasicTextPrinter) WithStyle(style *Style) *BasicTextPrinter {
 	return &p
 }
 
+// WithWriter sets the custom Writer.
 func (p BasicTextPrinter) WithWriter(writer io.Writer) *BasicTextPrinter {
 	p.Writer = writer
 	return &p
@@ -99,13 +100,7 @@ func (p *BasicTextPrinter) Printfln(format string, a ...any) *TextPrinter {
 // If every error is nil, nothing will be printed.
 // This can be used for simple error checking.
 func (p *BasicTextPrinter) PrintOnError(a ...any) *TextPrinter {
-	for _, arg := range a {
-		if err, ok := arg.(error); ok {
-			if err != nil {
-				p.Println(err)
-			}
-		}
-	}
+	printOnError(p, a...)
 
 	tp := TextPrinter(p)
 
@@ -116,13 +111,7 @@ func (p *BasicTextPrinter) PrintOnError(a ...any) *TextPrinter {
 // If every error is nil, nothing will be printed.
 // This can be used for simple error checking.
 func (p *BasicTextPrinter) PrintOnErrorf(format string, a ...any) *TextPrinter {
-	for _, arg := range a {
-		if err, ok := arg.(error); ok {
-			if err != nil {
-				p.Println(fmt.Errorf(format, err))
-			}
-		}
-	}
+	printOnErrorf(p, format, a...)
 
 	tp := TextPrinter(p)
 

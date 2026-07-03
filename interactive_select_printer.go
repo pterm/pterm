@@ -77,7 +77,7 @@ func (p InteractiveSelectPrinter) WithMaxHeight(maxHeight int) *InteractiveSelec
 	return &p
 }
 
-// OnInterrupt sets the function to execute on exit of the input reader
+// WithOnInterruptFunc sets the function to execute on exit of the input reader.
 func (p InteractiveSelectPrinter) WithOnInterruptFunc(exitFunc func()) *InteractiveSelectPrinter {
 	p.OnInterruptFunc = exitFunc
 	return &p
@@ -113,10 +113,7 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 		p.MaxHeight = DefaultInteractiveSelect.MaxHeight
 	}
 
-	maxHeight := p.MaxHeight
-	if maxHeight > len(p.fuzzySearchMatches) {
-		maxHeight = len(p.fuzzySearchMatches)
-	}
+	maxHeight := min(p.MaxHeight, len(p.fuzzySearchMatches))
 
 	if len(p.Options) == 0 {
 		return "", fmt.Errorf("no options provided")
@@ -147,7 +144,7 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 	}
 
 	area, err := DefaultArea.Start(p.renderSelectMenu())
-	defer area.Stop()
+	defer func() { _ = area.Stop() }()
 
 	if err != nil {
 		return "", fmt.Errorf("could not start area: %w", err)
@@ -162,11 +159,7 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 	err = keyboard.Listen(func(keyInfo keys.Key) (stop bool, err error) {
 		key := keyInfo.Code
 
-		if p.MaxHeight > len(p.fuzzySearchMatches) {
-			maxHeight = len(p.fuzzySearchMatches)
-		} else {
-			maxHeight = p.MaxHeight
-		}
+		maxHeight = min(p.MaxHeight, len(p.fuzzySearchMatches))
 
 		switch key {
 		case keys.RuneKey:
@@ -199,11 +192,7 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 
 			p.renderSelectMenu()
 
-			if len(p.fuzzySearchMatches) > p.MaxHeight {
-				maxHeight = p.MaxHeight
-			} else {
-				maxHeight = len(p.fuzzySearchMatches)
-			}
+			maxHeight = min(len(p.fuzzySearchMatches), p.MaxHeight)
 
 			p.selectedOption = 0
 			p.displayedOptionsStart = 0

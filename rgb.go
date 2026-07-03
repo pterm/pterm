@@ -1,11 +1,10 @@
 package pterm
 
 import (
-	"fmt"
-
-	"github.com/gookit/color"
+	"strings"
 
 	"github.com/pterm/pterm/internal"
+	"github.com/pterm/pterm/internal/color"
 )
 
 // RGB color model is an additive color model in which red, green, and blue light are added together in various ways to reproduce a broad array of colors.
@@ -18,6 +17,8 @@ type RGB struct {
 	Background bool
 }
 
+// RGBStyle is a style with an RGB foreground, an optional RGB background and
+// optional style options (e.g. Bold).
 type RGBStyle struct {
 	Options                []Color
 	Foreground, Background RGB
@@ -89,13 +90,7 @@ func (p RGBStyle) Printfln(format string, a ...any) *TextPrinter {
 // If every error is nil, nothing will be printed.
 // This can be used for simple error checking.
 func (p RGBStyle) PrintOnError(a ...any) *TextPrinter {
-	for _, arg := range a {
-		if err, ok := arg.(error); ok {
-			if err != nil {
-				p.Println(err)
-			}
-		}
-	}
+	printOnError(p, a...)
 
 	tp := TextPrinter(p)
 
@@ -106,13 +101,7 @@ func (p RGBStyle) PrintOnError(a ...any) *TextPrinter {
 // If every error is nil, nothing will be printed.
 // This can be used for simple error checking.
 func (p RGBStyle) PrintOnErrorf(format string, a ...any) *TextPrinter {
-	for _, arg := range a {
-		if err, ok := arg.(error); ok {
-			if err != nil {
-				p.Println(fmt.Errorf(format, err))
-			}
-		}
-	}
+	printOnErrorf(p, format, a...)
 
 	tp := TextPrinter(p)
 
@@ -122,20 +111,30 @@ func (p RGBStyle) PrintOnErrorf(format string, a ...any) *TextPrinter {
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
 func (p RGBStyle) Sprint(a ...any) string {
-	var rgbStyle *color.RGBStyle
-	if !p.hasBg {
-		rgbStyle = color.NewRGBStyle(color.RGB(p.Foreground.R, p.Foreground.G, p.Foreground.B))
-	} else {
-		rgbStyle = color.NewRGBStyle(color.RGB(p.Foreground.R, p.Foreground.G, p.Foreground.B), color.RGB(p.Background.R, p.Background.G, p.Background.B))
+	text := Sprint(a...)
+	if text == "" {
+		return text
 	}
 
-	if len(p.Options) > 0 {
-		for _, opt := range p.Options {
-			rgbStyle.AddOpts(color.Color(opt))
-		}
+	if !printColorEnabled() {
+		return color.Strip(text)
 	}
 
-	return rgbStyle.Sprint(a...)
+	var seq strings.Builder
+	seq.WriteString(color.ForegroundRGB(p.Foreground.R, p.Foreground.G, p.Foreground.B))
+
+	if p.hasBg {
+		seq.WriteString(color.BackgroundRGB(p.Background.R, p.Background.G, p.Background.B))
+	}
+
+	for _, opt := range p.Options {
+		seq.WriteString(color.Sequence(opt.String()))
+	}
+
+	seq.WriteString(text)
+	seq.WriteString(resetSequence)
+
+	return seq.String()
 }
 
 // Sprintln formats using the default formats for its operands and returns the resulting string.
@@ -196,12 +195,12 @@ func (p RGB) Fade(minRGB, maxRGB, current float32, end ...RGB) RGB {
 		tempCurrent := current
 		if f > current {
 			return p.Fade(minRGB, f, current, end[0])
-		} else {
-			for i := 0; i < len(end)-1; i++ {
-				tempCurrent -= f
-				if f > tempCurrent {
-					return end[i].Fade(minRGB, minRGB+f, tempCurrent, end[i+1])
-				}
+		}
+
+		for i := 0; i < len(end)-1; i++ {
+			tempCurrent -= f
+			if f > tempCurrent {
+				return end[i].Fade(minRGB, minRGB+f, tempCurrent, end[i+1])
 			}
 		}
 	}
@@ -212,11 +211,21 @@ func (p RGB) Fade(minRGB, maxRGB, current float32, end ...RGB) RGB {
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
 func (p RGB) Sprint(a ...any) string {
-	if p.Background {
-		return color.RGB(p.R, p.G, p.B, p.Background).Sprint(a...) + "\033[0m\033[K"
+	text := Sprint(a...)
+	if text == "" {
+		return text
 	}
 
-	return color.RGB(p.R, p.G, p.B, p.Background).Sprint(a...)
+	if !printColorEnabled() {
+		return color.Strip(text)
+	}
+
+	if p.Background {
+		// Clear to the end of the line so the background color fills the row.
+		return color.BackgroundRGB(p.R, p.G, p.B) + text + resetSequence + color.ClearToEOL
+	}
+
+	return color.ForegroundRGB(p.R, p.G, p.B) + text + resetSequence
 }
 
 // Sprintln formats using the default formats for its operands and returns the resulting string.
@@ -279,13 +288,7 @@ func (p RGB) Printfln(format string, a ...any) *TextPrinter {
 // If every error is nil, nothing will be printed.
 // This can be used for simple error checking.
 func (p RGB) PrintOnError(a ...any) *TextPrinter {
-	for _, arg := range a {
-		if err, ok := arg.(error); ok {
-			if err != nil {
-				p.Println(err)
-			}
-		}
-	}
+	printOnError(p, a...)
 
 	tp := TextPrinter(p)
 
@@ -296,19 +299,14 @@ func (p RGB) PrintOnError(a ...any) *TextPrinter {
 // If every error is nil, nothing will be printed.
 // This can be used for simple error checking.
 func (p RGB) PrintOnErrorf(format string, a ...any) *TextPrinter {
-	for _, arg := range a {
-		if err, ok := arg.(error); ok {
-			if err != nil {
-				p.Println(fmt.Errorf(format, err))
-			}
-		}
-	}
+	printOnErrorf(p, format, a...)
 
 	tp := TextPrinter(p)
 
 	return &tp
 }
 
+// ToRGBStyle converts the RGB to an RGBStyle, respecting the Background property.
 func (p RGB) ToRGBStyle() RGBStyle {
 	if p.Background {
 		return RGBStyle{Background: p}

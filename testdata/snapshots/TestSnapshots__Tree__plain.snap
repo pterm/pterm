@@ -1,0 +1,5 @@
+Root
+├─┬First child
+│ ├──First grandchild
+│ └──Second grandchild
+└──Second child

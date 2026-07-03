@@ -35,7 +35,6 @@ func TestPercentageRound(t *testing.T) {
 	type args struct {
 		total   float64
 		current float64
-		max     float64
 	}
 
 	tests := []struct {

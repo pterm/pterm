@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"log/slog"
+	"maps"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -14,6 +15,7 @@ import (
 	"github.com/pterm/pterm/internal"
 )
 
+// LogLevel is the severity level used by the Logger.
 type LogLevel int
 
 // Style returns the style of the log level.
@@ -111,6 +113,7 @@ var DefaultLogger = Logger{
 // loggerMutex syncs all loggers, so that they don't print at the exact same time.
 var loggerMutex sync.Mutex
 
+// Logger is a fully configurable, structured logger.
 type Logger struct {
 	// Formatter is the log formatter of the logger.
 	Formatter LogFormatter
@@ -189,9 +192,7 @@ func (l Logger) WithMaxWidth(width int) *Logger {
 
 // AppendKeyStyles appends a style for a specific key.
 func (l Logger) AppendKeyStyles(styles map[string]Style) *Logger {
-	for k, v := range styles {
-		l.KeyStyles[k] = v
-	}
+	maps.Copy(l.KeyStyles, styles)
 
 	return &l
 }
@@ -233,7 +234,7 @@ func (l Logger) Args(args ...any) []LoggerArgument {
 
 // ArgsFromMap converts a map to a slice of LoggerArgument.
 func (l Logger) ArgsFromMap(m map[string]any) []LoggerArgument {
-	var loggerArgs []LoggerArgument
+	loggerArgs := make([]LoggerArgument, 0, len(m))
 
 	for k, v := range m {
 		loggerArgs = append(loggerArgs, LoggerArgument{
@@ -393,7 +394,10 @@ func (l Logger) renderJSON(level LogLevel, msg string, args []LoggerArgument) st
 		m["caller"] = Sprintf("%s:%d", file, line)
 	}
 
-	b, _ := json.Marshal(m)
+	b, err := json.Marshal(m)
+	if err != nil {
+		return Sprintf("%v", m)
+	}
 
 	return string(b)
 }

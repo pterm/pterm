@@ -157,28 +157,33 @@ func (p PrefixPrinter) WithWriter(writer io.Writer) *PrefixPrinter {
 func (p *PrefixPrinter) Sprint(a ...any) string {
 	m := Sprint(a...)
 
-	if p.Debugger && !PrintDebugMessages {
+	if p.Debugger && !printDebugMessages() {
 		return ""
 	}
 
-	if RawOutput {
+	if rawOutput() {
 		if p.Prefix.Text != "" {
 			return Sprintf("%s: %s", strings.TrimSpace(p.Prefix.Text), Sprint(a...))
-		} else {
-			return Sprint(a...)
 		}
+
+		return Sprint(a...)
 	}
 
-	if p.Prefix.Style == nil {
-		p.Prefix.Style = NewStyle()
+	// Work on a copy: the default styles assigned below must not mutate the
+	// printer itself, which may be shared between goroutines (e.g. the
+	// package-level pterm.Info).
+	cp := *p
+
+	if cp.Prefix.Style == nil {
+		cp.Prefix.Style = NewStyle()
 	}
 
-	if p.Scope.Style == nil {
-		p.Scope.Style = NewStyle()
+	if cp.Scope.Style == nil {
+		cp.Scope.Style = NewStyle()
 	}
 
-	if p.MessageStyle == nil {
-		p.MessageStyle = NewStyle()
+	if cp.MessageStyle == nil {
+		cp.MessageStyle = NewStyle()
 	}
 
 	var ret strings.Builder
@@ -192,24 +197,24 @@ func (p *PrefixPrinter) Sprint(a ...any) string {
 	messageLines := strings.Split(m, "\n")
 	for i, m := range messageLines {
 		if i == 0 {
-			ret.WriteString(p.GetFormattedPrefix())
+			ret.WriteString(cp.GetFormattedPrefix())
 			ret.WriteByte(' ')
 
-			if p.Scope.Text != "" {
-				ret.WriteString(NewStyle(*p.Scope.Style...).Sprint(" (" + p.Scope.Text + ") "))
+			if cp.Scope.Text != "" {
+				ret.WriteString(NewStyle(*cp.Scope.Style...).Sprint(" (" + cp.Scope.Text + ") "))
 			}
 
-			ret.WriteString(p.MessageStyle.Sprint(m))
+			ret.WriteString(cp.MessageStyle.Sprint(m))
 		} else {
 			ret.WriteByte('\n')
-			ret.WriteString(p.Prefix.Style.Sprint(strings.Repeat(" ", len([]rune(p.Prefix.Text))+2)))
+			ret.WriteString(cp.Prefix.Style.Sprint(strings.Repeat(" ", len([]rune(cp.Prefix.Text))+2)))
 			ret.WriteByte(' ')
-			ret.WriteString(p.MessageStyle.Sprint(m))
+			ret.WriteString(cp.MessageStyle.Sprint(m))
 		}
 	}
 
-	if p.ShowLineNumber {
-		_, fileName, line, _ := runtime.Caller(3 + p.LineNumberOffset)
+	if cp.ShowLineNumber {
+		_, fileName, line, _ := runtime.Caller(3 + cp.LineNumberOffset)
 		ret.WriteString(FgGray.Sprint("\n└ " + fmt.Sprintf("(%s:%d)\n", fileName, line)))
 
 		newLine = false
@@ -225,7 +230,7 @@ func (p *PrefixPrinter) Sprint(a ...any) string {
 // Sprintln formats using the default formats for its operands and returns the resulting string.
 // Spaces are always added between operands and a newline is appended.
 func (p PrefixPrinter) Sprintln(a ...any) string {
-	if p.Debugger && !PrintDebugMessages {
+	if p.Debugger && !printDebugMessages() {
 		return ""
 	}
 
@@ -236,7 +241,7 @@ func (p PrefixPrinter) Sprintln(a ...any) string {
 
 // Sprintf formats according to a format specifier and returns the resulting string.
 func (p PrefixPrinter) Sprintf(format string, a ...any) string {
-	if p.Debugger && !PrintDebugMessages {
+	if p.Debugger && !printDebugMessages() {
 		return ""
 	}
 
@@ -246,7 +251,7 @@ func (p PrefixPrinter) Sprintf(format string, a ...any) string {
 // Sprintfln formats according to a format specifier and returns the resulting string.
 // Spaces are always added between operands and a newline is appended.
 func (p PrefixPrinter) Sprintfln(format string, a ...any) string {
-	if p.Debugger && !PrintDebugMessages {
+	if p.Debugger && !printDebugMessages() {
 		return ""
 	}
 
@@ -258,14 +263,16 @@ func (p PrefixPrinter) Sprintfln(format string, a ...any) string {
 // It returns the number of bytes written and any write error encountered.
 func (p *PrefixPrinter) Print(a ...any) *TextPrinter {
 	tp := TextPrinter(p)
-	if p.Debugger && !PrintDebugMessages {
+	if p.Debugger && !printDebugMessages() {
 		return &tp
 	}
 
-	p.LineNumberOffset--
-	Fprint(p.GetWriter(), p.Sprint(a...))
-	p.LineNumberOffset++
-	checkFatal(p)
+	// Adjust the line number offset on a copy: mutating the printer itself
+	// would race when a shared printer (e.g. pterm.Info) prints concurrently.
+	cp := *p
+	cp.LineNumberOffset--
+	Fprint(cp.GetWriter(), cp.Sprint(a...))
+	checkFatal(&cp)
 
 	return &tp
 }
@@ -275,7 +282,7 @@ func (p *PrefixPrinter) Print(a ...any) *TextPrinter {
 // It returns the number of bytes written and any write error encountered.
 func (p *PrefixPrinter) Println(a ...any) *TextPrinter {
 	tp := TextPrinter(p)
-	if p.Debugger && !PrintDebugMessages {
+	if p.Debugger && !printDebugMessages() {
 		return &tp
 	}
 
@@ -289,7 +296,7 @@ func (p *PrefixPrinter) Println(a ...any) *TextPrinter {
 // It returns the number of bytes written and any write error encountered.
 func (p *PrefixPrinter) Printf(format string, a ...any) *TextPrinter {
 	tp := TextPrinter(p)
-	if p.Debugger && !PrintDebugMessages {
+	if p.Debugger && !printDebugMessages() {
 		return &tp
 	}
 
@@ -304,7 +311,7 @@ func (p *PrefixPrinter) Printf(format string, a ...any) *TextPrinter {
 // It returns the number of bytes written and any write error encountered.
 func (p *PrefixPrinter) Printfln(format string, a ...any) *TextPrinter {
 	tp := TextPrinter(p)
-	if p.Debugger && !PrintDebugMessages {
+	if p.Debugger && !printDebugMessages() {
 		return &tp
 	}
 
@@ -322,13 +329,7 @@ func (p *PrefixPrinter) Printfln(format string, a ...any) *TextPrinter {
 //
 // Note: Use WithFatal(true) or Fatal to panic after first non nil error.
 func (p *PrefixPrinter) PrintOnError(a ...any) *TextPrinter {
-	for _, arg := range a {
-		if err, ok := arg.(error); ok {
-			if err != nil {
-				p.Println(err)
-			}
-		}
-	}
+	printOnError(p, a...)
 
 	tp := TextPrinter(p)
 
@@ -339,13 +340,7 @@ func (p *PrefixPrinter) PrintOnError(a ...any) *TextPrinter {
 // If every error is nil, nothing will be printed.
 // This can be used for simple error checking.
 func (p *PrefixPrinter) PrintOnErrorf(format string, a ...any) *TextPrinter {
-	for _, arg := range a {
-		if err, ok := arg.(error); ok {
-			if err != nil {
-				p.Println(fmt.Errorf(format, err))
-			}
-		}
-	}
+	printOnErrorf(p, format, a...)
 
 	tp := TextPrinter(p)
 
@@ -363,7 +358,7 @@ func (p PrefixPrinter) GetWriter() io.Writer {
 		return p.Writer
 	}
 
-	return defaultWriter
+	return getDefaultWriter()
 }
 
 // Prefix contains the data used as the beginning of a printed text via a PrefixPrinter.

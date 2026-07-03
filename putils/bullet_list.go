@@ -9,7 +9,7 @@ import (
 
 // BulletListFromStrings returns a BulletListPrinter with Text using the NewTreeListItemFromString method.
 func BulletListFromStrings(s []string, padding string) pterm.BulletListPrinter {
-	var lis []pterm.BulletListItem
+	lis := make([]pterm.BulletListItem, 0, len(s))
 	for _, line := range s {
 		lis = append(lis, BulletListItemFromString(line, padding))
 	}

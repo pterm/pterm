@@ -1,13 +1,13 @@
 package pterm_test
 
 import (
-	"io"
 	"os"
+	"strings"
 	"testing"
 	"time"
 
-	"github.com/pterm/pterm/internal/testhelper"
 	"github.com/pterm/pterm"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestProgressbarPrinter_Add(t *testing.T) {
@@ -15,8 +15,8 @@ func TestProgressbarPrinter_Add(t *testing.T) {
 
 	p := pterm.DefaultProgressbar.WithTotal(2000)
 	p.Add(1337)
-	testhelper.AssertEqual(t, 1337, p.Current)
-	p.Stop()
+	assert.Equal(t, 1337, p.Current)
+	_, _ = p.Stop()
 }
 
 func TestProgressbarPrinter_Add_With(t *testing.T) {
@@ -29,8 +29,9 @@ func TestProgressbarPrinter_Add_With(t *testing.T) {
 
 	p := pterm.DefaultProgressbar.WithTotal(2000)
 	p.Add(1337)
-	testhelper.AssertEqual(t, 1337, p.Current)
-	p.Stop()
+	assert.Equal(t, 1337, p.Current)
+	_, _ = p.Stop()
+
 	pterm.SetForcedTerminalSize(w, h)
 }
 
@@ -39,8 +40,8 @@ func TestProgressbarPrinter_AddWithNoStyle(t *testing.T) {
 
 	p := pterm.ProgressbarPrinter{}.WithTotal(2000)
 	p.Add(1337)
-	testhelper.AssertEqual(t, 1337, p.Current)
-	p.Stop()
+	assert.Equal(t, 1337, p.Current)
+	_, _ = p.Stop()
 }
 
 func TestProgressbarPrinter_AddWithTotalOfZero(t *testing.T) {
@@ -48,69 +49,84 @@ func TestProgressbarPrinter_AddWithTotalOfZero(t *testing.T) {
 
 	p := pterm.ProgressbarPrinter{}.WithTotal(0)
 	p.Add(1337)
-	testhelper.AssertEqual(t, 0, p.Current)
-	p.Stop()
+	assert.Equal(t, 0, p.Current)
+	_, _ = p.Stop()
 }
 
 func TestProgressbarPrinter_AddTotalEqualsCurrent(t *testing.T) {
 	proxyToDevNull()
 
-	p := pterm.DefaultProgressbar.WithTotal(1)
-	p.Start()
+	// Start returns the started instance; using the original would leak the
+	// started bar's goroutine and pollute the output of later tests.
+	p, err := pterm.DefaultProgressbar.WithTotal(1).Start()
+	assert.NoError(t, err)
+
+	defer p.Stop()
+
 	p.Add(1)
-	testhelper.AssertEqual(t, 1, p.Current)
-	testhelper.AssertFalse(t, p.IsActive)
-	p.Stop()
+	assert.Equal(t, 1, p.Current)
+	assert.False(t, p.IsActive, "the progressbar should auto-stop when reaching its total")
 }
 
 func TestProgressbarPrinter_RemoveWhenDone(t *testing.T) {
 	proxyToDevNull()
 
 	p, err := pterm.DefaultProgressbar.WithTotal(2).WithRemoveWhenDone().Start()
-	testhelper.AssertNoError(t, err)
-	p.Stop()
+	assert.NoError(t, err)
+
+	_, _ = p.Stop()
 	p.Add(1)
-	testhelper.AssertEqual(t, 1, p.Current)
-	testhelper.AssertFalse(t, p.IsActive)
+	assert.Equal(t, 1, p.Current)
+	assert.False(t, p.IsActive)
 }
 
 func TestProgressbarPrinter_StartWithTitle(t *testing.T) {
 	p := pterm.DefaultProgressbar
 	p2, _ := p.Start("Title")
-	testhelper.AssertEqual(t, "Title", p2.Title)
-	p.Stop()
+	assert.Equal(t, "Title", p2.Title)
+	_, _ = p2.Stop()
 }
 
-func TestProgressbarPrinter_GenericStart(t *testing.T) {
+func TestProgressbarPrinter_GenericStart(_ *testing.T) {
 	p := pterm.DefaultProgressbar
-	p.GenericStart()
+
+	lp, _ := p.GenericStart()
+	if lp != nil {
+		_, _ = (*lp).GenericStop()
+	}
 }
 
-func TestProgressbarPrinter_GenericStartRawOutput(t *testing.T) {
+func TestProgressbarPrinter_GenericStartRawOutput(_ *testing.T) {
 	pterm.DisableStyling()
 
 	p := pterm.DefaultProgressbar
-	p.GenericStart()
+
+	lp, _ := p.GenericStart()
+	if lp != nil {
+		_, _ = (*lp).GenericStop()
+	}
+
 	pterm.EnableStyling()
 }
 
 func TestProgressbarPrinter_GenericStop(t *testing.T) {
 	p, err := pterm.DefaultProgressbar.Start()
-	testhelper.AssertNoError(t, err)
-	p.GenericStop()
+	assert.NoError(t, err)
+
+	_, _ = p.GenericStop()
 }
 
 func TestProgressbarPrinter_GetElapsedTime(t *testing.T) {
 	p := pterm.DefaultProgressbar
-	p.Start()
-	p.Stop()
-	testhelper.AssertNotZero(t, p.GetElapsedTime())
+	p2, _ := p.Start()
+	_, _ = p2.Stop()
+	assert.NotZero(t, p2.GetElapsedTime())
 }
 
 func TestProgressbarPrinter_Increment(t *testing.T) {
 	p := pterm.DefaultProgressbar.WithTotal(2000)
 	p.Increment()
-	testhelper.AssertEqual(t, 1, p.Current)
+	assert.Equal(t, 1, p.Current)
 }
 
 func TestProgressbarPrinter_WithBarStyle(t *testing.T) {
@@ -118,77 +134,77 @@ func TestProgressbarPrinter_WithBarStyle(t *testing.T) {
 	p := pterm.ProgressbarPrinter{}
 	p2 := p.WithBarStyle(s)
 
-	testhelper.AssertEqual(t, s, p2.BarStyle)
+	assert.Equal(t, s, p2.BarStyle)
 }
 
 func TestProgressbarPrinter_WithCurrent(t *testing.T) {
 	p := pterm.ProgressbarPrinter{}
 	p2 := p.WithCurrent(10)
 
-	testhelper.AssertEqual(t, 10, p2.Current)
+	assert.Equal(t, 10, p2.Current)
 }
 
 func TestProgressbarPrinter_WithElapsedTimeRoundingFactor(t *testing.T) {
 	p := pterm.ProgressbarPrinter{}
 	p2 := p.WithElapsedTimeRoundingFactor(time.Hour)
 
-	testhelper.AssertEqual(t, time.Hour, p2.ElapsedTimeRoundingFactor)
+	assert.Equal(t, time.Hour, p2.ElapsedTimeRoundingFactor)
 }
 
 func TestProgressbarPrinter_WithLastCharacter(t *testing.T) {
 	p := pterm.ProgressbarPrinter{}
 	p2 := p.WithLastCharacter(">")
 
-	testhelper.AssertEqual(t, ">", p2.LastCharacter)
+	assert.Equal(t, ">", p2.LastCharacter)
 }
 
 func TestProgressbarPrinter_WithBarCharacter(t *testing.T) {
 	p := pterm.ProgressbarPrinter{}
 	p2 := p.WithBarCharacter("-")
 
-	testhelper.AssertEqual(t, "-", p2.BarCharacter)
+	assert.Equal(t, "-", p2.BarCharacter)
 }
 
 func TestProgressbarPrinter_WithRemoveWhenDone(t *testing.T) {
 	p := pterm.ProgressbarPrinter{}
 	p2 := p.WithRemoveWhenDone()
 
-	testhelper.AssertTrue(t, p2.RemoveWhenDone)
+	assert.True(t, p2.RemoveWhenDone)
 }
 
 func TestProgressbarPrinter_WithShowCount(t *testing.T) {
 	p := pterm.ProgressbarPrinter{}
 	p2 := p.WithShowCount()
 
-	testhelper.AssertTrue(t, p2.ShowCount)
+	assert.True(t, p2.ShowCount)
 }
 
 func TestProgressbarPrinter_WithShowElapsedTime(t *testing.T) {
 	p := pterm.ProgressbarPrinter{}
 	p2 := p.WithShowElapsedTime()
 
-	testhelper.AssertTrue(t, p2.ShowElapsedTime)
+	assert.True(t, p2.ShowElapsedTime)
 }
 
 func TestProgressbarPrinter_WithShowPercentage(t *testing.T) {
 	p := pterm.ProgressbarPrinter{}
 	p2 := p.WithShowPercentage()
 
-	testhelper.AssertTrue(t, p2.ShowPercentage)
+	assert.True(t, p2.ShowPercentage)
 }
 
 func TestProgressbarPrinter_WithShowTitle(t *testing.T) {
 	p := pterm.ProgressbarPrinter{}
 	p2 := p.WithShowTitle()
 
-	testhelper.AssertTrue(t, p2.ShowTitle)
+	assert.True(t, p2.ShowTitle)
 }
 
 func TestProgressbarPrinter_WithTitle(t *testing.T) {
 	p := pterm.ProgressbarPrinter{}
 	p2 := p.WithTitle("test")
 
-	testhelper.AssertEqual(t, "test", p2.Title)
+	assert.Equal(t, "test", p2.Title)
 }
 
 func TestProgressbarPrinter_WithTitleStyle(t *testing.T) {
@@ -196,28 +212,28 @@ func TestProgressbarPrinter_WithTitleStyle(t *testing.T) {
 	p := pterm.ProgressbarPrinter{}
 	p2 := p.WithTitleStyle(s)
 
-	testhelper.AssertEqual(t, s, p2.TitleStyle)
+	assert.Equal(t, s, p2.TitleStyle)
 }
 
 func TestProgressbarPrinter_WithTotal(t *testing.T) {
 	p := pterm.ProgressbarPrinter{}
 	p2 := p.WithTotal(1337)
 
-	testhelper.AssertEqual(t, 1337, p2.Total)
+	assert.Equal(t, 1337, p2.Total)
 }
 
 func TestProgressbarPrinter_WithMaxWidth(t *testing.T) {
 	p := pterm.ProgressbarPrinter{}
 	p2 := p.WithMaxWidth(1337)
 
-	testhelper.AssertEqual(t, 1337, p2.MaxWidth)
+	assert.Equal(t, 1337, p2.MaxWidth)
 }
 
 func TestProgressbarPrinter_WithBarFiller(t *testing.T) {
 	p := pterm.ProgressbarPrinter{}
 	p2 := p.WithBarFiller("-")
 
-	testhelper.AssertEqual(t, "-", p2.BarFiller)
+	assert.Equal(t, "-", p2.BarFiller)
 }
 
 func TestProgressbarPrinter_UpdateTitle(t *testing.T) {
@@ -225,7 +241,7 @@ func TestProgressbarPrinter_UpdateTitle(t *testing.T) {
 	p2 := p.WithTitle("test")
 	p2.UpdateTitle("test2")
 
-	testhelper.AssertEqual(t, "test2", p2.Title)
+	assert.Equal(t, "test2", p2.Title)
 }
 
 func TestProgressbarPrinter_WithWriter(t *testing.T) {
@@ -233,8 +249,8 @@ func TestProgressbarPrinter_WithWriter(t *testing.T) {
 	s := os.Stderr
 	p2 := p.WithWriter(s)
 
-	testhelper.AssertEqual(t, s, p2.Writer)
-	testhelper.AssertZero(t, p.Writer)
+	assert.Equal(t, s, p2.Writer)
+	assert.Zero(t, p.Writer)
 }
 
 func TestProgressbarPrinter_OutputToWriters(t *testing.T) {
@@ -252,20 +268,33 @@ func TestProgressbarPrinter_OutputToWriters(t *testing.T) {
 
 	for testTitle, testCase := range testCases {
 		t.Run(testTitle, func(t *testing.T) {
-			stderr, err := testhelper.CaptureStderr(func(w io.Writer) error {
-				pb, err := pterm.DefaultProgressbar.WithTitle("Hello world").WithWriter(os.Stderr).Start()
+			buf := &syncBuffer{}
+			pb, err := pterm.DefaultProgressbar.WithTitle("Hello world").WithWriter(buf).Start()
+			assert.NoError(t, err)
 
-				time.Sleep(time.Second) // Required otherwise the goroutine doesn't run and the text isn't outputted
-				testhelper.AssertNoError(t, err)
-				testCase.action(pb)
-				time.Sleep(time.Second) // Required otherwise the goroutine doesn't run and the text isn't updated
+			defer pb.Stop()
 
-				return nil
-			})
-
-			testhelper.AssertNoError(t, err)
-			testhelper.AssertContains(t, stderr, "Hello world")
-			testhelper.AssertContains(t, stderr, testCase.expectOutputToContain)
+			waitForOutput(t, buf, "Hello world")
+			testCase.action(pb)
+			waitForOutput(t, buf, testCase.expectOutputToContain)
 		})
 	}
+}
+
+// waitForOutput polls buf until it contains want, failing the test after a
+// generous timeout. Polling keeps the test fast in the common case without
+// relying on fixed sleeps that get flaky under -race.
+func waitForOutput(t *testing.T, buf *syncBuffer, want string) {
+	t.Helper()
+
+	deadline := time.Now().Add(10 * time.Second)
+	for time.Now().Before(deadline) {
+		if strings.Contains(buf.String(), want) {
+			return
+		}
+
+		time.Sleep(10 * time.Millisecond)
+	}
+
+	t.Errorf("output did not contain %q within timeout, got:\n%s", want, buf.String())
 }

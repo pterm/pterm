@@ -269,7 +269,7 @@ func (p TablePrinter) Srender() (string, error) {
 // It merges the cells of a row into one string.
 // Each line of each cell is merged with the same line of the other cells.
 func (p TablePrinter) renderRow(t table, r row) string {
-	var s string
+	var s strings.Builder
 
 	// Merge lines of cells and add separator
 	// Use t.maxColumnWidths to add padding to corresponding cell
@@ -285,31 +285,31 @@ func (p TablePrinter) renderRow(t table, r row) string {
 
 			// Add right alignment if necessary
 			if p.RightAlignment {
-				s += strings.Repeat(" ", paddingForLine)
+				s.WriteString(strings.Repeat(" ", paddingForLine))
 			}
 
 			// Add line content
 			if i < len(c.lines) {
-				s += c.lines[i]
+				s.WriteString(c.lines[i])
 			}
 
 			// Add padding for left alignment, except for last column
 			if j < len(r.cells)-1 {
 				if p.LeftAlignment {
-					s += strings.Repeat(" ", paddingForLine)
+					s.WriteString(strings.Repeat(" ", paddingForLine))
 				}
 
-				s += p.SeparatorStyle.Sprint(p.Separator)
+				s.WriteString(p.SeparatorStyle.Sprint(p.Separator))
 			} else if p.LeftAlignment {
 				// Add padding after last column
-				s += strings.Repeat(" ", paddingForLine)
+				s.WriteString(strings.Repeat(" ", paddingForLine))
 			}
 		}
 
-		s += "\n"
+		s.WriteString("\n")
 	}
 
-	return s
+	return s.String()
 }
 
 // Render prints the TablePrinter to the terminal.

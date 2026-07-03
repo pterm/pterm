@@ -6,33 +6,38 @@ import (
 	"os"
 	"strings"
 
-	"github.com/gookit/color"
 	"github.com/pterm/pterm/internal"
 )
 
+// defaultWriter is the package-level default output writer.
+//
+// Reads from inside pterm should go through getDefaultWriter (or the public
+// GetDefaultOutput) so they share the lock with SetDefaultOutput.
 var defaultWriter io.Writer = os.Stdout
 
 // SetDefaultOutput sets the default output of pterm.
 func SetDefaultOutput(w io.Writer) {
+	globalMu.Lock()
+	defer globalMu.Unlock()
+
 	defaultWriter = w
-	color.SetOutput(w)
 }
 
 // Sprint formats using the default formats for its operands and returns the resulting string.
 // Spaces are added between operands when neither is a string.
 func Sprint(a ...any) string {
-	return color.Sprint(a...)
+	return fmt.Sprint(a...)
 }
 
 // Sprintf formats according to a format specifier and returns the resulting string.
 func Sprintf(format string, a ...any) string {
-	return color.Sprintf(format, a...)
+	return fmt.Sprintf(format, a...)
 }
 
 // Sprintfln formats according to a format specifier and returns the resulting string.
 // Spaces are always added between operands and a newline is appended.
 func Sprintfln(format string, a ...any) string {
-	return color.Sprintf(format, a...) + "\n"
+	return fmt.Sprintf(format, a...) + "\n"
 }
 
 // Sprintln returns what Println would print to the terminal.
@@ -50,7 +55,7 @@ func Sprinto(a ...any) string {
 // Spaces are added between operands when neither is a string.
 // It returns the number of bytes written and any write error encountered.
 func Print(a ...any) {
-	Fprint(defaultWriter, a...)
+	Fprint(getDefaultWriter(), a...)
 }
 
 // Println formats using the default formats for its operands and writes to standard output.
@@ -103,23 +108,25 @@ func PrintOnErrorf(format string, a ...any) {
 // Spaces are added between operands when neither is a string.
 // It returns the number of bytes written and any write error encountered.
 func Fprint(writer io.Writer, a ...any) {
-	if !Output {
+	if !outputEnabled() {
 		return
 	}
 
 	var ret string
 	var printed bool
 
-	for _, bar := range ActiveProgressBarPrinters {
-		if bar.IsActive && (bar.Writer == writer || bar.Writer == os.Stderr) {
+	bars := snapshotProgressBars()
+	for _, bar := range bars {
+		if bar.isActive() && (bar.writer() == writer || bar.writer() == os.Stderr) {
 			ret += sClearLine()
 			ret += Sprinto(a...)
 			printed = true
 		}
 	}
 
-	for _, spinner := range activeSpinnerPrinters {
-		if spinner.IsActive && (spinner.Writer == writer || spinner.Writer == os.Stderr) {
+	spinners := snapshotSpinners()
+	for _, spinner := range spinners {
+		if spinner.isActive() && (spinner.writer() == writer || spinner.writer() == os.Stderr) {
 			ret += sClearLine()
 
 			ret += Sprinto(a...)
@@ -128,19 +135,19 @@ func Fprint(writer io.Writer, a ...any) {
 	}
 
 	if !printed {
-		ret = color.Sprint(Sprint(a...))
+		ret = Sprint(a...)
 	}
 
-	if writer != nil {
-		color.Fprint(writer, Sprint(ret))
-	} else {
-		color.Print(Sprint(ret))
+	if writer == nil {
+		writer = getDefaultWriter()
 	}
+
+	_, _ = fmt.Fprint(writer, ret)
 
 	// Refresh all progressbars in case they were overwritten previously. Reference: #302
-	for _, bar := range ActiveProgressBarPrinters {
-		if bar.IsActive {
-			bar.UpdateTitle(bar.Title)
+	for _, bar := range bars {
+		if bar.isActive() {
+			bar.UpdateTitle(bar.title())
 		}
 	}
 }
@@ -160,29 +167,29 @@ func Fprintln(writer io.Writer, a ...any) {
 //	time.Sleep(time.Second)
 //	pterm.Printo("Hello, Earth!")
 func Printo(a ...any) {
-	if !Output {
+	if !outputEnabled() {
 		return
 	}
 
-	if RawOutput {
+	if rawOutput() {
 		Sprint(a...)
 		return
 	}
 
-	color.Print("\r" + Sprint(a...))
+	_, _ = fmt.Fprint(getDefaultWriter(), "\r"+Sprint(a...))
 }
 
 // Fprinto prints Printo to a custom writer.
 func Fprinto(w io.Writer, a ...any) {
-	if !Output {
+	if !outputEnabled() {
 		return
 	}
 
-	if w != nil {
-		color.Fprint(w, "\r", Sprint(a...))
-	} else {
-		color.Print("\r", Sprint(a...))
+	if w == nil {
+		w = getDefaultWriter()
 	}
+
+	_, _ = fmt.Fprint(w, "\r", Sprint(a...))
 }
 
 // RemoveColorFromString removes color codes and OSC 8 hyperlinks from a string.
@@ -191,7 +198,7 @@ func RemoveColorFromString(a ...any) string {
 }
 
 func fClearLine(writer io.Writer) {
-	if RawOutput || writer == nil || !Output {
+	if rawOutput() || writer == nil || !outputEnabled() {
 		return
 	}
 
@@ -199,7 +206,7 @@ func fClearLine(writer io.Writer) {
 }
 
 func sClearLine() string {
-	if RawOutput || !Output {
+	if rawOutput() || !outputEnabled() {
 		return ""
 	}
 

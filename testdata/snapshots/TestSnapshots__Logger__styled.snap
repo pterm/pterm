@@ -1,0 +1,3 @@
+\x1b[1;32mINFO \x1b[0m An info log \x1b[1;32mkey: \x1b[0mvalue
+\x1b[1;33mWARN \x1b[0m A warning log 
+\x1b[1;31mERROR\x1b[0m An error log \x1b[1;31mcode: \x1b[0m42

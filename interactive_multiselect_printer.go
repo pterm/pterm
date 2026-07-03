@@ -150,10 +150,7 @@ func (p *InteractiveMultiselectPrinter) Show(text ...string) ([]string, error) {
 		p.MaxHeight = DefaultInteractiveMultiselect.MaxHeight
 	}
 
-	maxHeight := p.MaxHeight
-	if maxHeight > len(p.fuzzySearchMatches) {
-		maxHeight = len(p.fuzzySearchMatches)
-	}
+	maxHeight := min(p.MaxHeight, len(p.fuzzySearchMatches))
 
 	if len(p.Options) == 0 {
 		return nil, fmt.Errorf("no options provided")
@@ -168,7 +165,7 @@ func (p *InteractiveMultiselectPrinter) Show(text ...string) ([]string, error) {
 	}
 
 	area, err := DefaultArea.Start(p.renderSelectMenu())
-	defer area.Stop()
+	defer func() { _ = area.Stop() }()
 
 	if err != nil {
 		return nil, fmt.Errorf("could not start area: %w", err)
@@ -187,11 +184,7 @@ func (p *InteractiveMultiselectPrinter) Show(text ...string) ([]string, error) {
 	err = keyboard.Listen(func(keyInfo keys.Key) (stop bool, err error) {
 		key := keyInfo.Code
 
-		if p.MaxHeight > len(p.fuzzySearchMatches) {
-			maxHeight = len(p.fuzzySearchMatches)
-		} else {
-			maxHeight = p.MaxHeight
-		}
+		maxHeight = min(p.MaxHeight, len(p.fuzzySearchMatches))
 
 		switch key {
 		case p.KeyConfirm:
@@ -244,11 +237,7 @@ func (p *InteractiveMultiselectPrinter) Show(text ...string) ([]string, error) {
 
 			p.renderSelectMenu()
 
-			if len(p.fuzzySearchMatches) > p.MaxHeight {
-				maxHeight = p.MaxHeight
-			} else {
-				maxHeight = len(p.fuzzySearchMatches)
-			}
+			maxHeight = min(len(p.fuzzySearchMatches), p.MaxHeight)
 
 			p.selectedOption = 0
 			p.displayedOptionsStart = 0
@@ -447,14 +436,15 @@ func (p *InteractiveMultiselectPrinter) renderSelectMenu() string {
 }
 
 func (p InteractiveMultiselectPrinter) renderFinishedMenu() string {
-	var content string
+	var content strings.Builder
 
-	content += Sprintf("%s: %s\n", p.text, p.fuzzySearchString)
+	content.WriteString(Sprintf("%s: %s\n", p.text, p.fuzzySearchString))
+
 	for _, option := range p.selectedOptions {
-		content += Sprintf("  %s %s\n", p.renderSelector(), p.Options[option])
+		content.WriteString(Sprintf("  %s %s\n", p.renderSelector(), p.Options[option]))
 	}
 
-	return content
+	return content.String()
 }
 
 func (p InteractiveMultiselectPrinter) renderSelector() string {

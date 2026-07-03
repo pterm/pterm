@@ -20,7 +20,7 @@ func NewLettersFromString(text string) Letters {
 // Deprecated: use putils.LettersFromStringWithStyle instead.
 func NewLettersFromStringWithStyle(text string, style *Style) Letters {
 	s := strings.Split(text, "")
-	l := Letters{}
+	l := make(Letters, 0, len(s))
 
 	for _, s2 := range s {
 		l = append(l, Letter{
@@ -37,7 +37,7 @@ func NewLettersFromStringWithStyle(text string, style *Style) Letters {
 // Deprecated: use putils.LettersFromStringWithRGB instead.
 func NewLettersFromStringWithRGB(text string, rgb RGB) Letters {
 	s := strings.Split(text, "")
-	l := Letters{}
+	l := make(Letters, 0, len(s))
 
 	for _, s2 := range s {
 		l = append(l, Letter{
@@ -54,7 +54,7 @@ func NewLettersFromStringWithRGB(text string, rgb RGB) Letters {
 //
 // Deprecated: use putils.BulletListFromStrings instead.
 func NewBulletListFromStrings(s []string, padding string) BulletListPrinter {
-	var lis []BulletListItem
+	lis := make([]BulletListItem, 0, len(s))
 	for _, line := range s {
 		lis = append(lis, NewBulletListItemFromString(line, padding))
 	}

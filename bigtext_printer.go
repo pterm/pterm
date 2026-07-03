@@ -4,11 +4,10 @@ import (
 	"io"
 	"strings"
 
-	"github.com/gookit/color"
-
 	"github.com/mattn/go-runewidth"
 
 	"github.com/pterm/pterm/internal"
+	"github.com/pterm/pterm/internal/color"
 )
 
 // Letters is a slice of Letter.
@@ -76,7 +75,7 @@ func (p BigTextPrinter) WithWriter(writer io.Writer) *BigTextPrinter {
 func (p BigTextPrinter) Srender() (string, error) {
 	var ret strings.Builder
 
-	if RawOutput {
+	if rawOutput() {
 		for _, letter := range p.Letters {
 			ret.WriteString(letter.String)
 		}
@@ -120,7 +119,7 @@ func (p BigTextPrinter) Srender() (string, error) {
 				letterLine += strings.Repeat(" ", maxLetterWidth-letterLineLength)
 			}
 
-			if letter.RGB != (RGB{}) && (color.IsSupportRGBColor() || internal.RunsInCi()) {
+			if letter.RGB != (RGB{}) && (color.SupportsTrueColor() || internal.RunsInCi()) {
 				ret.WriteString(letter.RGB.Sprint(letterLine))
 			} else {
 				ret.WriteString(letter.Style.Sprint(letterLine))
