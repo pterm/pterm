@@ -41,6 +41,7 @@ func DownloadFileWithProgressbar(progressbar *pterm.ProgressbarPrinter, outputPa
 	if err != nil {
 		return fmt.Errorf("error while downloading file: %w", err)
 	}
+
 	defer func() { _ = resp.Body.Close() }()
 
 	counter := &progressbarWriter{}

@@ -165,6 +165,7 @@ func (p *InteractiveMultiselectPrinter) Show(text ...string) ([]string, error) {
 	}
 
 	area, err := DefaultArea.Start(p.renderSelectMenu())
+
 	defer func() { _ = area.Stop() }()
 
 	if err != nil {

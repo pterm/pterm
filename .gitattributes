@@ -1,0 +1,5 @@
+# Snapshot files store rendered printer output. Their contents use LF newlines,
+# so they must be checked out with LF on every platform. Without this, Windows
+# checkouts (core.autocrlf=true) convert them to CRLF and the snapshot tests
+# fail against LF-based rendered output.
+*.snap text eol=lf
