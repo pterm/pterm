@@ -248,16 +248,24 @@ func (p *InteractiveMultiselectPrinter) Show(text ...string) ([]string, error) {
 			area.Update(p.renderSelectMenu())
 
 		case keys.Left:
-			// Unselect all options
-			p.selectedOptions = []int{}
+			// Unselect all currently visible options.
+			// When a fuzzy filter is active this deselects only the matching
+			// subset; without a filter it deselects everything.
+			for _, match := range p.fuzzySearchMatches {
+				if p.isSelected(match) {
+					p.selectOption(match)
+				}
+			}
 			area.Update(p.renderSelectMenu())
 		case keys.Right:
-			// Select all options
-			p.selectedOptions = []int{}
-			for i := 0; i < len(p.Options); i++ {
-				p.selectedOptions = append(p.selectedOptions, i)
+			// Select all currently visible options.
+			// When a fuzzy filter is active this selects only the matching
+			// subset; without a filter it selects everything.
+			for _, match := range p.fuzzySearchMatches {
+				if !p.isSelected(match) {
+					p.selectOption(match)
+				}
 			}
-
 			area.Update(p.renderSelectMenu())
 
 		case keys.Up, keys.CtrlP:
