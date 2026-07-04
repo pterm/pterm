@@ -43,7 +43,7 @@ func (p BasicTextPrinter) Sprint(a ...any) string {
 // Spaces are always added between operands and a newline is appended.
 func (p BasicTextPrinter) Sprintln(a ...any) string {
 	str := fmt.Sprintln(a...)
-	return Sprintln(p.Sprint(str))
+	return p.Sprint(str)
 }
 
 // Sprintf formats according to a format specifier and returns the resulting string.
