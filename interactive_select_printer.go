@@ -20,6 +20,7 @@ var (
 		DefaultText:            "Please select an option",
 		Options:                []string{},
 		OptionStyle:            &ThemeDefault.DefaultText,
+		SelectStyle:            &ThemeDefault.DefaultText,
 		DefaultOption:          "",
 		MaxHeight:              5,
 		Selector:               "❯",
@@ -35,6 +36,7 @@ type InteractiveSelectPrinter struct {
 	DefaultText            string
 	Options                []string
 	OptionStyle            *Style
+	SelectStyle            *Style
 	DefaultOption          string
 	MaxHeight              int
 	Selector               string
@@ -314,7 +316,7 @@ func (p *InteractiveSelectPrinter) renderSelectMenu() string {
 		}
 
 		if i == p.selectedOption {
-			content.WriteString(Sprintf("%s %s\n", p.renderSelector(), p.OptionStyle.Sprint(option)))
+			content.WriteString(Sprintf("%s %s\n", p.renderSelector(), p.SelectStyle.Sprint(option)))
 		} else {
 			content.WriteString(Sprintf("  %s\n", p.OptionStyle.Sprint(option)))
 		}
