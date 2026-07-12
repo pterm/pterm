@@ -88,6 +88,14 @@ func TestTablePrinter_WithCSVReader(t *testing.T) {
 	testza.AssertNotNil(t, content)
 }
 
+func TestTablePrinter_WithBox(t *testing.T) {
+	box := pterm.BoxPrinter{}
+	_, err := pterm.DefaultTable.WithBox(&box).Srender()
+	if err != nil {
+		t.Error(err)
+	}
+}
+
 func TestTablePrinter_WithBoxed(t *testing.T) {
 	_, err := pterm.DefaultTable.WithBoxed().Srender()
 	if err != nil {
