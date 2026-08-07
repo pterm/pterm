@@ -136,8 +136,6 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 				if p.MultiLine {
 					area.Bottom()
 				}
-
-				return true, nil
 			}
 
 			if p.MultiLine {
