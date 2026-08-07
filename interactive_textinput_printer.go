@@ -107,7 +107,9 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	}
 
 	if p.DefaultValue != "" {
-		p.input = append(p.input, p.DefaultValue)
+		p.input = append(p.input, strings.Split(p.DefaultValue, "\n")...)
+		// init cursor position
+		p.cursorYPos += len(p.input) - 1
 		p.updateArea(&area)
 	}
 
@@ -189,7 +191,6 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 
 		case keys.Delete:
 			if !p.startedTyping {
-				p.input = []string{""}
 				p.startedTyping = true
 
 				return false, nil
@@ -214,7 +215,6 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 			}
 
 			if !p.startedTyping {
-				p.input = []string{""}
 				p.startedTyping = true
 			}
 
@@ -230,7 +230,6 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 			}
 
 			if !p.startedTyping {
-				p.input = []string{""}
 				p.startedTyping = true
 			}
 
@@ -239,6 +238,14 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 
 				p.cursorYPos--
 			}
+
+		case keys.CtrlL:
+			if !p.startedTyping {
+				p.startedTyping = true
+			}
+			// reset input and cusorYPos
+			p.cursorYPos = 0
+			p.input = []string{""}
 		}
 
 		if internal.GetStringMaxWidth(p.input[p.cursorYPos]) > 0 {

@@ -106,8 +106,8 @@ func TestInteractiveTextInputPrinter_DefaultValue(t *testing.T) {
 		assert.Equal(t, "abcd", result)
 	})
 
-	t.Run("delete discards the default value", func(t *testing.T) {
-		simulateKeys(t, keys.Delete, 'x', keys.Enter)
+	t.Run("ctrl+L discards the default value", func(t *testing.T) {
+		simulateKeys(t, keys.CtrlL, 'x', keys.Enter)
 
 		result := showTextInput(t, pterm.DefaultInteractiveTextInput.WithDefaultValue("abc"))
 
