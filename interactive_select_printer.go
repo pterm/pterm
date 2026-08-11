@@ -320,7 +320,7 @@ func (p *InteractiveSelectPrinter) renderSelectMenu() string {
 		}
 	}
 
-	return content.String()
+	return textFitWidth(content.String())
 }
 
 func (p InteractiveSelectPrinter) renderFinishedMenu() string {

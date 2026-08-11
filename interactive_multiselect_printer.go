@@ -433,7 +433,7 @@ func (p *InteractiveMultiselectPrinter) renderSelectMenu() string {
 		content.WriteString(ThemeDefault.SecondaryStyle.Sprint("Selected: ") + Green(strings.Join(selected, Gray(", "))) + "\n")
 	}
 
-	return content.String()
+	return textFitWidth(content.String())
 }
 
 func (p InteractiveMultiselectPrinter) renderFinishedMenu() string {
