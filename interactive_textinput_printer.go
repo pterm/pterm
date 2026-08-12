@@ -29,6 +29,7 @@ type InteractiveTextInputPrinter struct {
 	OnInterruptFunc func()
 
 	input         []string
+	fitInput      []string
 	cursorXPos    int
 	cursorYPos    int
 	text          string
@@ -103,7 +104,7 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 
 	p.input = append(p.input, strings.Split(p.DefaultValue, "\n")...)
 	p.cursorYPos = len(p.input) - 1
-	p.updateArea(&area)
+	p.updateArea(&area, p.input, p.cursorXPos, p.cursorYPos)
 
 	err := keyboard.Listen(func(key keys.Key) (stop bool, err error) {
 
@@ -119,16 +120,8 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 			}
 
 		case keys.Enter:
-			if p.DefaultValue != "" && !p.startedTyping {
-				for i := range p.input {
-					p.input[i] = RemoveColorFromString(p.input[i])
-				}
-
-				if p.MultiLine {
-					area.Bottom()
-				}
-
-				return true, nil
+			if !p.startedTyping {
+				p.startedTyping = true
 			}
 
 			if p.MultiLine {
@@ -250,7 +243,34 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 			}
 		}
 
-		p.updateArea(&area)
+		// for test
+		{
+			l := func(a ...any) { p.text += Sprintln(a...) }
+			pink := NewRGB(255, 0, 200).Sprint
+			y := NewRGB(251, 255, 0).Sprint
+			b := NewRGB(88, 91, 255).Sprint
+			g := NewRGB(21, 255, 0).Sprint
+
+			p.text = LightRed("--------------\n")
+			l(Sprint(pink("███"), y("███"), b("███"), g("███")))
+			l(Sprintf("%v Y:%v X:%v", pink("logic"), y(p.cursorYPos), g(p.cursorXPos)))
+			l(pink("input:"), b(Sprintf("%q", p.input)))
+			p.text += LightRed("--------------\n")
+		}
+
+		// update the input buffer
+		inputBuffer := make([]string, len(p.input))
+		// handle the mask
+		if p.Mask != "" {
+			for _, s := range p.input {
+				inputBuffer = append(inputBuffer, strings.Repeat(p.Mask, getMaxW(s)))
+			}
+		} else {
+			inputBuffer = p.input
+		}
+
+		// TODO update area with actual coord
+		p.updateArea(&area, inputBuffer, p.cursorXPos, p.cursorYPos)
 
 		return false, nil
 	})
@@ -261,49 +281,41 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	// Add new line
 	Println()
 
-	for i, s := range p.input {
-		if i < len(p.input)-1 {
-			areaText += s + "\n"
-		} else {
-			areaText += s
-		}
-	}
-
 	if !p.startedTyping {
 		return p.DefaultValue, nil
 	}
 
-	return strings.ReplaceAll(areaText, p.text, ""), nil
+	return strings.Join(p.input, "\n"), nil
 }
 
-func (p InteractiveTextInputPrinter) updateArea(area *cursor.Area) string {
+func (p InteractiveTextInputPrinter) updateArea(area *cursor.Area, input []string, x, y int) string {
 
-	areaContent := p.text
+	textLines := linesFitWidth(strings.Split(p.text, "\n"))
+	areaContent := strings.Join(textLines, "\n")
 
-	areaContent += strings.Join(p.input, "\n")
+	// TODO fit input
+	x, y = p.cursorXPos, p.cursorYPos
+	areaInput := input
 
-	if p.Mask != "" {
-		areaContent = p.text + strings.Repeat(p.Mask, getMaxW(areaContent)-getMaxW(p.text))
-	}
+	areaContent += strings.Join(areaInput, "\n")
 
-	if p.cursorXPos+getMaxW(p.input[p.cursorYPos]) < 1 {
-		p.cursorXPos = -getMaxW(p.input[p.cursorYPos])
-	}
+	// // reserved code
+	// if x+getMaxW(areaInput[y]) < 1 {
+	// 	x = -getMaxW(areaInput[y])
+	// }
 
 	area.Update(areaContent)
+	// cursor down offset
 	area.Top()
-	area.Down(strings.Count(p.text, "\n"))
-	area.Down(p.cursorYPos)
-	if p.MultiLine {
-		area.Down(1)
-	}
+	area.Down(len(textLines))
+	area.Down(y)
+	// cursor right offset
 	area.StartOfLine()
-
-	if p.MultiLine || p.cursorYPos != 0 {
-		cursor.Right(getMaxW(p.input[p.cursorYPos]) + p.cursorXPos)
+	if p.MultiLine || y != 0 {
+		cursor.Right(getMaxW(areaInput[y]) + x)
 	} else {
 		lines := strings.Split(p.text, "\n")
-		cursor.Right(getMaxW(lines[len(lines)-1]) + getMaxW(p.input[p.cursorYPos]) + p.cursorXPos)
+		cursor.Right(getMaxW(lines[len(lines)-1]) + getMaxW(areaInput[y]) + x)
 	}
 
 	return areaContent
