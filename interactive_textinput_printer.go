@@ -6,7 +6,6 @@ import (
 	"atomicgo.dev/cursor"
 	"atomicgo.dev/keyboard"
 	"atomicgo.dev/keyboard/keys"
-	"github.com/mattn/go-runewidth"
 
 	"github.com/pterm/pterm/internal"
 )
@@ -102,19 +101,11 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	area.Update(areaText)
 	area.StartOfLine()
 
-	if !p.MultiLine {
-		cursor.Right(runewidth.StringWidth(RemoveColorFromString(areaText)))
-	}
-
-	if p.DefaultValue != "" {
-		p.input = append(p.input, p.DefaultValue)
-		p.updateArea(&area)
-	}
+	p.input = append(p.input, strings.Split(p.DefaultValue, "\n")...)
+	p.cursorYPos = len(p.input) - 1
+	p.updateArea(&area)
 
 	err := keyboard.Listen(func(key keys.Key) (stop bool, err error) {
-		if !p.MultiLine {
-			p.cursorYPos = 0
-		}
 
 		if len(p.input) == 0 {
 			p.input = append(p.input, "")
@@ -151,7 +142,7 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 				p.input = append(p.input[:p.cursorYPos+1], appendAfterX)
 				p.input = append(p.input, appendAfterY...)
 				p.cursorYPos++
-				p.cursorXPos = -internal.GetStringMaxWidth(p.input[p.cursorYPos])
+				p.cursorXPos = -getMaxW(p.input[p.cursorYPos])
 
 				cursor.StartOfLine()
 			} else {
@@ -214,12 +205,11 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 			}
 
 			if !p.startedTyping {
-				p.input = []string{""}
 				p.startedTyping = true
 			}
 
 			if p.cursorYPos+1 < len(p.input) {
-				p.cursorXPos = min((internal.GetStringMaxWidth(p.input[p.cursorYPos])+p.cursorXPos)-internal.GetStringMaxWidth(p.input[p.cursorYPos+1]), 0)
+				p.cursorXPos = min((getMaxW(p.input[p.cursorYPos])+p.cursorXPos)-getMaxW(p.input[p.cursorYPos+1]), 0)
 
 				p.cursorYPos++
 			}
@@ -230,29 +220,28 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 			}
 
 			if !p.startedTyping {
-				p.input = []string{""}
 				p.startedTyping = true
 			}
 
 			if p.cursorYPos > 0 {
-				p.cursorXPos = min((internal.GetStringMaxWidth(p.input[p.cursorYPos])+p.cursorXPos)-internal.GetStringMaxWidth(p.input[p.cursorYPos-1]), 0)
+				p.cursorXPos = min((getMaxW(p.input[p.cursorYPos])+p.cursorXPos)-getMaxW(p.input[p.cursorYPos-1]), 0)
 
 				p.cursorYPos--
 			}
 		}
 
-		if internal.GetStringMaxWidth(p.input[p.cursorYPos]) > 0 {
+		if getMaxW(p.input[p.cursorYPos]) > 0 {
 			switch key.Code {
 			case keys.Right:
 				if p.cursorXPos < 0 {
 					p.cursorXPos++
 				} else if p.cursorYPos < len(p.input)-1 {
 					p.cursorYPos++
-					p.cursorXPos = -internal.GetStringMaxWidth(p.input[p.cursorYPos])
+					p.cursorXPos = -getMaxW(p.input[p.cursorYPos])
 				}
 
 			case keys.Left:
-				if p.cursorXPos+internal.GetStringMaxWidth(p.input[p.cursorYPos]) > 0 {
+				if p.cursorXPos+getMaxW(p.input[p.cursorYPos]) > 0 {
 					p.cursorXPos--
 				} else if p.cursorYPos > 0 {
 					p.cursorYPos--
@@ -288,38 +277,34 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 }
 
 func (p InteractiveTextInputPrinter) updateArea(area *cursor.Area) string {
-	if !p.MultiLine {
-		p.cursorYPos = 0
-	}
 
-	areaText := p.text
+	areaContent := p.text
 
-	for i, s := range p.input {
-		if i < len(p.input)-1 {
-			areaText += s + "\n"
-		} else {
-			areaText += s
-		}
-	}
+	areaContent += strings.Join(p.input, "\n")
 
 	if p.Mask != "" {
-		areaText = p.text + strings.Repeat(p.Mask, internal.GetStringMaxWidth(areaText)-internal.GetStringMaxWidth(p.text))
+		areaContent = p.text + strings.Repeat(p.Mask, getMaxW(areaContent)-getMaxW(p.text))
 	}
 
-	if p.cursorXPos+internal.GetStringMaxWidth(p.input[p.cursorYPos]) < 1 {
-		p.cursorXPos = -internal.GetStringMaxWidth(p.input[p.cursorYPos])
+	if p.cursorXPos+getMaxW(p.input[p.cursorYPos]) < 1 {
+		p.cursorXPos = -getMaxW(p.input[p.cursorYPos])
 	}
 
-	area.Update(areaText)
+	area.Update(areaContent)
 	area.Top()
-	area.Down(p.cursorYPos + 1)
+	area.Down(strings.Count(p.text, "\n"))
+	area.Down(p.cursorYPos)
+	if p.MultiLine {
+		area.Down(1)
+	}
 	area.StartOfLine()
 
-	if p.MultiLine {
-		cursor.Right(internal.GetStringMaxWidth(p.input[p.cursorYPos]) + p.cursorXPos)
+	if p.MultiLine || p.cursorYPos != 0 {
+		cursor.Right(getMaxW(p.input[p.cursorYPos]) + p.cursorXPos)
 	} else {
-		cursor.Right(internal.GetStringMaxWidth(areaText) + p.cursorXPos)
+		lines := strings.Split(p.text, "\n")
+		cursor.Right(getMaxW(lines[len(lines)-1]) + getMaxW(p.input[p.cursorYPos]) + p.cursorXPos)
 	}
 
-	return areaText
+	return areaContent
 }

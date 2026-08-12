@@ -1,20 +1,22 @@
 package pterm
 
 import (
-	"os"
 	"strings"
 
 	"github.com/pterm/pterm/internal"
-	"golang.org/x/term"
 )
 
 func getWidth(s string) int {
 	return min(GetTerminalWidth(), internal.GetStringMaxWidth(s))
 }
+func getMaxW(s string) int {
+	return internal.GetStringMaxWidth(s)
+}
+
 func textFitWidth(text string) string {
 	getWidth := internal.GetStringWidth
 	w := GetTerminalWidth()
-	if internal.GetStringMaxWidth(text) >= w {
+	if internal.GetStringMaxWidth(text) > w {
 		// find the last index that GetStringWidth(s[:index])<=width
 		findIndex := func(s string, width int) int {
 			l, r := 0, len(s)+1
@@ -46,8 +48,8 @@ func textFitWidth(text string) string {
 }
 func inputFitWidth(ss []string) []string {
 	getWidth := internal.GetStringWidth
-	w, _, err := term.GetSize(int(os.Stdout.Fd()))
-	if err == nil && internal.GetStringMaxWidth(strings.Join(ss, "\n")) > w {
+	w := GetTerminalWidth()
+	if internal.GetStringMaxWidth(strings.Join(ss, "\n")) > w {
 		// find the last index that GetStringWidth(s[:index])<=width
 		findIndex := func(s string, width int) int {
 			l, r := 0, len(s)+1
@@ -75,5 +77,6 @@ func inputFitWidth(ss []string) []string {
 		}
 		return buffer
 	}
+
 	return ss
 }
