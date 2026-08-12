@@ -290,14 +290,12 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 
 func (p InteractiveTextInputPrinter) updateArea(area *cursor.Area, input []string, x, y int) string {
 
-	textLines := linesFitWidth(strings.Split(p.text, "\n"))
-	areaContent := strings.Join(textLines, "\n")
+	areaText := textFitWidth(p.text)
+	areaContent := areaText
 
 	// TODO fit input
 	x, y = p.cursorXPos, p.cursorYPos
 	areaInput := input
-
-	areaContent += strings.Join(areaInput, "\n")
 
 	// // reserved code
 	// if x+getMaxW(areaInput[y]) < 1 {
@@ -307,8 +305,7 @@ func (p InteractiveTextInputPrinter) updateArea(area *cursor.Area, input []strin
 	area.Update(areaContent)
 	// cursor down offset
 	area.Top()
-	area.Down(len(textLines))
-	area.Down(y)
+	area.Down(strings.Count(areaText, "\n") + y)
 	// cursor right offset
 	area.StartOfLine()
 	if p.MultiLine || y != 0 {

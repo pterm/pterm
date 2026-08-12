@@ -51,6 +51,7 @@ func linesFitWidth(ss []string) []string {
 }
 
 // returns the coords typed [][2]int that index is the actual line number in terminal
+// the param ss should be the []string that fit the terminal width
 // areaInput := [inputFitWidth](p.input)
 // if y,x is the actual coords in terminal,y ∈ [0,len(areaInput)), x ∈[-len(areaInput[y]),0]
 // p.cursorYPos,p.cursorXPos:=coords[y][0],coords[y][1]+x
