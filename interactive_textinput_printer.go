@@ -102,8 +102,8 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 			}
 			px := -getMaxW(logicLine)
 			for _, line := range linesFitWidth([]string{logicLine}) {
-				px += getMaxW(line) - 1
-				cMap = append(cMap, coord{y: py, end: px + 1})
+				px += getMaxW(line)
+				cMap = append(cMap, coord{y: py, end: px})
 			}
 		}
 	}
@@ -116,6 +116,7 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 		for ay, c := range cMap {
 			if py == c.y && px <= c.end {
 				y, x = ay, px-c.end
+				break
 			}
 		}
 		return y, x
@@ -206,6 +207,8 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 			p.input = append(p.input, "")
 		}
 
+		updateLogicYX()
+
 		switch key.Code {
 		case keys.Tab:
 			if p.MultiLine {
@@ -241,20 +244,20 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 			}
 
 		case keys.RuneKey:
-			// TODO RuneKey case
 			if !p.startedTyping {
 				p.startedTyping = true
 			}
 
 			p.input[p.cursorYPos] = string(append([]rune(p.input[p.cursorYPos])[:len([]rune(p.input[p.cursorYPos]))+p.cursorXPos], append([]rune(key.String()), []rune(p.input[p.cursorYPos])[len([]rune(p.input[p.cursorYPos]))+p.cursorXPos:]...)...))
+			updateActualYX()
 
 		case keys.Space:
-			// TODO Space case
 			if !p.startedTyping {
 				p.startedTyping = true
 			}
 
 			p.input[p.cursorYPos] = string(append([]rune(p.input[p.cursorYPos])[:len([]rune(p.input[p.cursorYPos]))+p.cursorXPos], append([]rune(" "), []rune(p.input[p.cursorYPos])[len([]rune(p.input[p.cursorYPos]))+p.cursorXPos:]...)...))
+			updateActualYX()
 
 		case keys.Backspace:
 			// TODO Backspace case
