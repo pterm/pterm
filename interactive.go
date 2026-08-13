@@ -3,6 +3,7 @@ package pterm
 import (
 	"strings"
 	"time"
+	"unicode/utf8"
 
 	"github.com/pterm/pterm/internal"
 )
@@ -19,13 +20,12 @@ func textFitWidth(text string) string {
 // fit the []string for terminal width
 func linesFitWidth(ss []string) []string {
 	w := max(GetTerminalWidth()-1, 1)
-	if internal.GetStringMaxWidth(strings.Join(ss, "\n")) >= w {
+	if getMaxW(strings.Join(ss, "\n")) >= w {
 		// find the last index that GetStringWidth(s[:index])<=width
 		findIndex := func(s string, width int) int {
 			l, r := 0, len(s)+1
 			for l+1 < r {
 				mid := (l + r) >> 1
-				// if getMaxW(string([]rune(s)[:mid])) <= width {
 				if getMaxW(s[:mid]) <= width {
 					l = mid
 				} else {
@@ -34,6 +34,22 @@ func linesFitWidth(ss []string) []string {
 			}
 			return l
 		}
+
+		// count runes maybe invalid bytes at the end
+		countValidRunes := func(s string) int {
+			if s == "" {
+				return 0
+			}
+			// Remove all invalid bytes at the end
+			for {
+				r, size := utf8.DecodeLastRuneInString(s)
+				if r != utf8.RuneError || size != 1 {
+					break
+				}
+				s = s[:len(s)-1]
+			}
+			return utf8.RuneCountInString(s)
+		}
 		buffer := make([]string, 0)
 		for _, s := range ss {
 			if getMaxW(s) <= w {
@@ -41,11 +57,10 @@ func linesFitWidth(ss []string) []string {
 				continue
 			}
 			for len(s) > 0 {
-				i := findIndex(s, w)
-				// buffer = append(buffer, string([]rune(s)[:i]))
-				// s = string([]rune(s)[i:])
-				buffer = append(buffer, s[:i])
-				s = s[i:]
+				i := countValidRunes(s[:findIndex(s, w)])
+				front, end := string([]rune(s)[:i]), string([]rune(s)[i:])
+				buffer = append(buffer, front)
+				s = end
 			}
 		}
 		return buffer
