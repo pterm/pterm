@@ -217,7 +217,6 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 			}
 
 		case keys.Enter:
-			// TODO review Enter case
 			if !p.startedTyping {
 				p.startedTyping = true
 			}
@@ -225,9 +224,8 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 			if p.MultiLine {
 				if key.AltPressed {
 					p.actualX = 0
+					updateLogicYX()
 				}
-
-				updateLogicYX()
 
 				appendAfterY := append([]string{}, p.input[p.cursorYPos+1:]...)
 				appendAfterX := string(append([]rune{}, []rune(p.input[p.cursorYPos])[len([]rune(p.input[p.cursorYPos]))+p.cursorXPos:]...))
@@ -260,7 +258,6 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 			updateActualYX()
 
 		case keys.Backspace:
-			// TODO Backspace case
 			if !p.startedTyping {
 				p.startedTyping = true
 			}
@@ -277,9 +274,9 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 				}
 			}
 			handle()
+			updateActualYX()
 
 		case keys.Delete:
-			// TODO Delete case
 			if !p.startedTyping {
 				p.startedTyping = true
 			}
@@ -289,13 +286,14 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 					p.input[p.cursorYPos] = string(append([]rune(p.input[p.cursorYPos])[:len([]rune(p.input[p.cursorYPos]))+p.cursorXPos], []rune(p.input[p.cursorYPos])[len([]rune(p.input[p.cursorYPos]))+p.cursorXPos+1:]...))
 					p.cursorXPos++
 				} else if p.cursorYPos < len(p.input)-1 {
+					p.cursorXPos = -getMaxW(p.input[p.cursorYPos+1])
 					p.input[p.cursorYPos] += p.input[p.cursorYPos+1]
 					appendAfterY := append([]string{}, p.input[p.cursorYPos+2:]...)
 					p.input = append(p.input[:p.cursorYPos+1], appendAfterY...)
-					p.cursorXPos = 0
 				}
 			}
 			handle()
+			updateActualYX()
 
 		case keys.CtrlC:
 			cancel()
