@@ -2,6 +2,7 @@ package pterm
 
 import (
 	"strings"
+	"time"
 
 	"github.com/pterm/pterm/internal"
 )
@@ -15,16 +16,17 @@ func textFitWidth(text string) string {
 	return strings.Join(linesFitWidth(strings.Split(text, "\n")), "\n")
 }
 
+// fit the []string for terminal width
 func linesFitWidth(ss []string) []string {
-	getWidth := internal.GetStringWidth
-	w := GetTerminalWidth()
-	if internal.GetStringMaxWidth(strings.Join(ss, "\n")) > w {
+	w := max(GetTerminalWidth()-1, 1)
+	if internal.GetStringMaxWidth(strings.Join(ss, "\n")) >= w {
 		// find the last index that GetStringWidth(s[:index])<=width
 		findIndex := func(s string, width int) int {
 			l, r := 0, len(s)+1
 			for l+1 < r {
 				mid := (l + r) >> 1
-				if getWidth(s[:mid]) <= width {
+				// if getMaxW(string([]rune(s)[:mid])) <= width {
+				if getMaxW(s[:mid]) <= width {
 					l = mid
 				} else {
 					r = mid
@@ -34,12 +36,14 @@ func linesFitWidth(ss []string) []string {
 		}
 		buffer := make([]string, 0)
 		for _, s := range ss {
-			if getWidth(s) <= w {
+			if getMaxW(s) <= w {
 				buffer = append(buffer, s)
 				continue
 			}
 			for len(s) > 0 {
 				i := findIndex(s, w)
+				// buffer = append(buffer, string([]rune(s)[:i]))
+				// s = string([]rune(s)[i:])
 				buffer = append(buffer, s[:i])
 				s = s[i:]
 			}
@@ -50,34 +54,23 @@ func linesFitWidth(ss []string) []string {
 	return ss
 }
 
-// returns the coords typed [][2]int that index is the actual line number in terminal
-// the param ss should be the []string that fit the terminal width
-// areaInput := [inputFitWidth](p.input)
-// if y,x is the actual coords in terminal,y ∈ [0,len(areaInput)), x ∈[-len(areaInput[y]),0]
-// p.cursorYPos,p.cursorXPos:=coords[y][0],coords[y][1]+x
-func inputCoords(ss []string) [][2]int {
-	coords := [][2]int{}
-	for py, s := range ss {
-		px := -getMaxW(s)
-		for _, line := range linesFitWidth([]string{s}) {
-			px += getMaxW(line)
-			coords = append(coords, [2]int{py, px})
+// this create a [time.Ticker] that
+// call the onChange(width)
+// when the terminal's width changed
+func watchWidth(done <-chan struct{}, interval time.Duration, onChange func(w int)) {
+	ticker := time.NewTicker(interval)
+	defer ticker.Stop()
+
+	last := GetTerminalWidth()
+	for {
+		select {
+		case <-done:
+			return
+		case <-ticker.C:
+			if w := GetTerminalWidth(); w != last {
+				last = w
+				onChange(w)
+			}
 		}
 	}
-	return coords
-}
-
-// returns the coords in logic input
-func logicYX(ay, ax int, coords [][2]int) (int, int) {
-	return coords[ay][0], coords[ay][1] + ax
-}
-
-// returns actual coord in terminal,if not returns itself
-func actualYX(py, px int, coords [][2]int) (int, int) {
-	for ay, c := range coords {
-		if c[0] == py && c[1] >= px {
-			return ay, px - c[1]
-		}
-	}
-	return py, px
 }
