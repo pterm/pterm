@@ -21,8 +21,3 @@ func GetStringMaxWidth(s string) int {
 
 	return maxString
 }
-
-// GetStringWidth returns the width of a string with removing OSC 8 hyperlinks and color codes
-func GetStringWidth(s string) int {
-	return runewidth.StringWidth(RemoveEscapeCodes(s))
-}

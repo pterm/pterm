@@ -96,10 +96,6 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	updateCoords := func() {
 		cMap = make([]coord, 0, len(p.fitInput))
 		for py, logicLine := range p.input {
-			if getMaxW(logicLine) < GetTerminalWidth() {
-				cMap = append(cMap, coord{y: py, end: 0})
-				continue
-			}
 			px := -getMaxW(logicLine)
 			for _, line := range linesFitWidth([]string{logicLine}) {
 				px += getMaxW(line)
@@ -146,33 +142,6 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	}
 
 	p.text = areaText
-	// !remove brefore PR
-	textLog := func() {
-		l := func(a ...any) { p.text += Sprintln(a...) }
-		pink := NewRGB(255, 0, 200).Sprintf
-		y := NewRGB(251, 255, 0).Sprint
-		b := NewRGB(88, 91, 255).Sprint
-		g := NewRGB(21, 255, 0).Sprint
-		o := NewRGB(255, 94, 0).Sprint
-
-		p.text = LightRed("--------------\n")
-		l(Sprint(pink("█"), y("█"), b("█"), g("█"), o("█")))
-		l(Sprint(pink("width:"), o(GetTerminalWidth())))
-		l(Sprintf("%v Y:%v X:%v L:%v",
-			pink("lgc"), g(p.cursorYPos), g(p.cursorXPos),
-			y(getMaxW(p.input[p.cursorYPos]))))
-		l(Sprintf("%v Y:%v X:%v L:%v",
-			pink("act"), g(p.actualY), g(p.actualX),
-			y(getMaxW(p.fitInput[p.actualY]))))
-
-		l(b(Sprintf("%q", p.input)))
-		l(b(Sprintf("%q", p.fitInput)))
-		for k, v := range cMap {
-			l(b(Sprintf("%v:(y:%v,end:%v)", k, v.y, v.end)))
-		}
-
-		p.text += LightRed("--------------\n")
-	}
 
 	p.input = append(p.input, strings.Split(p.DefaultValue, "\n")...)
 	p.cursorYPos = len(p.input) - 1
@@ -180,8 +149,6 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	p.fitInput = linesFitWidth(p.input)
 	updateActualYX()
 
-	// !remove brefore PR
-	textLog()
 	area := cursor.NewArea()
 
 	p.updateArea(&area, p.fitInput)
@@ -278,7 +245,12 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 
 		case keys.Delete:
 			if !p.startedTyping {
+				p.input = []string{""}
 				p.startedTyping = true
+				p.cursorXPos = 0
+				p.cursorYPos = 0
+				updateActualYX()
+				return false, nil
 			}
 
 			handle := func() {
@@ -348,9 +320,6 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 
 		// update logic coord
 		updateLogicYX()
-
-		// !remove brefore PR
-		textLog()
 
 		// update the input buffer
 		areaInput := make([]string, 0)

@@ -35,21 +35,6 @@ func linesFitWidth(ss []string) []string {
 			return l
 		}
 
-		// count runes maybe invalid bytes at the end
-		countValidRunes := func(s string) int {
-			if s == "" {
-				return 0
-			}
-			// Remove all invalid bytes at the end
-			for {
-				r, size := utf8.DecodeLastRuneInString(s)
-				if r != utf8.RuneError || size != 1 {
-					break
-				}
-				s = s[:len(s)-1]
-			}
-			return utf8.RuneCountInString(s)
-		}
 		buffer := make([]string, 0)
 		for _, s := range ss {
 			if getMaxW(s) <= w {
@@ -57,7 +42,7 @@ func linesFitWidth(ss []string) []string {
 				continue
 			}
 			for len(s) > 0 {
-				i := countValidRunes(s[:findIndex(s, w)])
+				i := countValidBeginRunes(s[:findIndex(s, w)])
 				front, end := string([]rune(s)[:i]), string([]rune(s)[i:])
 				buffer = append(buffer, front)
 				s = end
@@ -67,6 +52,22 @@ func linesFitWidth(ss []string) []string {
 	}
 
 	return ss
+}
+
+// count runes maybe invalid bytes at the end
+func countValidBeginRunes(s string) int {
+	if s == "" {
+		return 0
+	}
+	// Remove all invalid bytes at the end
+	for {
+		r, size := utf8.DecodeLastRuneInString(s)
+		if r != utf8.RuneError || size != 1 {
+			break
+		}
+		s = s[:len(s)-1]
+	}
+	return utf8.RuneCountInString(s)
 }
 
 // this create a [time.Ticker] that
