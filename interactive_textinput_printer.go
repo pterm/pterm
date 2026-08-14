@@ -94,14 +94,17 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	// c:=cMap[ay],py=c.y,px=ax+c.end
 	var cMap []coord
 
+	// Returns the width of the last line of p.text
 	inputfirstLineOffset := func() int {
 		lines := strings.Split(textFitWidth(p.text), "\n")
 		return getMaxW(lines[len(lines)-1])
 	}
+	// update cMap
 	updateCoords := func() {
 		cMap = make([]coord, 0, len(p.fitInput))
 		for py, logicLine := range p.input {
 			offset := 0
+			// When the first row, offset.
 			if py == 0 {
 				offset = inputfirstLineOffset()
 			}
@@ -112,10 +115,12 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 			}
 		}
 	}
+	// Map coordinates on the actual terminal to logical coordinates of p. input
 	logicYX := func(ay, ax int) (int, int) {
 		c := cMap[ay]
 		return c.y, ax + c.end
 	}
+	// Mapping logical coordinates to actual coordinates in the terminal
 	actualYX := func(py, px int) (int, int) {
 		var y, x int
 		for ay, c := range cMap {
@@ -154,44 +159,12 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 
 	p.text = areaText
 
+	// Initialize logic input values, update actual coordinates
 	p.input = append(p.input, strings.Split(p.DefaultValue, "\n")...)
 	p.cursorYPos = len(p.input) - 1
 	p.cursorXPos = 0
 	updateActualYX()
 
-	// !remove brefore PR
-	textLog := func() {
-		l := func(a ...any) { p.text += Sprintln(a...) }
-		pink := NewRGB(255, 0, 200).Sprintf
-		y := NewRGB(251, 255, 0).Sprint
-		b := NewRGB(88, 91, 255).Sprint
-		g := NewRGB(21, 255, 0).Sprint
-		o := NewRGB(255, 94, 0).Sprint
-
-		p.text = LightRed("--------------\n")
-		l(Sprint(pink("█"), y("█"), b("█"), g("█"), o("█")))
-		l(Sprint(pink("width:"), o(GetTerminalWidth())))
-		l(Sprintf("%v Y:%v X:%v L:%v",
-			pink("lgc"), g(p.cursorYPos), g(p.cursorXPos),
-			y(getMaxW(p.input[p.cursorYPos]))))
-		l(Sprintf("%v Y:%v X:%v L:%v",
-			pink("act"), g(p.actualY), g(p.actualX),
-			y(getMaxW(p.fitInput[p.actualY]))))
-
-		l(b(Sprintf("%q", p.input)))
-		l(b(Sprintf("%q", p.fitInput)))
-		for k, v := range cMap {
-			l(b(Sprintf("%v:(y:%v,end:%v)", k, v.y, v.end)))
-		}
-
-		p.text += LightRed("--------------")
-		if p.MultiLine {
-			p.text += "\n"
-		}
-	}
-	// textLog()
-	updateActualYX()
-	// textLog()
 	area := cursor.NewArea()
 	p.updateArea(&area, p.fitInput)
 
@@ -215,8 +188,6 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 		if len(p.input) == 0 {
 			p.input = append(p.input, "")
 		}
-
-		updateLogicYX()
 
 		switch key.Code {
 		case keys.Tab:
@@ -364,18 +335,13 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 				p.actualY--
 				p.actualX = 0
 			}
-
-		case keys.Esc:
-			textLog()
 		}
 
 		// update logic coord
 		updateLogicYX()
 
-		// textLog()
-		// update the input buffer
-		areaInput := make([]string, 0)
 		// handle the mask
+		areaInput := make([]string, 0)
 		if p.Mask != "" {
 			for _, s := range p.input {
 				areaInput = append(areaInput, strings.Repeat(p.Mask, getMaxW(s)))
@@ -383,7 +349,7 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 		} else {
 			areaInput = p.input
 		}
-
+		// render to area
 		areaInput = inputFitWidth(areaInput)
 		p.updateArea(&area, areaInput)
 
