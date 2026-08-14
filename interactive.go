@@ -12,15 +12,19 @@ func getMaxW(s string) int {
 	return internal.GetStringMaxWidth(s)
 }
 
-// fit the text for terminal width
-func textFitWidth(text string) string {
-	return strings.Join(linesFitWidth(strings.Split(text, "\n")), "\n")
+// fit the text for terminal width,offset to the right
+func textFitWidth(text string, offset ...int) string {
+	return strings.Join(linesFitWidth(strings.Split(text, "\n"), offset...), "\n")
 }
 
-// fit the []string for terminal width
-func linesFitWidth(ss []string) []string {
+// fit the []string for terminal width,offset to the right
+func linesFitWidth(ss []string, offset ...int) []string {
 	w := max(GetTerminalWidth()-1, 1)
-	if getMaxW(strings.Join(ss, "\n")) >= w {
+	firstLineOffset := 0
+	if len(offset) > 0 {
+		firstLineOffset = offset[0]
+	}
+	if getMaxW(strings.Join(ss, "\n")) >= w || getMaxW(ss[0])+firstLineOffset >= w {
 		// find the last index that GetStringWidth(s[:index])<=width
 		findIndex := func(s string, width int) int {
 			l, r := 0, len(s)+1
@@ -36,16 +40,26 @@ func linesFitWidth(ss []string) []string {
 		}
 
 		buffer := make([]string, 0)
-		for _, s := range ss {
+		for k, s := range ss {
+			if k == 0 {
+				fw := w - firstLineOffset
+				if getMaxW(s) <= fw {
+					buffer = append(buffer, s)
+					continue
+				}
+				// Split First Row
+				i := indexSplitAtByte(s, findIndex(s, fw))
+				buffer = append(buffer, s[:i])
+				s = s[i:]
+			}
 			if getMaxW(s) <= w {
 				buffer = append(buffer, s)
 				continue
 			}
 			for len(s) > 0 {
-				i := countValidBeginRunes(s[:findIndex(s, w)])
-				front, end := string([]rune(s)[:i]), string([]rune(s)[i:])
-				buffer = append(buffer, front)
-				s = end
+				i := indexSplitAtByte(s, findIndex(s, w))
+				buffer = append(buffer, s[:i])
+				s = s[i:]
 			}
 		}
 		return buffer
@@ -54,20 +68,23 @@ func linesFitWidth(ss []string) []string {
 	return ss
 }
 
-// count runes maybe invalid bytes at the end
-func countValidBeginRunes(s string) int {
-	if s == "" {
-		return 0
+// Returns a corrected index that,
+// when a string is split into two strings, puts the broken character into the next string
+func indexSplitAtByte(s string, i int) int {
+	if i < 0 {
+		i = 0
 	}
-	// Remove all invalid bytes at the end
-	for {
-		r, size := utf8.DecodeLastRuneInString(s)
-		if r != utf8.RuneError || size != 1 {
-			break
-		}
-		s = s[:len(s)-1]
+	if i > len(s) {
+		i = len(s)
 	}
-	return utf8.RuneCountInString(s)
+	if i == 0 || i == len(s) || utf8.RuneStart(s[i]) {
+		return i
+	}
+	// Go back to the start byte of the current character
+	for i > 0 && !utf8.RuneStart(s[i]) {
+		i--
+	}
+	return i
 }
 
 // this create a [time.Ticker] that
