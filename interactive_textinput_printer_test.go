@@ -204,7 +204,7 @@ func TestInteractiveTextInputPrinter_InterruptCallsOnInterruptFunc(t *testing.T)
 	interrupted := false
 	printer := pterm.DefaultInteractiveTextInput.WithOnInterruptFunc(func() { interrupted = true })
 
-	simulateKeys(t, "abc", keys.CtrlC)
+	simulateKeys(t, 'a', 'b', 'c', keys.CtrlC)
 
 	result := showTextInput(t, printer)
 

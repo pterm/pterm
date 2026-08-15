@@ -6,7 +6,6 @@ import (
 	"atomicgo.dev/cursor"
 	"atomicgo.dev/keyboard"
 	"atomicgo.dev/keyboard/keys"
-	"github.com/mattn/go-runewidth"
 
 	"github.com/pterm/pterm/internal"
 )
@@ -30,6 +29,9 @@ type InteractiveTextInputPrinter struct {
 	OnInterruptFunc func()
 
 	input         []string
+	fitInput      []string
+	actualX       int
+	actualY       int
 	cursorXPos    int
 	cursorYPos    int
 	text          string
@@ -85,6 +87,62 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	cancel, exit := internal.NewCancelationSignal(p.OnInterruptFunc)
 	defer exit()
 
+	type coord struct{ y, end int }
+	// coordinate mapping
+	// c:=cMap[ay],py=c.y,px=ax+c.end
+	var cMap []coord
+
+	// Returns the width of the last line of p.text
+	inputfirstLineOffset := func() int {
+		lines := strings.Split(textFitWidth(p.text), "\n")
+		return getMaxW(lines[len(lines)-1])
+	}
+	// update cMap
+	updateCoords := func() {
+		cMap = make([]coord, 0, len(p.fitInput))
+		for py, logicLine := range p.input {
+			offset := 0
+			// When the first row, offset.
+			if py == 0 {
+				offset = inputfirstLineOffset()
+			}
+			px := -getMaxW(logicLine)
+			for _, line := range linesFitWidth([]string{logicLine}, offset) {
+				px += getMaxW(line)
+				cMap = append(cMap, coord{y: py, end: px})
+			}
+		}
+	}
+	// Map coordinates on the actual terminal to logical coordinates of p. input
+	logicYX := func(ay, ax int) (int, int) {
+		c := cMap[ay]
+		return c.y, ax + c.end
+	}
+	// Mapping logical coordinates to actual coordinates in the terminal
+	actualYX := func(py, px int) (int, int) {
+		var y, x int
+		for ay, c := range cMap {
+			if py == c.y && px <= c.end {
+				y, x = ay, px-c.end
+				break
+			}
+		}
+		return y, x
+	}
+
+	inputFitWidth := func(input []string) []string { return linesFitWidth(input, inputfirstLineOffset()) }
+	updateFitInput := func() { p.fitInput = inputFitWidth(p.input) }
+	updateLogicYX := func() {
+		updateFitInput()
+		updateCoords()
+		p.cursorYPos, p.cursorXPos = logicYX(p.actualY, p.actualX)
+	}
+	updateActualYX := func() {
+		updateFitInput()
+		updateCoords()
+		p.actualY, p.actualX = actualYX(p.cursorYPos, p.cursorXPos)
+	}
+
 	var areaText string
 
 	if len(text) == 0 || text[0] == "" {
@@ -98,22 +156,22 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	}
 
 	p.text = areaText
+
+	// Initialize logic input values, update actual coordinates
+	p.input = append(p.input, strings.Split(p.DefaultValue, "\n")...)
+	p.cursorYPos = len(p.input) - 1
+	p.cursorXPos = 0
+	updateActualYX()
+
 	area := cursor.NewArea()
-	area.Update(areaText)
-	area.StartOfLine()
+	p.updateArea(&area, inputfirstLineOffset())
 
-	if !p.MultiLine {
-		cursor.Right(runewidth.StringWidth(RemoveColorFromString(areaText)))
-	}
-
-	if p.DefaultValue != "" {
-		p.input = append(p.input, p.DefaultValue)
-		p.updateArea(&area)
-	}
-
+	width := GetTerminalWidth()
 	err := keyboard.Listen(func(key keys.Key) (stop bool, err error) {
-		if !p.MultiLine {
-			p.cursorYPos = 0
+
+		if w := GetTerminalWidth(); w != width {
+			updateActualYX()
+			width = w
 		}
 
 		if len(p.input) == 0 {
@@ -142,7 +200,8 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 
 			if p.MultiLine {
 				if key.AltPressed {
-					p.cursorXPos = 0
+					p.actualX = 0
+					updateLogicYX()
 				}
 
 				appendAfterY := append([]string{}, p.input[p.cursorYPos+1:]...)
@@ -151,9 +210,10 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 				p.input = append(p.input[:p.cursorYPos+1], appendAfterX)
 				p.input = append(p.input, appendAfterY...)
 				p.cursorYPos++
-				p.cursorXPos = -internal.GetStringMaxWidth(p.input[p.cursorYPos])
+				p.cursorXPos = -getMaxW(p.input[p.cursorYPos])
 
-				cursor.StartOfLine()
+				updateActualYX()
+
 			} else {
 				return true, nil
 			}
@@ -164,6 +224,7 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 			}
 
 			p.input[p.cursorYPos] = string(append([]rune(p.input[p.cursorYPos])[:len([]rune(p.input[p.cursorYPos]))+p.cursorXPos], append([]rune(key.String()), []rune(p.input[p.cursorYPos])[len([]rune(p.input[p.cursorYPos]))+p.cursorXPos:]...)...))
+			updateActualYX()
 
 		case keys.Space:
 			if !p.startedTyping {
@@ -171,97 +232,104 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 			}
 
 			p.input[p.cursorYPos] = string(append([]rune(p.input[p.cursorYPos])[:len([]rune(p.input[p.cursorYPos]))+p.cursorXPos], append([]rune(" "), []rune(p.input[p.cursorYPos])[len([]rune(p.input[p.cursorYPos]))+p.cursorXPos:]...)...))
+			updateActualYX()
 
 		case keys.Backspace:
 			if !p.startedTyping {
 				p.startedTyping = true
 			}
 
-			if len([]rune(p.input[p.cursorYPos]))+p.cursorXPos > 0 {
-				p.input[p.cursorYPos] = string(append([]rune(p.input[p.cursorYPos])[:len([]rune(p.input[p.cursorYPos]))-1+p.cursorXPos], []rune(p.input[p.cursorYPos])[len([]rune(p.input[p.cursorYPos]))+p.cursorXPos:]...))
-			} else if p.cursorYPos > 0 {
-				p.input[p.cursorYPos-1] += p.input[p.cursorYPos]
-				appendAfterY := append([]string{}, p.input[p.cursorYPos+1:]...)
-				p.input = append(p.input[:p.cursorYPos], appendAfterY...)
-				p.cursorXPos = 0
-				p.cursorYPos--
+			handle := func() {
+				if len([]rune(p.input[p.cursorYPos]))+p.cursorXPos > 0 {
+					p.input[p.cursorYPos] = string(append([]rune(p.input[p.cursorYPos])[:len([]rune(p.input[p.cursorYPos]))-1+p.cursorXPos], []rune(p.input[p.cursorYPos])[len([]rune(p.input[p.cursorYPos]))+p.cursorXPos:]...))
+				} else if p.cursorYPos > 0 {
+					p.input[p.cursorYPos-1] += p.input[p.cursorYPos]
+					appendAfterY := append([]string{}, p.input[p.cursorYPos+1:]...)
+					p.input = append(p.input[:p.cursorYPos], appendAfterY...)
+					p.cursorXPos = 0
+					p.cursorYPos--
+				}
 			}
+			handle()
+			updateActualYX()
 
 		case keys.Delete:
 			if !p.startedTyping {
 				p.input = []string{""}
 				p.startedTyping = true
-
+				p.cursorXPos = 0
+				p.cursorYPos = 0
+				updateActualYX()
 				return false, nil
 			}
 
-			if len([]rune(p.input[p.cursorYPos]))+p.cursorXPos < len([]rune(p.input[p.cursorYPos])) {
-				p.input[p.cursorYPos] = string(append([]rune(p.input[p.cursorYPos])[:len([]rune(p.input[p.cursorYPos]))+p.cursorXPos], []rune(p.input[p.cursorYPos])[len([]rune(p.input[p.cursorYPos]))+p.cursorXPos+1:]...))
-				p.cursorXPos++
-			} else if p.cursorYPos < len(p.input)-1 {
-				p.input[p.cursorYPos] += p.input[p.cursorYPos+1]
-				appendAfterY := append([]string{}, p.input[p.cursorYPos+2:]...)
-				p.input = append(p.input[:p.cursorYPos+1], appendAfterY...)
-				p.cursorXPos = 0
+			handle := func() {
+				if len([]rune(p.input[p.cursorYPos]))+p.cursorXPos < len([]rune(p.input[p.cursorYPos])) {
+					p.input[p.cursorYPos] = string(append([]rune(p.input[p.cursorYPos])[:len([]rune(p.input[p.cursorYPos]))+p.cursorXPos], []rune(p.input[p.cursorYPos])[len([]rune(p.input[p.cursorYPos]))+p.cursorXPos+1:]...))
+					p.cursorXPos++
+				} else if p.cursorYPos < len(p.input)-1 {
+					p.cursorXPos = -getMaxW(p.input[p.cursorYPos+1])
+					p.input[p.cursorYPos] += p.input[p.cursorYPos+1]
+					appendAfterY := append([]string{}, p.input[p.cursorYPos+2:]...)
+					p.input = append(p.input[:p.cursorYPos+1], appendAfterY...)
+				}
 			}
+			handle()
+			updateActualYX()
 
 		case keys.CtrlC:
 			cancel()
 			return true, nil
-		case keys.Down:
-			if !p.MultiLine {
-				return false, nil
-			}
 
+		case keys.Down:
 			if !p.startedTyping {
-				p.input = []string{""}
 				p.startedTyping = true
 			}
 
-			if p.cursorYPos+1 < len(p.input) {
-				p.cursorXPos = min((internal.GetStringMaxWidth(p.input[p.cursorYPos])+p.cursorXPos)-internal.GetStringMaxWidth(p.input[p.cursorYPos+1]), 0)
+			if p.actualY+1 < len(p.fitInput) {
+				p.actualX = min((getMaxW(p.fitInput[p.actualY])+p.actualX)-getMaxW(p.fitInput[p.actualY+1]), 0)
 
-				p.cursorYPos++
+				p.actualY++
 			}
 
 		case keys.Up:
-			if !p.MultiLine {
-				return false, nil
-			}
-
 			if !p.startedTyping {
-				p.input = []string{""}
 				p.startedTyping = true
 			}
 
-			if p.cursorYPos > 0 {
-				p.cursorXPos = min((internal.GetStringMaxWidth(p.input[p.cursorYPos])+p.cursorXPos)-internal.GetStringMaxWidth(p.input[p.cursorYPos-1]), 0)
+			if p.actualY > 0 {
+				p.actualX = min((getMaxW(p.fitInput[p.actualY])+p.actualX)-getMaxW(p.fitInput[p.actualY-1]), 0)
 
-				p.cursorYPos--
+				p.actualY--
+			}
+
+		case keys.Right:
+			if !p.startedTyping {
+				p.startedTyping = true
+			}
+			if p.actualX < 0 {
+				p.actualX++
+			} else if p.actualY < len(p.fitInput)-1 {
+				p.actualY++
+				p.actualX = -getMaxW(p.fitInput[p.actualY])
+			}
+
+		case keys.Left:
+			if !p.startedTyping {
+				p.startedTyping = true
+			}
+			if p.actualX+getMaxW(p.fitInput[p.actualY]) > 0 {
+				p.actualX--
+			} else if p.actualY > 0 {
+				p.actualY--
+				p.actualX = 0
 			}
 		}
 
-		if internal.GetStringMaxWidth(p.input[p.cursorYPos]) > 0 {
-			switch key.Code {
-			case keys.Right:
-				if p.cursorXPos < 0 {
-					p.cursorXPos++
-				} else if p.cursorYPos < len(p.input)-1 {
-					p.cursorYPos++
-					p.cursorXPos = -internal.GetStringMaxWidth(p.input[p.cursorYPos])
-				}
+		// update logic coord
+		updateLogicYX()
 
-			case keys.Left:
-				if p.cursorXPos+internal.GetStringMaxWidth(p.input[p.cursorYPos]) > 0 {
-					p.cursorXPos--
-				} else if p.cursorYPos > 0 {
-					p.cursorYPos--
-					p.cursorXPos = 0
-				}
-			}
-		}
-
-		p.updateArea(&area)
+		p.updateArea(&area, inputfirstLineOffset())
 
 		return false, nil
 	})
@@ -272,54 +340,38 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	// Add new line
 	Println()
 
-	for i, s := range p.input {
-		if i < len(p.input)-1 {
-			areaText += s + "\n"
-		} else {
-			areaText += s
-		}
-	}
-
 	if !p.startedTyping {
 		return p.DefaultValue, nil
 	}
 
-	return strings.ReplaceAll(areaText, p.text, ""), nil
+	return strings.Join(p.input, "\n"), nil
 }
 
-func (p InteractiveTextInputPrinter) updateArea(area *cursor.Area) string {
-	if !p.MultiLine {
-		p.cursorYPos = 0
-	}
+func (p InteractiveTextInputPrinter) updateArea(area *cursor.Area, offest int) string {
 
-	areaText := p.text
-
-	for i, s := range p.input {
-		if i < len(p.input)-1 {
-			areaText += s + "\n"
-		} else {
-			areaText += s
+	areaText := textFitWidth(p.text)
+	areaContent := areaText
+	areaInput := append([]string{}, linesFitWidth(p.input, offest)...)
+	if p.Mask != "" {
+		for i := 0; i < len(areaInput); i++ {
+			areaInput[i] = strings.Repeat(p.Mask, getMaxW(areaInput[i]))
 		}
 	}
+	areaContent += strings.Join(areaInput, "\n")
 
-	if p.Mask != "" {
-		areaText = p.text + strings.Repeat(p.Mask, internal.GetStringMaxWidth(areaText)-internal.GetStringMaxWidth(p.text))
-	}
+	area.Update(areaContent)
 
-	if p.cursorXPos+internal.GetStringMaxWidth(p.input[p.cursorYPos]) < 1 {
-		p.cursorXPos = -internal.GetStringMaxWidth(p.input[p.cursorYPos])
-	}
-
-	area.Update(areaText)
+	x, y := p.actualX, p.actualY
+	// cursor down offset
 	area.Top()
-	area.Down(p.cursorYPos + 1)
+	area.Down(strings.Count(areaText, "\n") + y)
+	// cursor right offset
 	area.StartOfLine()
-
-	if p.MultiLine {
-		cursor.Right(internal.GetStringMaxWidth(p.input[p.cursorYPos]) + p.cursorXPos)
+	if p.MultiLine || y != 0 {
+		cursor.Right(getMaxW(areaInput[y]) + x)
 	} else {
-		cursor.Right(internal.GetStringMaxWidth(areaText) + p.cursorXPos)
+		cursor.Right(offest + getMaxW(areaInput[y]) + x)
 	}
 
-	return areaText
+	return areaContent
 }
