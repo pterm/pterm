@@ -2,8 +2,6 @@ package pterm
 
 import (
 	"strings"
-	"sync"
-	"time"
 
 	"atomicgo.dev/cursor"
 	"atomicgo.dev/keyboard"
@@ -166,24 +164,14 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	updateActualYX()
 
 	area := cursor.NewArea()
-	p.updateArea(&area, p.fitInput)
+	p.updateArea(&area, inputfirstLineOffset())
 
-	// watch and fit the terminal width
-	var mu sync.Mutex
-	fitDone := make(chan struct{})
-	defer close(fitDone)
-	go func() {
-		watchWidth(fitDone, 100*time.Millisecond, func(w int) {
-			mu.Lock()
-			defer mu.Unlock()
-			updateActualYX()
-			p.updateArea(&area, p.fitInput)
-		})
-	}()
-
+	width := GetTerminalWidth()
 	err := keyboard.Listen(func(key keys.Key) (stop bool, err error) {
-		mu.Lock()
-		defer mu.Unlock()
+
+		if w := GetTerminalWidth(); w != width {
+			updateActualYX()
+		}
 
 		if len(p.input) == 0 {
 			p.input = append(p.input, "")
@@ -340,18 +328,7 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 		// update logic coord
 		updateLogicYX()
 
-		// handle the mask
-		areaInput := make([]string, 0)
-		if p.Mask != "" {
-			for _, s := range p.input {
-				areaInput = append(areaInput, strings.Repeat(p.Mask, getMaxW(s)))
-			}
-		} else {
-			areaInput = p.input
-		}
-		// render to area
-		areaInput = inputFitWidth(areaInput)
-		p.updateArea(&area, areaInput)
+		p.updateArea(&area, inputfirstLineOffset())
 
 		return false, nil
 	})
@@ -369,11 +346,17 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	return strings.Join(p.input, "\n"), nil
 }
 
-func (p InteractiveTextInputPrinter) updateArea(area *cursor.Area, fitInput []string) string {
+func (p InteractiveTextInputPrinter) updateArea(area *cursor.Area, offest int) string {
 
 	areaText := textFitWidth(p.text)
 	areaContent := areaText
-	areaContent += strings.Join(fitInput, "\n")
+	areaInput := linesFitWidth(p.input, offest)
+	if p.Mask != "" {
+		for i := 0; i < len(areaInput); i++ {
+			areaInput[i] = strings.Repeat(p.Mask, getMaxW(areaInput[i]))
+		}
+	}
+	areaContent += strings.Join(areaInput, "\n")
 
 	area.Update(areaContent)
 
@@ -384,10 +367,9 @@ func (p InteractiveTextInputPrinter) updateArea(area *cursor.Area, fitInput []st
 	// cursor right offset
 	area.StartOfLine()
 	if p.MultiLine || y != 0 {
-		cursor.Right(getMaxW(fitInput[y]) + x)
+		cursor.Right(getMaxW(areaInput[y]) + x)
 	} else {
-		lines := strings.Split(p.text, "\n")
-		cursor.Right(getMaxW(lines[len(lines)-1]) + getMaxW(fitInput[y]) + x)
+		cursor.Right(offest + getMaxW(areaInput[y]) + x)
 	}
 
 	return areaContent
