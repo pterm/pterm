@@ -2,7 +2,6 @@ package pterm
 
 import (
 	"strings"
-	"time"
 	"unicode/utf8"
 
 	"github.com/pterm/pterm/internal"
@@ -85,25 +84,4 @@ func indexSplitAtByte(s string, i int) int {
 		i--
 	}
 	return i
-}
-
-// this create a [time.Ticker] that
-// call the onChange(width)
-// when the terminal's width changed
-func watchWidth(done <-chan struct{}, interval time.Duration, onChange func(w int)) {
-	ticker := time.NewTicker(interval)
-	defer ticker.Stop()
-
-	last := GetTerminalWidth()
-	for {
-		select {
-		case <-done:
-			return
-		case <-ticker.C:
-			if w := GetTerminalWidth(); w != last {
-				last = w
-				onChange(w)
-			}
-		}
-	}
 }
