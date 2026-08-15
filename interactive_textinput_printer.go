@@ -171,6 +171,7 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 
 		if w := GetTerminalWidth(); w != width {
 			updateActualYX()
+			width = w
 		}
 
 		if len(p.input) == 0 {
@@ -350,7 +351,7 @@ func (p InteractiveTextInputPrinter) updateArea(area *cursor.Area, offest int) s
 
 	areaText := textFitWidth(p.text)
 	areaContent := areaText
-	areaInput := linesFitWidth(p.input, offest)
+	areaInput := append([]string{}, linesFitWidth(p.input, offest)...)
 	if p.Mask != "" {
 		for i := 0; i < len(areaInput); i++ {
 			areaInput[i] = strings.Repeat(p.Mask, getMaxW(areaInput[i]))
