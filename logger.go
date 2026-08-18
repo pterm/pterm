@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"slices"
 	"strings"
 	"sync"
 	"time"
@@ -134,6 +135,10 @@ type Logger struct {
 	// The width is always capped to the current terminal width.
 	// A value of zero or less uses the full terminal width.
 	MaxWidth int
+	// SortArguments sorts the key-value arguments alphabetically by key before
+	// printing. When false (the default), arguments keep the order in which they
+	// were supplied.
+	SortArguments bool
 }
 
 // WithFormatter sets the log formatter of the logger.
@@ -187,6 +192,14 @@ func (l Logger) WithKeyStyles(styles map[string]Style) *Logger {
 // WithMaxWidth sets the maximum width of the logger.
 func (l Logger) WithMaxWidth(width int) *Logger {
 	l.MaxWidth = width
+	return &l
+}
+
+// WithSortArguments enables or disables alphabetical sorting of the key-value
+// arguments by key. When disabled (the default), arguments keep the order in
+// which they were supplied.
+func (l Logger) WithSortArguments(b ...bool) *Logger {
+	l.SortArguments = internal.WithBoolean(b)
 	return &l
 }
 
@@ -281,6 +294,12 @@ func (l Logger) combineArgs(args ...[]LoggerArgument) []LoggerArgument {
 
 	for _, arg := range args {
 		result = append(result, arg...)
+	}
+
+	if l.SortArguments {
+		slices.SortStableFunc(result, func(a, b LoggerArgument) int {
+			return strings.Compare(a.Key, b.Key)
+		})
 	}
 
 	return result

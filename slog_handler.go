@@ -33,19 +33,21 @@ func (s *SlogHandler) Handle(_ context.Context, record slog.Record) error {
 	level := record.Level
 	message := record.Message
 
-	// Convert slog Attrs to a map.
-	keyValsMap := make(map[string]any)
-
-	record.Attrs(func(attr slog.Attr) bool {
-		keyValsMap[attr.Key] = attr.Value
-		return true
-	})
+	// Collect the attrs in the order they were supplied, so the logger can print
+	// them predictably instead of in Go's randomized map order. Attrs bound via
+	// WithAttrs come first, followed by the record's own attrs, matching the
+	// behavior of slog's own text handler. Alphabetical ordering is available
+	// through the logger's SortArguments option.
+	args := make([]LoggerArgument, 0, len(s.attrs)+record.NumAttrs())
 
 	for _, attr := range s.attrs {
-		keyValsMap[attr.Key] = attr.Value
+		args = append(args, LoggerArgument{Key: attr.Key, Value: attr.Value})
 	}
 
-	args := s.logger.ArgsFromMap(keyValsMap)
+	record.Attrs(func(attr slog.Attr) bool {
+		args = append(args, LoggerArgument{Key: attr.Key, Value: attr.Value})
+		return true
+	})
 
 	// Wrapping args inside another slice to match [][]LoggerArgument
 	argsWrapped := [][]LoggerArgument{args}
