@@ -37,11 +37,16 @@ type TablePrinter struct {
 	RowSeparator            string
 	RowSeparatorStyle       *Style
 	Data                    TableData
-	Boxed                   bool
-	LeftAlignment           bool
-	RightAlignment          bool
-	Writer                  io.Writer
-	AlternateRowStyle       *Style
+	// ColumnMinWidths sets a minimum display width per column, indexed from the
+	// left. A column is still widened to fit its content, but never rendered
+	// narrower than its minimum. Columns without an entry (or with a zero or
+	// negative minimum) keep the default content-based width.
+	ColumnMinWidths   []int
+	Boxed             bool
+	LeftAlignment     bool
+	RightAlignment    bool
+	Writer            io.Writer
+	AlternateRowStyle *Style
 }
 
 // WithStyle returns a new TablePrinter with a specific Style.
@@ -101,6 +106,16 @@ func (p TablePrinter) WithRowSeparatorStyle(style *Style) *TablePrinter {
 // WithData returns a new TablePrinter with specific Data.
 func (p TablePrinter) WithData(data [][]string) *TablePrinter {
 	p.Data = data
+	return &p
+}
+
+// WithColumnMinWidths returns a new TablePrinter with a minimum display width
+// set for each column, indexed from the left. A column is still widened to fit
+// its content, but never rendered narrower than its minimum. Passing the same
+// widths to several tables keeps their columns aligned even when their content
+// differs.
+func (p TablePrinter) WithColumnMinWidths(widths ...int) *TablePrinter {
+	p.ColumnMinWidths = widths
 	return &p
 }
 
@@ -220,6 +235,14 @@ func (p TablePrinter) Srender() (string, error) {
 		}
 
 		t.rows = append(t.rows, r)
+	}
+
+	// Widen any column that is narrower than its configured minimum. Content
+	// still wins when it is wider, so this only ever grows a column.
+	for i := range t.maxColumnWidths {
+		if i < len(p.ColumnMinWidths) && p.ColumnMinWidths[i] > t.maxColumnWidths[i] {
+			t.maxColumnWidths[i] = p.ColumnMinWidths[i]
+		}
 	}
 
 	// Render every row once and reuse the result for measuring and output.
