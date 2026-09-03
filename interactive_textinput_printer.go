@@ -17,6 +17,7 @@ var DefaultInteractiveTextInput = InteractiveTextInputPrinter{
 	Delimiter:   ": ",
 	TextStyle:   &ThemeDefault.PrimaryStyle,
 	Mask:        "",
+	Advice:      "[Press tab to submit]",
 }
 
 // InteractiveTextInputPrinter is a printer for interactive select menus.
@@ -28,6 +29,7 @@ type InteractiveTextInputPrinter struct {
 	MultiLine       bool
 	Mask            string
 	OnInterruptFunc func()
+	Advice          string
 
 	input         []string
 	cursorXPos    int
@@ -78,6 +80,18 @@ func (p InteractiveTextInputPrinter) WithDelimiter(delimiter string) *Interactiv
 	return &p
 }
 
+/*
+WithAdvice sets the advice:
+
+default: "[Press tab to submit]"
+*/
+func (p InteractiveTextInputPrinter) WithAdvice(advice string) *InteractiveTextInputPrinter {
+
+	p.Advice = advice
+	return &p
+
+}
+
 // Show shows the interactive select menu and returns the selected entry.
 func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	// should be the first defer statement to make sure it is executed last
@@ -92,7 +106,7 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	}
 
 	if p.MultiLine {
-		areaText = p.TextStyle.Sprintfln("%s %s %s", text[0], ThemeDefault.SecondaryStyle.Sprint("[Press tab to submit]"), p.Delimiter)
+		areaText = p.TextStyle.Sprintfln("%s %s %s", text[0], ThemeDefault.SecondaryStyle.Sprint(p.Advice), p.Delimiter)
 	} else {
 		areaText = p.TextStyle.Sprintf("%s%s", text[0], p.Delimiter)
 	}
