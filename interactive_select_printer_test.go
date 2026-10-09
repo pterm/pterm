@@ -235,3 +235,24 @@ func TestInteractiveSelectPrinter_InterruptCallsOnInterruptFunc(t *testing.T) {
 	require.NoError(t, err)
 	assert.True(t, interrupted, "Ctrl+C must invoke the OnInterruptFunc")
 }
+
+func TestInteractiveSelectPrinter_SelectedOptionStyle(t *testing.T) {
+	restoreGlobalStyling(t)
+	pterm.EnableColor()
+
+	area := captureAreaOutput(t)
+	selectedStyle := pterm.NewStyle(pterm.FgMagenta, pterm.Bold)
+	printer := pterm.DefaultInteractiveSelect.
+		WithOptions([]string{"a", "b"}).
+		WithSelectedOptionStyle(selectedStyle)
+
+	simulateKeys(t, keys.Enter)
+
+	_, err := showSelect(t, printer)
+	require.NoError(t, err)
+
+	// frames() strips ANSI codes, so the styling is only visible in the raw output.
+	raw := area.String()
+	assert.Contains(t, raw, selectedStyle.Sprint("a"), "the highlighted option must use SelectedOptionStyle")
+	assert.NotContains(t, raw, selectedStyle.Sprint("b"), "other options must keep OptionStyle")
+}
