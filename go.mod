@@ -7,11 +7,11 @@ require (
 	atomicgo.dev/keyboard v0.2.10
 	atomicgo.dev/schedule v0.1.0
 	github.com/lithammer/fuzzysearch v1.1.8
-	github.com/mattn/go-runewidth v0.0.23
+	github.com/mattn/go-runewidth v0.0.24
 	github.com/stretchr/testify v1.11.1
-	golang.org/x/sys v0.43.0
-	golang.org/x/term v0.42.0
-	golang.org/x/text v0.36.0
+	golang.org/x/sys v0.44.0
+	golang.org/x/term v0.43.0
+	golang.org/x/text v0.37.0
 )
 
 require (
