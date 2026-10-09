@@ -1,6 +1,6 @@
 ### table/demo
 
-![Animation](https://vhs.charm.sh/vhs-2lXwGQ24qFiDxKRZrCBZ2Y.gif)
+![Animation](https://vhs.charm.sh/vhs-6GyT4ctanulsK2hMwSXivY.gif)
 
 <details>
 
@@ -12,7 +12,8 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Define the data for the first table
+	// With WithHasHeader the first row is styled as the header. The CJK
+	// characters are measured by display width, so the columns stay aligned.
 	tableData1 := pterm.TableData{
 		{"Firstname", "Lastname", "Email", "Note"},
 		{"Paul", "Dean", "augue@velitAliquam.co.uk", ""},
@@ -21,12 +22,11 @@ func main() {
 		{"张", "小宝", "zhang@example.com", ""},
 	}
 
-	// Create a table with a header and the defined data, then render it
 	pterm.DefaultTable.WithHasHeader().WithData(tableData1).Render()
 
-	pterm.Println() // Blank line
+	pterm.Println()
 
-	// Define the data for the second table
+	// Cells may contain newlines; a row grows to fit its tallest cell.
 	tableData2 := pterm.TableData{
 		{"Firstname", "Lastname", "Email"},
 		{"Paul\n\nNewline", "Dean", "augue@velitAliquam.co.uk"},
@@ -35,7 +35,6 @@ func main() {
 		{"张", "小宝", "zhang@example.com"},
 	}
 
-	// Create another table with a header and the defined data, then render it
 	pterm.DefaultTable.WithHasHeader().WithData(tableData2).Render()
 }
 ```
@@ -44,7 +43,7 @@ func main() {
 
 ### table/alternate-row-style
 
-![Animation](https://vhs.charm.sh/vhs-yteDmOmCrDnbD1iaE6zvv.gif)
+![Animation](https://vhs.charm.sh/vhs-12EtzQW8xBhTNQQ6zHqsUV.gif)
 
 <details>
 
@@ -56,9 +55,8 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Define the data for the table.
-	// Each inner slice represents a row in the table.
-	// The first row is considered as the header of the table.
+	// WithAlternateRowStyle applies this style to every second data row,
+	// which makes wide tables easier to scan.
 	alternateStyle := pterm.NewStyle(pterm.BgDarkGray)
 
 	tableData := pterm.TableData{
@@ -69,9 +67,6 @@ func main() {
 		{"张", "小宝", "zhang@example.com", ""},
 	}
 
-	// Create a table with the defined data.
-	// The table has a header and is boxed.
-	// Finally, render the table to print it.
 	pterm.DefaultTable.WithHasHeader().WithBoxed().WithData(tableData).WithAlternateRowStyle(alternateStyle).Render()
 }
 ```
@@ -80,7 +75,7 @@ func main() {
 
 ### table/boxed
 
-![Animation](https://vhs.charm.sh/vhs-1EsPVlcGiPkAnURnA7NdJN.gif)
+![Animation](https://vhs.charm.sh/vhs-3Nbskbte7xbT79fb7staX5.gif)
 
 <details>
 
@@ -92,9 +87,7 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Define the data for the table.
-	// Each inner slice represents a row in the table.
-	// The first row is considered as the header of the table.
+	// The first row becomes the header via WithHasHeader.
 	tableData := pterm.TableData{
 		{"Firstname", "Lastname", "Email", "Note"},
 		{"Paul", "Dean", "augue@velitAliquam.co.uk", ""},
@@ -103,10 +96,76 @@ func main() {
 		{"张", "小宝", "zhang@example.com", ""},
 	}
 
-	// Create a table with the defined data.
-	// The table has a header and is boxed.
-	// Finally, render the table to print it.
+	// WithBoxed draws a box around the whole table.
 	pterm.DefaultTable.WithHasHeader().WithBoxed().WithData(tableData).Render()
+}
+```
+
+</details>
+
+### table/from-csv
+
+![Animation](https://vhs.charm.sh/vhs-7xdQkX1Aaj9YV9wPXnXX0l.gif)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"github.com/pterm/pterm"
+	"github.com/pterm/pterm/putils"
+)
+
+func main() {
+	csv := `Firstname,Lastname,Email
+Paul,Dean,paul@example.com
+Callie,Mckay,callie@example.com
+Libby,Camacho,libby@example.com`
+
+	// TableDataFromCSV converts raw CSV into pterm.TableData. The CSV header
+	// line ends up as the first row, so WithHasHeader renders it as such.
+	pterm.DefaultTable.WithHasHeader().WithData(putils.TableDataFromCSV(csv)).Render()
+}
+```
+
+</details>
+
+### table/from-structs
+
+![Animation](https://vhs.charm.sh/vhs-7JLw6Gm8B76cG5m18AysEs.gif)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"github.com/pterm/pterm/putils"
+)
+
+// User is a regular struct; no tags or interfaces are needed.
+type User struct {
+	Name  string
+	Age   int
+	Email string
+}
+
+func main() {
+	users := []User{
+		{Name: "Ada Lovelace", Age: 36, Email: "ada@example.com"},
+		{Name: "Alan Turing", Age: 41, Email: "alan@example.com"},
+		{Name: "Grace Hopper", Age: 85, Email: "grace@example.com"},
+	}
+
+	// DefaultTableFromStructSlice fills the default table via reflection: the
+	// field names become the first row, so WithHasHeader styles them as the
+	// header.
+	putils.DefaultTableFromStructSlice(users).WithHasHeader().Render()
 }
 ```
 
@@ -114,7 +173,7 @@ func main() {
 
 ### table/multiple-lines
 
-![Animation](https://vhs.charm.sh/vhs-6jJA0OE0oEmRifT80vcnFM.gif)
+![Animation](https://vhs.charm.sh/vhs-roshTIYM84GqS1s50v2rM.gif)
 
 <details>
 
@@ -126,7 +185,7 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Define the data for the table.
+	// Cells may contain newlines; a row grows to fit its tallest cell.
 	data := pterm.TableData{
 		{"Firstname", "Lastname", "Email"},
 		{"Paul\n\nNewline", "Dean", "augue@velitAliquam.co.uk"},
@@ -135,9 +194,7 @@ func main() {
 		{"张", "小宝", "zhang@example.com"},
 	}
 
-	// Create and render the table.
-	// The options are chained in a single line for simplicity.
-	// The table has a header, a row separator, and a header row separator.
+	// Row separators keep multi-line rows visually apart.
 	pterm.DefaultTable.WithHasHeader().WithRowSeparator("-").WithHeaderRowSeparator("-").WithData(data).Render()
 }
 ```
@@ -146,7 +203,7 @@ func main() {
 
 ### table/right-alignment
 
-![Animation](https://vhs.charm.sh/vhs-5rWnbjwsvfGAhjgzf4POkb.gif)
+![Animation](https://vhs.charm.sh/vhs-1ZkWcvqqmfoUT5tHGxJbX1.gif)
 
 <details>
 
@@ -158,9 +215,7 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Define the data for the table.
-	// Each inner slice represents a row in the table.
-	// The first row is considered as the header.
+	// The first row becomes the header via WithHasHeader.
 	tableData := pterm.TableData{
 		{"Firstname", "Lastname", "Email", "Note"},
 		{"Paul", "Dean", "augue@velitAliquam.co.uk", ""},
@@ -169,9 +224,7 @@ func main() {
 		{"张", "小宝", "zhang@example.com", ""},
 	}
 
-	// Create a table with the defined data.
-	// The table has a header and the text in the cells is right-aligned.
-	// The Render() method is used to print the table to the console.
+	// WithRightAlignment right-aligns every cell in the table.
 	pterm.DefaultTable.WithHasHeader().WithRightAlignment().WithData(tableData).Render()
 }
 ```

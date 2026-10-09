@@ -5,27 +5,20 @@ import (
 )
 
 func main() {
-	// Define a set of bars for the chart.
-	// Each bar has a label and a value.
+	// Quarterly results with both gains and losses. The longer label
+	// shows how the horizontal chart aligns bars to the widest label.
 	bars := []pterm.Bar{
-		{Label: "Bar 1", Value: 2},
-		{Label: "Bar 2", Value: -3},
-		{Label: "Bar 3", Value: -2},
-		{Label: "Bar 4", Value: 5},
-		{Label: "Longer Label", Value: 7},
+		{Label: "Q1", Value: 2},
+		{Label: "Q2", Value: -3},
+		{Label: "Q3", Value: -2},
+		{Label: "Q4", Value: 5},
+		{Label: "Yearly Total", Value: 7},
 	}
 
-	// Print a section header.
-	// This is useful for separating different parts of the output.
-	pterm.DefaultSection.Println("Chart example with mixed values (note screen space usage in case when ABSOLUTE values of negative and positive parts are differ too much)")
+	pterm.DefaultSection.Println("Chart example with mixed values (the chart area is split between the positive and negative side, so bars get less space when the absolute values differ a lot)")
 
-	// Create a bar chart with the defined bars.
-	// The chart will display the value of each bar.
-	// The Render() function is called to display the chart.
 	pterm.DefaultBarChart.WithBars(bars).WithShowValue().Render()
 
-	// Create a horizontal bar chart with the same bars.
-	// The chart will display the value of each bar.
-	// The Render() function is called to display the chart.
+	// The same data rendered horizontally.
 	pterm.DefaultBarChart.WithHorizontal().WithBars(bars).WithShowValue().Render()
 }

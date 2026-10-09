@@ -1,157 +1,115 @@
 package pterm_test
 
+// Behavioral tests for HeaderPrinter.
+//
+// Builder methods, Print*/Sprint* delegation and the global styling invariants
+// are covered generically in contract_test.go; the styled default output is
+// locked by snapshot tests. This file verifies the layout math: margins,
+// centering, full width, multiline padding and terminal-width clamping.
+//
+// TestMain forces the terminal size to 80x60.
+
 import (
-	"errors"
-	"io"
-	"os"
+	"strings"
 	"testing"
 
-	"github.com/MarvinJWendt/testza"
+	"github.com/mattn/go-runewidth"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/pterm/pterm"
 )
 
-func TestHeaderPrinterNilPrint(t *testing.T) {
-	p := pterm.HeaderPrinter{}
-	p.Println("Hello, World!")
+// headerLines strips ANSI codes and splits the header block into its lines
+// (dropping the trailing newline).
+func headerLines(t *testing.T, out string) []string {
+	t.Helper()
+
+	plain := stripANSI(out)
+	require.True(t, strings.HasSuffix(plain, "\n"), "header output must end with a newline")
+
+	return strings.Split(strings.TrimSuffix(plain, "\n"), "\n")
 }
 
-func TestHeaderPrinterPrintMethods(t *testing.T) {
-	p := pterm.DefaultHeader
+func TestHeaderPrinterCentersTextWithinMargin(t *testing.T) {
+	// Margin 5 on each side of "Hello" (5 cells) -> 15-wide header with a
+	// blank padded line above and below.
+	expected := "               \n" +
+		"     Hello     \n" +
+		"               \n"
 
-	t.Run("Print", func(t *testing.T) {
-		testPrintContains(t, func(w io.Writer, a any) {
-			p.Print(a)
-		})
-	})
-
-	t.Run("PrintWithFullWidth", func(t *testing.T) {
-		testPrintContains(t, func(w io.Writer, a any) {
-			p2 := p.WithFullWidth()
-			p2.Print(a)
-		})
-	})
-
-	t.Run("Printf", func(t *testing.T) {
-		testPrintfContains(t, func(w io.Writer, format string, a any) {
-			p.Printf(format, a)
-		})
-	})
-
-	t.Run("Printfln", func(t *testing.T) {
-		testPrintflnContains(t, func(w io.Writer, format string, a any) {
-			p.Printfln(format, a)
-		})
-	})
-
-	t.Run("Println", func(t *testing.T) {
-		testPrintlnContains(t, func(w io.Writer, a any) {
-			p.Println(a)
-		})
-	})
-
-	t.Run("Sprint", func(t *testing.T) {
-		testSprintContains(t, func(a any) string {
-			return p.Sprint(a)
-		})
-	})
-
-	t.Run("Sprintf", func(t *testing.T) {
-		testSprintfContains(t, func(format string, a any) string {
-			return p.Sprintf(format, a)
-		})
-	})
-
-	t.Run("Sprintfln", func(t *testing.T) {
-		testSprintflnContains(t, func(format string, a any) string {
-			return p.Sprintfln(format, a)
-		})
-	})
-
-	t.Run("Sprintln", func(t *testing.T) {
-		testSprintlnContains(t, func(a any) string {
-			return p.Sprintln(a)
-		})
-	})
-
-	t.Run("PrintOnError", func(t *testing.T) {
-		result := captureStdout(func(w io.Writer) {
-			p.PrintOnError(errors.New("hello world"))
-		})
-		testza.AssertContains(t, result, "hello world")
-	})
-
-	t.Run("PrintIfError_WithoutError", func(t *testing.T) {
-		result := captureStdout(func(w io.Writer) {
-			p.PrintOnError(nil)
-		})
-		testza.AssertZero(t, result)
-	})
-
-	t.Run("PrintOnErrorf", func(t *testing.T) {
-		result := captureStdout(func(w io.Writer) {
-			p.PrintOnErrorf("wrapping error : %w", errors.New("hello world"))
-		})
-		testza.AssertContains(t, result, "hello world")
-	})
-
-	t.Run("PrintIfError_WithoutErrorf", func(t *testing.T) {
-		result := captureStdout(func(w io.Writer) {
-			p.PrintOnErrorf("", nil)
-		})
-		testza.AssertZero(t, result)
-	})
+	assert.Equal(t, expected, stripANSI(pterm.DefaultHeader.Sprint("Hello")))
 }
 
-func TestHeaderPrinter_WithBackgroundStyle(t *testing.T) {
-	s := pterm.NewStyle(pterm.FgRed, pterm.BgGray, pterm.Bold)
-	p := pterm.HeaderPrinter{}
-	p2 := p.WithBackgroundStyle(s)
+func TestHeaderPrinterWithMargin(t *testing.T) {
+	expected := "         \n" +
+		"  Hello  \n" +
+		"         \n"
 
-	testza.AssertEqual(t, s, p2.BackgroundStyle)
+	assert.Equal(t, expected, stripANSI(pterm.DefaultHeader.WithMargin(2).Sprint("Hello")))
 }
 
-func TestHeaderPrinter_WithFullWidth(t *testing.T) {
+func TestHeaderPrinterZeroMarginShrinksToText(t *testing.T) {
 	p := pterm.HeaderPrinter{}
-	p2 := p.WithFullWidth()
 
-	testza.AssertEqual(t, true, p2.FullWidth)
+	expected := "     \n" +
+		"Hello\n" +
+		"     \n"
+
+	assert.Equal(t, expected, stripANSI(p.Sprint("Hello")))
 }
 
-func TestHeaderPrinter_WithFullWidthToLongForTerminal(t *testing.T) {
-	p := pterm.HeaderPrinter{}
-	p2 := p.WithFullWidth().Sprint("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+func TestHeaderPrinterFullWidthSpansTerminal(t *testing.T) {
+	lines := headerLines(t, pterm.DefaultHeader.WithFullWidth().Sprint("Hello"))
+	require.Len(t, lines, 3)
 
-	testza.AssertContains(t, p2, "a")
+	for i, line := range lines {
+		assert.Lenf(t, line, 80, "line %d must span the forced 80-column terminal", i)
+	}
+
+	// The text is centered: (80-5)/2 = 37 cells on the left, the rest padded.
+	assert.Equal(t, strings.Repeat(" ", 37)+"Hello"+strings.Repeat(" ", 38), lines[1])
 }
 
-func TestHeaderPrinter_ToLongForTerminal(t *testing.T) {
-	p := pterm.HeaderPrinter{}
-	p2 := p.Sprint("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+func TestHeaderPrinterMultilinePadsToWidestLine(t *testing.T) {
+	expected := "               \n" +
+		"     Hello     \n" +
+		"     Hi        \n" +
+		"               \n"
 
-	testza.AssertContains(t, p2, "a")
+	assert.Equal(t, expected, stripANSI(pterm.DefaultHeader.Sprint("Hello\nHi")))
 }
 
-func TestHeaderPrinter_WithMargin(t *testing.T) {
-	p := pterm.HeaderPrinter{}
-	p2 := p.WithMargin(1337)
+func TestHeaderPrinterUnicodeKeepsLinesEqualWidth(t *testing.T) {
+	// "汉字" is 4 terminal cells wide, so all lines must be 4+2*5 = 14 cells.
+	lines := headerLines(t, pterm.DefaultHeader.Sprint("汉字"))
+	require.Len(t, lines, 3)
 
-	testza.AssertEqual(t, 1337, p2.Margin)
+	for i, line := range lines {
+		assert.Equalf(t, 14, runewidth.StringWidth(line), "line %d %q", i, line)
+	}
 }
 
-func TestHeaderPrinter_WithTextStyle(t *testing.T) {
-	s := pterm.NewStyle(pterm.FgRed, pterm.BgGray, pterm.Bold)
-	p := pterm.HeaderPrinter{}
-	p2 := p.WithTextStyle(s)
+func TestHeaderPrinterLongInputStaysWithinTerminalWidth(t *testing.T) {
+	lines := headerLines(t, pterm.DefaultHeader.Sprint(strings.Repeat("a", 200)))
+	require.Greater(t, len(lines), 3, "long input must be wrapped onto multiple lines")
 
-	testza.AssertEqual(t, s, p2.TextStyle)
+	for i, line := range lines {
+		assert.LessOrEqualf(t, len(line), 80, "line %d must not exceed the terminal width", i)
+	}
 }
 
-func TestHeaderPrinter_WithWriter(t *testing.T) {
-	p := pterm.HeaderPrinter{}
-	s := os.Stderr
-	p2 := p.WithWriter(s)
+func TestHeaderPrinterRawOutputPassesTextThrough(t *testing.T) {
+	restoreGlobalStyling(t)
+	pterm.DisableStyling()
 
-	testza.AssertEqual(t, s, p2.Writer)
-	testza.AssertZero(t, p.Writer)
+	assert.Equal(t, "Hello", pterm.DefaultHeader.Sprint("Hello"))
+}
+
+func TestHeaderPrinterAppliesBackgroundStyle(t *testing.T) {
+	// Every line of the block, including the blank ones, is wrapped in the
+	// background style (BgCyan = SGR 46).
+	for i, line := range strings.SplitAfter(strings.TrimSuffix(pterm.DefaultHeader.Sprint("Hi"), "\n"), "\n") {
+		assert.Truef(t, strings.HasPrefix(line, "\x1b[46m"), "line %d %q must start with the background style", i, line)
+	}
 }

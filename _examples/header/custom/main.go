@@ -3,16 +3,17 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Customize the DefaultHeader with a cyan background, black text, and a margin of 15.
+	// Restyle the default header on the fly. The margin adds horizontal
+	// padding on both sides of the text.
 	pterm.DefaultHeader.WithMargin(15).WithBackgroundStyle(pterm.NewStyle(pterm.BgCyan)).WithTextStyle(pterm.NewStyle(pterm.FgBlack)).Println("This is a custom header!")
 
-	// Define a new HeaderPrinter with a red background, black text, and a margin of 20.
+	// Alternatively, build a HeaderPrinter from scratch instead of deriving
+	// from DefaultHeader.
 	newHeader := pterm.HeaderPrinter{
 		TextStyle:       pterm.NewStyle(pterm.FgBlack),
 		BackgroundStyle: pterm.NewStyle(pterm.BgRed),
 		Margin:          20,
 	}
 
-	// Print the custom header using the new HeaderPrinter.
 	newHeader.Println("This is a custom header!")
 }

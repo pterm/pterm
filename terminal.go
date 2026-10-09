@@ -15,10 +15,10 @@ var FallbackTerminalWidth = 80
 var FallbackTerminalHeight = 10
 
 // forcedTerminalWidth, when set along with forcedTerminalHeight, forces the terminal width value.
-var forcedTerminalWidth int = 0
+var forcedTerminalWidth int
 
 // forcedTerminalHeight, when set along with forcedTerminalWidth, forces the terminal height value.
-var forcedTerminalHeight int = 0
+var forcedTerminalHeight int
 
 // GetTerminalWidth returns the terminal width of the active terminal.
 func GetTerminalWidth() int {
@@ -64,7 +64,7 @@ func GetTerminalSize() (width, height int, err error) {
 	return w, h, err
 }
 
-// setForcedTerminalSize turns off terminal size autodetection. Usuful for unified tests.
+// SetForcedTerminalSize turns off terminal size autodetection. Usuful for unified tests.
 func SetForcedTerminalSize(width int, height int) {
 	forcedTerminalWidth = width
 	forcedTerminalHeight = height

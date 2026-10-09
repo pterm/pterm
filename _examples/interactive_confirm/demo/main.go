@@ -5,19 +5,16 @@ import (
 )
 
 func main() {
-	// Show an interactive confirmation dialog and get the result.
+	// The confirm prompt accepts "y" and "n" as shortcuts. Pressing enter
+	// answers with the default value, which is "no" unless changed with
+	// WithDefaultValue.
 	result, _ := pterm.DefaultInteractiveConfirm.Show()
 
-	// Print a blank line for better readability.
 	pterm.Println()
-
-	// Print the user's answer in a formatted way.
 	pterm.Info.Printfln("You answered: %s", boolToText(result))
 }
 
-// boolToText converts a boolean value to a colored text.
-// If the value is true, it returns a green "Yes".
-// If the value is false, it returns a red "No".
+// boolToText renders the answer as a colored "Yes" or "No".
 func boolToText(b bool) string {
 	if b {
 		return pterm.Green("Yes")

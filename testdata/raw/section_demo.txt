@@ -317,16 +317,16 @@
 
 ────────────────────────────────────────────────────────────────────────────────
 
-# This is a section!
+» This is a section!
 
- INFO  And here is some text.
-       This text could be anything.
-       Basically it's just a placeholder
+  INFO    And here is some text.
+          This text could be anything.
+          Basically it's just a placeholder
 
-## This is another section!
+»» This is another section!
 
- INFO  And this is
-       more placeholder text
+  INFO    And this is
+          more placeholder text
 >
 
 
@@ -334,16 +334,16 @@
 
 ────────────────────────────────────────────────────────────────────────────────
 
-# This is a section!
+» This is a section!
 
- INFO  And here is some text.
-       This text could be anything.
-       Basically it's just a placeholder
+  INFO    And here is some text.
+          This text could be anything.
+          Basically it's just a placeholder
 
-## This is another section!
+»» This is another section!
 
- INFO  And this is
-       more placeholder text
+  INFO    And this is
+          more placeholder text
 >
 
 
@@ -351,16 +351,16 @@
 
 ────────────────────────────────────────────────────────────────────────────────
 
-# This is a section!
+» This is a section!
 
- INFO  And here is some text.
-       This text could be anything.
-       Basically it's just a placeholder
+  INFO    And here is some text.
+          This text could be anything.
+          Basically it's just a placeholder
 
-## This is another section!
+»» This is another section!
 
- INFO  And this is
-       more placeholder text
+  INFO    And this is
+          more placeholder text
 >
 
 

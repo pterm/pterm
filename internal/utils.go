@@ -4,7 +4,7 @@ import (
 	"os"
 	"regexp"
 
-	"github.com/gookit/color"
+	"github.com/pterm/pterm/internal/color"
 )
 
 var osc8Regex = regexp.MustCompile(`\x1b\]8;;[^\x07]*?(?:\x07|\x1b\\)(.*?)\x1b\]8;;(?:\x07|\x1b\\)`)
@@ -27,5 +27,5 @@ func StripOSC8Hyperlinks(s string) string {
 func RemoveEscapeCodes(s string) string {
 	// Strip OSC 8 hyperlinks first, then color codes
 	s = StripOSC8Hyperlinks(s)
-	return color.ClearCode(s)
+	return color.Strip(s)
 }

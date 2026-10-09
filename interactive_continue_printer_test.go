@@ -1,208 +1,180 @@
 package pterm_test
 
 import (
+	"io"
 	"testing"
 
-	"atomicgo.dev/keyboard"
 	"atomicgo.dev/keyboard/keys"
-	"github.com/MarvinJWendt/testza"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/pterm/pterm"
 )
 
-func TestInteractiveContinuePrinter_Show_yes(t *testing.T) {
-	go func() {
-		keyboard.SimulateKeyPress('y')
-	}()
+// showContinue runs the given continue prompt (which must terminate through
+// the key presses simulated beforehand) and returns its result together with
+// everything it printed.
+func showContinue(t *testing.T, printer *pterm.InteractiveContinuePrinter, text ...string) (result string, output string) {
+	t.Helper()
 
-	result, _ := pterm.DefaultInteractiveContinue.Show()
-	testza.AssertEqual(t, result, "yes")
+	var err error
 
-	go func() {
-		keyboard.SimulateKeyPress('Y')
-	}()
+	output = captureStdout(func(_ io.Writer) {
+		result, err = showInteractive(t, func() (string, error) {
+			return printer.Show(text...)
+		})
+	})
 
-	result, _ = pterm.DefaultInteractiveContinue.Show()
-	testza.AssertEqual(t, result, "yes")
+	require.NoError(t, err)
+
+	return result, output
 }
 
-func TestInteractiveContinuePrinter_Show_no(t *testing.T) {
-	go func() {
-		keyboard.SimulateKeyPress('n')
-	}()
+func TestInteractiveContinuePrinter_HandleKeysPickOptions(t *testing.T) {
+	tests := []struct {
+		name     string
+		key      rune
+		expected string
+	}{
+		{name: "y picks yes", key: 'y', expected: "yes"},
+		{name: "Y picks the default case-insensitively", key: 'Y', expected: "yes"},
+		{name: "n picks no", key: 'n', expected: "no"},
+		{name: "a picks all", key: 'a', expected: "all"},
+		{name: "c picks cancel", key: 'c', expected: "cancel"},
+	}
 
-	result, _ := pterm.DefaultInteractiveContinue.Show()
-	testza.AssertEqual(t, result, "no")
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			simulateKeys(t, tc.key)
+
+			result, output := showContinue(t, &pterm.DefaultInteractiveContinue)
+
+			assert.Equal(t, tc.expected, result)
+			assert.Contains(t, stripANSI(output), tc.expected, "the chosen option must be echoed after the prompt")
+		})
+	}
 }
 
-func TestInteractiveContinuePrinter_WithDefaultValueIndes(t *testing.T) {
-	p := pterm.DefaultInteractiveContinue.WithDefaultValueIndex(1)
-	testza.AssertEqual(t, p.DefaultValueIndex, 1)
+func TestInteractiveContinuePrinter_EnterReturnsDefaultOption(t *testing.T) {
+	t.Run("first option is the default", func(t *testing.T) {
+		simulateKeys(t, keys.Enter)
+
+		result, _ := showContinue(t, &pterm.DefaultInteractiveContinue)
+
+		assert.Equal(t, "yes", result)
+	})
+
+	t.Run("WithDefaultValueIndex changes the default", func(t *testing.T) {
+		simulateKeys(t, keys.Enter)
+
+		result, output := showContinue(t, pterm.DefaultInteractiveContinue.WithDefaultValueIndex(2))
+
+		assert.Equal(t, "all", result)
+		assert.Contains(t, stripANSI(output), "[yes/no/All/cancel]", "the default option must be title-cased in the suffix")
+	})
+
+	t.Run("WithDefaultValue changes the default by name", func(t *testing.T) {
+		simulateKeys(t, keys.Enter)
+
+		result, _ := showContinue(t, pterm.DefaultInteractiveContinue.WithDefaultValue("no"))
+
+		assert.Equal(t, "no", result)
+	})
 }
 
-func TestInteractiveContinuePrinter_WithDefaultValue_yes(t *testing.T) {
-	go func() {
-		keyboard.SimulateKeyPress(keys.Enter)
-	}()
+func TestInteractiveContinuePrinter_PromptShowsTextAndSuffix(t *testing.T) {
+	simulateKeys(t, keys.Enter)
 
-	p := pterm.DefaultInteractiveContinue.WithDefaultValue("yes")
-	result, _ := p.Show()
-	testza.AssertEqual(t, result, "yes")
+	_, output := showContinue(t, &pterm.DefaultInteractiveContinue, "Apply these changes?")
+
+	assert.Contains(t, stripANSI(output), "Apply these changes? [Yes/no/all/cancel]: ")
 }
 
-func TestInteractiveContinuePrinter_WithDefaultValue_no(t *testing.T) {
-	p := pterm.DefaultInteractiveContinue.WithDefaultValue("no")
+func TestInteractiveContinuePrinter_ShowShortHandles(t *testing.T) {
+	printer := pterm.DefaultInteractiveContinue.WithShowShortHandles()
 
-	go func() {
-		keyboard.SimulateKeyPress(keys.Enter)
-	}()
+	simulateKeys(t, 'n')
 
-	result, _ := p.Show()
-	testza.AssertEqual(t, result, "no")
+	result, output := showContinue(t, printer)
 
-	go func() {
-		keyboard.SimulateKeyPress('n')
-	}()
-
-	result, _ = p.Show()
-	testza.AssertEqual(t, result, "no")
-
-	go func() {
-		keyboard.SimulateKeyPress('N')
-	}()
-
-	result, _ = p.Show()
-	testza.AssertEqual(t, result, "no")
+	assert.Equal(t, "no", result)
+	assert.Contains(t, stripANSI(output), "[Y/n/a/c]", "short handles must be rendered instead of the full options")
 }
 
-func TestInteractiveContinuePrinter_WithShowShortHandles(t *testing.T) {
-	p := pterm.DefaultInteractiveContinue.WithShowShortHandles()
-	testza.AssertTrue(t, p.ShowShortHandles)
+func TestInteractiveContinuePrinter_CustomOptions(t *testing.T) {
+	printer := pterm.DefaultInteractiveContinue.WithOptions([]string{"retry", "abort"})
 
-	go func() {
-		keyboard.SimulateKeyPress('n')
-	}()
+	t.Run("handle keys are derived from the options", func(t *testing.T) {
+		for key, expected := range map[rune]string{'r': "retry", 'a': "abort"} {
+			simulateKeys(t, key)
 
-	result, _ := p.Show()
-	testza.AssertEqual(t, result, "no")
+			result, _ := showContinue(t, printer)
+
+			assert.Equal(t, expected, result)
+		}
+	})
+
+	t.Run("enter picks the first option", func(t *testing.T) {
+		simulateKeys(t, keys.Enter)
+
+		result, output := showContinue(t, printer)
+
+		assert.Equal(t, "retry", result)
+		assert.Contains(t, stripANSI(output), "[Retry/abort]")
+	})
 }
 
-func TestInteractiveContinuePrinter_WithOptionsStyle(t *testing.T) {
-	style := pterm.NewStyle(pterm.FgRed)
-	p := pterm.DefaultInteractiveContinue.WithOptionsStyle(style)
-	testza.AssertEqual(t, p.OptionsStyle, style)
-}
-
-func TestInteractiveContinuePrinter_WithOptions(t *testing.T) {
-	p := pterm.DefaultInteractiveContinue.WithOptions([]string{"next", "stop", "continue"})
-	testza.AssertEqual(t, p.Options, []string{"next", "stop", "continue"})
-}
-
-func TestInteractiveContinuePrinter_WithHandles(t *testing.T) {
-	p := pterm.DefaultInteractiveContinue.WithOptions([]string{"yes", "no", "always", "never"}).WithHandles([]string{"y", "n", "a", "N"})
-	testza.AssertEqual(t, p.Handles, []string{"y", "n", "a", "N"})
+func TestInteractiveContinuePrinter_CustomHandles(t *testing.T) {
+	printer := pterm.DefaultInteractiveContinue.
+		WithOptions([]string{"yes", "no", "always", "never"}).
+		WithHandles([]string{"y", "n", "a", "N"})
 
 	tests := []struct {
 		name     string
 		key      rune
 		expected string
 	}{
-		{
-			name:     "Yes",
-			key:      'y',
-			expected: "yes",
-		},
-		{
-			name:     "No",
-			key:      'n',
-			expected: "no",
-		},
-		{
-			name:     "Always",
-			key:      'a',
-			expected: "always",
-		},
-		{
-			name:     "Never",
-			key:      'N',
-			expected: "never",
-		},
+		{name: "lowercase n picks no", key: 'n', expected: "no"},
+		{name: "uppercase N picks never", key: 'N', expected: "never"},
+		{name: "a picks always", key: 'a', expected: "always"},
 	}
+
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			go func() {
-				keyboard.SimulateKeyPress(tc.key)
-			}()
+			simulateKeys(t, tc.key)
 
-			result, _ := p.Show()
-			testza.AssertEqual(t, result, tc.expected)
-		})
-	}
+			result, output := showContinue(t, printer)
 
-	p.DefaultValueIndex = 1
-
-	go func() {
-		keyboard.SimulateKeyPress(keys.Enter)
-	}()
-
-	result, _ := p.Show()
-	testza.AssertEqual(t, result, "no")
-}
-
-func TestInteractiveContinuePrinter_WithDefaultText(t *testing.T) {
-	p := pterm.DefaultInteractiveContinue.WithDefaultText("default")
-	testza.AssertEqual(t, p.DefaultText, "default")
-}
-
-func TestInteractiveContinuePrinter_WithDelimiter(t *testing.T) {
-	p := pterm.DefaultInteractiveContinue.WithDelimiter(">>")
-	testza.AssertEqual(t, p.Delimiter, ">>")
-}
-
-func TestInteractiveContinuePrinter_CustomAnswers(t *testing.T) {
-	p := pterm.DefaultInteractiveContinue.WithOptions([]string{"next", "stop", "continue"})
-
-	tests := []struct {
-		name     string
-		key      rune
-		expected string
-	}{
-		{
-			name:     "Next",
-			key:      'n',
-			expected: "next",
-		},
-		{
-			name:     "Stop",
-			key:      's',
-			expected: "stop",
-		},
-		{
-			name:     "Continue",
-			key:      'c',
-			expected: "continue",
-		},
-	}
-	for _, tc := range tests {
-		t.Run(tc.name, func(t *testing.T) {
-			go func() {
-				keyboard.SimulateKeyPress(tc.key)
-			}()
-
-			result, _ := p.Show()
-			testza.AssertEqual(t, result, tc.expected)
+			assert.Equal(t, tc.expected, result)
+			assert.Contains(t, stripANSI(output), "[y/n/a/N]", "custom handles must be rendered as given")
 		})
 	}
 }
 
-func TestInteractiveContinuePrinter_WithSuffixStyle(t *testing.T) {
-	style := pterm.NewStyle(pterm.FgRed)
-	p := pterm.DefaultInteractiveContinue.WithSuffixStyle(style)
-	testza.AssertEqual(t, p.SuffixStyle, style)
+func TestInteractiveContinuePrinter_MismatchedHandlesFallBackToDefaults(t *testing.T) {
+	var printer *pterm.InteractiveContinuePrinter
+
+	output := captureStdout(func(_ io.Writer) {
+		printer = pterm.DefaultInteractiveContinue.WithHandles([]string{"only-one"})
+	})
+
+	assert.Contains(t, stripANSI(output), "not a valid set of handles", "a mismatched handle count must print a warning")
+	assert.Equal(t, []string{"Yes", "no", "all", "cancel"}, printer.Handles, "invalid handles must fall back to the default handles")
+
+	simulateKeys(t, 'n')
+
+	result, _ := showContinue(t, printer)
+	assert.Equal(t, "no", result)
 }
 
-func TestInteractiveContinuePrinter_WithTextStyle(t *testing.T) {
-	style := pterm.NewStyle(pterm.FgRed)
-	p := pterm.DefaultInteractiveContinue.WithTextStyle(style)
-	testza.AssertEqual(t, p.TextStyle, style)
+func TestInteractiveContinuePrinter_InterruptCallsOnInterruptFunc(t *testing.T) {
+	interrupted := false
+	printer := pterm.DefaultInteractiveContinue.WithOnInterruptFunc(func() { interrupted = true })
+
+	simulateKeys(t, keys.CtrlC)
+
+	result, _ := showContinue(t, printer)
+
+	assert.True(t, interrupted, "Ctrl+C must invoke the OnInterruptFunc")
+	assert.Empty(t, result, "an interrupted prompt must not return an option")
 }

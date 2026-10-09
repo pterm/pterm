@@ -335,7 +335,7 @@ Please confirm [y/N]:
 ────────────────────────────────────────────────────────────────────────────────
 Please confirm [y/N]: Yes
 
- INFO  You answered: Yes
+  INFO    You answered: Yes
 >
 
 
@@ -352,7 +352,7 @@ Please confirm [y/N]: Yes
 ────────────────────────────────────────────────────────────────────────────────
 Please confirm [y/N]: Yes
 
- INFO  You answered: Yes
+  INFO    You answered: Yes
 >
 
 

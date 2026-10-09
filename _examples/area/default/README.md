@@ -1,6 +1,6 @@
 # area/default
 
-![Animation](https://vhs.charm.sh/vhs-4InCBry5R7TszPTjxNjDZ8.gif)
+![Animation](https://vhs.charm.sh/vhs-1kGxZ5xpByOoQdxUeQ0KaT.gif)
 
 ```go
 package main
@@ -12,22 +12,14 @@ import (
 )
 
 func main() {
-	// Start a new default area and get a reference to it.
-	// The second return value is an error which is ignored here.
 	area, _ := pterm.DefaultArea.Start()
 
-	// Loop 5 times
-	for i := 0; i < 5; i++ {
-		// Update the content of the area dynamically.
-		// Here we're just displaying the current count.
+	// Each Update redraws the area in place instead of appending new lines.
+	for i := range 5 {
 		area.Update(pterm.Sprintfln("Current count: %d\nAreas can update their content dynamically!", i))
-
-		// Pause for a second before the next update.
 		time.Sleep(time.Second)
 	}
 
-	// Stop the area after all updates are done.
-	// This will clean up and free resources used by the area.
 	area.Stop()
 }
 ```

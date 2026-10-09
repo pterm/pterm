@@ -5,24 +5,19 @@ import (
 )
 
 func main() {
-	// Define a set of bars with negative values.
-	// Each bar is represented by a struct with a label and a value.
+	// With only negative values there is no positive side to draw, so the
+	// bars still use the full chart area. The longer label shows how the
+	// horizontal chart aligns bars to the widest label.
 	negativeBars := pterm.Bars{
-		{Label: "Bar 1", Value: -5},
-		{Label: "Bar 2", Value: -3},
-		{Label: "Longer Label", Value: -7},
+		{Label: "Q1", Value: -5},
+		{Label: "Q2", Value: -3},
+		{Label: "Yearly Total", Value: -7},
 	}
 
-	// Print an informational message to the console.
-	pterm.Info.Println("Chart example with negative only values (bars use 100% of chart area)")
+	pterm.Info.Println("Chart example with negative values only (bars use the full chart area)")
 
-	// Create a vertical bar chart with the defined bars.
-	// The WithShowValue() option is used to display the value of each bar in the chart.
-	// The Render() method is called to draw the chart.
 	_ = pterm.DefaultBarChart.WithBars(negativeBars).WithShowValue().Render()
 
-	// Create a horizontal bar chart with the same bars.
-	// The WithHorizontal() option is used to orient the chart horizontally.
-	// The WithShowValue() option and Render() method are used in the same way as before.
+	// The same data rendered horizontally.
 	_ = pterm.DefaultBarChart.WithHorizontal().WithBars(negativeBars).WithShowValue().Render()
 }

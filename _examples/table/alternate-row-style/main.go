@@ -3,9 +3,8 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Define the data for the table.
-	// Each inner slice represents a row in the table.
-	// The first row is considered as the header of the table.
+	// WithAlternateRowStyle applies this style to every second data row,
+	// which makes wide tables easier to scan.
 	alternateStyle := pterm.NewStyle(pterm.BgDarkGray)
 
 	tableData := pterm.TableData{
@@ -16,8 +15,5 @@ func main() {
 		{"张", "小宝", "zhang@example.com", ""},
 	}
 
-	// Create a table with the defined data.
-	// The table has a header and is boxed.
-	// Finally, render the table to print it.
 	pterm.DefaultTable.WithHasHeader().WithBoxed().WithData(tableData).WithAlternateRowStyle(alternateStyle).Render()
 }

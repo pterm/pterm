@@ -2,28 +2,25 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/pterm/pterm"
 )
 
 func main() {
-	// Initialize an empty slice to hold the options
 	var options []string
-
-	// Populate the options slice with 5 options
 	for i := 0; i < 5; i++ {
 		options = append(options, fmt.Sprintf("Option %d", i))
 	}
 
-	// Create a new interactive multiselect printer with the options
-	// Disable the filter and define the checkmark symbols
+	// The checkmark in front of each option can be any string, here a green
+	// plus for selected and a red minus for unselected options. The fuzzy
+	// search filter is disabled to keep the list short and static.
 	printer := pterm.DefaultInteractiveMultiselect.
 		WithOptions(options).
 		WithFilter(false).
 		WithCheckmark(&pterm.Checkmark{Checked: pterm.Green("+"), Unchecked: pterm.Red("-")})
 
-	// Show the interactive multiselect and get the selected options
 	selectedOptions, _ := printer.Show()
 
-	// Print the selected options
 	pterm.Info.Printfln("Selected options: %s", pterm.Green(selectedOptions))
 }

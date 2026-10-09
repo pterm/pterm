@@ -1,6 +1,6 @@
 ### bigtext/demo
 
-![Animation](https://vhs.charm.sh/vhs-27SYMNdlNP4NoDNUaTYWPu.gif)
+![Animation](https://vhs.charm.sh/vhs-Dltv80znAaeuvbEhngzLB.gif)
 
 <details>
 
@@ -15,21 +15,18 @@ import (
 )
 
 func main() {
-	// Create a large text with the LetterStyle from the standard theme.
-	// This is useful for creating title screens.
+	// Big ASCII-art text in the default theme style. Handy for title screens.
 	pterm.DefaultBigText.WithLetters(putils.LettersFromString("PTerm")).Render()
 
-	// Create a large text with differently colored letters.
-	// Here, the first letter 'P' is colored cyan and the rest 'Term' is colored light magenta.
-	// This can be used to highlight specific parts of the text.
+	// Each letter group can carry its own style, so parts of the text can be
+	// colored independently.
 	pterm.DefaultBigText.WithLetters(
 		putils.LettersFromStringWithStyle("P", pterm.FgCyan.ToStyle()),
 		putils.LettersFromStringWithStyle("Term", pterm.FgLightMagenta.ToStyle()),
 	).Render()
 
-	// Create a large text with a specific RGB color.
-	// This can be used when you need a specific color that is not available in the standard colors.
-	// Here, the color is gold (RGB: 255, 215, 0).
+	// TrueColor works too. On terminals without TrueColor support, PTerm
+	// downsamples the RGB value automatically.
 	pterm.DefaultBigText.WithLetters(
 		putils.LettersFromStringWithRGB("PTerm", pterm.NewRGB(255, 215, 0)),
 	).Render()
@@ -40,7 +37,7 @@ func main() {
 
 ### bigtext/colored
 
-![Animation](https://vhs.charm.sh/vhs-632XIxQIqQ4UuyGBX4cCWI.gif)
+![Animation](https://vhs.charm.sh/vhs-6OVbbx3QPZS9Rz75SwAzmR.gif)
 
 <details>
 
@@ -55,12 +52,12 @@ import (
 )
 
 func main() {
-	// Initialize a big text display with the letters "P" and "Term"
-	// "P" is displayed in cyan and "Term" is displayed in light magenta
+	// Each LettersFromStringWithStyle call gets its own color, so parts of
+	// the big text can be highlighted independently.
 	pterm.DefaultBigText.WithLetters(
 		putils.LettersFromStringWithStyle("P", pterm.FgCyan.ToStyle()),
 		putils.LettersFromStringWithStyle("Term", pterm.FgLightMagenta.ToStyle())).
-		Render() // Render the big text to the terminal
+		Render()
 }
 ```
 
@@ -68,7 +65,7 @@ func main() {
 
 ### bigtext/default
 
-![Animation](https://vhs.charm.sh/vhs-2RkEXHCMCOHA0bAlyqhMSY.gif)
+![Animation](https://vhs.charm.sh/vhs-3AzGuVlmJ9yL1ADI8F1IV2.gif)
 
 <details>
 
@@ -83,13 +80,10 @@ import (
 )
 
 func main() {
-	// Define the text to be rendered
-	var text = "PTerm"
+	// BigText takes Letters rather than a plain string; putils converts one
+	// into the other.
+	letters := putils.LettersFromString("PTerm")
 
-	// Convert the text into a format suitable for PTerm
-	var letters = putils.LettersFromString(text)
-
-	// Render the text using PTerm's default big text style
 	pterm.DefaultBigText.WithLetters(letters).Render()
 }
 ```

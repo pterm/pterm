@@ -1,4 +1,4 @@
-
+>
 
 
 
@@ -51,7 +51,7 @@
 
 
 ────────────────────────────────────────────────────────────────────────────────
-
+>
 
 
 
@@ -317,29 +317,12 @@
 
 ────────────────────────────────────────────────────────────────────────────────
   DEBUG   Hello, World!
- INFO  Hello, World!
+  INFO    Hello, World!
  SUCCESS  Hello, World!
  WARNING  Hello, World!
   ERROR   Errors show the filename and linenumber inside the terminal!
- INFO  Other PrefixPrinters can do that too!
-└ (/home/nixos/projects/github/pterm/pterm/_examples/prefix/demo/main.go:26
-)
-  FATAL   Hello, World!
-
-
-
-
-
-
-
-────────────────────────────────────────────────────────────────────────────────
-  DEBUG   Hello, World!
- INFO  Hello, World!
- SUCCESS  Hello, World!
- WARNING  Hello, World!
-  ERROR   Errors show the filename and linenumber inside the terminal!
- INFO  Other PrefixPrinters can do that too!
-└ (/home/nixos/projects/github/pterm/pterm/_examples/prefix/demo/main.go:26
+  INFO    Other PrefixPrinters can do that too!
+└ (/home/nixos/projects/github/pterm/pterm/_examples/prefix/demo/main.go:18
 )
   FATAL   Hello, World!
 >
@@ -351,12 +334,29 @@
 
 ────────────────────────────────────────────────────────────────────────────────
   DEBUG   Hello, World!
- INFO  Hello, World!
+  INFO    Hello, World!
  SUCCESS  Hello, World!
  WARNING  Hello, World!
   ERROR   Errors show the filename and linenumber inside the terminal!
- INFO  Other PrefixPrinters can do that too!
-└ (/home/nixos/projects/github/pterm/pterm/_examples/prefix/demo/main.go:26
+  INFO    Other PrefixPrinters can do that too!
+└ (/home/nixos/projects/github/pterm/pterm/_examples/prefix/demo/main.go:18
+)
+  FATAL   Hello, World!
+>
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+  DEBUG   Hello, World!
+  INFO    Hello, World!
+ SUCCESS  Hello, World!
+ WARNING  Hello, World!
+  ERROR   Errors show the filename and linenumber inside the terminal!
+  INFO    Other PrefixPrinters can do that too!
+└ (/home/nixos/projects/github/pterm/pterm/_examples/prefix/demo/main.go:18
 )
   FATAL   Hello, World!
 >

@@ -1,6 +1,6 @@
 # interactive_textinput/demo
 
-![Animation](https://vhs.charm.sh/vhs-7tXyy2wsH9KgIXwJQtrmIH.gif)
+![Animation](https://vhs.charm.sh/vhs-7xu04W1sjODqqV4xW1bQrY.gif)
 
 ```go
 package main
@@ -10,13 +10,10 @@ import (
 )
 
 func main() {
-	// Create an interactive text input with single line input mode and show it
+	// The text input is single-line by default; enter submits the input.
 	result, _ := pterm.DefaultInteractiveTextInput.Show()
 
-	// Print a blank line for better readability
 	pterm.Println()
-
-	// Print the user's answer with an info prefix
 	pterm.Info.Printfln("You answered: %s", result)
 }
 ```

@@ -1,380 +1,245 @@
 package pterm_test
 
+// Behavioral tests for BoxPrinter.
+//
+// Builder methods, Print*/Sprint* delegation and the global styling invariants
+// are covered generically in contract_test.go. This file verifies the box
+// geometry: border characters, padding, title placement and visible-width
+// alignment for multiline, unicode and pre-colored content.
+
 import (
-	"errors"
-	"io"
-	"os"
+	"strings"
 	"testing"
 
-	"github.com/MarvinJWendt/testza"
+	"github.com/mattn/go-runewidth"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/pterm/pterm"
 )
 
-func TestBoxPrinterNilPrint(t *testing.T) {
-	p := pterm.BoxPrinter{}
-	p.Println("Hello, World!")
+// boxLines strips ANSI codes from a rendered box and returns its lines.
+func boxLines(s string) []string {
+	return strings.Split(stripANSI(s), "\n")
 }
 
-func TestBoxPrinterPrintMethods(t *testing.T) {
-	p := pterm.DefaultBox
+// assertUniformVisibleWidth asserts that every rendered line occupies the same
+// number of terminal cells, i.e. the right border is perfectly aligned.
+func assertUniformVisibleWidth(t *testing.T, out string) {
+	t.Helper()
 
-	t.Run("Print", func(t *testing.T) {
-		testPrintContains(t, func(w io.Writer, a any) {
-			p.Print(a)
-		})
+	lines := boxLines(out)
+	require.NotEmpty(t, lines)
+
+	want := runewidth.StringWidth(lines[0])
+	for i, line := range lines {
+		assert.Equalf(t, want, runewidth.StringWidth(line), "line %d %q has a different visible width", i, line)
+	}
+}
+
+func TestBoxPrinterDefaultBox(t *testing.T) {
+	expected := "╭───────╮\n" +
+		"│ Hello │\n" +
+		"╰───────╯"
+
+	assert.Equal(t, expected, stripANSI(pterm.DefaultBox.Sprint("Hello")))
+}
+
+func TestBoxPrinterMultilinePadsToWidestLine(t *testing.T) {
+	expected := "╭──────────────╮\n" +
+		"│ longest line │\n" +
+		"│ short        │\n" +
+		"╰──────────────╯"
+
+	out := pterm.DefaultBox.Sprint("longest line\nshort")
+
+	assert.Equal(t, expected, stripANSI(out))
+	assertUniformVisibleWidth(t, out)
+}
+
+func TestBoxPrinterUnicodeContentKeepsBordersAligned(t *testing.T) {
+	t.Run("CJK", func(t *testing.T) {
+		// "汉字" is 4 terminal cells wide, not 6 bytes.
+		expected := "╭──────╮\n" +
+			"│ 汉字 │\n" +
+			"╰──────╯"
+
+		out := pterm.DefaultBox.Sprint("汉字")
+
+		assert.Equal(t, expected, stripANSI(out))
+		assertUniformVisibleWidth(t, out)
 	})
 
-	t.Run("Printf", func(t *testing.T) {
-		testPrintfContains(t, func(w io.Writer, format string, a any) {
-			p.Printf(format, a)
-		})
-	})
+	t.Run("emoji", func(t *testing.T) {
+		expected := "╭──────────╮\n" +
+			"│ 🦄 emoji │\n" +
+			"╰──────────╯"
 
-	t.Run("Printfln", func(t *testing.T) {
-		testPrintflnContains(t, func(w io.Writer, format string, a any) {
-			p.Printfln(format, a)
-		})
-	})
+		out := pterm.DefaultBox.Sprint("🦄 emoji")
 
-	t.Run("Println", func(t *testing.T) {
-		testPrintlnContains(t, func(w io.Writer, a any) {
-			p.Println(a)
-		})
-	})
-
-	t.Run("Sprint", func(t *testing.T) {
-		testSprintContains(t, func(a any) string {
-			return p.Sprint(a)
-		})
-	})
-
-	t.Run("SprintWithTitle", func(t *testing.T) {
-		testSprintContains(t, func(a any) string {
-			return p.WithTitle("a").Sprint(a)
-		})
-	})
-
-	t.Run("Sprintf", func(t *testing.T) {
-		testSprintfContains(t, func(format string, a any) string {
-			return p.Sprintf(format, a)
-		})
-	})
-
-	t.Run("Sprintfln", func(t *testing.T) {
-		testSprintflnContains(t, func(format string, a any) string {
-			return p.Sprintfln(format, a)
-		})
-	})
-
-	t.Run("Sprintln", func(t *testing.T) {
-		testSprintlnContains(t, func(a any) string {
-			return p.Sprintln(a)
-		})
-	})
-
-	t.Run("SprintMultipleLines", func(t *testing.T) {
-		testSprintContains(t, func(a any) string {
-			return p.Sprint("testing\ntesting2" + pterm.Sprint(a))
-		})
-	})
-
-	t.Run("PrintOnError", func(t *testing.T) {
-		result := captureStdout(func(w io.Writer) {
-			p.PrintOnError(errors.New("hello world"))
-		})
-		testza.AssertContains(t, result, "hello world")
-	})
-
-	t.Run("PrintIfError_WithoutError", func(t *testing.T) {
-		result := captureStdout(func(w io.Writer) {
-			p.PrintOnError(nil)
-		})
-		testza.AssertZero(t, result)
-	})
-
-	t.Run("PrintOnErrorf", func(t *testing.T) {
-		result := captureStdout(func(w io.Writer) {
-			p.PrintOnErrorf("wrapping error : %w", errors.New("hello world"))
-		})
-		testza.AssertContains(t, result, "hello world")
-	})
-
-	t.Run("PrintIfError_WithoutErrorf", func(t *testing.T) {
-		result := captureStdout(func(w io.Writer) {
-			p.PrintOnErrorf("", nil)
-		})
-		testza.AssertZero(t, result)
+		assert.Equal(t, expected, stripANSI(out))
+		assertUniformVisibleWidth(t, out)
 	})
 }
 
-func TestBoxPrinter_WithBottomLeftCornerString(t *testing.T) {
-	p := pterm.BoxPrinter{}
-	p2 := p.WithBottomLeftCornerString("-")
+func TestBoxPrinterColoredContentKeepsBordersAligned(t *testing.T) {
+	out := pterm.DefaultBox.Sprint("a " + pterm.FgRed.Sprint("red") + " b")
 
-	testza.AssertEqual(t, "-", p2.BottomLeftCornerString)
-	testza.AssertZero(t, p.BottomLeftCornerString)
+	// The escape codes must not count towards the width: the stripped output
+	// is exactly the box around the plain text.
+	assert.Equal(t, stripANSI(pterm.DefaultBox.Sprint("a red b")), stripANSI(out))
+	assertUniformVisibleWidth(t, out)
 }
 
-func TestBoxPrinter_WithBottomPadding(t *testing.T) {
-	p := pterm.BoxPrinter{}
-	p2 := p.WithBottomPadding(5)
+func TestBoxPrinterTitlePlacement(t *testing.T) {
+	// Content "Hello World" (11 cells) + 1 cell padding each side = 13 border
+	// cells for the title line.
+	box := pterm.DefaultBox.WithTitle("Title")
 
-	testza.AssertEqual(t, 5, p2.BottomPadding)
-	testza.AssertZero(t, p.BottomPadding)
+	tests := []struct {
+		name     string
+		printer  *pterm.BoxPrinter
+		expected string
+	}{
+		{
+			name:    "top left (default)",
+			printer: box,
+			expected: "╭─ Title ─────╮\n" +
+				"│ Hello World │\n" +
+				"╰─────────────╯",
+		},
+		{
+			name:    "top right",
+			printer: box.WithTitleTopRight(),
+			expected: "╭───── Title ─╮\n" +
+				"│ Hello World │\n" +
+				"╰─────────────╯",
+		},
+		{
+			name:    "top center",
+			printer: box.WithTitleTopCenter(),
+			expected: "╭─── Title ───╮\n" +
+				"│ Hello World │\n" +
+				"╰─────────────╯",
+		},
+		{
+			name:    "bottom left",
+			printer: box.WithTitleBottomLeft(),
+			expected: "╭─────────────╮\n" +
+				"│ Hello World │\n" +
+				"╰─ Title ─────╯",
+		},
+		{
+			name:    "bottom right",
+			printer: box.WithTitleBottomRight(),
+			expected: "╭─────────────╮\n" +
+				"│ Hello World │\n" +
+				"╰───── Title ─╯",
+		},
+		{
+			name:    "bottom center",
+			printer: box.WithTitleBottomCenter(),
+			expected: "╭─────────────╮\n" +
+				"│ Hello World │\n" +
+				"╰─── Title ───╯",
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			out := tc.printer.Sprint("Hello World")
+
+			assert.Equal(t, tc.expected, stripANSI(out))
+			assertUniformVisibleWidth(t, out)
+		})
+	}
 }
 
-func TestBoxPrinter_WithBottomRightCornerString(t *testing.T) {
-	p := pterm.BoxPrinter{}
-	p2 := p.WithBottomRightCornerString("-")
+func TestBoxPrinterTitleWiderThanContentGrowsTheBox(t *testing.T) {
+	expected := "╭─ A very long title ─╮\n" +
+		"│ Hi                  │\n" +
+		"╰─────────────────────╯"
 
-	testza.AssertEqual(t, "-", p2.BottomRightCornerString)
-	testza.AssertZero(t, p.BottomRightCornerString)
+	out := pterm.DefaultBox.WithTitle("A very long title").Sprint("Hi")
+
+	assert.Equal(t, expected, stripANSI(out))
+	assertUniformVisibleWidth(t, out)
 }
 
-func TestBoxPrinter_WithTitle(t *testing.T) {
-	p := pterm.BoxPrinter{}
-	p2 := p.WithTitle("-")
+func TestBoxPrinterTitleNewlinesAreReplacedBySpaces(t *testing.T) {
+	out := boxLines(pterm.DefaultBox.WithTitle("a\nb").Sprint("Hello World"))
 
-	testza.AssertEqual(t, "-", p2.Title)
-	testza.AssertZero(t, p.Title)
+	assert.Contains(t, out[0], " a b ")
+	assert.Len(t, out, 3, "a newline in the title must not add lines to the box")
 }
 
-func TestBoxPrinter_WithTitleTopLeft(t *testing.T) {
-	p := pterm.BoxPrinter{}
-	p2 := p.WithTitleTopLeft()
+func TestBoxPrinterPadding(t *testing.T) {
+	t.Run("all sides", func(t *testing.T) {
+		expected := "╭──────╮\n" +
+			"│      │\n" +
+			"│      │\n" +
+			"│  Hi  │\n" +
+			"│      │\n" +
+			"│      │\n" +
+			"╰──────╯"
 
-	testza.AssertEqual(t, true, p2.TitleTopLeft)
-	testza.AssertEqual(t, false, p.TitleTopLeft)
+		assert.Equal(t, expected, stripANSI(pterm.DefaultBox.WithPadding(2).Sprint("Hi")))
+	})
+
+	t.Run("asymmetric horizontal", func(t *testing.T) {
+		expected := "╭──────╮\n" +
+			"│   Hi │\n" +
+			"╰──────╯"
+
+		p := pterm.DefaultBox.WithLeftPadding(3).WithRightPadding(1)
+
+		assert.Equal(t, expected, stripANSI(p.Sprint("Hi")))
+	})
 }
 
-func TestBoxPrinter_WithTitleTopRight(t *testing.T) {
-	p := pterm.BoxPrinter{}
-	p2 := p.WithTitleTopRight()
+// The corner-string fields are historically swapped: the string configured as
+// BottomRightCornerString is rendered at the TOP LEFT, BottomLeftCornerString
+// at the top right, TopRightCornerString at the bottom left and
+// TopLeftCornerString at the bottom right (DefaultBox compensates by holding
+// the visually matching glyphs, e.g. TopLeftCornerString = "╯"). Existing
+// consumers — including _examples/demo — rely on this mapping, so it is locked
+// here as-is instead of being "fixed".
+func TestBoxPrinterCustomBorderStrings(t *testing.T) {
+	p := pterm.DefaultBox.
+		WithBottomRightCornerString("1").
+		WithBottomLeftCornerString("2").
+		WithTopRightCornerString("3").
+		WithTopLeftCornerString("4").
+		WithHorizontalString("-").
+		WithVerticalString("|")
 
-	testza.AssertEqual(t, true, p2.TitleTopRight)
-	testza.AssertEqual(t, false, p.TitleTopRight)
+	expected := "1----2\n" +
+		"| ab |\n" +
+		"3----4"
+
+	assert.Equal(t, expected, stripANSI(p.Sprint("ab")))
 }
 
-func TestBoxPrinter_WithTitleTopCenter(t *testing.T) {
-	p := pterm.BoxPrinter{}
-	p2 := p.WithTitleTopCenter()
+func TestBoxPrinterSprintlnAppendsNewline(t *testing.T) {
+	expected := "╭────╮\n" +
+		"│ Hi │\n" +
+		"╰────╯\n"
 
-	testza.AssertEqual(t, true, p2.TitleTopCenter)
-	testza.AssertEqual(t, false, p.TitleTopCenter)
+	assert.Equal(t, expected, stripANSI(pterm.DefaultBox.Sprintln("Hi")))
 }
 
-func TestBoxPrinter_WithTitleBottomRight(t *testing.T) {
-	p := pterm.BoxPrinter{}
-	p2 := p.WithTitleBottomRight()
+func TestBoxPrinterEmptyInput(t *testing.T) {
+	// An empty string still renders a (collapsed) box.
+	expected := "╭──╮\n" +
+		"│  │\n" +
+		"╰──╯"
 
-	testza.AssertEqual(t, true, p2.TitleBottomRight)
-	testza.AssertEqual(t, false, p.TitleBottomRight)
+	assert.Equal(t, expected, stripANSI(pterm.DefaultBox.Sprint("")))
 }
 
-func TestBoxPrinter_WithTitleBottomLeft(t *testing.T) {
-	p := pterm.BoxPrinter{}
-	p2 := p.WithTitleBottomLeft()
-
-	testza.AssertEqual(t, true, p2.TitleBottomLeft)
-	testza.AssertEqual(t, false, p.TitleBottomLeft)
-}
-
-func TestBoxPrinter_WithTitleBottomCenter(t *testing.T) {
-	p := pterm.BoxPrinter{}
-	p2 := p.WithTitleBottomCenter()
-
-	testza.AssertEqual(t, true, p2.TitleBottomCenter)
-	testza.AssertEqual(t, false, p.TitleBottomCenter)
-}
-
-func TestBoxPrinter_WithTitleWithTitleBottomLeft(t *testing.T) {
-	p := pterm.BoxPrinter{}
-	p2 := p.WithTitleBottomLeft().WithTitle("a").Sprint("Lorem Ipsum")
-
-	testza.AssertContains(t, p2, "Lorem Ipsum")
-}
-
-func TestBoxPrinter_WithTitleWithTitleTopLeft(t *testing.T) {
-	p := pterm.BoxPrinter{}
-	p2 := p.WithTitleTopLeft().WithTitle("a").Sprint("Lorem Ipsum")
-
-	testza.AssertContains(t, p2, "Lorem Ipsum")
-}
-
-func TestBoxPrinter_WithTitleWithTitleBottomRight(t *testing.T) {
-	p := pterm.BoxPrinter{}
-	p2 := p.WithTitleBottomRight().WithTitle("a").Sprint("Lorem Ipsum")
-
-	testza.AssertContains(t, p2, "Lorem Ipsum")
-}
-
-func TestBoxPrinter_WithTitleWithTitleTopRight(t *testing.T) {
-	p := pterm.BoxPrinter{}
-	p2 := p.WithTitleTopRight().WithTitle("a").Sprint("Lorem Ipsum")
-
-	testza.AssertContains(t, p2, "Lorem Ipsum")
-}
-
-func TestBoxPrinter_WithTitleWithTitleTopCenter(t *testing.T) {
-	p := pterm.BoxPrinter{}
-	p2 := p.WithTitleTopCenter().WithTitle("a").Sprint("Lorem Ipsum")
-
-	testza.AssertContains(t, p2, "Lorem Ipsum")
-}
-
-func TestBoxPrinter_WithTitleWithTitleBottomCenter(t *testing.T) {
-	p := pterm.BoxPrinter{}
-	p2 := p.WithTitleBottomCenter().WithTitle("a").Sprint("Lorem Ipsum")
-
-	testza.AssertContains(t, p2, "Lorem Ipsum")
-}
-
-func TestBoxPrinter_WithBoxStyle(t *testing.T) {
-	p := pterm.BoxPrinter{}
-	s := pterm.NewStyle(pterm.FgRed, pterm.BgRed, pterm.Bold)
-	p2 := p.WithBoxStyle(s)
-
-	testza.AssertEqual(t, s, p2.BoxStyle)
-	testza.AssertZero(t, p.BoxStyle)
-}
-
-func TestBoxPrinter_WithLeftPadding(t *testing.T) {
-	p := pterm.BoxPrinter{}
-	p2 := p.WithLeftPadding(5)
-
-	testza.AssertEqual(t, 5, p2.LeftPadding)
-	testza.AssertZero(t, p.LeftPadding)
-}
-
-func TestBoxPrinter_WithRightPadding(t *testing.T) {
-	p := pterm.BoxPrinter{}
-	p2 := p.WithRightPadding(5)
-
-	testza.AssertEqual(t, 5, p2.RightPadding)
-	testza.AssertZero(t, p.RightPadding)
-}
-
-func TestBoxPrinter_WithTextStyle(t *testing.T) {
-	p := pterm.BoxPrinter{}
-	s := pterm.NewStyle(pterm.FgRed, pterm.BgRed, pterm.Bold)
-	p2 := p.WithTextStyle(s)
-
-	testza.AssertEqual(t, s, p2.TextStyle)
-	testza.AssertZero(t, p.TextStyle)
-}
-
-func TestBoxPrinter_WithTopLeftCornerString(t *testing.T) {
-	p := pterm.BoxPrinter{}
-	p2 := p.WithTopLeftCornerString("-")
-
-	testza.AssertEqual(t, "-", p2.TopLeftCornerString)
-	testza.AssertZero(t, p.TopLeftCornerString)
-}
-
-func TestBoxPrinter_WithTopPadding(t *testing.T) {
-	p := pterm.BoxPrinter{}
-	p2 := p.WithTopPadding(5)
-
-	testza.AssertEqual(t, 5, p2.TopPadding)
-	testza.AssertZero(t, p.TopPadding)
-}
-
-func TestBoxPrinter_WithHorizontalPadding(t *testing.T) {
-	p := pterm.BoxPrinter{}
-	p2 := p.WithHorizontalPadding(5)
-
-	testza.AssertEqual(t, 5, p2.LeftPadding)
-	testza.AssertEqual(t, 5, p2.RightPadding)
-	testza.AssertEqual(t, 0, p.LeftPadding)
-	testza.AssertEqual(t, 0, p.RightPadding)
-}
-
-func TestBoxPrinter_WithVerticalPadding(t *testing.T) {
-	p := pterm.BoxPrinter{}
-	p2 := p.WithVerticalPadding(5)
-
-	testza.AssertEqual(t, 5, p2.TopPadding)
-	testza.AssertEqual(t, 5, p2.BottomPadding)
-	testza.AssertEqual(t, 0, p.TopPadding)
-	testza.AssertEqual(t, 0, p.BottomPadding)
-}
-
-func TestBoxPrinter_WithPadding(t *testing.T) {
-	p := pterm.BoxPrinter{}
-	p2 := p.WithPadding(5)
-
-	testza.AssertEqual(t, 5, p2.TopPadding)
-	testza.AssertEqual(t, 5, p2.BottomPadding)
-	testza.AssertEqual(t, 5, p2.LeftPadding)
-	testza.AssertEqual(t, 5, p2.RightPadding)
-	testza.AssertEqual(t, 0, p.TopPadding)
-	testza.AssertEqual(t, 0, p.BottomPadding)
-	testza.AssertEqual(t, 0, p.LeftPadding)
-	testza.AssertEqual(t, 0, p.RightPadding)
-}
-
-func TestBoxPrinter_WithInvalidTopPadding(t *testing.T) {
-	p := pterm.BoxPrinter{}
-	p2 := p.WithTopPadding(-5)
-
-	testza.AssertEqual(t, 0, p2.TopPadding)
-	testza.AssertZero(t, p.TopPadding)
-}
-
-func TestBoxPrinter_WithInvalidBottomPadding(t *testing.T) {
-	p := pterm.BoxPrinter{}
-	p2 := p.WithBottomPadding(-5)
-
-	testza.AssertEqual(t, 0, p2.BottomPadding)
-	testza.AssertZero(t, p.BottomPadding)
-}
-
-func TestBoxPrinter_WithInvalidLeftPadding(t *testing.T) {
-	p := pterm.BoxPrinter{}
-	p2 := p.WithLeftPadding(-5)
-
-	testza.AssertEqual(t, 0, p2.LeftPadding)
-	testza.AssertZero(t, p.LeftPadding)
-}
-
-func TestBoxPrinter_WithInvalidRightPadding(t *testing.T) {
-	p := pterm.BoxPrinter{}
-	p2 := p.WithRightPadding(-5)
-
-	testza.AssertEqual(t, 0, p2.RightPadding)
-	testza.AssertZero(t, p.RightPadding)
-}
-
-func TestBoxPrinter_WithTopRightCornerString(t *testing.T) {
-	p := pterm.BoxPrinter{}
-	p2 := p.WithTopRightCornerString("-")
-
-	testza.AssertEqual(t, "-", p2.TopRightCornerString)
-	testza.AssertZero(t, p.TopRightCornerString)
-}
-
-func TestBoxPrinter_WithVerticalString(t *testing.T) {
-	p := pterm.BoxPrinter{}
-	p2 := p.WithVerticalString("-")
-
-	testza.AssertEqual(t, "-", p2.VerticalString)
-	testza.AssertZero(t, p.VerticalString)
-}
-
-func TestBoxPrinter_WithHorizontalString(t *testing.T) {
-	p := pterm.BoxPrinter{}
-	p2 := p.WithHorizontalString("-")
-
-	testza.AssertEqual(t, "-", p2.HorizontalString)
-	testza.AssertZero(t, p.HorizontalString)
-}
-
-func TestBoxPrinter_WithWriter(t *testing.T) {
-	p := pterm.BoxPrinter{}
-	s := os.Stderr
-	p2 := p.WithWriter(s)
-
-	testza.AssertEqual(t, s, p2.Writer)
-	testza.AssertZero(t, p.Writer)
+func TestBoxPrinterZeroValueDoesNotPanic(t *testing.T) {
+	assert.NotPanics(t, func() {
+		p := pterm.BoxPrinter{}
+		_ = p.Sprint("Hello, World!")
+	})
 }

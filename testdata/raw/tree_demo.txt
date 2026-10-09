@@ -317,10 +317,10 @@
 
 ────────────────────────────────────────────────────────────────────────────────
 Top node
-└─┬Child node
-  ├──Grandchild node
-  ├──Grandchild node
-  └──Grandchild node
+└── Child node
+    ├── Grandchild node
+    ├── Grandchild node
+    └── Grandchild node
 
 >
 
@@ -334,10 +334,10 @@ Top node
 
 ────────────────────────────────────────────────────────────────────────────────
 Top node
-└─┬Child node
-  ├──Grandchild node
-  ├──Grandchild node
-  └──Grandchild node
+└── Child node
+    ├── Grandchild node
+    ├── Grandchild node
+    └── Grandchild node
 
 >
 
@@ -351,10 +351,10 @@ Top node
 
 ────────────────────────────────────────────────────────────────────────────────
 Top node
-└─┬Child node
-  ├──Grandchild node
-  ├──Grandchild node
-  └──Grandchild node
+└── Child node
+    ├── Grandchild node
+    ├── Grandchild node
+    └── Grandchild node
 
 >
 

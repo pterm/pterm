@@ -1,6 +1,6 @@
 # area/fullscreen-center
 
-![Animation](https://vhs.charm.sh/vhs-4x85l9QwUoh7qMgMklerCN.gif)
+![Animation](https://vhs.charm.sh/vhs-Gi75JoygwXMXaFkJLn4z8.gif)
 
 ```go
 package main
@@ -12,22 +12,17 @@ import (
 )
 
 func main() {
-	// Initialize a new PTerm area with fullscreen and center options
-	// The Start() function returns the created area and an error (ignored here)
+	// Fullscreen takes over the whole terminal; WithCenter centers the
+	// content within it.
 	area, _ := pterm.DefaultArea.WithFullscreen().WithCenter().Start()
 
-	// Loop 5 times to demonstrate dynamic content update
-	for i := 0; i < 5; i++ {
-		// Update the content of the area with the current count
-		// The Sprintf function is used to format the string with the count
+	// Each Update redraws the area in place instead of appending new lines.
+	for i := range 5 {
 		area.Update(pterm.Sprintf("Current count: %d\nAreas can update their content dynamically!", i))
-
-		// Pause for a second
 		time.Sleep(time.Second)
 	}
 
-	// Stop the area after all updates are done
-	// This will clear the area and return the terminal to its normal state
+	// Stop clears the area and restores the terminal.
 	area.Stop()
 }
 ```

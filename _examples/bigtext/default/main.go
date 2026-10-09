@@ -6,12 +6,9 @@ import (
 )
 
 func main() {
-	// Define the text to be rendered
-	var text = "PTerm"
+	// BigText takes Letters rather than a plain string; putils converts one
+	// into the other.
+	letters := putils.LettersFromString("PTerm")
 
-	// Convert the text into a format suitable for PTerm
-	var letters = putils.LettersFromString(text)
-
-	// Render the text using PTerm's default big text style
 	pterm.DefaultBigText.WithLetters(letters).Render()
 }

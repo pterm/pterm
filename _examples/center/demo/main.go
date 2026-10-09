@@ -6,15 +6,15 @@ import (
 )
 
 func main() {
-	// Print a block of text centered in the terminal
+	// By default the whole block is centered as one unit, so the lines keep
+	// their left alignment relative to each other.
 	pterm.DefaultCenter.Println("This text is centered!\nIt centers the whole block by default.\nIn that way you can do stuff like this:")
 
-	// Generate BigLetters and store in 's'
+	// That makes it safe to center multiline output from other printers,
+	// like a BigText rendered to a string.
 	s, _ := pterm.DefaultBigText.WithLetters(putils.LettersFromString("PTerm")).Srender()
-
-	// Print the BigLetters 's' centered in the terminal
 	pterm.DefaultCenter.Println(s)
 
-	// Print each line of the text separately centered in the terminal
+	// WithCenterEachLineSeparately centers every line on its own instead.
 	pterm.DefaultCenter.WithCenterEachLineSeparately().Println("This text is centered!\nBut each line is\ncentered\nseparately")
 }

@@ -1,6 +1,6 @@
 ### basictext/demo
 
-![Animation](https://vhs.charm.sh/vhs-74giaE9ixpmDuNURHgi66Z.gif)
+![Animation](https://vhs.charm.sh/vhs-5eF1XRSmYJjH9IO6AcLXrR.gif)
 
 <details>
 
@@ -12,15 +12,11 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// The DefaultBasicText is a basic text printer provided by PTerm.
-	// It is used to print text without any special formatting.
+	// DefaultBasicText prints plain, unstyled text. Its value is that it
+	// satisfies the TextPrinter interface, so it can be passed anywhere a
+	// styled printer would go.
 	pterm.DefaultBasicText.Println("Default basic text printer.")
-
-	// The DefaultBasicText can be used in any context that requires a TextPrinter.
-	// Here, we're using it with the LightMagenta function to color a portion of the text.
 	pterm.DefaultBasicText.Println("Can be used in any" + pterm.LightMagenta(" TextPrinter ") + "context.")
-
-	// The DefaultBasicText is also useful for resolving progress bars and spinners.
 }
 ```
 

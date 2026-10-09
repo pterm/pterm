@@ -1,6 +1,6 @@
 # barchart/horizontal-show-value
 
-![Animation](https://vhs.charm.sh/vhs-4KwtTTVaI99hg0dy4pSMvG.gif)
+![Animation](https://vhs.charm.sh/vhs-ZmO00oqwh8qoYzfOXK89S.gif)
 
 ```go
 package main
@@ -8,7 +8,6 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Define the data for the bar chart
 	barData := []pterm.Bar{
 		{Label: "A", Value: 10},
 		{Label: "B", Value: 20},
@@ -21,9 +20,7 @@ func main() {
 		{Label: "I", Value: 10},
 	}
 
-	// Create a bar chart with the defined data
-	// The chart is horizontal and displays the value of each bar
-	// The Render() function is called to display the chart
+	// WithShowValue prints each bar's numeric value at the end of the bar.
 	pterm.DefaultBarChart.WithBars(barData).WithHorizontal().WithShowValue().Render()
 }
 ```

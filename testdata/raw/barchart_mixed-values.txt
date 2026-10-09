@@ -1,56 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-────────────────────────────────────────────────────────────────────────────────
 >
 
 
@@ -316,54 +263,107 @@
 
 
 ────────────────────────────────────────────────────────────────────────────────
+>
 
-# Chart example with mixed values (note screen space usage in case when ABS
-OLUTE values of negative and positive parts are differ too much)
 
-  2                    5          7
-                                  ██
-                                  ██
-                       ██         ██
-                       ██         ██
-  ██                   ██         ██
-         ██     ██
-         ██
-         -3     -2
-Bar 1  Bar 2  Bar 3  Bar 4  Longer Label
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ────────────────────────────────────────────────────────────────────────────────
 
-# Chart example with mixed values (note screen space usage in case when ABS
-OLUTE values of negative and positive parts are differ too much)
+» Chart example with mixed values (the chart area is split between the posi
+tive and negative side, so bars get less space when the absolute values dif
+fer a lot)
 
-  2                    5          7
-                                  ██
-                                  ██
-                       ██         ██
-                       ██         ██
-  ██                   ██         ██
-         ██     ██
-         ██
-         -3     -2
-Bar 1  Bar 2  Bar 3  Bar 4  Longer Label
-
+ 2              5         7
+                          ██
+                          ██
+                ██        ██
+                ██        ██
+ ██             ██        ██
+      ██   ██
+      ██
+      -3   -2
+Q1   Q2   Q3   Q4   Yearly Total
 
 ────────────────────────────────────────────────────────────────────────────────
 
-# Chart example with mixed values (note screen space usage in case when ABS
-OLUTE values of negative and positive parts are differ too much)
+» Chart example with mixed values (the chart area is split between the posi
+tive and negative side, so bars get less space when the absolute values dif
+fer a lot)
 
-  2                    5          7
-                                  ██
-                                  ██
-                       ██         ██
-                       ██         ██
-  ██                   ██         ██
-         ██     ██
-         ██
-         -3     -2
-Bar 1  Bar 2  Bar 3  Bar 4  Longer Label
+ 2              5         7
+                          ██
+                          ██
+                ██        ██
+                ██        ██
+ ██             ██        ██
+      ██   ██
+      ██
+      -3   -2
+Q1   Q2   Q3   Q4   Yearly Total
 
+────────────────────────────────────────────────────────────────────────────────
+
+» Chart example with mixed values (the chart area is split between the posi
+tive and negative side, so bars get less space when the absolute values dif
+fer a lot)
+
+ 2              5         7
+                          ██
+                          ██
+                ██        ██
+                ██        ██
+ ██             ██        ██
+      ██   ██
+      ██
+      -3   -2
+Q1   Q2   Q3   Q4   Yearly Total
 
 ────────────────────────────────────────────────────────────────────────────────

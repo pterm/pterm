@@ -1,6 +1,6 @@
 # interactive_textinput/multi-line
 
-![Animation](https://vhs.charm.sh/vhs-15THY2bAaKN3cHTDnoa1IH.gif)
+![Animation](https://vhs.charm.sh/vhs-6BcAPqMvP68DHVX0tCfZg5.gif)
 
 ```go
 package main
@@ -10,19 +10,12 @@ import (
 )
 
 func main() {
-	// Create a default interactive text input with multi-line enabled.
-	// This allows the user to input multiple lines of text.
+	// In multi-line mode, enter inserts a new line and tab submits the input.
 	textInput := pterm.DefaultInteractiveTextInput.WithMultiLine()
 
-	// Show the text input to the user and store the result.
-	// The second return value (an error) is ignored with '_'.
 	result, _ := textInput.Show()
 
-	// Print a blank line for better readability in the output.
 	pterm.Println()
-
-	// Print the user's input prefixed with an informational message.
-	// The '%s' placeholder is replaced with the user's input.
 	pterm.Info.Printfln("You answered: %s", result)
 }
 ```

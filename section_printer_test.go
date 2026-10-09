@@ -1,147 +1,62 @@
 package pterm_test
 
+// Behavioral tests for SectionPrinter.
+//
+// Builder methods, Print*/Sprint* delegation and the global styling invariants
+// are covered generically in contract_test.go. This file verifies the actual
+// layout: indent characters per level, padding newlines and styling scope.
+
 import (
-	"errors"
-	"io"
-	"os"
 	"testing"
 
-	"github.com/MarvinJWendt/testza"
+	"github.com/stretchr/testify/assert"
 
 	"github.com/pterm/pterm"
 )
 
-func TestSectionPrinterNilPrint(t *testing.T) {
-	p := pterm.SectionPrinter{}
-	p.Println("Hello, World!")
+func TestSectionPrinterDefaultLayout(t *testing.T) {
+	// Level 1, one line of top and bottom padding, "»" indent character.
+	assert.Equal(t, "\n» Title\n", stripANSI(pterm.DefaultSection.Sprint("Title")))
 }
 
-func TestSectionPrinterPrintMethods(t *testing.T) {
-	p := pterm.DefaultSection
-
-	t.Run("Print", func(t *testing.T) {
-		testPrintContains(t, func(w io.Writer, a any) {
-			p.Print(a)
-		})
-	})
-
-	t.Run("Printf", func(t *testing.T) {
-		testPrintfContains(t, func(w io.Writer, format string, a any) {
-			p.Printf(format, a)
-		})
-	})
-
-	t.Run("Printfln", func(t *testing.T) {
-		testPrintflnContains(t, func(w io.Writer, format string, a any) {
-			p.Printfln(format, a)
-		})
-	})
-
-	t.Run("Println", func(t *testing.T) {
-		testPrintlnContains(t, func(w io.Writer, a any) {
-			p.Println(a)
-		})
-	})
-
-	t.Run("Sprint", func(t *testing.T) {
-		testSprintContains(t, func(a any) string {
-			return p.Sprint(a)
-		})
-	})
-
-	t.Run("Sprintf", func(t *testing.T) {
-		testSprintfContains(t, func(format string, a any) string {
-			return p.Sprintf(format, a)
-		})
-	})
-
-	t.Run("Sprintfln", func(t *testing.T) {
-		testSprintflnContains(t, func(format string, a any) string {
-			return p.Sprintfln(format, a)
-		})
-	})
-
-	t.Run("Sprintln", func(t *testing.T) {
-		testSprintlnContains(t, func(a any) string {
-			return p.Sprintln(a)
-		})
-	})
-
-	t.Run("PrintOnError", func(t *testing.T) {
-		result := captureStdout(func(w io.Writer) {
-			p.PrintOnError(errors.New("hello world"))
-		})
-		testza.AssertContains(t, result, "hello world")
-	})
-
-	t.Run("PrintIfError_WithoutError", func(t *testing.T) {
-		result := captureStdout(func(w io.Writer) {
-			p.PrintOnError(nil)
-		})
-		testza.AssertZero(t, result)
-	})
-
-	t.Run("PrintOnErrorf", func(t *testing.T) {
-		result := captureStdout(func(w io.Writer) {
-			p.PrintOnErrorf("wrapping error : %w", errors.New("hello world"))
-		})
-		testza.AssertContains(t, result, "hello world")
-	})
-
-	t.Run("PrintIfError_WithoutErrorf", func(t *testing.T) {
-		result := captureStdout(func(w io.Writer) {
-			p.PrintOnErrorf("", nil)
-		})
-		testza.AssertZero(t, result)
-	})
+func TestSectionPrinterLevelRepeatsIndentCharacter(t *testing.T) {
+	assert.Equal(t, "\n» Title\n", stripANSI(pterm.DefaultSection.WithLevel(1).Sprint("Title")))
+	assert.Equal(t, "\n»» Title\n", stripANSI(pterm.DefaultSection.WithLevel(2).Sprint("Title")))
+	assert.Equal(t, "\n»»» Title\n", stripANSI(pterm.DefaultSection.WithLevel(3).Sprint("Title")))
 }
 
-func TestSectionPrinter_WithBottomPadding(t *testing.T) {
-	p := pterm.SectionPrinter{}
-	p2 := p.WithBottomPadding(1337)
-
-	testza.AssertEqual(t, 1337, p2.BottomPadding)
-	testza.AssertZero(t, p.BottomPadding)
+func TestSectionPrinterLevelZeroOmitsIndent(t *testing.T) {
+	// Level 0 renders neither indent characters nor the separating space.
+	assert.Equal(t, "\nTitle\n", stripANSI(pterm.DefaultSection.WithLevel(0).Sprint("Title")))
 }
 
-func TestSectionPrinter_WithLevel(t *testing.T) {
-	p := pterm.SectionPrinter{}
-	p2 := p.WithLevel(1337)
+func TestSectionPrinterCustomIndentCharacter(t *testing.T) {
+	p := pterm.DefaultSection.WithIndentCharacter("=>").WithLevel(2)
 
-	testza.AssertEqual(t, 1337, p2.Level)
-	testza.AssertZero(t, p.Level)
+	assert.Equal(t, "\n=>=> Title\n", stripANSI(p.Sprint("Title")))
 }
 
-func TestSectionPrinter_WithStyle(t *testing.T) {
-	p := pterm.SectionPrinter{}
-	s := pterm.NewStyle(pterm.FgRed, pterm.BgRed, pterm.Bold)
-	p2 := p.WithStyle(s)
+func TestSectionPrinterPaddingAddsExactNewlines(t *testing.T) {
+	p := pterm.DefaultSection.WithTopPadding(3).WithBottomPadding(2)
 
-	testza.AssertEqual(t, s, p2.Style)
-	testza.AssertZero(t, p.Style)
+	assert.Equal(t, "\n\n\n» Title\n\n", stripANSI(p.Sprint("Title")))
 }
 
-func TestSectionPrinter_WithTopPadding(t *testing.T) {
-	p := pterm.SectionPrinter{}
-	p2 := p.WithTopPadding(1337)
+func TestSectionPrinterZeroPadding(t *testing.T) {
+	p := pterm.DefaultSection.WithTopPadding(0).WithBottomPadding(0)
 
-	testza.AssertEqual(t, 1337, p2.TopPadding)
-	testza.AssertZero(t, p.TopPadding)
+	assert.Equal(t, "» Title", stripANSI(p.Sprint("Title")))
 }
 
-func TestSectionPrinter_WithIndentCharacter(t *testing.T) {
-	p := pterm.SectionPrinter{}
-	p2 := p.WithIndentCharacter("#")
-
-	testza.AssertEqual(t, "#", p2.IndentCharacter)
-	testza.AssertZero(t, p.IndentCharacter)
+func TestSectionPrinterStylesOnlyTheTitle(t *testing.T) {
+	// The indent characters and the title are wrapped in the section style
+	// (Bold=1, FgLightMagenta=95); the padding newlines stay unstyled.
+	assert.Equal(t, "\n\x1b[1;95m»\x1b[0m \x1b[1;95mT\x1b[0m\n", pterm.DefaultSection.Sprint("T"))
 }
 
-func TestSectionPrinter_WithWriter(t *testing.T) {
+func TestSectionPrinterZeroValueRendersBareText(t *testing.T) {
 	p := pterm.SectionPrinter{}
-	s := os.Stderr
-	p2 := p.WithWriter(s)
 
-	testza.AssertEqual(t, s, p2.Writer)
-	testza.AssertZero(t, p.Writer)
+	// No padding, level 0, no style: the text passes through unchanged.
+	assert.Equal(t, "Title", p.Sprint("Title"))
 }

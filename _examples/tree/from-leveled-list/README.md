@@ -1,6 +1,6 @@
 # tree/from-leveled-list
 
-![Animation](https://vhs.charm.sh/vhs-Oq3WRBLRwjbireH4KkuWO.gif)
+![Animation](https://vhs.charm.sh/vhs-5m4lW2DbvrN4pgynZUdVvO.gif)
 
 ```go
 package main
@@ -11,7 +11,8 @@ import (
 )
 
 func main() {
-	// Define a leveled list to represent the structure of the directories.
+	// A LeveledList is a flat alternative to nesting TreeNodes by hand: each
+	// entry states its own depth.
 	leveledList := pterm.LeveledList{
 		{Level: 0, Text: "C:"},
 		{Level: 1, Text: "Users"},
@@ -37,11 +38,11 @@ func main() {
 		{Level: 2, Text: "PTerm"},
 	}
 
-	// Convert the leveled list into a tree structure.
+	// TreeFromLeveledList converts the list into a TreeNode; the returned
+	// root just needs a name.
 	root := putils.TreeFromLeveledList(leveledList)
-	root.Text = "Computer" // Set the root node text.
+	root.Text = "Computer"
 
-	// Render the tree structure using the default tree printer.
 	pterm.DefaultTree.WithRoot(root).Render()
 }
 ```

@@ -1,4 +1,4 @@
-
+>
 
 
 
@@ -51,7 +51,7 @@
 
 
 ────────────────────────────────────────────────────────────────────────────────
-
+>
 
 
 
@@ -335,7 +335,7 @@ Input text: Some default value
 ────────────────────────────────────────────────────────────────────────────────
 Input text: Some default valueHello, World!
 
- INFO  You answered: Some default valueHello, World!
+  INFO    You answered: Some default valueHello, World!
 >
 
 
@@ -352,7 +352,7 @@ Input text: Some default valueHello, World!
 ────────────────────────────────────────────────────────────────────────────────
 Input text: Some default valueHello, World!
 
- INFO  You answered: Some default valueHello, World!
+  INFO    You answered: Some default valueHello, World!
 >
 
 

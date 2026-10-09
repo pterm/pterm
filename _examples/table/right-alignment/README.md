@@ -1,6 +1,6 @@
 # table/right-alignment
 
-![Animation](https://vhs.charm.sh/vhs-5rWnbjwsvfGAhjgzf4POkb.gif)
+![Animation](https://vhs.charm.sh/vhs-1ZkWcvqqmfoUT5tHGxJbX1.gif)
 
 ```go
 package main
@@ -8,9 +8,7 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Define the data for the table.
-	// Each inner slice represents a row in the table.
-	// The first row is considered as the header.
+	// The first row becomes the header via WithHasHeader.
 	tableData := pterm.TableData{
 		{"Firstname", "Lastname", "Email", "Note"},
 		{"Paul", "Dean", "augue@velitAliquam.co.uk", ""},
@@ -19,9 +17,7 @@ func main() {
 		{"张", "小宝", "zhang@example.com", ""},
 	}
 
-	// Create a table with the defined data.
-	// The table has a header and the text in the cells is right-aligned.
-	// The Render() method is used to print the table to the console.
+	// WithRightAlignment right-aligns every cell in the table.
 	pterm.DefaultTable.WithHasHeader().WithRightAlignment().WithData(tableData).Render()
 }
 ```

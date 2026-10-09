@@ -1,0 +1,9 @@
+\x1b[1;36mINFO \x1b[0m A message that is too long for a single line wraps
+      under its own first line
+      \x1b[90m├ \x1b[0m\x1b[1;36mkey\x1b[0m\x1b[90m=\x1b[0mvalue
+      \x1b[90m└ \x1b[0m\x1b[1;36manother\x1b[0m\x1b[90m=\x1b[0mvalue with spaces
+\x1b[1;33mWARN \x1b[0m Multiline and long values align under the value start
+      \x1b[90m├ \x1b[0m\x1b[1;33mstack\x1b[0m\x1b[90m=\x1b[0mfirst line
+      \x1b[90m│ \x1b[0m      second line
+      \x1b[90m└ \x1b[0m\x1b[1;33mtoken\x1b[0m\x1b[90m=\x1b[0maverylongsingletokenthatmustbebrokenhardbecaus
+              eitdoesnotfit

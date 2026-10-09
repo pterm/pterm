@@ -1,139 +1,257 @@
 package pterm_test
 
 import (
-	"reflect"
 	"testing"
 
-	"atomicgo.dev/keyboard"
 	"atomicgo.dev/keyboard/keys"
-	"github.com/MarvinJWendt/testza"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/pterm/pterm"
 )
 
-func TestInteractiveMultiselectPrinter_Show(t *testing.T) {
-	go func() {
-		keyboard.SimulateKeyPress(keys.Down)
-		keyboard.SimulateKeyPress(keys.Down)
-		keyboard.SimulateKeyPress(keys.Enter)
-		keyboard.SimulateKeyPress(keys.Tab)
-	}()
+// multiselectPrompt is passed to every Show() call in this file. It doubles as
+// the frame marker for areaWriter.frames, so it must not occur in any option.
+const multiselectPrompt = "Pick some"
 
-	result, _ := pterm.DefaultInteractiveMultiselect.WithOptions([]string{"a", "b", "c", "d", "e"}).WithDefaultOptions([]string{"b"}).Show()
-	testza.AssertEqual(t, []string{"b", "c"}, result)
+// showMultiselect runs the given multiselect menu (which must terminate
+// through the key presses simulated beforehand) and returns the chosen
+// options.
+func showMultiselect(t *testing.T, printer *pterm.InteractiveMultiselectPrinter) ([]string, error) {
+	t.Helper()
+
+	return showInteractive(t, func() ([]string, error) {
+		return printer.Show(multiselectPrompt)
+	})
 }
 
-func TestInteractiveMultiselectPrinter_Show_MaxHeightSlidingWindow(t *testing.T) {
-	go func() {
-		keyboard.SimulateKeyPress(keys.Up)
-		keyboard.SimulateKeyPress(keys.Up)
-		keyboard.SimulateKeyPress(keys.Enter)
-		keyboard.SimulateKeyPress(keys.Tab)
-	}()
-
-	result, _ := pterm.DefaultInteractiveMultiselect.WithOptions([]string{"a", "b", "c", "d", "e", "f"}).WithDefaultOptions([]string{"b"}).Show()
-	testza.AssertEqual(t, []string{"b", "e"}, result)
+// checked and unchecked render an option row's checkbox with the plain theme
+// checkmark atoms, e.g. "[✓] b" and "[✗] b".
+func checked(option string) string {
+	return "[" + stripANSI(pterm.ThemeDefault.Checkmark.Checked) + "] " + option
 }
 
-func TestInteractiveMultiselectPrinter_Show_AlternateNavigationKeys(t *testing.T) {
-	go func() {
-		keyboard.SimulateKeyPress(keys.CtrlN)
-		keyboard.SimulateKeyPress(keys.CtrlN)
-		keyboard.SimulateKeyPress(keys.CtrlN)
-		keyboard.SimulateKeyPress(keys.CtrlP)
-		keyboard.SimulateKeyPress(keys.Enter)
-		keyboard.SimulateKeyPress(keys.Tab)
-	}()
-
-	result, _ := pterm.DefaultInteractiveMultiselect.WithOptions([]string{"a", "b", "c", "d", "e"}).WithDefaultOptions([]string{"b"}).Show()
-	testza.AssertEqual(t, []string{"b", "c"}, result)
+func unchecked(option string) string {
+	return "[" + stripANSI(pterm.ThemeDefault.Checkmark.Unchecked) + "] " + option
 }
 
-// TestInteractiveMultiselectPrinter_Show_SelectAll verifies that pressing Right
-// Arrow without a filter selects all options.
-func TestInteractiveMultiselectPrinter_Show_SelectAll(t *testing.T) {
-	go func() {
-		keyboard.SimulateKeyPress(keys.Right) // select all
-		keyboard.SimulateKeyPress(keys.Tab)   // confirm
-	}()
+func TestInteractiveMultiselectPrinter_SelectAndConfirm(t *testing.T) {
+	area := captureAreaOutput(t)
+	printer := pterm.DefaultInteractiveMultiselect.WithOptions([]string{"a", "b", "c", "d", "e"})
 
-	result, _ := pterm.DefaultInteractiveMultiselect.WithOptions([]string{"a", "b", "c"}).Show()
-	testza.AssertEqual(t, []string{"a", "b", "c"}, result)
+	// Enter is the default select key, Tab the default confirm key.
+	simulateKeys(t, keys.Enter, keys.Down, keys.Enter, keys.Tab)
+
+	result, err := showMultiselect(t, printer)
+
+	require.NoError(t, err)
+	assert.Equal(t, []string{"a", "b"}, result, "confirm must return exactly the selected options in selection order")
+
+	frames := area.frames(multiselectPrompt)
+	require.GreaterOrEqual(t, len(frames), 2)
+
+	lastMenu := frames[len(frames)-2]
+	assert.Contains(t, lastMenu, checked("a"), "selected options must show the checked checkmark")
+	assert.Contains(t, lastMenu, "❯ "+checked("b"), "the highlighted row must show the selector")
+	assert.Contains(t, lastMenu, unchecked("c"), "unselected options must show the unchecked checkmark")
+	assert.Contains(t, lastMenu, "select")
+	assert.Contains(t, lastMenu, "confirm")
 }
 
-// TestInteractiveMultiselectPrinter_Show_DeselectAll verifies that pressing Left
-// Arrow without a filter deselects all options.
-func TestInteractiveMultiselectPrinter_Show_DeselectAll(t *testing.T) {
-	go func() {
-		keyboard.SimulateKeyPress(keys.Right) // select all
-		keyboard.SimulateKeyPress(keys.Left)  // deselect all
-		keyboard.SimulateKeyPress(keys.Tab)   // confirm
-	}()
+func TestInteractiveMultiselectPrinter_SelectKeyTogglesSelection(t *testing.T) {
+	area := captureAreaOutput(t)
+	printer := pterm.DefaultInteractiveMultiselect.WithOptions([]string{"a", "b"})
 
-	result, _ := pterm.DefaultInteractiveMultiselect.WithOptions([]string{"a", "b", "c"}).Show()
-	testza.AssertNil(t, result)
+	simulateKeys(t, keys.Enter, keys.Enter, keys.Tab)
+
+	result, err := showMultiselect(t, printer)
+
+	require.NoError(t, err)
+	assert.Empty(t, result, "selecting an option twice must deselect it again")
+
+	frames := area.frames(multiselectPrompt)
+	require.GreaterOrEqual(t, len(frames), 2)
+	assert.Contains(t, frames[len(frames)-2], "❯ "+unchecked("a"), "a toggled-off option must render unchecked")
 }
 
-// TestInteractiveMultiselectPrinter_Show_SelectAllWithFilter verifies that
-// pressing Right Arrow when a fuzzy filter is active selects only the matching
-// options, not all options.  Regression test for issue #761.
-func TestInteractiveMultiselectPrinter_Show_SelectAllWithFilter(t *testing.T) {
-	go func() {
-		// Type "a" to filter — only option "a" matches
-		keyboard.SimulateKeyPress('a')
-		keyboard.SimulateKeyPress(keys.Right) // select all visible (only "a")
-		// Clear the filter to confirm all options are visible at submit
-		keyboard.SimulateKeyPress(keys.Backspace)
-		keyboard.SimulateKeyPress(keys.Tab) // confirm
-	}()
+func TestInteractiveMultiselectPrinter_DefaultOptionsArePreselected(t *testing.T) {
+	area := captureAreaOutput(t)
+	printer := pterm.DefaultInteractiveMultiselect.
+		WithOptions([]string{"a", "b", "c"}).
+		WithDefaultOptions([]string{"c", "a"})
 
-	result, _ := pterm.DefaultInteractiveMultiselect.WithOptions([]string{"a", "b", "c"}).Show()
-	// Only "a" should be selected; "b" and "c" were not visible when Right was pressed.
-	testza.AssertEqual(t, []string{"a"}, result)
+	simulateKeys(t, keys.Tab)
+
+	result, err := showMultiselect(t, printer)
+
+	require.NoError(t, err)
+	assert.Equal(t, []string{"c", "a"}, result, "the default options must be returned in the given order")
+
+	frames := area.frames(multiselectPrompt)
+	require.NotEmpty(t, frames)
+	assert.Contains(t, frames[0], checked("a"))
+	assert.Contains(t, frames[0], unchecked("b"))
+	assert.Contains(t, frames[0], checked("c"))
 }
 
-func TestInteractiveMultiselectPrinter_WithDefaultText(t *testing.T) {
-	p := pterm.DefaultInteractiveMultiselect.WithDefaultText("default")
-	testza.AssertEqual(t, p.DefaultText, "default")
+func TestInteractiveMultiselectPrinter_SelectAllAndSelectNone(t *testing.T) {
+	t.Run("right selects all options", func(t *testing.T) {
+		captureAreaOutput(t)
+		simulateKeys(t, keys.Right, keys.Tab)
+
+		result, err := showMultiselect(t, pterm.DefaultInteractiveMultiselect.WithOptions([]string{"a", "b", "c"}))
+
+		require.NoError(t, err)
+		assert.Equal(t, []string{"a", "b", "c"}, result)
+	})
+
+	t.Run("left deselects all options", func(t *testing.T) {
+		captureAreaOutput(t)
+		simulateKeys(t, keys.Right, keys.Left, keys.Tab)
+
+		result, err := showMultiselect(t, pterm.DefaultInteractiveMultiselect.WithOptions([]string{"a", "b", "c"}))
+
+		require.NoError(t, err)
+		assert.Empty(t, result)
+	})
 }
 
-func TestInteractiveMultiselectPrinter_WithDefaultOption(t *testing.T) {
-	p := pterm.DefaultInteractiveMultiselect.WithDefaultOptions([]string{"default"})
-	testza.AssertEqual(t, p.DefaultOptions, []string{"default"})
+func TestInteractiveMultiselectPrinter_MaxHeightScrollsWindow(t *testing.T) {
+	area := captureAreaOutput(t)
+	printer := pterm.DefaultInteractiveMultiselect.
+		WithOptions([]string{"a", "b", "c", "d", "e", "f"}).
+		WithMaxHeight(3)
+
+	simulateKeys(t, keys.Down, keys.Down, keys.Down, keys.Enter, keys.Tab)
+
+	result, err := showMultiselect(t, printer)
+
+	require.NoError(t, err)
+	assert.Equal(t, []string{"d"}, result)
+
+	frames := area.frames(multiselectPrompt)
+	require.GreaterOrEqual(t, len(frames), 2)
+
+	lastMenu := frames[len(frames)-2]
+	assert.Contains(t, lastMenu, unchecked("b"))
+	assert.Contains(t, lastMenu, unchecked("c"))
+	assert.Contains(t, lastMenu, "❯ "+checked("d"))
+	assert.NotContains(t, lastMenu, unchecked("a"), "options scrolled out at the top must not be rendered")
+	assert.NotContains(t, lastMenu, unchecked("e"), "options below the window must not be rendered")
 }
 
-func TestInteractiveMultiselectPrinter_WithOptions(t *testing.T) {
-	p := pterm.DefaultInteractiveMultiselect.WithOptions([]string{"a", "b", "c"})
-	testza.AssertEqual(t, p.Options, []string{"a", "b", "c"})
+func TestInteractiveMultiselectPrinter_FilterSelectsMatch(t *testing.T) {
+	area := captureAreaOutput(t)
+	printer := pterm.DefaultInteractiveMultiselect.WithOptions([]string{"apple", "banana", "cherry"})
+
+	simulateKeys(t, 'b', 'a', 'n', keys.Enter, keys.Tab)
+
+	result, err := showMultiselect(t, printer)
+
+	require.NoError(t, err)
+	assert.Equal(t, []string{"banana"}, result)
+
+	frames := area.frames(multiselectPrompt)
+	require.GreaterOrEqual(t, len(frames), 2)
+
+	lastMenu := frames[len(frames)-2]
+	assert.Contains(t, lastMenu, "[type to search]: ban", "the typed filter must be rendered next to the prompt")
+	assert.NotContains(t, lastMenu, "apple", "options that do not match the filter must disappear")
 }
 
-func TestInteractiveMultiselectPrinter_WithMaxHeight(t *testing.T) {
-	p := pterm.DefaultInteractiveMultiselect.WithMaxHeight(1337)
-	testza.AssertEqual(t, p.MaxHeight, 1337)
+func TestInteractiveMultiselectPrinter_BackspaceRestoresOptions(t *testing.T) {
+	captureAreaOutput(t)
+
+	printer := pterm.DefaultInteractiveMultiselect.WithOptions([]string{"apple", "banana"})
+
+	// 'z' matches nothing, so the first select key press must be ignored;
+	// backspace removes the filter and the second one selects "apple".
+	simulateKeys(t, 'z', keys.Enter, keys.Backspace, keys.Enter, keys.Tab)
+
+	result, err := showMultiselect(t, printer)
+
+	require.NoError(t, err)
+	assert.Equal(t, []string{"apple"}, result)
 }
 
-func TestInteractiveMultiselectPrinter_WithKeySelect(t *testing.T) {
-	p := pterm.DefaultInteractiveMultiselect.WithKeySelect(keys.Left).WithOptions([]string{"a", "b", "c"})
-	testza.AssertEqual(t, p.KeySelect, keys.Left)
+func TestInteractiveMultiselectPrinter_CustomSelectAndConfirmKeys(t *testing.T) {
+	captureAreaOutput(t)
+
+	printer := pterm.DefaultInteractiveMultiselect.
+		WithOptions([]string{"a", "b", "c"}).
+		WithFilter(false).
+		WithKeySelect(keys.Space).
+		WithKeyConfirm(keys.Enter)
+
+	simulateKeys(t, keys.Space, keys.Down, keys.Space, keys.Enter)
+
+	result, err := showMultiselect(t, printer)
+
+	require.NoError(t, err)
+	assert.Equal(t, []string{"a", "b"}, result)
 }
 
-func TestInteractiveMultiselectPrinter_WithKeyConfirm(t *testing.T) {
-	p := pterm.DefaultInteractiveMultiselect.WithKeyConfirm(keys.Left).WithOptions([]string{"a", "b", "c"})
-	testza.AssertEqual(t, p.KeyConfirm, keys.Left)
+func TestInteractiveMultiselectPrinter_ShowSelectedOptions(t *testing.T) {
+	area := captureAreaOutput(t)
+	printer := pterm.DefaultInteractiveMultiselect.
+		WithOptions([]string{"a", "b"}).
+		WithShowSelectedOptions()
+
+	simulateKeys(t, keys.Enter, keys.Tab)
+
+	result, err := showMultiselect(t, printer)
+
+	require.NoError(t, err)
+	assert.Equal(t, []string{"a"}, result)
+
+	frames := area.frames(multiselectPrompt)
+	require.GreaterOrEqual(t, len(frames), 2)
+	assert.Contains(t, frames[len(frames)-2], "Selected: a", "the selected options must be listed below the menu")
 }
 
-func TestInteractiveMultiselectPrinter_WithCheckmark(t *testing.T) {
-	p := pterm.DefaultInteractiveMultiselect.WithCheckmark(&pterm.Checkmark{Checked: "+", Unchecked: "-"}).WithOptions([]string{"a", "b", "c"})
-	testza.AssertEqual(t, p.Checkmark, &pterm.Checkmark{Checked: "+", Unchecked: "-"})
+func TestInteractiveMultiselectPrinter_SpaceKeyBindingsRequireDisabledFilter(t *testing.T) {
+	t.Run("KeySelect", func(t *testing.T) {
+		captureAreaOutput(t)
+
+		_, err := showMultiselect(t, pterm.DefaultInteractiveMultiselect.
+			WithOptions([]string{"a"}).
+			WithKeySelect(keys.Space))
+
+		assert.ErrorContains(t, err, "keys.Space")
+	})
+
+	t.Run("KeyConfirm", func(t *testing.T) {
+		captureAreaOutput(t)
+
+		_, err := showMultiselect(t, pterm.DefaultInteractiveMultiselect.
+			WithOptions([]string{"a"}).
+			WithKeyConfirm(keys.Space))
+
+		assert.ErrorContains(t, err, "keys.Space")
+	})
 }
 
-func TestInteractiveMultiselectPrinter_WithOnInterruptFunc(t *testing.T) {
-	// OnInterrupt function defaults to nil
-	pd := pterm.InteractiveMultiselectPrinter{}
-	testza.AssertNil(t, pd.OnInterruptFunc)
+func TestInteractiveMultiselectPrinter_NoOptionsReturnsError(t *testing.T) {
+	captureAreaOutput(t)
 
-	// Verify OnInterrupt is set
-	exitfunc := func() {}
-	p := pterm.DefaultInteractiveMultiselect.WithOnInterruptFunc(exitfunc)
-	testza.AssertEqual(t, reflect.ValueOf(p.OnInterruptFunc).Pointer(), reflect.ValueOf(exitfunc).Pointer())
+	_, err := showMultiselect(t, pterm.DefaultInteractiveMultiselect.WithOptions(nil))
+
+	assert.ErrorContains(t, err, "no options provided")
+}
+
+func TestInteractiveMultiselectPrinter_InterruptCallsOnInterruptFunc(t *testing.T) {
+	captureAreaOutput(t)
+
+	interrupted := false
+	printer := pterm.DefaultInteractiveMultiselect.
+		WithOptions([]string{"a", "b"}).
+		WithOnInterruptFunc(func() { interrupted = true })
+
+	simulateKeys(t, keys.CtrlC)
+
+	result, err := showMultiselect(t, printer)
+
+	require.NoError(t, err)
+	assert.True(t, interrupted, "Ctrl+C must invoke the OnInterruptFunc")
+	assert.Empty(t, result, "an interrupted prompt must not return options")
 }

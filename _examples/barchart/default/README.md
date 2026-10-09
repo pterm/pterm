@@ -1,6 +1,6 @@
 # barchart/default
 
-![Animation](https://vhs.charm.sh/vhs-7n1pfa4nlfPy26U4lYZ2E1.gif)
+![Animation](https://vhs.charm.sh/vhs-6CnMQBdI0NEbJHIeGu1eVH.gif)
 
 ```go
 package main
@@ -8,8 +8,6 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Define the data for the bar chart. Each bar is represented by a `pterm.Bar` struct.
-	// The `Label` field represents the label of the bar, and the `Value` field represents the value of the bar.
 	bars := []pterm.Bar{
 		{Label: "A", Value: 10},
 		{Label: "B", Value: 20},
@@ -22,9 +20,7 @@ func main() {
 		{Label: "I", Value: 10},
 	}
 
-	// Use the `DefaultBarChart` from the `pterm` package to create a bar chart.
-	// The `WithBars` method is used to set the bars of the chart.
-	// The `Render` method is used to display the chart.
+	// By default the chart is drawn vertically, with each label under its bar.
 	pterm.DefaultBarChart.WithBars(bars).Render()
 }
 ```

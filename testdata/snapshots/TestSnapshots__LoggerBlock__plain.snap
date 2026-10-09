@@ -1,0 +1,3 @@
+INFO  A message that is too long for a single line wraps under its own first line key=value another="value with spaces"
+WARN  Multiline and long values align under the value start stack=first line
+second line token=averylongsingletokenthatmustbebrokenhardbecauseitdoesnotfit

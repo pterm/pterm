@@ -1,6 +1,6 @@
 # box/default
 
-![Animation](https://vhs.charm.sh/vhs-143eHEcxwAHSkc50MnF8Nh.gif)
+![Animation](https://vhs.charm.sh/vhs-1DIyAbs7eXHIzVW2Z7p4Md.gif)
 
 ```go
 package main
@@ -8,8 +8,7 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Create a default box with PTerm and print a message in it.
-	// The DefaultBox.Println method automatically starts, prints the message, and stops the box.
+	// The box sizes itself to fit whatever it prints.
 	pterm.DefaultBox.Println("Hello, World!")
 }
 ```

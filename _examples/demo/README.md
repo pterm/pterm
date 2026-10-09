@@ -1,6 +1,6 @@
 ### demo/demo
 
-![Animation](https://vhs.charm.sh/vhs-7H0FnHbjINFtuaSPSDwZLF.gif)
+![Animation](https://vhs.charm.sh/vhs-CsXO6G3ouQR1XjYZYr2q8.gif)
 
 <details>
 
@@ -12,7 +12,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"math/rand"
 	"reflect"
 	"strconv"
 	"strings"
@@ -30,9 +29,8 @@ var section = pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLig
 var pseudoProgramList = []string{"excel", "photoshop", "chrome", "outlook", "git", "vscode", "minecraft", "neovim", "gopls"}
 
 func main() {
-	setup() // Setup the demo (flags etc.)
+	setup()
 
-	// Show intro
 	if !*skipIntro {
 		introScreen()
 		clear()
@@ -46,12 +44,12 @@ func main() {
 
 		time.Sleep(second * 3)
 
-		interstingStuff := map[string]any{
+		interestingStuff := map[string]any{
 			"when were crayons invented":  "1903",
 			"what is the meaning of life": 42,
 			"is this interesting":         true,
 		}
-		logger.Debug("This might be interesting", logger.ArgsFromMap(interstingStuff))
+		logger.Debug("This might be interesting", logger.ArgsFromMap(interestingStuff))
 		time.Sleep(second * 3)
 
 		logger.Info("That was actually interesting", logger.Args("such", "wow"))
@@ -96,10 +94,11 @@ func main() {
 	showcase("Live Output", 2, func() {
 		pterm.Info.Println("You can use an Area to display changing output:")
 		pterm.Println()
-		area, _ := pterm.DefaultArea.WithCenter().Start() // Start the Area printer, with the Center option.
+		area, _ := pterm.DefaultArea.WithCenter().Start()
 		for i := 0; i < 10; i++ {
-			str, _ := pterm.DefaultBigText.WithLetters(putils.LettersFromString(time.Now().Format("15:04:05"))).Srender() // Save current time in str.
-			area.Update(str)                                                                                              // Update Area contents.
+			// Render the current time as big text and swap it into the area in place.
+			str, _ := pterm.DefaultBigText.WithLetters(putils.LettersFromString(time.Now().Format("15:04:05"))).Srender()
+			area.Update(str)
 			time.Sleep(second)
 		}
 		area.Stop()
@@ -122,15 +121,15 @@ func main() {
 	})
 
 	showcase("TrueColor Support", 7, func() {
-		from := pterm.NewRGB(0, 255, 255) // This RGB value is used as the gradients start point.
-		to := pterm.NewRGB(255, 0, 255)   // This RGB value is used as the gradients first point.
+		// Fade blends every character from the start color to the end color over the string.
+		from := pterm.NewRGB(0, 255, 255)
+		to := pterm.NewRGB(255, 0, 255)
 
 		str := "If your terminal has TrueColor support, you can use RGB colors!\nYou can even fade them :)\n\nLorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
 		strs := strings.Split(str, "")
-		var fadeInfo string // String which will be used to print info.
-		// For loop over the range of the string length.
+
+		var fadeInfo string
 		for i := 0; i < len(str); i++ {
-			// Append faded letter to info string.
 			fadeInfo += from.Fade(0, float32(len(str)), float32(i), to).Sprint(strs[i])
 		}
 		pterm.DefaultCenter.WithCenterEachLineSeparately().Println(fadeInfo)
@@ -187,7 +186,8 @@ func main() {
 	showcase("Themes", 2, func() {
 		pterm.Info.Println("You can change the color theme of PTerm easily to fit your needs!\nThis is the default one:")
 		time.Sleep(second / 2)
-		// Print every value of the default theme with its own style.
+
+		// Print every style of the default theme, each rendered in its own style.
 		v := reflect.ValueOf(pterm.ThemeDefault)
 		typeOfS := v.Type()
 
@@ -233,7 +233,7 @@ func introScreen() {
 
 	section.Println("PTDP - PTerm Demo Program")
 
-	fmt.Println() // blank line
+	fmt.Println()
 
 	pterm.Info.Println("This animation was generated with the latest version of PTerm!" +
 		"\nPTerm works on nearly every terminal and operating system." +
@@ -267,11 +267,6 @@ func showcase(title string, seconds int, content func()) {
 	content()
 	time.Sleep(second * time.Duration(seconds))
 	print("\033[H\033[2J")
-}
-
-func randomInt(min, max int) int {
-	rand.Seed(time.Now().UnixNano())
-	return rand.Intn(max-min+1) + min
 }
 ```
 

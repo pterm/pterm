@@ -1,4 +1,57 @@
->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+
 
 
 
@@ -263,62 +316,9 @@
 
 
 ────────────────────────────────────────────────────────────────────────────────
->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-────────────────────────────────────────────────────────────────────────────────
- INFO  These are the default theme styles.
-       You can modify them easily to your personal preference,
-       or create new themes from scratch :)
+  INFO    These are the default theme styles.
+          You can modify them easily to your personal preference,
+          or create new themes from scratch :)
 
 DefaultText
 
@@ -333,9 +333,9 @@ DefaultText
 
 
 ────────────────────────────────────────────────────────────────────────────────
- INFO  These are the default theme styles.
-       You can modify them easily to your personal preference,
-       or create new themes from scratch :)
+  INFO    These are the default theme styles.
+          You can modify them easily to your personal preference,
+          or create new themes from scratch :)
 
 DefaultText
 PrimaryStyle
@@ -350,9 +350,9 @@ WarningPrefixStyle
 ErrorMessageStyle
 ErrorPrefixStyle
 ────────────────────────────────────────────────────────────────────────────────
- INFO  These are the default theme styles.
-       You can modify them easily to your personal preference,
-       or create new themes from scratch :)
+  INFO    These are the default theme styles.
+          You can modify them easily to your personal preference,
+          or create new themes from scratch :)
 
 DefaultText
 PrimaryStyle

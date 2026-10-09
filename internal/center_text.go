@@ -13,8 +13,8 @@ func CenterText(text string, width int) string {
 		width = GetStringMaxWidth(text)
 	}
 
-	linesTmp := strings.Split(text, "\n")
-	for _, line := range linesTmp {
+	linesTmp := strings.SplitSeq(text, "\n")
+	for line := range linesTmp {
 		if len(RemoveEscapeCodes(line)) > width {
 			extraLines := []string{""}
 			extraLinesCounter := 0
@@ -41,10 +41,10 @@ func CenterText(text string, width int) string {
 		}
 	}
 
-	var line string
+	var line strings.Builder
 	for _, s := range lines {
-		line += s
+		line.WriteString(s)
 	}
 
-	return strings.TrimSuffix(line, "\n")
+	return strings.TrimSuffix(line.String(), "\n")
 }

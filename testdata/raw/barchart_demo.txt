@@ -316,53 +316,53 @@
 
 
 ────────────────────────────────────────────────────────────────────────────────
- INFO  Chart example with positive only values (bars use 100% of chart area
-)
-                    ██
-                    ██
-                    ██
-  ██                ██
-  ██                ██
-  ██                ██
-  ██     ██         ██
-  ██     ██         ██
-  ██     ██         ██
-  ██     ██         ██
-Bar 1  Bar 2  Longer Label
+  INFO    Chart example with positive values only (bars use the full chart
+area)
+                 ██
+                 ██
+                 ██
+ ██              ██
+ ██              ██
+ ██              ██
+ ██    ██        ██
+ ██    ██        ██
+ ██    ██        ██
+ ██    ██        ██
+Go   Rust   TypeScript
 
 
 
 ────────────────────────────────────────────────────────────────────────────────
- INFO  Chart example with positive only values (bars use 100% of chart area
-)
-                    ██
-                    ██
-                    ██
-  ██                ██
-  ██                ██
-  ██                ██
-  ██     ██         ██
-  ██     ██         ██
-  ██     ██         ██
-  ██     ██         ██
-Bar 1  Bar 2  Longer Label
+  INFO    Chart example with positive values only (bars use the full chart
+area)
+                 ██
+                 ██
+                 ██
+ ██              ██
+ ██              ██
+ ██              ██
+ ██    ██        ██
+ ██    ██        ██
+ ██    ██        ██
+ ██    ██        ██
+Go   Rust   TypeScript
 
 
 
 ────────────────────────────────────────────────────────────────────────────────
- INFO  Chart example with positive only values (bars use 100% of chart area
-)
-                    ██
-                    ██
-                    ██
-  ██                ██
-  ██                ██
-  ██                ██
-  ██     ██         ██
-  ██     ██         ██
-  ██     ██         ██
-  ██     ██         ██
-Bar 1  Bar 2  Longer Label
+  INFO    Chart example with positive values only (bars use the full chart
+area)
+                 ██
+                 ██
+                 ██
+ ██              ██
+ ██              ██
+ ██              ██
+ ██    ██        ██
+ ██    ██        ██
+ ██    ██        ██
+ ██    ██        ██
+Go   Rust   TypeScript
 
 
 

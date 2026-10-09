@@ -1,216 +1,114 @@
 package pterm_test
 
 import (
+	"reflect"
+	"strings"
 	"testing"
 
-	"github.com/MarvinJWendt/testza"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	"github.com/pterm/pterm"
 )
 
-func TestTheme_WithDescriptionMessageStyle(t *testing.T) {
-	s := pterm.Style{pterm.FgRed, pterm.BgBlue, pterm.Bold}
-	p := pterm.Theme{}
-	p2 := p.WithDescriptionMessageStyle(s)
+// TestThemeWithMethods verifies every With* method on Theme via reflection:
+// it must take a single Style, return a Theme copy in which exactly the field
+// named after the method holds the given style, and leave the original
+// untouched (value receiver semantics).
+func TestThemeWithMethods(t *testing.T) {
+	style := pterm.Style{pterm.FgRed, pterm.BgBlue, pterm.Bold}
+	themeType := reflect.TypeFor[pterm.Theme]()
 
-	testza.AssertEqual(t, s, p2.DescriptionMessageStyle)
+	methodsChecked := 0
+
+	for method := range themeType.Methods() {
+		if !strings.HasPrefix(method.Name, "With") {
+			continue
+		}
+
+		methodsChecked++
+
+		t.Run(method.Name, func(t *testing.T) {
+			funcType := method.Func.Type()
+			require.Equal(t, 2, funcType.NumIn(), "%s must take exactly one argument", method.Name)
+			require.Equal(t, reflect.TypeFor[pterm.Style](), funcType.In(1), "%s must take a Style", method.Name)
+			require.Equal(t, 1, funcType.NumOut())
+			require.Equal(t, themeType, funcType.Out(0), "%s must return a Theme copy", method.Name)
+
+			original := pterm.Theme{}
+			result := reflect.ValueOf(original).Method(method.Index).Call([]reflect.Value{reflect.ValueOf(style)})[0]
+
+			assert.Equal(t, pterm.Theme{}, original, "%s must not mutate its receiver", method.Name)
+
+			fieldName := strings.TrimPrefix(method.Name, "With")
+			field := result.FieldByName(fieldName)
+			require.True(t, field.IsValid(), "Theme has no field %q matching %s", fieldName, method.Name)
+			assert.Equal(t, style, field.Interface(), "%s must set the %s field", method.Name, fieldName)
+
+			// Nothing else may have changed on the copy: resetting the named
+			// field must yield the zero Theme again.
+			resultReset := result.Interface().(pterm.Theme)
+			resetField := reflect.ValueOf(&resultReset).Elem().FieldByName(fieldName)
+			resetField.Set(reflect.Zero(resetField.Type()))
+			assert.Equal(t, pterm.Theme{}, resultReset, "%s must only change the %s field", method.Name, fieldName)
+		})
+	}
+
+	assert.NotZero(t, methodsChecked, "no With* methods found on Theme")
 }
 
-func TestTheme_WithDescriptionPrefixStyle(t *testing.T) {
-	s := pterm.Style{pterm.FgRed, pterm.BgBlue, pterm.Bold}
-	p := pterm.Theme{}
-	p2 := p.WithDescriptionPrefixStyle(s)
+// TestThemeDefaultStylesFlowIntoPrinters verifies that the default printers
+// really render with the styles from ThemeDefault: changing a theme style
+// changes the escape codes the printer emits.
+func TestThemeDefaultStylesFlowIntoPrinters(t *testing.T) {
+	restoreGlobalStyling(t)
 
-	testza.AssertEqual(t, s, p2.DescriptionPrefixStyle)
+	original := pterm.ThemeDefault.SectionStyle
+	pterm.ThemeDefault.SectionStyle = pterm.Style{pterm.FgRed}
+
+	t.Cleanup(func() { pterm.ThemeDefault.SectionStyle = original })
+
+	out := pterm.DefaultSection.Sprint("Title")
+	assert.Contains(t, out, "\x1b[31m", "DefaultSection must render with the (changed) ThemeDefault.SectionStyle")
+	assert.Contains(t, stripANSI(out), "Title")
 }
 
-func TestTheme_WithErrorMessageStyle(t *testing.T) {
-	s := pterm.Style{pterm.FgRed, pterm.BgBlue, pterm.Bold}
-	p := pterm.Theme{}
-	p2 := p.WithErrorMessageStyle(s)
+// TestThemeLoggerStylesFlowIntoLogger verifies that the logger's level styles
+// come from ThemeDefault: changing a logger theme style changes the escape
+// codes the logger emits.
+func TestThemeLoggerStylesFlowIntoLogger(t *testing.T) {
+	restoreGlobalStyling(t)
 
-	testza.AssertEqual(t, s, p2.ErrorMessageStyle)
+	original := pterm.ThemeDefault.LoggerInfoStyle
+	pterm.ThemeDefault.LoggerInfoStyle = pterm.Style{pterm.FgMagenta}
+
+	t.Cleanup(func() { pterm.ThemeDefault.LoggerInfoStyle = original })
+
+	var buf strings.Builder
+
+	pterm.DefaultLogger.WithWriter(&buf).WithTime(false).Info("hello")
+	assert.Contains(t, buf.String(), "\x1b[35m", "the logger must render INFO with the (changed) ThemeDefault.LoggerInfoStyle")
 }
 
-func TestTheme_WithErrorPrefixStyle(t *testing.T) {
-	s := pterm.Style{pterm.FgRed, pterm.BgBlue, pterm.Bold}
-	p := pterm.Theme{}
-	p2 := p.WithErrorPrefixStyle(s)
-
-	testza.AssertEqual(t, s, p2.ErrorPrefixStyle)
+// TestThemeHeatmapColorsFlowIntoDefaultHeatmap verifies that the default
+// heatmap colors are defined by the theme.
+func TestThemeHeatmapColorsFlowIntoDefaultHeatmap(t *testing.T) {
+	assert.Equal(t, pterm.ThemeDefault.HeatmapColors, pterm.DefaultHeatmap.Colors)
+	assert.Equal(t, pterm.ThemeDefault.HeatmapTextColor, pterm.DefaultHeatmap.TextColor)
+	assert.Equal(t, pterm.ThemeDefault.HeatmapRGBRange, pterm.DefaultHeatmap.RGBRange)
+	assert.Equal(t, pterm.ThemeDefault.HeatmapTextRGB, pterm.DefaultHeatmap.TextRGB)
 }
 
-func TestTheme_WithFatalMessageStyle(t *testing.T) {
-	s := pterm.Style{pterm.FgRed, pterm.BgBlue, pterm.Bold}
-	p := pterm.Theme{}
-	p2 := p.WithFatalMessageStyle(s)
+// TestPrinterWithCustomStyleEmitsItsCodes verifies that a printer constructed
+// with an explicit style renders exactly that style's codes, independent of
+// the theme.
+func TestPrinterWithCustomStyleEmitsItsCodes(t *testing.T) {
+	section := pterm.SectionPrinter{
+		Level:           1,
+		IndentCharacter: "#",
+	}
 
-	testza.AssertEqual(t, s, p2.FatalMessageStyle)
-}
-
-func TestTheme_WithFatalPrefixStyle(t *testing.T) {
-	s := pterm.Style{pterm.FgRed, pterm.BgBlue, pterm.Bold}
-	p := pterm.Theme{}
-	p2 := p.WithFatalPrefixStyle(s)
-
-	testza.AssertEqual(t, s, p2.FatalPrefixStyle)
-}
-
-func TestTheme_WithHighlightStyle(t *testing.T) {
-	s := pterm.Style{pterm.FgRed, pterm.BgBlue, pterm.Bold}
-	p := pterm.Theme{}
-	p2 := p.WithHighlightStyle(s)
-
-	testza.AssertEqual(t, s, p2.HighlightStyle)
-}
-
-func TestTheme_WithInfoMessageStyle(t *testing.T) {
-	s := pterm.Style{pterm.FgRed, pterm.BgBlue, pterm.Bold}
-	p := pterm.Theme{}
-	p2 := p.WithInfoMessageStyle(s)
-
-	testza.AssertEqual(t, s, p2.InfoMessageStyle)
-}
-
-func TestTheme_WithInfoPrefixStyle(t *testing.T) {
-	s := pterm.Style{pterm.FgRed, pterm.BgBlue, pterm.Bold}
-	p := pterm.Theme{}
-	p2 := p.WithInfoPrefixStyle(s)
-
-	testza.AssertEqual(t, s, p2.InfoPrefixStyle)
-}
-
-func TestTheme_WithPrimaryStyle(t *testing.T) {
-	s := pterm.Style{pterm.FgRed, pterm.BgBlue, pterm.Bold}
-	p := pterm.Theme{}
-	p2 := p.WithPrimaryStyle(s)
-
-	testza.AssertEqual(t, s, p2.PrimaryStyle)
-}
-
-func TestTheme_WithSecondaryStyle(t *testing.T) {
-	s := pterm.Style{pterm.FgRed, pterm.BgBlue, pterm.Bold}
-	p := pterm.Theme{}
-	p2 := p.WithSecondaryStyle(s)
-
-	testza.AssertEqual(t, s, p2.SecondaryStyle)
-}
-
-func TestTheme_WithSuccessMessageStyle(t *testing.T) {
-	s := pterm.Style{pterm.FgRed, pterm.BgBlue, pterm.Bold}
-	p := pterm.Theme{}
-	p2 := p.WithSuccessMessageStyle(s)
-
-	testza.AssertEqual(t, s, p2.SuccessMessageStyle)
-}
-
-func TestTheme_WithSuccessPrefixStyle(t *testing.T) {
-	s := pterm.Style{pterm.FgRed, pterm.BgBlue, pterm.Bold}
-	p := pterm.Theme{}
-	p2 := p.WithSuccessPrefixStyle(s)
-
-	testza.AssertEqual(t, s, p2.SuccessPrefixStyle)
-}
-
-func TestTheme_WithWarningMessageStyle(t *testing.T) {
-	s := pterm.Style{pterm.FgRed, pterm.BgBlue, pterm.Bold}
-	p := pterm.Theme{}
-	p2 := p.WithWarningMessageStyle(s)
-
-	testza.AssertEqual(t, s, p2.WarningMessageStyle)
-}
-
-func TestTheme_WithWarningPrefixStyle(t *testing.T) {
-	s := pterm.Style{pterm.FgRed, pterm.BgBlue, pterm.Bold}
-	p := pterm.Theme{}
-	p2 := p.WithWarningPrefixStyle(s)
-
-	testza.AssertEqual(t, s, p2.WarningPrefixStyle)
-}
-
-func TestTheme_WithBulletListBulletStyle(t *testing.T) {
-	s := pterm.Style{pterm.FgRed, pterm.BgBlue, pterm.Bold}
-	p := pterm.Theme{}
-	p2 := p.WithBulletListBulletStyle(s)
-
-	testza.AssertEqual(t, s, p2.BulletListBulletStyle)
-}
-
-func TestTheme_WithBulletListTextStyle(t *testing.T) {
-	s := pterm.Style{pterm.FgRed, pterm.BgBlue, pterm.Bold}
-	p := pterm.Theme{}
-	p2 := p.WithBulletListTextStyle(s)
-
-	testza.AssertEqual(t, s, p2.BulletListTextStyle)
-}
-
-func TestTheme_WithLetterStyle(t *testing.T) {
-	s := pterm.Style{pterm.FgRed, pterm.BgBlue, pterm.Bold}
-	p := pterm.Theme{}
-	p2 := p.WithLetterStyle(s)
-
-	testza.AssertEqual(t, s, p2.LetterStyle)
-}
-
-func TestTheme_WithDebugMessageStyle(t *testing.T) {
-	s := pterm.Style{pterm.FgRed, pterm.BgBlue, pterm.Bold}
-	p := pterm.Theme{}
-	p2 := p.WithDebugMessageStyle(s)
-
-	testza.AssertEqual(t, s, p2.DebugMessageStyle)
-}
-
-func TestTheme_WithDebugPrefixStyle(t *testing.T) {
-	s := pterm.Style{pterm.FgRed, pterm.BgBlue, pterm.Bold}
-	p := pterm.Theme{}
-	p2 := p.WithDebugPrefixStyle(s)
-
-	testza.AssertEqual(t, s, p2.DebugPrefixStyle)
-}
-
-func TestTheme_WithTreeStyle(t *testing.T) {
-	s := pterm.Style{pterm.FgRed, pterm.BgBlue, pterm.Bold}
-	p := pterm.Theme{}
-	p2 := p.WithTreeStyle(s)
-
-	testza.AssertEqual(t, s, p2.TreeStyle)
-}
-
-func TestTheme_WithTreeTextStyle(t *testing.T) {
-	s := pterm.Style{pterm.FgRed, pterm.BgBlue, pterm.Bold}
-	p := pterm.Theme{}
-	p2 := p.WithTreeTextStyle(s)
-
-	testza.AssertEqual(t, s, p2.TreeTextStyle)
-}
-
-func TestTheme_WithBoxStyle(t *testing.T) {
-	s := pterm.Style{pterm.FgRed, pterm.BgBlue, pterm.Bold}
-	p := pterm.Theme{}
-	p2 := p.WithBoxStyle(s)
-
-	testza.AssertEqual(t, s, p2.BoxStyle)
-}
-
-func TestTheme_WithBoxTextStyle(t *testing.T) {
-	s := pterm.Style{pterm.FgRed, pterm.BgBlue, pterm.Bold}
-	p := pterm.Theme{}
-	p2 := p.WithBoxTextStyle(s)
-
-	testza.AssertEqual(t, s, p2.BoxTextStyle)
-}
-
-func TestTheme_WithBarLabelStyle(t *testing.T) {
-	s := pterm.Style{pterm.FgRed, pterm.BgBlue, pterm.Bold}
-	p := pterm.Theme{}
-	p2 := p.WithBarLabelStyle(s)
-
-	testza.AssertEqual(t, s, p2.BarLabelStyle)
-}
-
-func TestTheme_WithBarStyle(t *testing.T) {
-	s := pterm.Style{pterm.FgRed, pterm.BgBlue, pterm.Bold}
-	p := pterm.Theme{}
-	p2 := p.WithBarStyle(s)
-
-	testza.AssertEqual(t, s, p2.BarStyle)
+	out := section.WithStyle(pterm.NewStyle(pterm.FgMagenta, pterm.Bold)).Sprint("Custom")
+	assert.Contains(t, out, "\x1b[35;1m")
+	assert.Contains(t, stripANSI(out), "# Custom")
 }

@@ -3,29 +3,21 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Enable debug messages in PTerm.
+	// Debug messages are hidden by default. Enable them so pterm.Debug prints.
 	pterm.EnableDebugMessages()
 
-	// Print a debug message with PTerm.
 	pterm.Debug.Println("Hello, World!")
-
-	// Print an informational message with PTerm.
 	pterm.Info.Println("Hello, World!")
-
-	// Print a success message with PTerm.
 	pterm.Success.Println("Hello, World!")
-
-	// Print a warning message with PTerm.
 	pterm.Warning.Println("Hello, World!")
 
-	// Print an error message with PTerm. This will also display the filename and line number in the terminal.
+	// Error prints the filename and line number of the call site.
 	pterm.Error.Println("Errors show the filename and linenumber inside the terminal!")
 
-	// Print an informational message with PTerm, with line number.
-	// This demonstrates that other PrefixPrinters can also display line numbers.
+	// Any PrefixPrinter can show line numbers via WithShowLineNumber.
 	pterm.Info.WithShowLineNumber().Println("Other PrefixPrinters can do that too!")
 
-	// Temporarily set Fatal to false, so that the CI won't crash.
-	// This will print a fatal message with PTerm, but won't terminate the program.
+	// Fatal would normally terminate the program. WithFatal(false) turns that
+	// off so this demo keeps running.
 	pterm.Fatal.WithFatal(false).Println("Hello, World!")
 }

@@ -317,7 +317,7 @@
 
 ────────────────────────────────────────────────────────────────────────────────
 Please select an option [type to search]:
-> Option 0
+❯ Option 0
   Option 1
   Option 2
   Option 3
@@ -334,8 +334,8 @@ Please select an option [type to search]:
 
 ────────────────────────────────────────────────────────────────────────────────
 Please select an option: fuzzy
-  > You can use fuzzy searching (2)
- INFO  Selected option: You can use fuzzy searching (2)
+  ❯ You can use fuzzy searching (2)
+  INFO    Selected option: You can use fuzzy searching (2)
 >
 
 
@@ -351,8 +351,8 @@ Please select an option: fuzzy
 
 ────────────────────────────────────────────────────────────────────────────────
 Please select an option: fuzzy
-  > You can use fuzzy searching (2)
- INFO  Selected option: You can use fuzzy searching (2)
+  ❯ You can use fuzzy searching (2)
+  INFO    Selected option: You can use fuzzy searching (2)
 >
 
 

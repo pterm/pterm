@@ -316,7 +316,7 @@
 
 
 ────────────────────────────────────────────────────────────────────────────────
- INFO  RGB colors only work in Terminals which support TrueColor.
+  INFO    RGB colors only work in Terminals which support TrueColor.
 Hello, World!
 Hello, World!
 Hello, World!
@@ -333,7 +333,7 @@ Hello, World!
 Hello, World!
 >
 ────────────────────────────────────────────────────────────────────────────────
- INFO  RGB colors only work in Terminals which support TrueColor.
+  INFO    RGB colors only work in Terminals which support TrueColor.
 Hello, World!
 Hello, World!
 Hello, World!
@@ -350,7 +350,7 @@ Hello, World!
 Hello, World!
 >
 ────────────────────────────────────────────────────────────────────────────────
- INFO  RGB colors only work in Terminals which support TrueColor.
+  INFO    RGB colors only work in Terminals which support TrueColor.
 Hello, World!
 Hello, World!
 Hello, World!

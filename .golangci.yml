@@ -51,6 +51,11 @@ linters:
       - path: "_test(_[^/]+)?\\.go"
         linters:
           - errcheck
+      # A file descriptor from os.Stdout.Fd() always fits in an int.
+      - path: 'terminal(_test)?\.go'
+        text: "G115"
+        linters:
+          - gosec
 
 formatters:
   enable:

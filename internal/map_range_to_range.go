@@ -1,5 +1,6 @@
 package internal
 
+// MapRangeToRange maps a value from one range to another.
 func MapRangeToRange(fromMin, fromMax, toMin, toMax, current float32) int {
 	if fromMax-fromMin == 0 {
 		return 0
