@@ -211,7 +211,7 @@ func TestTablePrinter_WithBoxPrinterCustomBorders(t *testing.T) {
 		LeftPadding:             1,
 	}
 
-	printer := pterm.DefaultTable.WithBoxPrinter(&customBox).WithData(pterm.TableData{
+	printer := pterm.DefaultTable.WithBoxPrinter(customBox).WithData(pterm.TableData{
 		{"a", "b"},
 		{"cc", "dd"},
 	})
@@ -227,7 +227,7 @@ func TestTablePrinter_WithBoxPrinterCustomBorders(t *testing.T) {
 
 func TestTablePrinter_WithBoxPrinterBoxStyle(t *testing.T) {
 	style := pterm.NewStyle(pterm.FgCyan)
-	customBox := pterm.DefaultBox.WithBoxStyle(style)
+	customBox := *pterm.DefaultBox.WithBoxStyle(style)
 
 	printer := pterm.DefaultTable.WithBoxPrinter(customBox).WithData(pterm.TableData{
 		{"a", "b"},
@@ -241,7 +241,7 @@ func TestTablePrinter_WithBoxPrinterBoxStyle(t *testing.T) {
 }
 
 func TestTablePrinter_WithBoxPrinterWithTitle(t *testing.T) {
-	customBox := pterm.DefaultBox.WithTitle("Table Title")
+	customBox := *pterm.DefaultBox.WithTitle("Table Title")
 
 	printer := pterm.DefaultTable.WithBoxPrinter(customBox).WithData(pterm.TableData{
 		{"a", "b"},
@@ -251,34 +251,8 @@ func TestTablePrinter_WithBoxPrinterWithTitle(t *testing.T) {
 	assert.Contains(t, plain, "Table Title", "box title must be rendered")
 }
 
-func TestTablePrinter_WithBoxAlias(t *testing.T) {
-	customBox := pterm.BoxPrinter{
-		VerticalString:          "!",
-		TopRightCornerString:    "*",
-		TopLeftCornerString:     "*",
-		BottomLeftCornerString:  "*",
-		BottomRightCornerString: "*",
-		HorizontalString:        "~",
-		RightPadding:            1,
-		LeftPadding:             1,
-	}
-
-	printer := pterm.DefaultTable.WithBox(&customBox).WithData(pterm.TableData{
-		{"a", "b"},
-		{"cc", "dd"},
-	})
-
-	expected := "" +
-		"*~~~~~~~~~*\n" +
-		"! a  │ b  !\n" +
-		"! cc │ dd !\n" +
-		"*~~~~~~~~~*"
-
-	assert.Equal(t, expected, srenderPlain(t, printer))
-}
-
 func TestTablePrinter_WithBoxPrinterDisablingViaWithBoxedFalse(t *testing.T) {
-	customBox := pterm.DefaultBox.WithVerticalString("#")
+	customBox := *pterm.DefaultBox.WithVerticalString("#")
 
 	printer := pterm.DefaultTable.WithBoxPrinter(customBox).WithBoxed(false).WithData(pterm.TableData{
 		{"a", "b"},
@@ -288,8 +262,8 @@ func TestTablePrinter_WithBoxPrinterDisablingViaWithBoxedFalse(t *testing.T) {
 	assert.Equal(t, expected, srenderPlain(t, printer))
 }
 
-func TestTablePrinter_WithBoxPrinterNilFallsBackToDefaultBox(t *testing.T) {
-	printer := pterm.DefaultTable.WithBoxed().WithBoxPrinter(nil).WithData(pterm.TableData{
+func TestTablePrinter_WithBoxPrinterZeroValueFallsBackToDefaultBox(t *testing.T) {
+	printer := pterm.DefaultTable.WithBoxPrinter(pterm.BoxPrinter{}).WithData(pterm.TableData{
 		{"a", "b"},
 		{"cc", "dd"},
 	})
