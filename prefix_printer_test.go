@@ -12,8 +12,10 @@ import (
 	"fmt"
 	"io"
 	"runtime"
+	"strings"
 	"testing"
 
+	"github.com/mattn/go-runewidth"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -58,11 +60,90 @@ func TestPrefixPrinterStyledOutput(t *testing.T) {
 }
 
 func TestPrefixPrinterMultilineIndentsContinuationLines(t *testing.T) {
-	// Continuation lines are indented with len(prefix)+2 spaces plus the
-	// separating space, so the message column stays aligned under the first
-	// line.
+	// Continuation lines are indented with visual width of prefix plus 2 spaces
+	// plus the separating space, so the message column stays aligned under the
+	// first line.
 	assert.Equal(t, "  INFO    first\n          second", stripANSI(pterm.Info.Sprint("first\nsecond")))
 	assert.Equal(t, "  ERROR   first\n          second", stripANSI(pterm.Error.Sprint("first\nsecond")))
+}
+
+func TestPrefixPrinterMultilineWideCharacterAlignment(t *testing.T) {
+	tests := []struct {
+		name     string
+		prefix   string
+		input    string
+		expected string
+	}{
+		{
+			name:     "ASCII control",
+			prefix:   "INFO",
+			input:    "first line\nsecond line",
+			expected: " INFO  first line\n       second line",
+		},
+		{
+			name:     "CJK two characters",
+			prefix:   "情報",
+			input:    "first line\nsecond line",
+			expected: " 情報  first line\n       second line",
+		},
+		{
+			name:     "CJK four characters three lines",
+			prefix:   "警告です",
+			input:    "line 1\nline 2\nline 3",
+			expected: " 警告です  line 1\n           line 2\n           line 3",
+		},
+		{
+			name:     "Emoji wide character",
+			prefix:   "\U0001F680",
+			input:    "line 1\nline 2",
+			expected: " \U0001F680  line 1\n     line 2",
+		},
+		{
+			name:     "Mixed ASCII and CJK",
+			prefix:   "LOG 日志",
+			input:    "entry 1\nentry 2",
+			expected: " LOG 日志  entry 1\n           entry 2",
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			p := pterm.PrefixPrinter{
+				Prefix: pterm.Prefix{
+					Text: tc.prefix,
+				},
+			}
+			result := stripANSI(p.Sprint(tc.input))
+			assert.Equal(t, tc.expected, result)
+
+			// Verify visual column alignment: the message text on every line
+			// must start at the exact same visual display column.
+			lines := strings.Split(result, "\n")
+			inputLines := strings.Split(tc.input, "\n")
+			require.Equal(t, len(inputLines), len(lines))
+
+			expectedIndentWidth := runewidth.StringWidth(tc.prefix) + 3 // 1 leading + visual width + 1 trailing + 1 separating space
+			for i, line := range lines {
+				require.Truef(t, strings.HasSuffix(line, inputLines[i]), "line %d %q does not end with message %q", i, line, inputLines[i])
+				indent := strings.TrimSuffix(line, inputLines[i])
+				assert.Equalf(t, expectedIndentWidth, runewidth.StringWidth(indent),
+					"line %d indent visual width: got %d, want %d", i, runewidth.StringWidth(indent), expectedIndentWidth)
+			}
+		})
+	}
+}
+
+func TestPrefixPrinterMultilineWideCharacterStyled(t *testing.T) {
+	style := pterm.NewStyle(pterm.BgCyan, pterm.FgBlack)
+	p := pterm.PrefixPrinter{
+		Prefix: pterm.Prefix{
+			Text:  "情報",
+			Style: style,
+		},
+	}
+	out := p.Sprint("first\nsecond")
+	expected := style.Sprint(" 情報 ") + " first\n" + style.Sprint("      ") + " second"
+	assert.Equal(t, expected, out)
 }
 
 func TestPrefixPrinterSprintlnAppendsNewline(t *testing.T) {

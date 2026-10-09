@@ -6,6 +6,8 @@ import (
 	"runtime"
 	"strings"
 
+	"github.com/mattn/go-runewidth"
+
 	"github.com/pterm/pterm/internal"
 )
 
@@ -209,7 +211,7 @@ func (p *PrefixPrinter) Sprint(a ...any) string {
 			ret.WriteString(cp.MessageStyle.Sprint(m))
 		} else {
 			ret.WriteByte('\n')
-			ret.WriteString(cp.Prefix.Style.Sprint(strings.Repeat(" ", len([]rune(cp.Prefix.Text))+2)))
+			ret.WriteString(cp.Prefix.Style.Sprint(strings.Repeat(" ", runewidth.StringWidth(cp.Prefix.Text)+2)))
 			ret.WriteByte(' ')
 			ret.WriteString(cp.MessageStyle.Sprint(m))
 		}
