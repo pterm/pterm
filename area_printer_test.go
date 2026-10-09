@@ -163,6 +163,24 @@ func TestAreaPrinter_FullscreenPadsToTerminalHeight(t *testing.T) {
 		"the content must be padded with blank lines to fill the 60 row terminal")
 }
 
+func TestAreaPrinter_FullscreenPadsWrappedContentToTerminalHeight(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("cursor's Windows backend moves and clears using the real console, not the test writer")
+	}
+
+	pterm.SetForcedTerminalSize(10, 60)
+	t.Cleanup(func() { pterm.SetForcedTerminalSize(terminalWidth, terminalHeight) })
+
+	area, buf := startTestArea(t, pterm.DefaultArea.WithFullscreen())
+
+	area.Update("first ten characters")
+
+	frame := lastAreaFrame(buf.String())
+	assert.Equal(t, "first ten\ncharacters", strings.TrimSpace(frame))
+	assert.Equal(t, 58, strings.Count(frame, "\n"),
+		"the padding must account for wrapped rows so the frame fits the 60 row terminal")
+}
+
 func TestAreaPrinter_FullscreenCenterPadsOnBothSides(t *testing.T) {
 	area, buf := startTestArea(t, pterm.DefaultArea.WithFullscreen().WithCenter())
 

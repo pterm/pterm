@@ -79,6 +79,8 @@ func (p *AreaPrinter) Update(text ...any) {
 	str := Sprint(text...)
 	p.content = str
 
+	str = strings.Join(internal.WrapText(str, GetTerminalWidth()), "\n")
+
 	if p.Center {
 		str = DefaultCenter.Sprint(str)
 	}
@@ -101,8 +103,6 @@ func (p *AreaPrinter) Update(text ...any) {
 			str += strings.Repeat("\n", bottomPadding)
 		}
 	}
-
-	str = strings.Join(internal.WrapText(str, GetTerminalWidth()), "\n")
 
 	p.area.Update(str)
 }
