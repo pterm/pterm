@@ -5,12 +5,10 @@ import (
 )
 
 func main() {
-	// Create an interactive text input with single line input mode and show it
+	// The default value is shown as a pre-filled suggestion. Pressing enter
+	// right away returns it; typing anything replaces it.
 	result, _ := pterm.DefaultInteractiveTextInput.WithDefaultValue("Some default value").Show()
 
-	// Print a blank line for better readability
 	pterm.Println()
-
-	// Print the user's answer with an info prefix
 	pterm.Info.Printfln("You answered: %s", result)
 }

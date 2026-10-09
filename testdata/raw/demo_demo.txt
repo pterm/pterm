@@ -1,4 +1,4 @@
->
+
 
 
 
@@ -51,7 +51,7 @@
 
 
 ────────────────────────────────────────────────────────────────────────────────
->
+
 
 
 
@@ -104,7 +104,7 @@
 
 
 ────────────────────────────────────────────────────────────────────────────────
->
+
 
 
 
@@ -432,47 +432,16 @@
                             PTDP - PTerm Demo Program
 
 
- INFO  This animation was generated with the latest version of PTerm!
-       PTerm works on nearly every terminal and operating system.
-       It's super easy to use!
-       If you want, you can customize everything :)
-       You can see the code of this demo in the ./_examples/demo directory.
+  INFO    This animation was generated with the latest version of PTerm!
+          PTerm works on nearly every terminal and operating system.
+          It's super easy to use!
+          If you want, you can customize everything :)
+          You can see the code of this demo in the ./_examples/demo directory.
 
-       This demo was updated at: 06 May 2026 - 21:44:55 UTC
+          This demo was updated at: 11 Jul 2026 - 21:09:30 UTC
 
-▀  Waiting for 15 seconds...
+⠋ Waiting for 15 seconds...
 
-
-
-
-
-
-
-
-
-
-
-────────────────────────────────────────────────────────────────────────────────
-
-                                      Themes
-
-
- INFO  You can change the color theme of PTerm easily to fit your needs!
-       This is the default one:
-DefaultText
-PrimaryStyle
-SecondaryStyle
-HighlightStyle
-InfoMessageStyle
-InfoPrefixStyle
-SuccessMessageStyle
-SuccessPrefixStyle
-WarningMessageStyle
-WarningPrefixStyle
-ErrorMessageStyle
-ErrorPrefixStyle
-FatalMessageStyle
->
 
 
 
@@ -488,8 +457,8 @@ FatalMessageStyle
                                       Themes
 
 
- INFO  You can change the color theme of PTerm easily to fit your needs!
-       This is the default one:
+  INFO    You can change the color theme of PTerm easily to fit your needs!
+          This is the default one:
 DefaultText
 PrimaryStyle
 SecondaryStyle
@@ -503,15 +472,46 @@ WarningPrefixStyle
 ErrorMessageStyle
 ErrorPrefixStyle
 FatalMessageStyle
->
+FatalPrefixStyle
+DescriptionMessageStyle
+DescriptionPrefixStyle
+ScopeStyle
+ProgressbarBarStyle
+ProgressbarTitleStyle
+ProgressbarFillerStyle
+HeaderTextStyle
+HeaderBackgroundStyle
+SpinnerStyle
+SpinnerTextStyle
+────────────────────────────────────────────────────────────────────────────────
+
+                                      Themes
 
 
-
-
-
-
-
-
-
-
+  INFO    You can change the color theme of PTerm easily to fit your needs!
+          This is the default one:
+DefaultText
+PrimaryStyle
+SecondaryStyle
+HighlightStyle
+InfoMessageStyle
+InfoPrefixStyle
+SuccessMessageStyle
+SuccessPrefixStyle
+WarningMessageStyle
+WarningPrefixStyle
+ErrorMessageStyle
+ErrorPrefixStyle
+FatalMessageStyle
+FatalPrefixStyle
+DescriptionMessageStyle
+DescriptionPrefixStyle
+ScopeStyle
+ProgressbarBarStyle
+ProgressbarTitleStyle
+ProgressbarFillerStyle
+HeaderTextStyle
+HeaderBackgroundStyle
+SpinnerStyle
+SpinnerTextStyle
 ────────────────────────────────────────────────────────────────────────────────

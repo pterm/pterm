@@ -3,7 +3,9 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Define panels in a 2D grid system
+	// Panels form a 2D grid: the outer slice holds rows, the inner slices hold
+	// the panels of each row. Panel content can be multiline and may come from
+	// other printers.
 	panels := pterm.Panels{
 		{
 			{Data: "This is the first panel"},
@@ -16,6 +18,6 @@ func main() {
 		},
 	}
 
-	// Render the panels with a padding of 5
+	// Padding controls the horizontal space between panels in a row.
 	_ = pterm.DefaultPanel.WithPanels(panels).WithPadding(5).Render()
 }

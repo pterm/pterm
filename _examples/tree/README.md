@@ -1,6 +1,6 @@
 ### tree/demo
 
-![Animation](https://vhs.charm.sh/vhs-3Tmr0W1BGVIsXEPYqfSpGa.gif)
+![Animation](https://vhs.charm.sh/vhs-7jq6l6QS4HH2hVPCWqkncl.gif)
 
 <details>
 
@@ -14,17 +14,13 @@ import (
 )
 
 func main() {
-	// Define a tree structure using pterm.TreeNode
+	// A tree is described by nesting TreeNodes; each node holds its text and
+	// its children.
 	tree := pterm.TreeNode{
-		// The top node of the tree
 		Text: "Top node",
-		// The children of the top node
 		Children: []pterm.TreeNode{{
-			// A child node
 			Text: "Child node",
-			// The children of the child node
 			Children: []pterm.TreeNode{
-				// Grandchildren nodes
 				{Text: "Grandchild node"},
 				{Text: "Grandchild node"},
 				{Text: "Grandchild node"},
@@ -32,7 +28,6 @@ func main() {
 		}},
 	}
 
-	// Render the tree with the defined structure as the root
 	pterm.DefaultTree.WithRoot(tree).Render()
 }
 ```
@@ -41,7 +36,7 @@ func main() {
 
 ### tree/from-leveled-list
 
-![Animation](https://vhs.charm.sh/vhs-Oq3WRBLRwjbireH4KkuWO.gif)
+![Animation](https://vhs.charm.sh/vhs-5m4lW2DbvrN4pgynZUdVvO.gif)
 
 <details>
 
@@ -56,7 +51,8 @@ import (
 )
 
 func main() {
-	// Define a leveled list to represent the structure of the directories.
+	// A LeveledList is a flat alternative to nesting TreeNodes by hand: each
+	// entry states its own depth.
 	leveledList := pterm.LeveledList{
 		{Level: 0, Text: "C:"},
 		{Level: 1, Text: "Users"},
@@ -82,12 +78,54 @@ func main() {
 		{Level: 2, Text: "PTerm"},
 	}
 
-	// Convert the leveled list into a tree structure.
+	// TreeFromLeveledList converts the list into a TreeNode; the returned
+	// root just needs a name.
 	root := putils.TreeFromLeveledList(leveledList)
-	root.Text = "Computer" // Set the root node text.
+	root.Text = "Computer"
 
-	// Render the tree structure using the default tree printer.
 	pterm.DefaultTree.WithRoot(root).Render()
+}
+```
+
+</details>
+
+### tree/styled
+
+![Animation](https://vhs.charm.sh/vhs-6695FaObbMrAZ8wcnhMb6T.gif)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	tree := pterm.TreeNode{
+		Text: "project",
+		Children: []pterm.TreeNode{
+			{Text: "cmd", Children: []pterm.TreeNode{
+				{Text: "main.go"},
+			}},
+			{Text: "internal", Children: []pterm.TreeNode{
+				{Text: "server.go"},
+				{Text: "config.go"},
+			}},
+			{Text: "go.mod"},
+			{Text: "README.md"},
+		},
+	}
+
+	// WithTreeStyle colors the branch lines, WithTextStyle the node text.
+	pterm.DefaultTree.
+		WithRoot(tree).
+		WithTreeStyle(pterm.NewStyle(pterm.FgLightBlue)).
+		WithTextStyle(pterm.NewStyle(pterm.FgLightGreen)).
+		Render()
 }
 ```
 

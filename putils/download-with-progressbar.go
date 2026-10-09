@@ -13,16 +13,12 @@ import (
 
 // progressbarWriter counts the number of bytes written to it and adds those to a progressbar.
 type progressbarWriter struct {
-	Total uint64
-	pb    *pterm.ProgressbarPrinter
+	pb *pterm.ProgressbarPrinter
 }
 
 func (w *progressbarWriter) Write(p []byte) (int, error) {
-	n := len(p)
-	w.Total += uint64(n)
 	w.pb.Add(len(p))
-
-	return n, nil
+	return len(p), nil
 }
 
 // DownloadFileWithProgressbar downloads a file, by url, and writes it to outputPath.
@@ -35,22 +31,30 @@ func DownloadFileWithProgressbar(progressbar *pterm.ProgressbarPrinter, outputPa
 		return fmt.Errorf("could not create download path: %w", err)
 	}
 
-	defer out.Close()
+	defer func() { _ = out.Close() }()
 
-	resp, err := http.Get(url) //nolint:gosec
+	resp, err := http.Get(url) //nolint:gosec // the URL is intentionally caller-provided
 	if err != nil {
 		return fmt.Errorf("error while downloading file: %w", err)
 	}
-	defer resp.Body.Close()
 
-	counter := &progressbarWriter{}
+	defer func() { _ = resp.Body.Close() }()
+
+	if resp.StatusCode < 200 || resp.StatusCode > 299 {
+		return fmt.Errorf("error while downloading file: unexpected status %q", resp.Status)
+	}
 
 	fileSize, err := strconv.Atoi(resp.Header.Get("Content-Length"))
 	if err != nil {
 		return fmt.Errorf("could not determine file size: %w", err)
 	}
 
-	counter.pb, _ = progressbar.WithTotal(fileSize).Start()
+	pb, err := progressbar.WithTotal(fileSize).Start()
+	if err != nil {
+		return fmt.Errorf("could not start progressbar: %w", err)
+	}
+
+	counter := &progressbarWriter{pb: pb}
 	if _, err = io.Copy(out, io.TeeReader(resp.Body, counter)); err != nil {
 		return err
 	}

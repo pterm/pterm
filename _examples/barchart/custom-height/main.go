@@ -3,8 +3,6 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Define a slice of Bar structs. Each struct represents a bar in the chart.
-	// The Label field is the name of the bar and the Value field is the height of the bar.
 	bars := []pterm.Bar{
 		{Label: "A", Value: 10},
 		{Label: "B", Value: 20},
@@ -17,9 +15,6 @@ func main() {
 		{Label: "I", Value: 10},
 	}
 
-	// Create and render a bar chart with the defined bars and a height of 5.
-	// The WithBars method is used to set the bars of the chart.
-	// The WithHeight method is used to set the height of the chart.
-	// The Render method is used to display the chart in the terminal.
+	// WithHeight caps the chart at 5 rows; the bar values are scaled to fit.
 	pterm.DefaultBarChart.WithBars(bars).WithHeight(5).Render()
 }

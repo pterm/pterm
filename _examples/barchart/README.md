@@ -1,6 +1,6 @@
 ### barchart/demo
 
-![Animation](https://vhs.charm.sh/vhs-7tiFqSuN31XrJLGlMASj1A.gif)
+![Animation](https://vhs.charm.sh/vhs-iJAm2JfQl3Y6BEHbigJLl.gif)
 
 <details>
 
@@ -14,24 +14,19 @@ import (
 )
 
 func main() {
-	// Define the bars for the chart
+	// One deliberately longer label shows how the horizontal chart
+	// aligns all bars to the widest label.
 	bars := []pterm.Bar{
-		{Label: "Bar 1", Value: 5},
-		{Label: "Bar 2", Value: 3},
-		{Label: "Longer Label", Value: 7},
+		{Label: "Go", Value: 5},
+		{Label: "Rust", Value: 3},
+		{Label: "TypeScript", Value: 7},
 	}
 
-	// Print an informational message
-	pterm.Info.Println("Chart example with positive only values (bars use 100% of chart area)")
+	pterm.Info.Println("Chart example with positive values only (bars use the full chart area)")
 
-	// Create a bar chart with the defined bars and render it
-	// The DefaultBarChart is used as a base, and the bars are added with the WithBars option
-	// The Render function is then called to display the chart
 	pterm.DefaultBarChart.WithBars(bars).Render()
 
-	// Create a horizontal bar chart with the defined bars and render it
-	// The DefaultBarChart is used as a base, the chart is made horizontal with the WithHorizontal option, and the bars are added with the WithBars option
-	// The Render function is then called to display the chart
+	// The same data rendered horizontally.
 	pterm.DefaultBarChart.WithHorizontal().WithBars(bars).Render()
 }
 ```
@@ -40,7 +35,7 @@ func main() {
 
 ### barchart/custom-height
 
-![Animation](https://vhs.charm.sh/vhs-1vMGcEfkRlvB4jakRvOrGm.gif)
+![Animation](https://vhs.charm.sh/vhs-5vLTJ082V7bklOqcjLFHIR.gif)
 
 <details>
 
@@ -52,8 +47,6 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Define a slice of Bar structs. Each struct represents a bar in the chart.
-	// The Label field is the name of the bar and the Value field is the height of the bar.
 	bars := []pterm.Bar{
 		{Label: "A", Value: 10},
 		{Label: "B", Value: 20},
@@ -66,10 +59,7 @@ func main() {
 		{Label: "I", Value: 10},
 	}
 
-	// Create and render a bar chart with the defined bars and a height of 5.
-	// The WithBars method is used to set the bars of the chart.
-	// The WithHeight method is used to set the height of the chart.
-	// The Render method is used to display the chart in the terminal.
+	// WithHeight caps the chart at 5 rows; the bar values are scaled to fit.
 	pterm.DefaultBarChart.WithBars(bars).WithHeight(5).Render()
 }
 ```
@@ -78,7 +68,7 @@ func main() {
 
 ### barchart/custom-width
 
-![Animation](https://vhs.charm.sh/vhs-3gAVvSZRjLEHeZWZf7mrCy.gif)
+![Animation](https://vhs.charm.sh/vhs-6GmiN2pa05uOn1wNnHqYQ3.gif)
 
 <details>
 
@@ -90,7 +80,6 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Define the data for the bar chart
 	barData := []pterm.Bar{
 		{Label: "A", Value: 10},
 		{Label: "B", Value: 20},
@@ -103,9 +92,8 @@ func main() {
 		{Label: "I", Value: 10},
 	}
 
-	// Create a bar chart with the defined data
-	// The chart is horizontal and has a width of 5
-	// The Render() function is called to display the chart
+	// In a horizontal chart, WithWidth limits how far the bars extend
+	// to the right; the values are scaled to fit into 5 columns.
 	pterm.DefaultBarChart.WithBars(barData).WithHorizontal().WithWidth(5).Render()
 }
 ```
@@ -114,7 +102,7 @@ func main() {
 
 ### barchart/default
 
-![Animation](https://vhs.charm.sh/vhs-7n1pfa4nlfPy26U4lYZ2E1.gif)
+![Animation](https://vhs.charm.sh/vhs-6CnMQBdI0NEbJHIeGu1eVH.gif)
 
 <details>
 
@@ -126,8 +114,6 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Define the data for the bar chart. Each bar is represented by a `pterm.Bar` struct.
-	// The `Label` field represents the label of the bar, and the `Value` field represents the value of the bar.
 	bars := []pterm.Bar{
 		{Label: "A", Value: 10},
 		{Label: "B", Value: 20},
@@ -140,9 +126,7 @@ func main() {
 		{Label: "I", Value: 10},
 	}
 
-	// Use the `DefaultBarChart` from the `pterm` package to create a bar chart.
-	// The `WithBars` method is used to set the bars of the chart.
-	// The `Render` method is used to display the chart.
+	// By default the chart is drawn vertically, with each label under its bar.
 	pterm.DefaultBarChart.WithBars(bars).Render()
 }
 ```
@@ -151,7 +135,7 @@ func main() {
 
 ### barchart/horizontal
 
-![Animation](https://vhs.charm.sh/vhs-1qPlEkdkqNeeARppWspi8x.gif)
+![Animation](https://vhs.charm.sh/vhs-70ICgyL6YEO64KZ7uTmbI6.gif)
 
 <details>
 
@@ -163,7 +147,6 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Define the data for the bar chart
 	bars := []pterm.Bar{
 		{Label: "A", Value: 10},
 		{Label: "B", Value: 20},
@@ -176,9 +159,8 @@ func main() {
 		{Label: "I", Value: 10},
 	}
 
-	// Create a bar chart with the defined data
-	// The chart is displayed horizontally
-	// The Render() function is called to display the chart
+	// WithHorizontal draws one bar per line, left to right, with the
+	// label in front of each bar.
 	pterm.DefaultBarChart.WithBars(bars).WithHorizontal().Render()
 }
 ```
@@ -187,7 +169,7 @@ func main() {
 
 ### barchart/horizontal-show-value
 
-![Animation](https://vhs.charm.sh/vhs-4KwtTTVaI99hg0dy4pSMvG.gif)
+![Animation](https://vhs.charm.sh/vhs-ZmO00oqwh8qoYzfOXK89S.gif)
 
 <details>
 
@@ -199,7 +181,6 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Define the data for the bar chart
 	barData := []pterm.Bar{
 		{Label: "A", Value: 10},
 		{Label: "B", Value: 20},
@@ -212,9 +193,7 @@ func main() {
 		{Label: "I", Value: 10},
 	}
 
-	// Create a bar chart with the defined data
-	// The chart is horizontal and displays the value of each bar
-	// The Render() function is called to display the chart
+	// WithShowValue prints each bar's numeric value at the end of the bar.
 	pterm.DefaultBarChart.WithBars(barData).WithHorizontal().WithShowValue().Render()
 }
 ```
@@ -223,7 +202,7 @@ func main() {
 
 ### barchart/mixed-values
 
-![Animation](https://vhs.charm.sh/vhs-1wwEBPEMVbpLJ5jyYJgE9z.gif)
+![Animation](https://vhs.charm.sh/vhs-7yhBY7Cax9nItpaGWGhVIN.gif)
 
 <details>
 
@@ -237,28 +216,21 @@ import (
 )
 
 func main() {
-	// Define a set of bars for the chart.
-	// Each bar has a label and a value.
+	// Quarterly results with both gains and losses. The longer label
+	// shows how the horizontal chart aligns bars to the widest label.
 	bars := []pterm.Bar{
-		{Label: "Bar 1", Value: 2},
-		{Label: "Bar 2", Value: -3},
-		{Label: "Bar 3", Value: -2},
-		{Label: "Bar 4", Value: 5},
-		{Label: "Longer Label", Value: 7},
+		{Label: "Q1", Value: 2},
+		{Label: "Q2", Value: -3},
+		{Label: "Q3", Value: -2},
+		{Label: "Q4", Value: 5},
+		{Label: "Yearly Total", Value: 7},
 	}
 
-	// Print a section header.
-	// This is useful for separating different parts of the output.
-	pterm.DefaultSection.Println("Chart example with mixed values (note screen space usage in case when ABSOLUTE values of negative and positive parts are differ too much)")
+	pterm.DefaultSection.Println("Chart example with mixed values (the chart area is split between the positive and negative side, so bars get less space when the absolute values differ a lot)")
 
-	// Create a bar chart with the defined bars.
-	// The chart will display the value of each bar.
-	// The Render() function is called to display the chart.
 	pterm.DefaultBarChart.WithBars(bars).WithShowValue().Render()
 
-	// Create a horizontal bar chart with the same bars.
-	// The chart will display the value of each bar.
-	// The Render() function is called to display the chart.
+	// The same data rendered horizontally.
 	pterm.DefaultBarChart.WithHorizontal().WithBars(bars).WithShowValue().Render()
 }
 ```
@@ -267,7 +239,7 @@ func main() {
 
 ### barchart/negative-values
 
-![Animation](https://vhs.charm.sh/vhs-6Kct1v1JnXJtZyPjMX39GK.gif)
+![Animation](https://vhs.charm.sh/vhs-6e0BcJqwkyAr1fhLsP7DCD.gif)
 
 <details>
 
@@ -281,25 +253,20 @@ import (
 )
 
 func main() {
-	// Define a set of bars with negative values.
-	// Each bar is represented by a struct with a label and a value.
+	// With only negative values there is no positive side to draw, so the
+	// bars still use the full chart area. The longer label shows how the
+	// horizontal chart aligns bars to the widest label.
 	negativeBars := pterm.Bars{
-		{Label: "Bar 1", Value: -5},
-		{Label: "Bar 2", Value: -3},
-		{Label: "Longer Label", Value: -7},
+		{Label: "Q1", Value: -5},
+		{Label: "Q2", Value: -3},
+		{Label: "Yearly Total", Value: -7},
 	}
 
-	// Print an informational message to the console.
-	pterm.Info.Println("Chart example with negative only values (bars use 100% of chart area)")
+	pterm.Info.Println("Chart example with negative values only (bars use the full chart area)")
 
-	// Create a vertical bar chart with the defined bars.
-	// The WithShowValue() option is used to display the value of each bar in the chart.
-	// The Render() method is called to draw the chart.
 	_ = pterm.DefaultBarChart.WithBars(negativeBars).WithShowValue().Render()
 
-	// Create a horizontal bar chart with the same bars.
-	// The WithHorizontal() option is used to orient the chart horizontally.
-	// The WithShowValue() option and Render() method are used in the same way as before.
+	// The same data rendered horizontally.
 	_ = pterm.DefaultBarChart.WithHorizontal().WithBars(negativeBars).WithShowValue().Render()
 }
 ```
@@ -308,7 +275,7 @@ func main() {
 
 ### barchart/show-value
 
-![Animation](https://vhs.charm.sh/vhs-Ds2GEVwagNrNOuucVqyyI.gif)
+![Animation](https://vhs.charm.sh/vhs-7tJExfAXHgGGO0FVnEsoPP.gif)
 
 <details>
 
@@ -320,9 +287,6 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Define a slice of bars for the bar chart. Each bar is represented by a struct
-	// with a Label and a Value. The Label is a string that represents the name of the bar,
-	// and the Value is an integer that represents the height of the bar.
 	bars := []pterm.Bar{
 		{Label: "A", Value: 10},
 		{Label: "B", Value: 20},
@@ -335,10 +299,7 @@ func main() {
 		{Label: "I", Value: 10},
 	}
 
-	// Create a bar chart with the defined bars using the DefaultBarChart object from PTerm.
-	// Chain the WithBars method to set the bars of the chart.
-	// Chain the WithShowValue method to display the value of each bar on the chart.
-	// Finally, call the Render method to display the chart.
+	// WithShowValue prints each bar's numeric value above the bar.
 	pterm.DefaultBarChart.WithBars(bars).WithShowValue().Render()
 }
 ```

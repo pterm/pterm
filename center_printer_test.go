@@ -1,163 +1,81 @@
 package pterm_test
 
+// Behavioral tests for CenterPrinter.
+//
+// Builder methods, Print*/Sprint* delegation and the global styling invariants
+// are covered generically in contract_test.go. This file verifies the
+// centering math against the 80-column terminal forced by TestMain.
+
 import (
-	"errors"
-	"io"
-	"os"
+	"strings"
 	"testing"
 
-	"github.com/MarvinJWendt/testza"
+	"github.com/stretchr/testify/assert"
 
 	"github.com/pterm/pterm"
 )
 
-func TestCenterPrinter_WithCenterEachLineSeparately(t *testing.T) {
-	p := pterm.CenterPrinter{}
-	p2 := p.WithCenterEachLineSeparately()
-
-	testza.AssertTrue(t, p2.CenterEachLineSeparately)
-	testza.AssertFalse(t, p.CenterEachLineSeparately)
+func TestCenterPrinterCentersSingleLine(t *testing.T) {
+	// "Hello" is 5 cells wide: (80-5)/2 = 37 cells of left padding.
+	assert.Equal(t, strings.Repeat(" ", 37)+"Hello\n", pterm.DefaultCenter.Sprint("Hello"))
 }
 
-func TestCenterPrinterPrintMethods(t *testing.T) {
-	p := pterm.DefaultCenter
+func TestCenterPrinterCentersBlockAsAWhole(t *testing.T) {
+	// By default the whole block is centered by its widest line (3 cells):
+	// every line gets the same (80-3)/2 = 38 cells of padding, preserving the
+	// relative alignment inside the block.
+	expected := strings.Repeat(" ", 38) + "aaa\n" +
+		strings.Repeat(" ", 38) + "a\n"
 
-	t.Run("Print", func(t *testing.T) {
-		testPrintContains(t, func(w io.Writer, a any) {
-			p.Print(a)
-		})
-	})
-
-	t.Run("Printf", func(t *testing.T) {
-		testPrintfContains(t, func(w io.Writer, format string, a any) {
-			p.Printf(format, a)
-		})
-	})
-
-	t.Run("Printfln", func(t *testing.T) {
-		testPrintflnContains(t, func(w io.Writer, format string, a any) {
-			p.Printfln(format, a)
-		})
-	})
-
-	t.Run("Println", func(t *testing.T) {
-		testPrintlnContains(t, func(w io.Writer, a any) {
-			p.Println(a)
-		})
-	})
-
-	t.Run("Sprint", func(t *testing.T) {
-		testSprintContains(t, func(a any) string {
-			return p.Sprint(a)
-		})
-	})
-
-	t.Run("Sprintf", func(t *testing.T) {
-		testSprintfContains(t, func(format string, a any) string {
-			return p.Sprintf(format, a)
-		})
-	})
-
-	t.Run("Sprintfln", func(t *testing.T) {
-		testSprintflnContains(t, func(format string, a any) string {
-			return p.Sprintfln(format, a)
-		})
-	})
-
-	t.Run("Sprintln", func(t *testing.T) {
-		testSprintlnContains(t, func(a any) string {
-			return p.Sprintln(a)
-		})
-	})
-
-	t.Run("PrintOnError", func(t *testing.T) {
-		result := captureStdout(func(w io.Writer) {
-			p.PrintOnError(errors.New("hello world"))
-		})
-		testza.AssertContains(t, result, "hello world")
-	})
-
-	t.Run("PrintIfError_WithoutError", func(t *testing.T) {
-		result := captureStdout(func(w io.Writer) {
-			p.PrintOnError(nil)
-		})
-		testza.AssertZero(t, result)
-	})
-
-	t.Run("PrintOnErrorf", func(t *testing.T) {
-		result := captureStdout(func(w io.Writer) {
-			p.PrintOnErrorf("wrapping error : %w", errors.New("hello world"))
-		})
-		testza.AssertContains(t, result, "hello world")
-	})
-
-	t.Run("PrintIfError_WithoutErrorf", func(t *testing.T) {
-		result := captureStdout(func(w io.Writer) {
-			p.PrintOnErrorf("", nil)
-		})
-		testza.AssertZero(t, result)
-	})
+	assert.Equal(t, expected, pterm.DefaultCenter.Sprint("aaa\na"))
 }
 
-func TestCenterPrinterPrintMethodsCenterSeparately(t *testing.T) {
+func TestCenterPrinterCentersEachLineSeparately(t *testing.T) {
+	// With CenterEachLineSeparately every line gets its own padding:
+	// (80-3)/2 = 38 for "aaa" and (80-1)/2 = 39 for "a". This must differ
+	// from the block mode above.
+	expected := strings.Repeat(" ", 38) + "aaa\n" +
+		strings.Repeat(" ", 39) + "a\n"
+
 	p := pterm.DefaultCenter.WithCenterEachLineSeparately()
 
-	t.Run("Print", func(t *testing.T) {
-		testPrintContains(t, func(w io.Writer, a any) {
-			p.Print(a)
-		})
+	assert.Equal(t, expected, p.Sprint("aaa\na"))
+	assert.NotEqual(t, pterm.DefaultCenter.Sprint("aaa\na"), p.Sprint("aaa\na"))
+}
+
+func TestCenterPrinterCentersByVisibleWidth(t *testing.T) {
+	t.Run("unicode", func(t *testing.T) {
+		// "汉字" occupies 4 terminal cells: (80-4)/2 = 38 cells of padding.
+		assert.Equal(t, strings.Repeat(" ", 38)+"汉字\n", pterm.DefaultCenter.Sprint("汉字"))
 	})
 
-	t.Run("Printf", func(t *testing.T) {
-		testPrintfContains(t, func(w io.Writer, format string, a any) {
-			p.Printf(format, a)
-		})
-	})
+	t.Run("ANSI codes are ignored for the width", func(t *testing.T) {
+		colored := pterm.FgRed.Sprint("Hello")
 
-	t.Run("Println", func(t *testing.T) {
-		testPrintlnContains(t, func(w io.Writer, a any) {
-			p.Println(a)
-		})
-	})
-
-	t.Run("Sprint", func(t *testing.T) {
-		testSprintContains(t, func(a any) string {
-			return p.Sprint(a)
-		})
-	})
-
-	t.Run("Sprintf", func(t *testing.T) {
-		testSprintfContains(t, func(format string, a any) string {
-			return p.Sprintf(format, a)
-		})
-	})
-
-	t.Run("Sprintln", func(t *testing.T) {
-		testSprintlnContains(t, func(a any) string {
-			return p.Sprintln(a)
-		})
+		// The escape codes must not count towards the width: same 37-cell
+		// padding as for the plain "Hello".
+		assert.Equal(t, strings.Repeat(" ", 37)+colored+"\n", pterm.DefaultCenter.Sprint(colored))
 	})
 }
 
-func TestCenterPrinter_SprintLineLongerThanTerminal(t *testing.T) {
-	p := pterm.DefaultCenter
-	p2 := p.Sprint("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+func TestCenterPrinterLineWiderThanTerminalIsNotPadded(t *testing.T) {
+	wide := strings.Repeat("a", 100)
 
-	testza.AssertContains(t, p2, "a")
+	assert.Equal(t, wide+"\n", pterm.DefaultCenter.Sprint(wide))
+	assert.Equal(t, wide+"\n", pterm.DefaultCenter.WithCenterEachLineSeparately().Sprint(wide))
 }
 
-func TestCenterPrinter_SprintLineLongerThanTerminalWithCenterEachLineSeparately(t *testing.T) {
-	p := pterm.DefaultCenter
-	p2 := p.WithCenterEachLineSeparately().Sprint("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+func TestCenterPrinterRawOutputPassesTextThrough(t *testing.T) {
+	restoreGlobalStyling(t)
+	pterm.DisableStyling()
 
-	testza.AssertContains(t, p2, "a")
+	assert.Equal(t, "Hello", pterm.DefaultCenter.Sprint("Hello"))
 }
 
-func TestCenterPrinter_WithWriter(t *testing.T) {
-	p := pterm.CenterPrinter{}
-	s := os.Stderr
-	p2 := p.WithWriter(s)
+func TestCenterPrinterRespectsForcedTerminalWidth(t *testing.T) {
+	pterm.SetForcedTerminalSize(20, 60)
+	t.Cleanup(func() { pterm.SetForcedTerminalSize(terminalWidth, terminalHeight) })
 
-	testza.AssertEqual(t, s, p2.Writer)
-	testza.AssertZero(t, p.Writer)
+	// (20-4)/2 = 8 cells of padding on a 20-column terminal.
+	assert.Equal(t, strings.Repeat(" ", 8)+"text\n", pterm.DefaultCenter.Sprint("text"))
 }

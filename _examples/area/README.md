@@ -1,6 +1,6 @@
 ### area/demo
 
-![Animation](https://vhs.charm.sh/vhs-5EtvNsiVtRrbBEqJcGZJBD.gif)
+![Animation](https://vhs.charm.sh/vhs-4yaFqOuIaXiKpeFNvdnh7T.gif)
 
 <details>
 
@@ -17,33 +17,20 @@ import (
 )
 
 func main() {
-	// Print an informational message using PTerm's Info printer.
-	// This message will stay in place while the area updates.
+	// A live clock: only the area redraws, anything printed before it stays put.
 	pterm.Info.Println("The previous text will stay in place, while the area updates.")
-
-	// Print two new lines as spacer.
 	pterm.Print("\n\n")
 
-	// Start the Area printer from PTerm's DefaultArea, with the Center option.
-	// The Area printer allows us to update a specific area of the console output.
-	// The returned 'area' object is used to control the area updates.
 	area, _ := pterm.DefaultArea.WithCenter().Start()
 
-	// Loop 10 times to update the area with the current time.
-	for i := 0; i < 10; i++ {
-		// Get the current time, format it as "15:04:05" (hour:minute:second), and convert it to a string.
-		// Then, create a BigText from the time string using PTerm's DefaultBigText and putils NewLettersFromString.
-		// The Srender() function is used to save the BigText as a string.
+	for range 10 {
+		// Render the current time as big letters into a string, then swap it
+		// into the area. Srender returns the output instead of printing it.
 		str, _ := pterm.DefaultBigText.WithLetters(putils.LettersFromString(time.Now().Format("15:04:05"))).Srender()
-
-		// Update the Area contents with the current time string.
 		area.Update(str)
-
-		// Sleep for a second before the next update.
 		time.Sleep(time.Second)
 	}
 
-	// Stop the Area printer after all updates are done.
 	area.Stop()
 }
 ```
@@ -52,7 +39,7 @@ func main() {
 
 ### area/center
 
-![Animation](https://vhs.charm.sh/vhs-68aK5FpvO7XZHzMnVZhXwu.gif)
+![Animation](https://vhs.charm.sh/vhs-2x22TSH9shIZed56kRoF5Z.gif)
 
 <details>
 
@@ -68,21 +55,15 @@ import (
 )
 
 func main() {
-	// Start a new default area in the center of the terminal.
-	// The Start() function returns the created area and an error.
+	// WithCenter horizontally centers the area's content in the terminal.
 	area, _ := pterm.DefaultArea.WithCenter().Start()
 
-	// Loop 5 times to simulate a dynamic update.
-	for i := 0; i < 5; i++ {
-		// Update the content of the area with the current count.
-		// The Sprintf function is used to format the string.
-		area.Update(pterm.Sprintln("Current count: %d\nAreas can update their content dynamically!", i))
-
-		// Pause for a second to simulate a time-consuming task.
+	// Each Update redraws the area in place instead of appending new lines.
+	for i := range 5 {
+		area.Update(pterm.Sprintfln("Current count: %d\nAreas can update their content dynamically!", i))
 		time.Sleep(time.Second)
 	}
 
-	// Stop the area after all updates are done.
 	area.Stop()
 }
 ```
@@ -91,7 +72,7 @@ func main() {
 
 ### area/default
 
-![Animation](https://vhs.charm.sh/vhs-4InCBry5R7TszPTjxNjDZ8.gif)
+![Animation](https://vhs.charm.sh/vhs-1kGxZ5xpByOoQdxUeQ0KaT.gif)
 
 <details>
 
@@ -107,22 +88,14 @@ import (
 )
 
 func main() {
-	// Start a new default area and get a reference to it.
-	// The second return value is an error which is ignored here.
 	area, _ := pterm.DefaultArea.Start()
 
-	// Loop 5 times
-	for i := 0; i < 5; i++ {
-		// Update the content of the area dynamically.
-		// Here we're just displaying the current count.
+	// Each Update redraws the area in place instead of appending new lines.
+	for i := range 5 {
 		area.Update(pterm.Sprintfln("Current count: %d\nAreas can update their content dynamically!", i))
-
-		// Pause for a second before the next update.
 		time.Sleep(time.Second)
 	}
 
-	// Stop the area after all updates are done.
-	// This will clean up and free resources used by the area.
 	area.Stop()
 }
 ```
@@ -131,7 +104,7 @@ func main() {
 
 ### area/dynamic-chart
 
-![Animation](https://vhs.charm.sh/vhs-6EcuXmQAQeoHIAiFuzyR6U.gif)
+![Animation](https://vhs.charm.sh/vhs-6oEUx93vsoXr8zY4qDjSTp.gif)
 
 <details>
 
@@ -147,35 +120,27 @@ import (
 )
 
 func main() {
-	// Start a new fullscreen centered area.
-	// This area will be used to display the bar chart.
+	// A live bar chart: render the chart to a string each tick and let the
+	// area redraw it in place. Fullscreen gives the area the whole terminal.
 	area, _ := pterm.DefaultArea.WithFullscreen().WithCenter().Start()
-	// Ensure the area stops updating when we're done.
 	defer area.Stop()
 
-	// Loop to update the bar chart 10 times.
-	for i := 0; i < 10; i++ {
-		// Create a new bar chart with dynamic bars.
-		// The bars will change based on the current iteration.
+	for i := range 10 {
 		barchart := pterm.DefaultBarChart.WithBars(dynamicBars(i))
-		// Render the bar chart to a string.
-		// This string will be used to update the area.
 		content, _ := barchart.Srender()
-		// Update the area with the new bar chart.
 		area.Update(content)
-		// Wait for half a second before the next update.
 		time.Sleep(500 * time.Millisecond)
 	}
 }
 
-// dynamicBars generates a set of bars for the bar chart.
-// The bars will change based on the current iteration.
+// dynamicBars returns the chart data for the given tick. B and D grow over
+// time, A and C stay constant.
 func dynamicBars(i int) pterm.Bars {
 	return pterm.Bars{
-		{Label: "A", Value: 10},     // A static bar.
-		{Label: "B", Value: 20 * i}, // A bar that grows with each iteration.
-		{Label: "C", Value: 30},     // Another static bar.
-		{Label: "D", Value: 40 + i}, // A bar that grows slowly with each iteration.
+		{Label: "A", Value: 10},
+		{Label: "B", Value: 20 * i},
+		{Label: "C", Value: 30},
+		{Label: "D", Value: 40 + i},
 	}
 }
 ```
@@ -184,7 +149,7 @@ func dynamicBars(i int) pterm.Bars {
 
 ### area/fullscreen
 
-![Animation](https://vhs.charm.sh/vhs-1bxXPzNh5YCNebQ3pEm86a.gif)
+![Animation](https://vhs.charm.sh/vhs-3V7I9NzBSGRahRPGKGNOKo.gif)
 
 <details>
 
@@ -200,21 +165,16 @@ import (
 )
 
 func main() {
-	// Start a new fullscreen area. This will return an area instance and an error.
-	// The underscore (_) is used to ignore the error.
+	// Fullscreen clears the terminal and gives the area the whole screen.
 	area, _ := pterm.DefaultArea.WithFullscreen().Start()
 
-	// Loop 5 times to update the area content.
-	for i := 0; i < 5; i++ {
-		// Update the content of the area with the current count.
-		// The Sprintf function is used to format the string.
+	// Each Update redraws the area in place instead of appending new lines.
+	for i := range 5 {
 		area.Update(pterm.Sprintf("Current count: %d\nAreas can update their content dynamically!", i))
-
-		// Pause for a second before the next update.
 		time.Sleep(time.Second)
 	}
 
-	// Stop the area after all updates are done.
+	// Stop clears the area and restores the terminal.
 	area.Stop()
 }
 ```
@@ -223,7 +183,7 @@ func main() {
 
 ### area/fullscreen-center
 
-![Animation](https://vhs.charm.sh/vhs-4x85l9QwUoh7qMgMklerCN.gif)
+![Animation](https://vhs.charm.sh/vhs-Gi75JoygwXMXaFkJLn4z8.gif)
 
 <details>
 
@@ -239,22 +199,17 @@ import (
 )
 
 func main() {
-	// Initialize a new PTerm area with fullscreen and center options
-	// The Start() function returns the created area and an error (ignored here)
+	// Fullscreen takes over the whole terminal; WithCenter centers the
+	// content within it.
 	area, _ := pterm.DefaultArea.WithFullscreen().WithCenter().Start()
 
-	// Loop 5 times to demonstrate dynamic content update
-	for i := 0; i < 5; i++ {
-		// Update the content of the area with the current count
-		// The Sprintf function is used to format the string with the count
+	// Each Update redraws the area in place instead of appending new lines.
+	for i := range 5 {
 		area.Update(pterm.Sprintf("Current count: %d\nAreas can update their content dynamically!", i))
-
-		// Pause for a second
 		time.Sleep(time.Second)
 	}
 
-	// Stop the area after all updates are done
-	// This will clear the area and return the terminal to its normal state
+	// Stop clears the area and restores the terminal.
 	area.Stop()
 }
 ```

@@ -1,4 +1,163 @@
->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+
 
 
 
@@ -157,213 +316,54 @@
 
 
 ────────────────────────────────────────────────────────────────────────────────
->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+2026-07-11 21:09:35 TRACE Doing not so important stuff priority="super low"
+2026-07-11 21:09:35 DEBUG This might be interesting
+                          ├ is this interesting=true
+                          ├ when were crayons invented=1903
+                          └ what is the meaning of life=42
+2026-07-11 21:09:35 INFO  That was actually interesting such=wow
+2026-07-11 21:09:35 WARN  Oh no, I see an error coming to us!
+                          ├ speed=88
+                          └ measures=mph
+2026-07-11 21:09:35 ERROR Damn, here it is! error="something went wrong"
+2026-07-11 21:09:35 INFO  But what's really cool is, that you can print
+                          very long logs, and PTerm will automatically wrap
+                          them for you! Say goodbye to text, that has weird
+                          line breaks!
+                          └ very=long
 
 ────────────────────────────────────────────────────────────────────────────────
->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+2026-07-11 21:09:35 TRACE Doing not so important stuff priority="super low"
+2026-07-11 21:09:35 DEBUG This might be interesting
+                          ├ is this interesting=true
+                          ├ when were crayons invented=1903
+                          └ what is the meaning of life=42
+2026-07-11 21:09:35 INFO  That was actually interesting such=wow
+2026-07-11 21:09:35 WARN  Oh no, I see an error coming to us!
+                          ├ speed=88
+                          └ measures=mph
+2026-07-11 21:09:35 ERROR Damn, here it is! error="something went wrong"
+2026-07-11 21:09:35 INFO  But what's really cool is, that you can print
+                          very long logs, and PTerm will automatically wrap
+                          them for you! Say goodbye to text, that has weird
+                          line breaks!
+                          └ very=long
+2026-07-11 21:09:37 FATAL Oh no, this process is getting killed! fatal=true
 ────────────────────────────────────────────────────────────────────────────────
->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-────────────────────────────────────────────────────────────────────────────────
-2026-05-06 21:45:01 TRACE Doing not so important stuff priority: super low
-2026-05-06 21:45:01 DEBUG This might be interesting
-                      ├ when were crayons invented: 1903
-                      ├ what is the meaning of life: 42
-                      └ is this interesting: true
-2026-05-06 21:45:01 INFO  That was actually interesting such: wow
-2026-05-06 21:45:01 WARN  Oh no, I see an error coming to us!
-                      ├ speed: 88
-                      └ measures: mph
-2026-05-06 21:45:01 ERROR Damn, here it is! error: something went wrong
-2026-05-06 21:45:01 INFO  But what's really cool is, that you can print
-                      │   very long logs, and PTerm will automatically wrap
-                      │   them for you! Say goodbye to text, that has weird
-                      │   line breaks!
-                      └ very: long
-
-────────────────────────────────────────────────────────────────────────────────
-2026-05-06 21:45:01 TRACE Doing not so important stuff priority: super low
-2026-05-06 21:45:01 DEBUG This might be interesting
-                      ├ when were crayons invented: 1903
-                      ├ what is the meaning of life: 42
-                      └ is this interesting: true
-2026-05-06 21:45:01 INFO  That was actually interesting such: wow
-2026-05-06 21:45:01 WARN  Oh no, I see an error coming to us!
-                      ├ speed: 88
-                      └ measures: mph
-2026-05-06 21:45:01 ERROR Damn, here it is! error: something went wrong
-2026-05-06 21:45:01 INFO  But what's really cool is, that you can print
-                      │   very long logs, and PTerm will automatically wrap
-                      │   them for you! Say goodbye to text, that has weird
-                      │   line breaks!
-                      └ very: long
-2026-05-06 21:45:03 FATAL Oh no, this process is getting killed!
-────────────────────────────────────────────────────────────────────────────────
-2026-05-06 21:45:01 TRACE Doing not so important stuff priority: super low
-2026-05-06 21:45:01 DEBUG This might be interesting
-                      ├ when were crayons invented: 1903
-                      ├ what is the meaning of life: 42
-                      └ is this interesting: true
-2026-05-06 21:45:01 INFO  That was actually interesting such: wow
-2026-05-06 21:45:01 WARN  Oh no, I see an error coming to us!
-                      ├ speed: 88
-                      └ measures: mph
-2026-05-06 21:45:01 ERROR Damn, here it is! error: something went wrong
-2026-05-06 21:45:01 INFO  But what's really cool is, that you can print
-                      │   very long logs, and PTerm will automatically wrap
-                      │   them for you! Say goodbye to text, that has weird
-                      │   line breaks!
-                      └ very: long
-2026-05-06 21:45:03 FATAL Oh no, this process is getting killed!
+2026-07-11 21:09:35 TRACE Doing not so important stuff priority="super low"
+2026-07-11 21:09:35 DEBUG This might be interesting
+                          ├ is this interesting=true
+                          ├ when were crayons invented=1903
+                          └ what is the meaning of life=42
+2026-07-11 21:09:35 INFO  That was actually interesting such=wow
+2026-07-11 21:09:35 WARN  Oh no, I see an error coming to us!
+                          ├ speed=88
+                          └ measures=mph
+2026-07-11 21:09:35 ERROR Damn, here it is! error="something went wrong"
+2026-07-11 21:09:35 INFO  But what's really cool is, that you can print
+                          very long logs, and PTerm will automatically wrap
+                          them for you! Say goodbye to text, that has weird
+                          line breaks!
+                          └ very=long
+2026-07-11 21:09:37 FATAL Oh no, this process is getting killed! fatal=true
 ────────────────────────────────────────────────────────────────────────────────

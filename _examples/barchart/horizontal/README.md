@@ -1,6 +1,6 @@
 # barchart/horizontal
 
-![Animation](https://vhs.charm.sh/vhs-1qPlEkdkqNeeARppWspi8x.gif)
+![Animation](https://vhs.charm.sh/vhs-70ICgyL6YEO64KZ7uTmbI6.gif)
 
 ```go
 package main
@@ -8,7 +8,6 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Define the data for the bar chart
 	bars := []pterm.Bar{
 		{Label: "A", Value: 10},
 		{Label: "B", Value: 20},
@@ -21,9 +20,8 @@ func main() {
 		{Label: "I", Value: 10},
 	}
 
-	// Create a bar chart with the defined data
-	// The chart is displayed horizontally
-	// The Render() function is called to display the chart
+	// WithHorizontal draws one bar per line, left to right, with the
+	// label in front of each bar.
 	pterm.DefaultBarChart.WithBars(bars).WithHorizontal().Render()
 }
 ```

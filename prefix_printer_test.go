@@ -1,458 +1,159 @@
 package pterm_test
 
+// Behavioral tests for PrefixPrinter (pterm.Info, Success, Warning, Error,
+// Fatal, Debug, Description).
+//
+// Builder methods, Print*/Sprint* delegation, PrintOnError semantics and the
+// global styling invariants are covered generically in contract_test.go. This
+// file verifies the actual rendering: the exact prefix layout, multiline
+// indentation, scope, debug gating, fatal panics, line numbers and raw mode.
+
 import (
-	"errors"
 	"fmt"
 	"io"
-	"os"
+	"runtime"
 	"testing"
 
-	"github.com/MarvinJWendt/testza"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/pterm/pterm"
 )
 
-var prefixPrinters = []pterm.PrefixPrinter{pterm.Info, pterm.Success, pterm.Warning, pterm.Error, *pterm.Fatal.WithFatal(false)}
-
-func TestPrefixPrinterNilPrint(t *testing.T) {
-	proxyToDevNull()
-
-	p := pterm.PrefixPrinter{}
-	p.Println("Hello, World!")
+// enableDebugMessages turns debug output on for one test and restores the
+// default (disabled) state afterwards.
+func enableDebugMessages(t *testing.T) {
+	t.Helper()
+	pterm.EnableDebugMessages()
+	t.Cleanup(pterm.DisableDebugMessages)
 }
 
-func TestPrefixPrinterPrintMethods(t *testing.T) {
-	for _, p := range prefixPrinters {
-		t.Run("Print", func(t *testing.T) {
-			testPrintContains(t, func(w io.Writer, a any) {
-				p.WithWriter(w).Print(a)
-			})
-		})
+func TestPrefixPrinterPlainOutput(t *testing.T) {
+	// The prefix is rendered as " <text> " followed by a separating space, so
+	// the visible output is "<padded prefix> <message>".
+	tests := []struct {
+		name     string
+		printer  pterm.PrefixPrinter
+		expected string
+	}{
+		{"Info", pterm.Info, "  INFO    message"},
+		{"Success", pterm.Success, " SUCCESS  message"},
+		{"Warning", pterm.Warning, " WARNING  message"},
+		{"Error", pterm.Error, "  ERROR   message"},
+		{"Fatal", *pterm.Fatal.WithFatal(false), "  FATAL   message"},
+		{"Description", pterm.Description, " Description  message"},
+	}
 
-		t.Run("PrintWithScope", func(t *testing.T) {
-			testPrintContains(t, func(w io.Writer, a any) {
-				p2 := p.WithScope(pterm.Scope{
-					Text:  "test",
-					Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
-				})
-				p2.WithWriter(w).Print(a)
-			})
-		})
-
-		t.Run("PrintWithShowLineNumber", func(t *testing.T) {
-			testPrintContains(t, func(w io.Writer, a any) {
-				p2 := p.WithShowLineNumber().WithWriter(w)
-				p2.Print(a)
-			})
-		})
-
-		t.Run("PrintWithMultipleLines", func(t *testing.T) {
-			p2 := p.WithScope(pterm.Scope{
-				Text:  "test",
-				Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
-			})
-			p2.Print("This text\nhas\nmultiple\nlines")
-		})
-
-		t.Run("Printf", func(t *testing.T) {
-			testPrintfContains(t, func(w io.Writer, format string, a any) {
-				p.WithWriter(w).Printf(format, a)
-			})
-		})
-
-		t.Run("Printfln", func(t *testing.T) {
-			testPrintflnContains(t, func(w io.Writer, format string, a any) {
-				p.WithWriter(w).Printfln(format, a)
-			})
-		})
-
-		t.Run("Println", func(t *testing.T) {
-			testPrintlnContains(t, func(w io.Writer, a any) {
-				p.WithWriter(w).Println(a)
-			})
-		})
-
-		t.Run("Sprint", func(t *testing.T) {
-			testSprintContains(t, func(a any) string {
-				return p.Sprint(a)
-			})
-		})
-
-		t.Run("Sprintf", func(t *testing.T) {
-			testSprintfContains(t, func(format string, a any) string {
-				return p.Sprintf(format, a)
-			})
-		})
-
-		t.Run("Sprintfln", func(t *testing.T) {
-			testSprintflnContains(t, func(format string, a any) string {
-				return p.Sprintfln(format, a)
-			})
-		})
-
-		t.Run("Sprintln", func(t *testing.T) {
-			testSprintlnContains(t, func(a any) string {
-				return p.Sprintln(a)
-			})
-		})
-
-		t.Run("PrintOnError", func(t *testing.T) {
-			result := captureStdout(func(w io.Writer) {
-				p.WithWriter(w).PrintOnError(errors.New("hello world"))
-			})
-			testza.AssertContains(t, result, "hello world")
-		})
-
-		t.Run("PrintIfError_WithoutError", func(t *testing.T) {
-			result := captureStdout(func(w io.Writer) {
-				p.WithWriter(w).PrintOnError(nil)
-			})
-			testza.AssertZero(t, result)
-		})
-
-		t.Run("PrintOnErrorf", func(t *testing.T) {
-			result := captureStdout(func(w io.Writer) {
-				p.WithWriter(w).PrintOnErrorf("wrapping error : %w", errors.New("hello world"))
-			})
-			testza.AssertContains(t, result, "hello world")
-		})
-
-		t.Run("PrintIfError_WithoutErrorf", func(t *testing.T) {
-			result := captureStdout(func(w io.Writer) {
-				p.WithWriter(w).PrintOnErrorf("", nil)
-			})
-			testza.AssertZero(t, result)
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			assert.Equal(t, tc.expected, stripANSI(tc.printer.Sprint("message")))
 		})
 	}
 }
 
-func TestPrefixPrinterWithoutPrefix(t *testing.T) {
+func TestPrefixPrinterStyledOutput(t *testing.T) {
+	// Exact ANSI for one representative case: the Info prefix is FgBlack(30)
+	// on BgCyan(46), the message is FgLightCyan(96).
+	assert.Equal(t, "\x1b[30;46m  INFO   \x1b[0m \x1b[96mx\x1b[0m", pterm.Info.Sprint("x"))
+}
+
+func TestPrefixPrinterMultilineIndentsContinuationLines(t *testing.T) {
+	// Continuation lines are indented with len(prefix)+2 spaces plus the
+	// separating space, so the message column stays aligned under the first
+	// line.
+	assert.Equal(t, "  INFO    first\n          second", stripANSI(pterm.Info.Sprint("first\nsecond")))
+	assert.Equal(t, "  ERROR   first\n          second", stripANSI(pterm.Error.Sprint("first\nsecond")))
+}
+
+func TestPrefixPrinterSprintlnAppendsNewline(t *testing.T) {
+	assert.Equal(t, "  INFO    message\n", stripANSI(pterm.Info.Sprintln("message")))
+}
+
+func TestPrefixPrinterCollapsesTrailingNewlines(t *testing.T) {
+	// Any number of trailing newlines in the input collapses into exactly one.
+	assert.Equal(t, "  INFO    a\n", stripANSI(pterm.Info.Sprint("a\n\n\n")))
+}
+
+func TestPrefixPrinterScopeIsRenderedBetweenPrefixAndMessage(t *testing.T) {
+	p := pterm.Info.WithScope(pterm.Scope{Text: "myscope"})
+
+	assert.Equal(t, "  INFO     (myscope) message", stripANSI(p.Sprint("message")))
+}
+
+func TestPrefixPrinterRawOutput(t *testing.T) {
+	restoreGlobalStyling(t)
 	pterm.DisableStyling()
 
-	for _, p := range prefixPrinters {
-		p2 := p.WithPrefix(pterm.Prefix{})
+	// In raw mode the padded prefix block degrades to "<prefix>: <message>".
+	assert.Equal(t, "INFO: message", pterm.Info.Sprint("message"))
+	assert.Equal(t, "ERROR: message", pterm.Error.Sprint("message"))
 
-		t.Run("", func(t *testing.T) {
-			for _, printable := range printables {
-				ret := captureStdout(func(w io.Writer) {
-					p2.WithWriter(w).Print(printable)
-				})
-				testza.AssertEqual(t, ret, fmt.Sprint(printable))
-			}
-		})
-	}
-
-	pterm.EnableStyling()
+	t.Run("empty prefix prints the bare message", func(t *testing.T) {
+		assert.Equal(t, "message", pterm.Info.WithPrefix(pterm.Prefix{}).Sprint("message"))
+	})
 }
 
-func TestSprintfWithNewLineEnding(t *testing.T) {
-	for _, p := range prefixPrinters {
-		t.Run("", func(t *testing.T) {
-			testza.AssertNotContains(t, "\n\n", p.Sprintf("%s\n\n\n\n", "Hello, World!"))
+func TestPrefixPrinterDebugGating(t *testing.T) {
+	t.Run("prints nothing while debug messages are disabled", func(t *testing.T) {
+		pterm.DisableDebugMessages()
+
+		assert.Empty(t, pterm.Debug.Sprint("dbg"))
+		assert.Empty(t, pterm.Debug.Sprintln("dbg"))
+		assert.Empty(t, pterm.Debug.Sprintf("%s", "dbg"))
+		assert.Empty(t, pterm.Debug.Sprintfln("%s", "dbg"))
+
+		out := captureStdout(func(_ io.Writer) {
+			pterm.Debug.Print("dbg")
+			pterm.Debug.Println("dbg")
+			pterm.Debug.Printf("%s", "dbg")
+			pterm.Debug.Printfln("%s", "dbg")
 		})
-	}
+		assert.Empty(t, out)
+	})
+
+	t.Run("prints like any other prefix printer when enabled", func(t *testing.T) {
+		enableDebugMessages(t)
+
+		assert.Equal(t, "  DEBUG   message", stripANSI(pterm.Debug.Sprint("message")))
+	})
 }
 
-func TestPrefixPrinter_GetFormattedPrefix(t *testing.T) {
-	for _, p := range prefixPrinters {
-		t.Run("", func(t *testing.T) {
-			testza.AssertNotZero(t, p.GetFormattedPrefix())
+func TestPrefixPrinterFatal(t *testing.T) {
+	t.Run("panics after printing the message", func(t *testing.T) {
+		setupStdoutCapture()
+
+		assert.Panics(t, func() {
+			pterm.Fatal.Println("fatal message")
 		})
-	}
+
+		assert.Equal(t, "  FATAL   fatal message\n", stripANSI(readStdout()))
+	})
+
+	t.Run("WithFatal(false) prints without panicking", func(t *testing.T) {
+		out := captureStdout(func(_ io.Writer) {
+			pterm.Fatal.WithFatal(false).Println("recoverable")
+		})
+
+		assert.Equal(t, "  FATAL   recoverable\n", stripANSI(out))
+	})
 }
 
-func TestPrefixPrinter_WithFatal(t *testing.T) {
-	for _, p := range prefixPrinters {
-		t.Run("", func(t *testing.T) {
-			p2 := p.WithFatal()
+func TestPrefixPrinterShowLineNumberReportsTheCallSite(t *testing.T) {
+	_, file, line, ok := runtime.Caller(0)
+	require.True(t, ok)
 
-			testza.AssertEqual(t, true, p2.Fatal)
-		})
-	}
+	out := captureStdout(func(_ io.Writer) {
+		pterm.Info.WithShowLineNumber().Println("message") // keep exactly 4 lines below runtime.Caller(0)
+	})
+
+	assert.Equal(t, fmt.Sprintf("  INFO    message\n└ (%s:%d)\n", file, line+4), stripANSI(out))
 }
 
-func TestPrefixPrinter_WithShowLineNumber(t *testing.T) {
-	for _, p := range prefixPrinters {
-		t.Run("", func(t *testing.T) {
-			p2 := p.WithShowLineNumber()
-
-			testza.AssertEqual(t, true, p2.ShowLineNumber)
+func TestPrefixPrinterZeroValueDoesNotPanic(t *testing.T) {
+	assert.NotPanics(t, func() {
+		_ = captureStdout(func(_ io.Writer) {
+			p := pterm.PrefixPrinter{}
+			p.Println("Hello, World!")
 		})
-	}
-}
-
-func TestPrefixPrinter_WithMessageStyle(t *testing.T) {
-	for _, p := range prefixPrinters {
-		t.Run("", func(t *testing.T) {
-			s := pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold)
-			p2 := p.WithMessageStyle(s)
-
-			testza.AssertEqual(t, s, p2.MessageStyle)
-		})
-	}
-}
-
-func TestPrefixPrinter_WithPrefix(t *testing.T) {
-	for _, p := range prefixPrinters {
-		t.Run("", func(t *testing.T) {
-			s := pterm.Prefix{
-				Text:  "test",
-				Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
-			}
-			p2 := p.WithPrefix(s)
-
-			testza.AssertEqual(t, s, p2.Prefix)
-		})
-	}
-}
-
-func TestPrefixPrinter_WithScope(t *testing.T) {
-	for _, p := range prefixPrinters {
-		t.Run("", func(t *testing.T) {
-			s := pterm.Scope{
-				Text:  "test",
-				Style: pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
-			}
-			p2 := p.WithScope(s)
-
-			testza.AssertEqual(t, s, p2.Scope)
-		})
-	}
-}
-
-func Test_checkFatal(t *testing.T) {
-	for _, p := range prefixPrinters {
-		t.Run("", func(t *testing.T) {
-			p2 := p.WithFatal()
-
-			testza.AssertPanics(t, func() {
-				p2.Println("Hello, World!")
-			})
-		})
-	}
-}
-
-func TestPrefixPrinter_WithDebugger(t *testing.T) {
-	for _, p := range prefixPrinters {
-		t.Run("", func(t *testing.T) {
-			p2 := p.WithDebugger()
-
-			testza.AssertTrue(t, p2.Debugger)
-		})
-	}
-}
-
-func TestPrefixPrinter_PrintWithDebugger(t *testing.T) {
-	for _, p := range prefixPrinters {
-		t.Run("", func(t *testing.T) {
-			p2 := p.WithDebugger()
-
-			pterm.EnableDebugMessages()
-			testPrintContains(t, func(w io.Writer, a any) {
-				p2.WithWriter(w).Print(a)
-			})
-		})
-	}
-}
-
-func TestPrefixPrinter_PrintlnWithDebugger(t *testing.T) {
-	for _, p := range prefixPrinters {
-		t.Run("", func(t *testing.T) {
-			p2 := p.WithDebugger()
-
-			pterm.EnableDebugMessages()
-			testPrintlnContains(t, func(w io.Writer, a any) {
-				p2.WithWriter(w).Println(a)
-			})
-		})
-	}
-}
-
-func TestPrefixPrinter_PrintfWithDebugger(t *testing.T) {
-	for _, p := range prefixPrinters {
-		t.Run("", func(t *testing.T) {
-			p2 := p.WithDebugger()
-
-			pterm.EnableDebugMessages()
-			testPrintfContains(t, func(w io.Writer, format string, a any) {
-				p2.WithWriter(w).Printf(format, a)
-			})
-		})
-	}
-}
-
-func TestPrefixPrinter_SprintWithDebugger(t *testing.T) {
-	for _, p := range prefixPrinters {
-		t.Run("", func(t *testing.T) {
-			p2 := p.WithDebugger()
-
-			pterm.EnableDebugMessages()
-			testSprintContains(t, func(a any) string {
-				return p2.Sprint(a)
-			})
-		})
-	}
-}
-
-func TestPrefixPrinter_SprintlnWithDebugger(t *testing.T) {
-	for _, p := range prefixPrinters {
-		t.Run("", func(t *testing.T) {
-			p2 := p.WithDebugger()
-
-			pterm.EnableDebugMessages()
-			testSprintlnContains(t, func(a any) string {
-				return p2.Sprintln(a)
-			})
-		})
-	}
-}
-
-func TestPrefixPrinter_SprintfWithDebugger(t *testing.T) {
-	for _, p := range prefixPrinters {
-		t.Run("", func(t *testing.T) {
-			p2 := p.WithDebugger()
-
-			pterm.EnableDebugMessages()
-			testSprintfContains(t, func(format string, a any) string {
-				return p2.Sprintf(format, a)
-			})
-		})
-	}
-}
-
-func TestPrefixPrinter_PrintWithoutDebugger(t *testing.T) {
-	for _, p := range prefixPrinters {
-		t.Run("", func(t *testing.T) {
-			p2 := p.WithDebugger()
-
-			pterm.DisableDebugMessages()
-			testDoesNotOutput(t, func(w io.Writer) {
-				p2.Print("Hello, World!")
-			})
-		})
-	}
-}
-
-func TestPrefixPrinter_PrintlnWithoutDebugger(t *testing.T) {
-	for _, p := range prefixPrinters {
-		t.Run("", func(t *testing.T) {
-			p2 := p.WithDebugger()
-
-			pterm.DisableDebugMessages()
-			testDoesNotOutput(t, func(w io.Writer) {
-				p2.Println("Hello, World!")
-			})
-		})
-	}
-}
-
-func TestPrefixPrinter_PrintfWithoutDebugger(t *testing.T) {
-	for _, p := range prefixPrinters {
-		t.Run("", func(t *testing.T) {
-			p2 := p.WithDebugger()
-
-			pterm.DisableDebugMessages()
-			testDoesNotOutput(t, func(w io.Writer) {
-				p2.Printf("Hello, World!")
-			})
-		})
-	}
-}
-
-func TestPrefixPrinter_PrintflnWithoutDebugger(t *testing.T) {
-	for _, p := range prefixPrinters {
-		t.Run("", func(t *testing.T) {
-			p2 := p.WithDebugger()
-
-			pterm.DisableDebugMessages()
-			testDoesNotOutput(t, func(w io.Writer) {
-				p2.Printfln("Hello, World!")
-			})
-		})
-	}
-}
-
-func TestPrefixPrinter_SprintWithoutDebugger(t *testing.T) {
-	for _, p := range prefixPrinters {
-		t.Run("", func(t *testing.T) {
-			p2 := p.WithDebugger()
-
-			testEmpty(t, func(a any) string {
-				return p2.Sprint(a)
-			})
-		})
-	}
-}
-
-func TestPrefixPrinter_SprintlnWithoutDebugger(t *testing.T) {
-	for _, p := range prefixPrinters {
-		t.Run("", func(t *testing.T) {
-			p2 := p.WithDebugger()
-
-			pterm.DisableDebugMessages()
-			testEmpty(t, func(a any) string {
-				return p2.Sprintln(a)
-			})
-		})
-	}
-}
-
-func TestPrefixPrinter_SprintfWithoutDebugger(t *testing.T) {
-	for _, p := range prefixPrinters {
-		t.Run("", func(t *testing.T) {
-			p2 := p.WithDebugger()
-
-			pterm.DisableDebugMessages()
-			testEmpty(t, func(a any) string {
-				return p2.Sprintf("Hello, %s!", a)
-			})
-		})
-	}
-}
-
-func TestPrefixPrinter_SprintflnWithoutDebugger(t *testing.T) {
-	for _, p := range prefixPrinters {
-		t.Run("", func(t *testing.T) {
-			p2 := p.WithDebugger()
-
-			pterm.DisableDebugMessages()
-			testEmpty(t, func(a any) string {
-				return p2.Sprintfln("Hello, %s!", a)
-			})
-		})
-	}
-}
-
-func TestPrefixPrinter_WithLineNumberOffset(t *testing.T) {
-	for _, p := range prefixPrinters {
-		t.Run("", func(t *testing.T) {
-			p2 := p.WithLineNumberOffset(1337)
-
-			testza.AssertEqual(t, 1337, p2.LineNumberOffset)
-		})
-	}
-}
-
-func TestPrefixPrinter_WithWriter(t *testing.T) {
-	for _, p := range prefixPrinters {
-		t.Run("", func(t *testing.T) {
-			s := os.Stderr
-			p2 := p.WithWriter(s)
-
-			testza.AssertEqual(t, s, p2.GetWriter())
-		})
-	}
-}
-
-func TestPrefixPrinter_GetWriter(t *testing.T) {
-	for _, p := range prefixPrinters {
-		t.Run("", func(t *testing.T) {
-			pterm.SetDefaultOutput(os.Stdout)
-			testza.AssertEqual(t, os.Stdout, p.GetWriter())
-			pterm.SetDefaultOutput(os.Stderr)
-			testza.AssertEqual(t, os.Stderr, p.GetWriter())
-			p2 := p.WithWriter(os.Stdout)
-			testza.AssertEqual(t, os.Stdout, p2.GetWriter())
-		})
-	}
+	})
 }

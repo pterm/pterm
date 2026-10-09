@@ -9,7 +9,8 @@ import (
 )
 
 // ------ Automation for CI ------
-// You can ignore this function, it is used to automatically run the demo and generate the example animation in our CI system.
+// Simulates the user's keystrokes when CI=true, so the demo can run
+// unattended and be recorded for the example animation. You can ignore this file.
 func init() {
 	if os.Getenv("CI") == "true" {
 		go func() {
@@ -20,6 +21,7 @@ func init() {
 			}
 			time.Sleep(time.Second)
 
+			// Filter the list down to the fuzzy searching options.
 			for _, s := range "fuzzy" {
 				keyboard.SimulateKeyPress(s)
 				time.Sleep(time.Millisecond * 150)

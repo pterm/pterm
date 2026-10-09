@@ -2,27 +2,25 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/pterm/pterm"
 )
 
 func main() {
-	// Initialize an empty slice to hold the options.
 	var options []string
-
-	// Populate the options slice with 100 options.
 	for i := 0; i < 100; i++ {
 		options = append(options, fmt.Sprintf("Option %d", i))
 	}
 
-	// Add 5 more options to the slice, indicating the availability of fuzzy searching.
+	// A few extra options that are easy to find with the fuzzy search filter.
 	for i := 0; i < 5; i++ {
 		options = append(options, fmt.Sprintf("You can use fuzzy searching (%d)", i))
 	}
 
-	// Use PTerm's interactive multiselect to present the options to the user and capture their selections.
-	// The Show() method displays the options and waits for user input.
+	// The multiselect scrolls through long lists and supports fuzzy filtering:
+	// just start typing to narrow down the options. By default, enter toggles
+	// an option and tab confirms the selection.
 	selectedOptions, _ := pterm.DefaultInteractiveMultiselect.WithOptions(options).Show()
 
-	// Print the selected options, highlighted in green.
 	pterm.Info.Printfln("Selected options: %s", pterm.Green(selectedOptions))
 }

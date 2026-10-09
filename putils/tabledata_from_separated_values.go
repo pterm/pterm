@@ -12,7 +12,7 @@ import (
 //
 //	pterm.DefaultTable.WithData(putils.TableDataFromCSV(csv)).Render()
 func TableDataFromSeparatedValues(text, valueSeparator, rowSeparator string) (td pterm.TableData) {
-	for _, line := range strings.Split(text, rowSeparator) {
+	for line := range strings.SplitSeq(text, rowSeparator) {
 		td = append(td, strings.Split(line, valueSeparator))
 	}
 

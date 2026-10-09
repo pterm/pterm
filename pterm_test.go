@@ -1,69 +1,69 @@
 package pterm_test
 
 import (
+	"io"
 	"testing"
 
-	"github.com/MarvinJWendt/testza"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/pterm/pterm"
 )
 
-func TestDisableDebugMessages(t *testing.T) {
-	pterm.PrintDebugMessages = true
-
-	pterm.DisableDebugMessages()
-	testza.AssertFalse(t, pterm.PrintDebugMessages)
-}
-
-func TestEnableDebugMessages(t *testing.T) {
-	pterm.EnableDebugMessages()
-	testza.AssertTrue(t, pterm.PrintDebugMessages)
-}
-
-func TestDisableOutput(t *testing.T) {
-	pterm.DisableOutput()
-	testza.AssertFalse(t, pterm.Output)
-}
-
-func TestEnableOutput(t *testing.T) {
-	pterm.DisableOutput()
-	pterm.EnableOutput()
-	testza.AssertTrue(t, pterm.Output)
-}
-
-func TestDisableStyling(t *testing.T) {
-	pterm.RawOutput = false
+// EnableStyling/DisableStyling must flip both RawOutput and PrintColor
+// coherently, observable through the actual output.
+func TestStylingToggle(t *testing.T) {
+	restoreGlobalStyling(t)
 
 	pterm.DisableStyling()
-	testza.AssertTrue(t, pterm.RawOutput)
-}
 
-func TestEnableStyling(t *testing.T) {
-	pterm.RawOutput = true
+	assert.True(t, pterm.RawOutput)
+	assert.False(t, pterm.PrintColor)
+
+	// No color codes in raw mode ...
+	assert.Equal(t, "x", pterm.FgRed.Sprint("x"))
+	// ... and no line-overwriting control characters either.
+	assert.Equal(t, "raw", captureStdout(func(_ io.Writer) { pterm.Printo("raw") }))
 
 	pterm.EnableStyling()
-	testza.AssertFalse(t, pterm.RawOutput)
+
+	assert.False(t, pterm.RawOutput)
+	assert.True(t, pterm.PrintColor)
+	assert.Equal(t, "\x1b[31mx\x1b[0m", pterm.FgRed.Sprint("x"))
+	assert.Equal(t, "\rstyled", captureStdout(func(_ io.Writer) { pterm.Printo("styled") }))
 }
 
-func TestInterfaceImplementation(t *testing.T) {
-	// If a printer doesn't fit into the slice, the printer doesn't has the right interface anymore.
-	_ = []pterm.TextPrinter{&pterm.DefaultBasicText, pterm.DefaultBox, pterm.DefaultCenter, &pterm.DefaultHeader, &pterm.DefaultParagraph, &pterm.Info, &pterm.DefaultSection, pterm.FgRed, pterm.NewRGB(0, 0, 0)}
-	_ = []pterm.LivePrinter{&pterm.DefaultProgressbar, &pterm.DefaultSpinner}
-	_ = []pterm.RenderPrinter{pterm.DefaultBarChart, pterm.DefaultBigText, pterm.DefaultBulletList, pterm.DefaultPanel, pterm.DefaultTable, pterm.DefaultTree}
+// The debug toggle must control whether the Debug printer produces output.
+func TestDebugMessagesToggle(t *testing.T) {
+	t.Cleanup(pterm.DisableDebugMessages)
+
+	pterm.DisableDebugMessages()
+	assert.Empty(t, captureStdout(func(_ io.Writer) { pterm.Debug.Println("hidden") }),
+		"Debug must print nothing while debug messages are disabled")
+
+	pterm.EnableDebugMessages()
+
+	out := captureStdout(func(_ io.Writer) { pterm.Debug.Println("visible") })
+	assert.Contains(t, stripANSI(out), "visible")
 }
 
+// RecalculateTerminalSize must derive the default printer dimensions from the
+// (forced) terminal size.
 func TestRecalculateTerminalSize(t *testing.T) {
-	// save existing values
-	prevBarChartWidth := pterm.DefaultBarChart.Width
-	prevBarChartHeight := pterm.DefaultBarChart.Height
-	prevParagraphMaxWidth := pterm.DefaultParagraph.MaxWidth
-	w := pterm.GetTerminalWidth()
-	h := pterm.GetTerminalHeight()
-	// double the terminal size
-	pterm.SetForcedTerminalSize(w*2, h*2)
-	// assert the values doubled
-	testza.AssertEqual(t, prevBarChartWidth*2, pterm.DefaultBarChart.Width)
-	testza.AssertEqual(t, prevBarChartHeight*2, pterm.DefaultBarChart.Height)
-	testza.AssertEqual(t, prevParagraphMaxWidth*2, pterm.DefaultParagraph.MaxWidth)
-	// revert the terminal size
-	pterm.SetForcedTerminalSize(w, h)
+	t.Cleanup(func() { pterm.SetForcedTerminalSize(terminalWidth, terminalHeight) })
+
+	// SetForcedTerminalSize recalculates internally.
+	pterm.SetForcedTerminalSize(120, 30)
+
+	assert.Equal(t, 120*2/3, pterm.DefaultBarChart.Width)
+	assert.Equal(t, 30*2/3, pterm.DefaultBarChart.Height)
+	assert.Equal(t, 120, pterm.DefaultParagraph.MaxWidth)
+
+	// A direct call must restore dimensions that were changed out-of-band.
+	pterm.DefaultBarChart.Width = 0
+	pterm.DefaultParagraph.MaxWidth = 0
+
+	pterm.RecalculateTerminalSize()
+
+	assert.Equal(t, 120*2/3, pterm.DefaultBarChart.Width)
+	assert.Equal(t, 120, pterm.DefaultParagraph.MaxWidth)
 }

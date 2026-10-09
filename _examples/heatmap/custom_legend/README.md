@@ -1,6 +1,6 @@
 # heatmap/custom_legend
 
-![Animation](https://vhs.charm.sh/vhs-1we9LwHEoQ8K1KSEpaigx4.gif)
+![Animation](https://vhs.charm.sh/vhs-48ixpZ0WEIHgIzAzzQqzAc.gif)
 
 ```go
 package main
@@ -10,7 +10,6 @@ import (
 )
 
 func main() {
-	// Define the data for the heatmap
 	data := [][]float32{
 		{0.9, 0.2, -0.7, 0.4, -0.5, 0.6, -0.3, 0.8, -0.1, -1.0, 0.1, -0.8, 0.3},
 		{0.2, -0.7, -0.5, -0.3, -0.1, 0.1, 0.3, 0.5, 0.9, -0.9, -0.7, -0.5, -0.3},
@@ -19,18 +18,16 @@ func main() {
 		{0.5, 0.6, 0.1, -0.2, -0.7, 0.8, 0.6, 0.1, -0.5, -0.7, 0.7, 0.3, 0.0},
 	}
 
-	// Define the header data for the heatmap
 	headerData := pterm.HeatmapAxis{
 		XAxis: []string{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m"},
 		YAxis: []string{"1", "2", "3", "4", "5"},
 	}
 
-	// Print an informational message
 	pterm.Info.Println("The following table has rgb (not supported by every terminal), axis data and a custom legend.")
 	pterm.Println()
 
-	// Create the heatmap with the defined data and options
-	// Options are chained in a single line for simplicity
+	// WithLegendLabel changes the legend title, and WithLegendOnlyColoredCells
+	// hides the numeric values in the legend, leaving just the color swatches.
 	pterm.DefaultHeatmap.
 		WithData(data).
 		WithBoxed(false).
@@ -38,6 +35,6 @@ func main() {
 		WithEnableRGB().
 		WithLegendLabel("custom").
 		WithLegendOnlyColoredCells().
-		Render() // Render the heatmap
+		Render()
 }
 ```

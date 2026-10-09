@@ -1,6 +1,6 @@
 # table/demo
 
-![Animation](https://vhs.charm.sh/vhs-2lXwGQ24qFiDxKRZrCBZ2Y.gif)
+![Animation](https://vhs.charm.sh/vhs-6GyT4ctanulsK2hMwSXivY.gif)
 
 ```go
 package main
@@ -8,7 +8,8 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Define the data for the first table
+	// With WithHasHeader the first row is styled as the header. The CJK
+	// characters are measured by display width, so the columns stay aligned.
 	tableData1 := pterm.TableData{
 		{"Firstname", "Lastname", "Email", "Note"},
 		{"Paul", "Dean", "augue@velitAliquam.co.uk", ""},
@@ -17,12 +18,11 @@ func main() {
 		{"张", "小宝", "zhang@example.com", ""},
 	}
 
-	// Create a table with a header and the defined data, then render it
 	pterm.DefaultTable.WithHasHeader().WithData(tableData1).Render()
 
-	pterm.Println() // Blank line
+	pterm.Println()
 
-	// Define the data for the second table
+	// Cells may contain newlines; a row grows to fit its tallest cell.
 	tableData2 := pterm.TableData{
 		{"Firstname", "Lastname", "Email"},
 		{"Paul\n\nNewline", "Dean", "augue@velitAliquam.co.uk"},
@@ -31,7 +31,6 @@ func main() {
 		{"张", "小宝", "zhang@example.com"},
 	}
 
-	// Create another table with a header and the defined data, then render it
 	pterm.DefaultTable.WithHasHeader().WithData(tableData2).Render()
 }
 ```

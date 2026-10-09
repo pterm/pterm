@@ -1,4 +1,4 @@
->
+
 
 
 
@@ -51,7 +51,7 @@
 
 
 ────────────────────────────────────────────────────────────────────────────────
->
+
 
 
 
@@ -104,7 +104,7 @@
 
 
 ────────────────────────────────────────────────────────────────────────────────
->
+
 
 
 
@@ -317,7 +317,7 @@
 
 ────────────────────────────────────────────────────────────────────────────────
 Please select your options 🔍 Start typing:
-> [✗] Option 0
+❯ [✗] Option 0
   [✗] Option 1
   [✗] Option 2
   [✗] Option 3
@@ -334,11 +334,11 @@ enter: select | tab: confirm | left: none | right: all | type to filter
 
 ────────────────────────────────────────────────────────────────────────────────
 Please select your options: fuzzy
-  > You can use fuzzy searching (0)
-  > You can use fuzzy searching (1)
-  > You can use fuzzy searching (2)
- INFO  Selected options: [You can use fuzzy searching (0) You can use fuzzy
- searching (1) You can use fuzzy searching (2)]
+  ❯ You can use fuzzy searching (0)
+  ❯ You can use fuzzy searching (1)
+  ❯ You can use fuzzy searching (2)
+  INFO    Selected options: [You can use fuzzy searching (0) You can use fu
+zzy searching (1) You can use fuzzy searching (2)]
 >
 
 
@@ -351,11 +351,11 @@ Please select your options: fuzzy
 
 ────────────────────────────────────────────────────────────────────────────────
 Please select your options: fuzzy
-  > You can use fuzzy searching (0)
-  > You can use fuzzy searching (1)
-  > You can use fuzzy searching (2)
- INFO  Selected options: [You can use fuzzy searching (0) You can use fuzzy
- searching (1) You can use fuzzy searching (2)]
+  ❯ You can use fuzzy searching (0)
+  ❯ You can use fuzzy searching (1)
+  ❯ You can use fuzzy searching (2)
+  INFO    Selected options: [You can use fuzzy searching (0) You can use fu
+zzy searching (1) You can use fuzzy searching (2)]
 >
 
 

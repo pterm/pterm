@@ -95,6 +95,26 @@ func TestGetStringMaxWidth(t *testing.T) {
 			expected: 0,
 		},
 		{
+			name:     "Wide runes count double",
+			input:    "日本語",
+			expected: 6,
+		},
+		{
+			name:     "Mixed narrow and wide runes",
+			input:    "Go言語",
+			expected: 6,
+		},
+		{
+			name:     "Longest of multiple lines wins",
+			input:    "a\nlongest line\nbb",
+			expected: 12,
+		},
+		{
+			name:     "Styled short line does not beat plain long line",
+			input:    "\x1b[31mab\x1b[0m\nabc",
+			expected: 3,
+		},
+		{
 			name:     "Hyperlink with ANSI color codes",
 			input:    "\x1b]8;;https://example.com\x1b\\\x1b[31mred link\x1b[0m\x1b]8;;\x1b\\",
 			expected: 8, // "red link" without color codes

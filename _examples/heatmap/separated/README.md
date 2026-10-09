@@ -1,6 +1,6 @@
 # heatmap/separated
 
-![Animation](https://vhs.charm.sh/vhs-45oSPWmnHW2mOeCo3hCccL.gif)
+![Animation](https://vhs.charm.sh/vhs-2Wr5jMuur70arKrVpHJ0TQ.gif)
 
 ```go
 package main
@@ -8,7 +8,6 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Define the data for the heatmap.
 	data := [][]float32{
 		{0.9, 0.2, -0.7, 0.4, -0.5, 0.6, -0.3, 0.8, -0.1, -1.0, 0.1, -0.8, 0.3},
 		{0.2, -0.7, -0.5, -0.3, -0.1, 0.1, 0.3, 0.5, 0.9, -0.9, -0.7, -0.5, -0.3},
@@ -17,13 +16,13 @@ func main() {
 		{0.5, 0.6, 0.1, -0.2, -0.7, 0.8, 0.6, 0.1, -0.5, -0.7, 0.7, 0.3, 0.0},
 	}
 
-	// Define the axis labels for the heatmap.
 	headerData := pterm.HeatmapAxis{
 		XAxis: []string{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m"},
 		YAxis: []string{"1", "2", "3", "4", "5"},
 	}
 
-	// Create the heatmap with the specified data and options, and render it.
+	// Without the surrounding box and legend, only the grid separators remain
+	// between the cells.
 	pterm.DefaultHeatmap.WithData(data).WithBoxed(false).WithAxisData(headerData).WithLegend(false).Render()
 }
 ```

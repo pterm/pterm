@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"log/slog"
+	"maps"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -14,30 +15,29 @@ import (
 	"github.com/pterm/pterm/internal"
 )
 
+// LogLevel is the severity level used by the Logger.
 type LogLevel int
 
-// Style returns the style of the log level.
+// Style returns the style of the log level, as configured in ThemeDefault.
 func (l LogLevel) Style() Style {
-	baseStyle := NewStyle(Bold)
-
 	switch l {
 	case LogLevelTrace:
-		return baseStyle.Add(*FgCyan.ToStyle())
+		return ThemeDefault.LoggerTraceStyle
 	case LogLevelDebug:
-		return baseStyle.Add(*FgBlue.ToStyle())
+		return ThemeDefault.LoggerDebugStyle
 	case LogLevelInfo:
-		return baseStyle.Add(*FgGreen.ToStyle())
+		return ThemeDefault.LoggerInfoStyle
 	case LogLevelWarn:
-		return baseStyle.Add(*FgYellow.ToStyle())
+		return ThemeDefault.LoggerWarnStyle
 	case LogLevelError:
-		return baseStyle.Add(*FgRed.ToStyle())
+		return ThemeDefault.LoggerErrorStyle
 	case LogLevelFatal:
-		return baseStyle.Add(*FgRed.ToStyle())
+		return ThemeDefault.LoggerFatalStyle
 	case LogLevelPrint:
-		return baseStyle.Add(*FgWhite.ToStyle())
+		return ThemeDefault.LoggerPrintStyle
 	}
 
-	return baseStyle.Add(*FgWhite.ToStyle())
+	return ThemeDefault.LoggerPrintStyle
 }
 
 func (l LogLevel) String() string {
@@ -111,6 +111,7 @@ var DefaultLogger = Logger{
 // loggerMutex syncs all loggers, so that they don't print at the exact same time.
 var loggerMutex sync.Mutex
 
+// Logger is a fully configurable, structured logger.
 type Logger struct {
 	// Formatter is the log formatter of the logger.
 	Formatter LogFormatter
@@ -130,6 +131,8 @@ type Logger struct {
 	KeyStyles map[string]Style
 	// MaxWidth defines the maximum width of the logger.
 	// If the text (including the arguments) is longer than the max width, it will be split into multiple lines.
+	// The width is always capped to the current terminal width.
+	// A value of zero or less uses the full terminal width.
 	MaxWidth int
 }
 
@@ -189,9 +192,7 @@ func (l Logger) WithMaxWidth(width int) *Logger {
 
 // AppendKeyStyles appends a style for a specific key.
 func (l Logger) AppendKeyStyles(styles map[string]Style) *Logger {
-	for k, v := range styles {
-		l.KeyStyles[k] = v
-	}
+	maps.Copy(l.KeyStyles, styles)
 
 	return &l
 }
@@ -233,7 +234,7 @@ func (l Logger) Args(args ...any) []LoggerArgument {
 
 // ArgsFromMap converts a map to a slice of LoggerArgument.
 func (l Logger) ArgsFromMap(m map[string]any) []LoggerArgument {
-	var loggerArgs []LoggerArgument
+	loggerArgs := make([]LoggerArgument, 0, len(m))
 
 	for k, v := range m {
 		loggerArgs = append(loggerArgs, LoggerArgument{
@@ -305,81 +306,162 @@ func (l Logger) print(level LogLevel, msg string, args []LoggerArgument) {
 	Fprintln(l.Writer, line)
 }
 
-func (l Logger) renderColorful(level LogLevel, msg string, args []LoggerArgument) (result string) {
+// loggerLevelWidth is the width the level name is padded to, so that the
+// messages of all levels start at the same column.
+const loggerLevelWidth = 5
+
+// loggerMinContentWidth is the narrowest the wrapped content is allowed to
+// get. In terminals too narrow to hold the prefix plus this width, lines
+// overflow instead of degrading into one word per line.
+const loggerMinContentWidth = 16
+
+// lineWidth returns the width a rendered log line may occupy: MaxWidth capped
+// to the current terminal width. A MaxWidth of zero or less means the full
+// terminal width may be used.
+func (l Logger) lineWidth() int {
+	width := l.MaxWidth
+
+	if terminalWidth := GetTerminalWidth(); terminalWidth > 0 && (width <= 0 || terminalWidth < width) {
+		width = terminalWidth
+	}
+
+	return width
+}
+
+// quoteValue wraps a value that contains spaces in dimmed quotes, so that
+// inline key=value pairs stay unambiguous.
+func (l Logger) quoteValue(value string) string {
+	stripped := internal.RemoveEscapeCodes(value)
+
+	if stripped == "" || (strings.Contains(stripped, " ") && !strings.Contains(stripped, "\n")) {
+		return Gray(`"`) + value + Gray(`"`)
+	}
+
+	return value
+}
+
+func (l Logger) renderColorful(level LogLevel, msg string, args []LoggerArgument) string {
+	var prefix string
+
 	if l.ShowTime {
-		result += Gray(time.Now().Format(l.TimeFormat)) + " "
+		prefix += ThemeDefault.LoggerTimestampStyle.Sprint(time.Now().Format(l.TimeFormat)) + " "
 	}
 
-	if GetTerminalWidth() > 0 && GetTerminalWidth() < l.MaxWidth {
-		l.MaxWidth = GetTerminalWidth()
-	}
-
-	var argumentsInNewLine bool
-
-	result += level.Style().Sprintf("%-5s", level.String()) + " "
-
-	// if msg is too long, wrap it to multiple lines with the same length
-	remainingWidth := l.MaxWidth - internal.GetStringMaxWidth(result)
-	if internal.GetStringMaxWidth(msg) > remainingWidth {
-		argumentsInNewLine = true
-		msg = DefaultParagraph.WithMaxWidth(remainingWidth).Sprint(msg)
-		padding := len(time.Now().Format(l.TimeFormat) + " ")
-		msg = strings.ReplaceAll(msg, "\n", "\n"+strings.Repeat(" ", padding)+"  │   ")
-	}
-
-	result += msg
+	prefix += level.Style().Sprintf("%-*s", loggerLevelWidth, level.String()) + " "
 
 	if l.ShowCaller {
 		path, line := l.getCallerInfo()
 		args = append(args, LoggerArgument{
 			Key:   "caller",
-			Value: FgGray.Sprintf("%s:%d", path, line),
+			Value: ThemeDefault.LoggerCallerStyle.Sprintf("%s:%d", path, line),
 		})
 	}
 
-	arguments := make([]string, len(args))
+	keys := make([]string, len(args))
+	values := make([]string, len(args))
 
-	// add arguments
-	if len(args) > 0 {
-		for i, arg := range args {
-			if style, ok := l.KeyStyles[arg.Key]; ok {
-				arguments[i] = style.Sprintf("%s: ", arg.Key)
-			} else {
-				arguments[i] = level.Style().Sprintf("%s: ", arg.Key)
-			}
+	// Keys take the level color; the FATAL background is too heavy to repeat
+	// on every key, so its keys fall back to plain red.
+	keyStyle := level.Style()
+	if level == LogLevelFatal {
+		keyStyle = ThemeDefault.LoggerFatalKeyStyle
+	}
 
-			arguments[i] += Sprintf("%s", Sprint(arg.Value))
+	var multilineValues bool
+
+	for i, arg := range args {
+		style, ok := l.KeyStyles[arg.Key]
+		if !ok {
+			style = keyStyle
+		}
+
+		keys[i] = style.Sprint(arg.Key) + Gray("=")
+		values[i] = Sprint(arg.Value)
+
+		if strings.Contains(values[i], "\n") {
+			multilineValues = true
 		}
 	}
 
-	fullLine := result + " " + strings.Join(arguments, " ")
+	width := l.lineWidth()
 
-	// if the full line is too long, wrap the arguments to multiple lines
-	if internal.GetStringMaxWidth(fullLine) > l.MaxWidth {
-		argumentsInNewLine = true
+	var inlineBuilder strings.Builder
+
+	inlineBuilder.WriteString(prefix)
+	inlineBuilder.WriteString(msg)
+
+	for i := range keys {
+		inlineBuilder.WriteString(" ")
+		inlineBuilder.WriteString(keys[i])
+		inlineBuilder.WriteString(l.quoteValue(values[i]))
 	}
 
-	if !argumentsInNewLine {
-		result = fullLine
-	} else {
-		padding := 4
-		if l.ShowTime {
-			padding = len(time.Time{}.Format(l.TimeFormat)) + 3
+	inline := inlineBuilder.String()
+
+	// Raw output always stays on a single line, so it remains grep-friendly
+	// when piped into files or other tools.
+	if rawOutput() {
+		return inline
+	}
+
+	if !multilineValues && !strings.Contains(msg, "\n") && (width <= 0 || internal.GetStringMaxWidth(inline) <= width) {
+		return inline
+	}
+
+	return l.renderBlock(prefix, msg, keys, values, width)
+}
+
+// renderBlock renders a log whose inline form would overflow the line width:
+// the message wraps under its own first line and every argument moves onto its
+// own line, connected by a dimmed tree rail. Wrapped and multiline argument
+// values align under the start of the value.
+func (l Logger) renderBlock(prefix, msg string, keys, values []string, width int) string {
+	prefixWidth := internal.GetStringMaxWidth(prefix)
+	indent := strings.Repeat(" ", prefixWidth)
+
+	contentWidth := 0
+	if width > 0 {
+		contentWidth = max(width-prefixWidth, loggerMinContentWidth)
+	}
+
+	var sb strings.Builder
+
+	sb.WriteString(prefix)
+
+	for i, line := range internal.WrapText(msg, contentWidth) {
+		if i > 0 {
+			sb.WriteString("\n" + indent)
 		}
 
-		for i, argument := range arguments {
-			var pipe string
-			if i < len(arguments)-1 {
-				pipe = "├"
-			} else {
-				pipe = "└"
-			}
+		sb.WriteString(line)
+	}
 
-			result += "\n" + strings.Repeat(" ", padding) + pipe + " " + argument
+	for i := range keys {
+		connector, rail := Gray("├ "), Gray("│ ")
+		if i == len(keys)-1 {
+			connector, rail = Gray("└ "), "  "
+		}
+
+		valueIndent := internal.GetStringMaxWidth(keys[i])
+		if contentWidth > 0 && valueIndent > contentWidth/2 {
+			valueIndent = 2
+		}
+
+		valueWidth := 0
+		if contentWidth > 0 {
+			valueWidth = contentWidth - 2 - valueIndent
+		}
+
+		valueLines := internal.WrapText(values[i], valueWidth)
+
+		sb.WriteString("\n" + indent + connector + keys[i] + valueLines[0])
+
+		for _, line := range valueLines[1:] {
+			sb.WriteString("\n" + indent + rail + strings.Repeat(" ", valueIndent) + line)
 		}
 	}
 
-	return
+	return sb.String()
 }
 
 func (l Logger) renderJSON(level LogLevel, msg string, args []LoggerArgument) string {
@@ -393,7 +475,10 @@ func (l Logger) renderJSON(level LogLevel, msg string, args []LoggerArgument) st
 		m["caller"] = Sprintf("%s:%d", file, line)
 	}
 
-	b, _ := json.Marshal(m)
+	b, err := json.Marshal(m)
+	if err != nil {
+		return Sprintf("%v", m)
+	}
 
 	return string(b)
 }

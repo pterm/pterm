@@ -1,151 +1,152 @@
 package pterm_test
 
 import (
-	"reflect"
+	"io"
 	"testing"
 
-	"atomicgo.dev/keyboard"
 	"atomicgo.dev/keyboard/keys"
-	"github.com/MarvinJWendt/testza"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/pterm/pterm"
 )
 
-func TestInteractiveConfirmPrinter_Show_yes(t *testing.T) {
-	go func() {
-		keyboard.SimulateKeyPress('y')
-	}()
+// showConfirm runs the given confirm prompt (which must terminate through the
+// key presses simulated beforehand) and returns its result together with
+// everything it printed.
+func showConfirm(t *testing.T, printer *pterm.InteractiveConfirmPrinter, text ...string) (result bool, output string) {
+	t.Helper()
 
-	result, _ := pterm.DefaultInteractiveConfirm.Show()
-	testza.AssertTrue(t, result)
+	var err error
+
+	output = captureStdout(func(_ io.Writer) {
+		result, err = showInteractive(t, func() (bool, error) {
+			return printer.Show(text...)
+		})
+	})
+
+	require.NoError(t, err)
+
+	return result, output
 }
 
-func TestInteractiveConfirmPrinter_Show_no(t *testing.T) {
-	go func() {
-		keyboard.SimulateKeyPress('n')
-	}()
+func TestInteractiveConfirmPrinter_AnswerKeys(t *testing.T) {
+	tests := []struct {
+		name     string
+		key      rune
+		expected bool
+		answer   string
+	}{
+		{name: "y confirms", key: 'y', expected: true, answer: "Yes"},
+		{name: "Y confirms case-insensitively", key: 'Y', expected: true, answer: "Yes"},
+		{name: "n rejects", key: 'n', expected: false, answer: "No"},
+		{name: "N rejects case-insensitively", key: 'N', expected: false, answer: "No"},
+	}
 
-	result, _ := pterm.DefaultInteractiveConfirm.Show()
-	testza.AssertFalse(t, result)
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			simulateKeys(t, tc.key)
+
+			result, output := showConfirm(t, &pterm.DefaultInteractiveConfirm)
+
+			assert.Equal(t, tc.expected, result)
+			assert.Contains(t, stripANSI(output), tc.answer, "the chosen answer must be echoed after the prompt")
+		})
+	}
 }
 
-func TestInteractiveConfirmPrinter_WithDefaultValue(t *testing.T) {
-	p := pterm.DefaultInteractiveConfirm.WithDefaultValue(true)
-	testza.AssertTrue(t, p.DefaultValue)
+func TestInteractiveConfirmPrinter_EnterReturnsDefaultValue(t *testing.T) {
+	tests := []struct {
+		name         string
+		defaultValue bool
+		answer       string
+	}{
+		{name: "default false", defaultValue: false, answer: "No"},
+		{name: "default true", defaultValue: true, answer: "Yes"},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			simulateKeys(t, keys.Enter)
+
+			result, output := showConfirm(t, pterm.DefaultInteractiveConfirm.WithDefaultValue(tc.defaultValue))
+
+			assert.Equal(t, tc.defaultValue, result)
+			assert.Contains(t, stripANSI(output), tc.answer, "pressing enter must echo the default answer")
+		})
+	}
 }
 
-func TestInteractiveConfirmPrinter_WithDefaultValue_false(t *testing.T) {
-	go func() {
-		keyboard.SimulateKeyPress(keys.Enter)
-	}()
+func TestInteractiveConfirmPrinter_PromptShowsDefaultInSuffix(t *testing.T) {
+	t.Run("default false uppercases n", func(t *testing.T) {
+		simulateKeys(t, keys.Enter)
 
-	p := pterm.DefaultInteractiveConfirm.WithDefaultValue(false)
-	result, _ := p.Show()
-	testza.AssertFalse(t, result)
+		_, output := showConfirm(t, pterm.DefaultInteractiveConfirm.WithDefaultValue(false), "Proceed with the deployment?")
+
+		assert.Contains(t, stripANSI(output), "Proceed with the deployment? [y/N]: ")
+	})
+
+	t.Run("default true uppercases y", func(t *testing.T) {
+		simulateKeys(t, keys.Enter)
+
+		_, output := showConfirm(t, pterm.DefaultInteractiveConfirm.WithDefaultValue(true), "Proceed with the deployment?")
+
+		assert.Contains(t, stripANSI(output), "Proceed with the deployment? [Y/n]: ")
+	})
 }
 
-func TestInteractiveConfirmPrinter_WithDefaultValue_true(t *testing.T) {
-	go func() {
-		keyboard.SimulateKeyPress(keys.Enter)
-	}()
+func TestInteractiveConfirmPrinter_CustomAnswerTexts(t *testing.T) {
+	printer := pterm.DefaultInteractiveConfirm.WithConfirmText("Absolutely").WithRejectText("Denied")
 
-	p := pterm.DefaultInteractiveConfirm.WithDefaultValue(true)
-	result, _ := p.Show()
-	testza.AssertTrue(t, result)
-}
+	t.Run("suffix is derived from the custom texts", func(t *testing.T) {
+		simulateKeys(t, keys.Enter)
 
-func TestInteractiveConfirmPrinter_WithConfirmStyle(t *testing.T) {
-	style := pterm.NewStyle(pterm.FgRed)
-	p := pterm.DefaultInteractiveConfirm.WithConfirmStyle(style)
-	testza.AssertEqual(t, p.ConfirmStyle, style)
-}
+		_, output := showConfirm(t, printer)
 
-func TestInteractiveConfirmPrinter_WithConfirmText(t *testing.T) {
-	p := pterm.DefaultInteractiveConfirm.WithConfirmText("confirm")
-	testza.AssertEqual(t, p.ConfirmText, "confirm")
-}
-
-func TestInteractiveConfirmPrinter_WithDefaultText(t *testing.T) {
-	p := pterm.DefaultInteractiveConfirm.WithDefaultText("default")
-	testza.AssertEqual(t, p.DefaultText, "default")
-}
-
-func TestInteractiveConfirmPrinter_WithDelimiter(t *testing.T) {
-	p := pterm.DefaultInteractiveConfirm.WithDelimiter(">>")
-	testza.AssertEqual(t, p.Delimiter, ">>")
-}
-
-func TestInteractiveConfirmPrinter_WithRejectStyle(t *testing.T) {
-	style := pterm.NewStyle(pterm.FgRed)
-	p := pterm.DefaultInteractiveConfirm.WithRejectStyle(style)
-	testza.AssertEqual(t, p.RejectStyle, style)
-}
-
-func TestInteractiveConfirmPrinter_WithRejectText(t *testing.T) {
-	p := pterm.DefaultInteractiveConfirm.WithRejectText("reject")
-	testza.AssertEqual(t, p.RejectText, "reject")
-}
-
-func TestInteractiveConfirmPrinter_CustomAnswers(t *testing.T) {
-	p := pterm.DefaultInteractiveConfirm.WithRejectText("reject").WithConfirmText("accept")
+		assert.Contains(t, stripANSI(output), "[a/D]", "the short handles must come from the custom answer texts")
+	})
 
 	tests := []struct {
 		name     string
 		key      rune
 		expected bool
+		answer   string
 	}{
-		{
-			name:     "Accept_upper_case",
-			key:      'A',
-			expected: true,
-		},
-		{
-			name:     "Accept_lower",
-			key:      'a',
-			expected: true,
-		},
-		{
-			name:     "Reject_upper_case",
-			key:      'R',
-			expected: false,
-		},
-		{
-			name:     "Reject_lower_case",
-			key:      'r',
-			expected: false,
-		},
+		{name: "custom confirm lower", key: 'a', expected: true, answer: "Absolutely"},
+		{name: "custom confirm upper", key: 'A', expected: true, answer: "Absolutely"},
+		{name: "custom reject lower", key: 'd', expected: false, answer: "Denied"},
+		{name: "custom reject upper", key: 'D', expected: false, answer: "Denied"},
 	}
+
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			go func() {
-				keyboard.SimulateKeyPress(tc.key)
-			}()
+			simulateKeys(t, tc.key)
 
-			result, _ := p.Show()
-			testza.AssertEqual(t, result, tc.expected)
+			result, output := showConfirm(t, printer)
+
+			assert.Equal(t, tc.expected, result)
+			assert.Contains(t, stripANSI(output), tc.answer)
 		})
 	}
 }
 
-func TestInteractiveConfirmPrinter_WithSuffixStyle(t *testing.T) {
-	style := pterm.NewStyle(pterm.FgRed)
-	p := pterm.DefaultInteractiveConfirm.WithSuffixStyle(style)
-	testza.AssertEqual(t, p.SuffixStyle, style)
+func TestInteractiveConfirmPrinter_IgnoresUnrelatedKeys(t *testing.T) {
+	simulateKeys(t, 'x', '1', keys.Down, 'y')
+
+	result, output := showConfirm(t, &pterm.DefaultInteractiveConfirm)
+
+	assert.True(t, result, "unrelated keys must be ignored until a valid answer is pressed")
+	assert.Contains(t, stripANSI(output), "Yes")
 }
 
-func TestInteractiveConfirmPrinter_WithTextStyle(t *testing.T) {
-	style := pterm.NewStyle(pterm.FgRed)
-	p := pterm.DefaultInteractiveConfirm.WithTextStyle(style)
-	testza.AssertEqual(t, p.TextStyle, style)
-}
+func TestInteractiveConfirmPrinter_InterruptCallsOnInterruptFunc(t *testing.T) {
+	interrupted := false
+	printer := pterm.DefaultInteractiveConfirm.WithOnInterruptFunc(func() { interrupted = true })
 
-func TestInteractiveConfirmPrinter_WithOnInterruptFunc(t *testing.T) {
-	// OnInterrupt function defaults to nil
-	pd := pterm.InteractiveConfirmPrinter{}
-	testza.AssertNil(t, pd.OnInterruptFunc)
+	simulateKeys(t, keys.CtrlC)
 
-	// Verify OnInterrupt is set
-	exitfunc := func() {}
-	p := pterm.DefaultInteractiveConfirm.WithOnInterruptFunc(exitfunc)
-	testza.AssertEqual(t, reflect.ValueOf(p.OnInterruptFunc).Pointer(), reflect.ValueOf(exitfunc).Pointer())
+	result, _ := showConfirm(t, printer)
+
+	assert.True(t, interrupted, "Ctrl+C must invoke the OnInterruptFunc")
+	assert.False(t, result, "an interrupted prompt must not confirm")
 }

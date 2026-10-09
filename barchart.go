@@ -91,343 +91,364 @@ func (p BarChartPrinter) WithWriter(writer io.Writer) *BarChartPrinter {
 }
 
 func (p BarChartPrinter) getRawOutput() string {
-	var ret string
+	var ret strings.Builder
 
 	for _, bar := range p.Bars {
-		ret += Sprintfln("%s: %d", bar.Label, bar.Value)
+		ret.WriteString(Sprintfln("%s: %d", bar.Label, bar.Value))
 	}
 
-	return ret
+	return ret.String()
+}
+
+// barRenderParams carries the geometry of a single bar while it is rendered.
+type barRenderParams struct {
+	// repeatCount is how many bar characters the bar's value maps to; it is
+	// negative for negative values.
+	repeatCount int
+	bar         Bar
+	// positive/negative chart part sizes: how many cells the chart reserves
+	// for values above respectively below zero.
+	positiveChartPartHeight int
+	negativeChartPartHeight int
+	positiveChartPartWidth  int
+	negativeChartPartWidth  int
+	// indent horizontally centers a vertical bar under its label.
+	indent    string
+	showValue bool
+	// moveUp/moveRight shift a positive bar past the chart part reserved for
+	// negative values, so both parts share one axis.
+	moveUp    bool
+	moveRight bool
+}
+
+// renderPositiveVerticalBar renders one bar of a vertical chart growing up
+// from the zero line, one line per height cell, topmost line first.
+func (p BarChartPrinter) renderPositiveVerticalBar(out *strings.Builder, rp barRenderParams) {
+	if rp.showValue {
+		out.WriteString(Sprint(rp.indent + strconv.Itoa(rp.bar.Value) + rp.indent + "\n"))
+	}
+
+	for i := rp.positiveChartPartHeight; i > 0; i-- {
+		if i > rp.repeatCount {
+			out.WriteString(rp.indent + "  " + rp.indent + " \n")
+		} else {
+			out.WriteString(rp.indent + rp.bar.Style.Sprint(p.VerticalBarCharacter) + rp.indent + " \n")
+		}
+	}
+
+	// Used when we draw a chart with both POSITIVE and NEGATIVE values.
+	// In that case we separately draw the top and bottom half of the chart,
+	// and the positive part has to be MOVED UP past the chart's bottom part
+	// by adding empty pillars of the bottom part's height.
+	if rp.moveUp {
+		for i := 0; i <= rp.negativeChartPartHeight; i++ {
+			out.WriteString(rp.indent + "  " + rp.indent + " \n")
+		}
+	}
+}
+
+// renderNegativeVerticalBar renders one bar of a vertical chart growing down
+// from the zero line.
+func (p BarChartPrinter) renderNegativeVerticalBar(out *strings.Builder, rp barRenderParams) {
+	for i := 0; i > -rp.negativeChartPartHeight; i-- {
+		if i > rp.repeatCount {
+			out.WriteString(rp.indent + rp.bar.Style.Sprint(p.VerticalBarCharacter) + rp.indent + " \n")
+		} else {
+			out.WriteString(rp.indent + "  " + rp.indent + " \n")
+		}
+	}
+
+	if rp.showValue {
+		out.WriteString(Sprint(rp.indent + strconv.Itoa(rp.bar.Value) + rp.indent + "\n"))
+	}
+}
+
+// renderPositiveHorizontalBar renders one bar of a horizontal chart growing
+// right from the zero line.
+func (p BarChartPrinter) renderPositiveHorizontalBar(out *strings.Builder, rp barRenderParams) {
+	if rp.moveRight {
+		out.WriteString(strings.Repeat(" ", rp.negativeChartPartWidth))
+	}
+
+	for i := 0; i < rp.positiveChartPartWidth; i++ {
+		if i < rp.repeatCount {
+			out.WriteString(rp.bar.Style.Sprint(p.HorizontalBarCharacter))
+		} else {
+			out.WriteString(" ")
+		}
+	}
+
+	if rp.showValue {
+		// For positive horizontal bars we add one more space before adding the
+		// value, so they align with negative values, which carry a "-" sign.
+		out.WriteString(" ")
+		out.WriteString(" " + strconv.Itoa(rp.bar.Value))
+	}
+}
+
+// renderNegativeHorizontalBar renders one bar of a horizontal chart growing
+// left from the zero line.
+func (p BarChartPrinter) renderNegativeHorizontalBar(out *strings.Builder, rp barRenderParams) {
+	for i := -rp.negativeChartPartWidth; i < 0; i++ {
+		if i < rp.repeatCount {
+			out.WriteString(" ")
+		} else {
+			out.WriteString(rp.bar.Style.Sprint(p.HorizontalBarCharacter))
+		}
+	}
+
+	// To print the values well-aligned when the chart has both a positive and
+	// a negative part, insert an indent as wide as the positive chart part.
+	if rp.positiveChartPartWidth > 0 {
+		out.WriteString(strings.Repeat(" ", rp.positiveChartPartWidth))
+	}
+
+	if rp.showValue {
+		// A zero value is rendered by this negative renderer without a "-"
+		// sign, so pad it with the space the sign would occupy to keep the
+		// values column aligned.
+		if rp.repeatCount == 0 {
+			out.WriteString(" ")
+		}
+
+		out.WriteString(" " + strconv.Itoa(rp.bar.Value))
+	}
 }
 
 // Srender renders the BarChart as a string.
 func (p BarChartPrinter) Srender() (string, error) {
-	maxAbsValue := func(value1 int, value2 int) int {
-		min := value1
-		max := value2
-
-		if value1 > value2 {
-			min = value2
-			max = value1
-		}
-
-		maxAbs := max
-
-		if min < 0 && -min > max { // This is to avoid something like "int(math.Abs(float64(minBarValue)))"
-			maxAbs = -min // (--) == (+)
-		}
-
-		return maxAbs
-	}
-
-	abs := func(value int) int {
-		if value < 0 {
-			return -value
-		}
-
-		return value
-	}
-	// =================================== VERTICAL BARS RENDERER ======================================================
-
-	type renderParams struct {
-		repeatCount             int
-		bar                     Bar
-		positiveChartPartHeight int
-		negativeChartPartHeight int
-		positiveChartPartWidth  int
-		negativeChartPartWidth  int
-		indent                  string
-		showValue               bool
-		moveUp                  bool
-		moveRight               bool
-	}
-
-	renderPositiveVerticalBar := func(renderedBarRef *string, rParams renderParams) {
-		if rParams.showValue {
-			*renderedBarRef += Sprint(rParams.indent + strconv.Itoa(rParams.bar.Value) + rParams.indent + "\n")
-		}
-
-		for i := rParams.positiveChartPartHeight; i > 0; i-- {
-			if i > rParams.repeatCount {
-				*renderedBarRef += rParams.indent + "  " + rParams.indent + " \n"
-			} else {
-				*renderedBarRef += rParams.indent + rParams.bar.Style.Sprint(p.VerticalBarCharacter) + rParams.indent + " \n"
-			}
-		}
-
-		// Used when we draw diagram with both POSITIVE and NEGATIVE values.
-		// In such case we separately draw top and bottom half of chart.
-		// And we need MOVE UP positive part to top part of chart,
-		// technically by adding empty pillars with height == height of chart's bottom part.
-		if rParams.moveUp {
-			for i := 0; i <= rParams.negativeChartPartHeight; i++ {
-				*renderedBarRef += rParams.indent + "  " + rParams.indent + " \n"
-			}
-		}
-	}
-
-	renderNegativeVerticalBar := func(renderedBarRef *string, rParams renderParams) {
-		for i := 0; i > -rParams.negativeChartPartHeight; i-- {
-			if i > rParams.repeatCount {
-				*renderedBarRef += rParams.indent + rParams.bar.Style.Sprint(p.VerticalBarCharacter) + rParams.indent + " \n"
-			} else {
-				*renderedBarRef += rParams.indent + "  " + rParams.indent + " \n"
-			}
-		}
-
-		if rParams.showValue {
-			*renderedBarRef += Sprint(rParams.indent + strconv.Itoa(rParams.bar.Value) + rParams.indent + "\n")
-		}
-	}
-
-	// =================================== HORIZONTAL BARS RENDERER ====================================================
-	renderPositiveHorizontalBar := func(renderedBarRef *string, rParams renderParams) {
-		if rParams.moveRight {
-			for i := 0; i < rParams.negativeChartPartWidth; i++ {
-				*renderedBarRef += " "
-			}
-		}
-
-		for i := 0; i < rParams.positiveChartPartWidth; i++ {
-			if i < rParams.repeatCount {
-				*renderedBarRef += rParams.bar.Style.Sprint(p.HorizontalBarCharacter)
-			} else {
-				*renderedBarRef += " "
-			}
-		}
-
-		if rParams.showValue {
-			// For positive horizontal bars we add one more space before adding value,
-			// so they will be well aligned with negative values, which have "-" sign before them
-			*renderedBarRef += " "
-
-			*renderedBarRef += " " + strconv.Itoa(rParams.bar.Value)
-		}
-	}
-
-	renderNegativeHorizontalBar := func(renderedBarRef *string, rParams renderParams) {
-		for i := -rParams.negativeChartPartWidth; i < 0; i++ {
-			if i < rParams.repeatCount {
-				*renderedBarRef += " "
-			} else {
-				*renderedBarRef += rParams.bar.Style.Sprint(p.HorizontalBarCharacter)
-			}
-		}
-
-		// In order to print values well-aligned (in case when we have both - positive and negative part of chart),
-		// we should insert an indent with width == width of positive chart part
-		if rParams.positiveChartPartWidth > 0 {
-			for i := 0; i < rParams.positiveChartPartWidth; i++ {
-				*renderedBarRef += " "
-			}
-		}
-
-		if rParams.showValue {
-			/*
-				This is in order to achieve this effect:
-				 0
-				-15
-				 0
-				-19
-
-				INSTEAD OF THIS:
-
-				0
-				-15
-				0
-				-19
-			*/
-			if rParams.repeatCount == 0 {
-				*renderedBarRef += " "
-			}
-
-			*renderedBarRef += " " + strconv.Itoa(rParams.bar.Value)
-		}
-	}
-	// =================================================================================================================
-
-	if RawOutput {
+	if rawOutput() {
 		return p.getRawOutput(), nil
 	}
 
-	for i, bar := range p.Bars {
+	p.Bars = p.themedBars()
+
+	minBarValue, maxBarValue, maxLabelHeight := p.barStats()
+	maxAbsBarValue := max(intAbs(minBarValue), intAbs(maxBarValue))
+
+	if p.Horizontal {
+		return p.srenderHorizontal(minBarValue, maxBarValue, maxAbsBarValue)
+	}
+
+	return p.srenderVertical(minBarValue, maxBarValue, maxAbsBarValue, maxLabelHeight), nil
+}
+
+// themedBars returns a copy of the configured bars with nil styles replaced
+// by the theme defaults and labels pre-rendered with their label style.
+// Rendering must not mutate the caller's Bars slice.
+func (p BarChartPrinter) themedBars() Bars {
+	bars := make(Bars, len(p.Bars))
+	copy(bars, p.Bars)
+
+	for i, bar := range bars {
 		if bar.Style == nil {
-			p.Bars[i].Style = &ThemeDefault.BarStyle
+			bars[i].Style = &ThemeDefault.BarStyle
 		}
 
 		if bar.LabelStyle == nil {
-			p.Bars[i].LabelStyle = &ThemeDefault.BarLabelStyle
+			bars[i].LabelStyle = &ThemeDefault.BarLabelStyle
 		}
 
-		p.Bars[i].Label = p.Bars[i].LabelStyle.Sprint(bar.Label)
+		bars[i].Label = bars[i].LabelStyle.Sprint(bar.Label)
+	}
+
+	return bars
+}
+
+// barStats returns the smallest and largest bar value (both clamped to
+// include zero, the chart's baseline) and the line count of the tallest
+// label.
+func (p BarChartPrinter) barStats() (minValue, maxValue, maxLabelHeight int) {
+	for _, bar := range p.Bars {
+		minValue = min(minValue, bar.Value)
+		maxValue = max(maxValue, bar.Value)
+		maxLabelHeight = max(maxLabelHeight, len(strings.Split(bar.Label, "\n")))
+	}
+
+	return minValue, maxValue, maxLabelHeight
+}
+
+// srenderHorizontal renders the bars as a two-column panel: labels on the
+// left, one bar per line on the right.
+func (p BarChartPrinter) srenderHorizontal(minBarValue, maxBarValue, maxAbsBarValue int) (string, error) {
+	var labels, bars strings.Builder
+
+	rp := barRenderParams{
+		showValue:              p.ShowValue,
+		positiveChartPartWidth: p.Width,
+		negativeChartPartWidth: p.Width,
+	}
+
+	// If the chart consists of a positive and a negative part, both parts
+	// share the total width proportionally to the value range.
+	if minBarValue < 0 && maxBarValue > 0 {
+		rp.positiveChartPartWidth = intAbs(internal.MapRangeToRange(-float32(maxAbsBarValue), float32(maxAbsBarValue), -float32(p.Width)/2, float32(p.Width)/2, float32(maxBarValue)))
+		rp.negativeChartPartWidth = intAbs(internal.MapRangeToRange(-float32(maxAbsBarValue), float32(maxAbsBarValue), -float32(p.Width)/2, float32(p.Width)/2, float32(minBarValue)))
+	}
+
+	for _, bar := range p.Bars {
+		rp.bar = bar
+
+		labels.WriteString("\n")
+		labels.WriteString(bar.Label)
+		bars.WriteString("\n")
+
+		switch {
+		case minBarValue >= 0:
+			// Only positive values: draw only the right part of the chart.
+			rp.repeatCount = internal.MapRangeToRange(0, float32(maxAbsBarValue), 0, float32(p.Width), float32(bar.Value))
+			rp.moveRight = false
+
+			p.renderPositiveHorizontalBar(&bars, rp)
+
+		case maxBarValue <= 0:
+			// Only negative values: draw only the left part of the chart.
+			rp.repeatCount = internal.MapRangeToRange(-float32(maxAbsBarValue), 0, -float32(p.Width), 0, float32(bar.Value))
+			rp.positiveChartPartWidth = 0
+
+			p.renderNegativeHorizontalBar(&bars, rp)
+
+		default:
+			// Both positive and negative values: draw both parts.
+			rp.repeatCount = internal.MapRangeToRange(-float32(maxAbsBarValue), float32(maxAbsBarValue), -float32(p.Width)/2, float32(p.Width)/2, float32(bar.Value))
+
+			if bar.Value >= 0 {
+				rp.moveRight = true
+
+				p.renderPositiveHorizontalBar(&bars, rp)
+			} else {
+				p.renderNegativeHorizontalBar(&bars, rp)
+			}
+		}
+	}
+
+	panels := Panels{[]Panel{{Data: labels.String()}, {Data: bars.String()}}}
+
+	return DefaultPanel.WithPanels(panels).Srender()
+}
+
+// srenderVertical renders each bar as a column of lines, then assembles the
+// columns side by side, bottom-aligned, with the labels underneath.
+func (p BarChartPrinter) srenderVertical(minBarValue, maxBarValue, maxAbsBarValue, maxLabelHeight int) string {
+	rp := barRenderParams{
+		showValue:               p.ShowValue,
+		positiveChartPartHeight: p.Height,
+		negativeChartPartHeight: p.Height,
+	}
+
+	// If the chart consists of a positive and a negative part, both parts
+	// share the total height proportionally to the value range.
+	if minBarValue < 0 && maxBarValue > 0 {
+		rp.positiveChartPartHeight = intAbs(internal.MapRangeToRange(-float32(maxAbsBarValue), float32(maxAbsBarValue), -float32(p.Height)/2, float32(p.Height)/2, float32(maxBarValue)))
+		rp.negativeChartPartHeight = intAbs(internal.MapRangeToRange(-float32(maxAbsBarValue), float32(maxAbsBarValue), -float32(p.Height)/2, float32(p.Height)/2, float32(minBarValue)))
+	}
+
+	renderedBars := make([]string, len(p.Bars))
+
+	for i, bar := range p.Bars {
+		var renderedBar strings.Builder
+
+		rp.bar = bar
+		rp.indent = strings.Repeat(" ", internal.GetStringMaxWidth(RemoveColorFromString(bar.Label))/2)
+
+		switch {
+		case minBarValue >= 0:
+			// Only positive values: draw only the top part of the chart.
+			rp.repeatCount = internal.MapRangeToRange(0, float32(maxAbsBarValue), 0, float32(p.Height), float32(bar.Value))
+			rp.moveUp = false
+
+			p.renderPositiveVerticalBar(&renderedBar, rp)
+
+		case maxBarValue <= 0:
+			// Only negative values: draw only the bottom part of the chart.
+			rp.repeatCount = internal.MapRangeToRange(-float32(maxAbsBarValue), 0, -float32(p.Height), 0, float32(bar.Value))
+
+			p.renderNegativeVerticalBar(&renderedBar, rp)
+
+		default:
+			// Both positive and negative values: draw both parts.
+			rp.repeatCount = internal.MapRangeToRange(-float32(maxAbsBarValue), float32(maxAbsBarValue), -float32(p.Height)/2, float32(p.Height)/2, float32(bar.Value))
+
+			if bar.Value >= 0 {
+				rp.moveUp = true
+
+				p.renderPositiveVerticalBar(&renderedBar, rp)
+			} else {
+				p.renderNegativeVerticalBar(&renderedBar, rp)
+			}
+		}
+
+		labelHeight := len(strings.Split(bar.Label, "\n"))
+		renderedBars[i] = renderedBar.String() + bar.Label + strings.Repeat("\n", maxLabelHeight-labelHeight) + " "
+	}
+
+	return joinBarColumns(renderedBars)
+}
+
+// joinBarColumns places the rendered bar columns side by side: each column is
+// bottom-aligned by prepending blank lines up to the tallest column, and each
+// line is padded to its column's width.
+func joinBarColumns(renderedBars []string) string {
+	var maxBarHeight int
+
+	for _, bar := range renderedBars {
+		maxBarHeight = max(maxBarHeight, len(strings.Split(bar, "\n")))
+	}
+
+	for i, bar := range renderedBars {
+		totalBarHeight := len(strings.Split(bar, "\n"))
+		if totalBarHeight < maxBarHeight {
+			renderedBars[i] = strings.Repeat("\n", maxBarHeight-totalBarHeight) + renderedBars[i]
+		}
+	}
+
+	barLines := make([][]string, len(renderedBars))
+	barWidths := make([]int, len(renderedBars))
+
+	for i, bar := range renderedBars {
+		barLines[i] = strings.Split(bar, "\n")
+		barWidths[i] = internal.GetStringMaxWidth(RemoveColorFromString(bar))
 	}
 
 	var ret strings.Builder
 
-	var maxLabelHeight int
-	var maxBarValue int
-	var minBarValue int
-	var maxAbsBarValue int
-	var rParams renderParams
+	for line := 0; line <= maxBarHeight; line++ {
+		for i := range renderedBars {
+			var barLine string
+			if line < len(barLines[i]) {
+				barLine = barLines[i][line]
+			}
 
-	for _, bar := range p.Bars {
-		if bar.Value > maxBarValue {
-			maxBarValue = bar.Value
+			lineWidth := runewidth.StringWidth(RemoveColorFromString(barLine))
+			if lineWidth < barWidths[i] {
+				barLine += strings.Repeat(" ", barWidths[i]-lineWidth)
+			}
+
+			ret.WriteString(barLine)
 		}
 
-		if bar.Value < minBarValue {
-			minBarValue = bar.Value
-		}
-
-		labelHeight := len(strings.Split(bar.Label, "\n"))
-		if labelHeight > maxLabelHeight {
-			maxLabelHeight = labelHeight
-		}
+		ret.WriteByte('\n')
 	}
 
-	maxAbsBarValue = maxAbsValue(maxBarValue, minBarValue)
+	return ret.String()
+}
 
-	if p.Horizontal {
-		panels := Panels{[]Panel{{}, {}}}
-
-		rParams.showValue = p.ShowValue
-		rParams.positiveChartPartWidth = p.Width
-		rParams.negativeChartPartWidth = p.Width
-
-		// If chart will consist of two parts - positive and negative - we should recalculate max bars WIDTH in LEFT and RIGHT parts
-		if minBarValue < 0 && maxBarValue > 0 {
-			rParams.positiveChartPartWidth = abs(internal.MapRangeToRange(-float32(maxAbsBarValue), float32(maxAbsBarValue), -float32(p.Width)/2, float32(p.Width)/2, float32(maxBarValue)))
-			rParams.negativeChartPartWidth = abs(internal.MapRangeToRange(-float32(maxAbsBarValue), float32(maxAbsBarValue), -float32(p.Width)/2, float32(p.Width)/2, float32(minBarValue)))
-		}
-
-		for _, bar := range p.Bars {
-			rParams.bar = bar
-			panels[0][0].Data += "\n" + bar.Label
-			panels[0][1].Data += "\n"
-
-			if minBarValue >= 0 {
-				// As we don't have negative values, draw only positive (right) part of the chart:
-				rParams.repeatCount = internal.MapRangeToRange(0, float32(maxAbsBarValue), 0, float32(p.Width), float32(bar.Value))
-				rParams.moveRight = false
-
-				renderPositiveHorizontalBar(&panels[0][1].Data, rParams)
-			} else if maxBarValue <= 0 {
-				// As we have only negative values, draw only negative (left) part of the chart:
-				rParams.repeatCount = internal.MapRangeToRange(-float32(maxAbsBarValue), 0, -float32(p.Width), 0, float32(bar.Value))
-				rParams.positiveChartPartWidth = 0
-
-				renderNegativeHorizontalBar(&panels[0][1].Data, rParams)
-			} else {
-				// We have positive and negative values, so draw both (left+right) parts of the chart:
-				rParams.repeatCount = internal.MapRangeToRange(-float32(maxAbsBarValue), float32(maxAbsBarValue), -float32(p.Width)/2, float32(p.Width)/2, float32(bar.Value))
-
-				if bar.Value >= 0 {
-					rParams.moveRight = true
-
-					renderPositiveHorizontalBar(&panels[0][1].Data, rParams)
-				}
-
-				if bar.Value < 0 {
-					renderNegativeHorizontalBar(&panels[0][1].Data, rParams)
-				}
-			}
-		}
-
-		result, _ := DefaultPanel.WithPanels(panels).Srender()
-
-		return result, nil
-	} else {
-		renderedBars := make([]string, len(p.Bars))
-
-		rParams.showValue = p.ShowValue
-		rParams.positiveChartPartHeight = p.Height
-		rParams.negativeChartPartHeight = p.Height
-
-		// If chart will consist of two parts - positive and negative - we should recalculate max bars height in top and bottom parts
-		if minBarValue < 0 && maxBarValue > 0 {
-			rParams.positiveChartPartHeight = abs(internal.MapRangeToRange(-float32(maxAbsBarValue), float32(maxAbsBarValue), -float32(p.Height)/2, float32(p.Height)/2, float32(maxBarValue)))
-			rParams.negativeChartPartHeight = abs(internal.MapRangeToRange(-float32(maxAbsBarValue), float32(maxAbsBarValue), -float32(p.Height)/2, float32(p.Height)/2, float32(minBarValue)))
-		}
-
-		for i, bar := range p.Bars {
-			var renderedBar string
-			rParams.bar = bar
-			rParams.indent = strings.Repeat(" ", internal.GetStringMaxWidth(RemoveColorFromString(bar.Label))/2)
-
-			if minBarValue >= 0 {
-				// As we don't have negative values, draw only positive (top) part of the chart:
-				rParams.repeatCount = internal.MapRangeToRange(0, float32(maxAbsBarValue), 0, float32(p.Height), float32(bar.Value))
-				rParams.moveUp = false // Don't MOVE UP as we have ONLY positive part of chart.
-
-				renderPositiveVerticalBar(&renderedBar, rParams)
-			} else if maxBarValue <= 0 {
-				// As we have only negative values, draw only negative (bottom) part of the chart:
-				rParams.repeatCount = internal.MapRangeToRange(-float32(maxAbsBarValue), 0, -float32(p.Height), 0, float32(bar.Value))
-
-				renderNegativeVerticalBar(&renderedBar, rParams)
-			} else {
-				// We have positive and negative values, so draw both (top+bottom) parts of the chart:
-				rParams.repeatCount = internal.MapRangeToRange(-float32(maxAbsBarValue), float32(maxAbsBarValue), -float32(p.Height)/2, float32(p.Height)/2, float32(bar.Value))
-
-				if bar.Value >= 0 {
-					rParams.moveUp = true // MOVE UP positive part, because we have both positive and negative parts of chart.
-
-					renderPositiveVerticalBar(&renderedBar, rParams)
-				}
-
-				if bar.Value < 0 {
-					renderNegativeVerticalBar(&renderedBar, rParams)
-				}
-			}
-
-			labelHeight := len(strings.Split(bar.Label, "\n"))
-			renderedBars[i] = renderedBar + bar.Label + strings.Repeat("\n", maxLabelHeight-labelHeight) + " "
-		}
-
-		var maxBarHeight int
-
-		for _, bar := range renderedBars {
-			totalBarHeight := len(strings.Split(bar, "\n"))
-			if totalBarHeight > maxBarHeight {
-				maxBarHeight = totalBarHeight
-			}
-		}
-
-		for i, bar := range renderedBars {
-			totalBarHeight := len(strings.Split(bar, "\n"))
-			if totalBarHeight < maxBarHeight {
-				renderedBars[i] = strings.Repeat("\n", maxBarHeight-totalBarHeight) + renderedBars[i]
-			}
-		}
-
-		for i := 0; i <= maxBarHeight; i++ {
-			for _, barString := range renderedBars {
-				var barLine string
-				letterLines := strings.Split(barString, "\n")
-				maxBarWidth := internal.GetStringMaxWidth(RemoveColorFromString(barString))
-
-				if len(letterLines) > i {
-					barLine = letterLines[i]
-				}
-
-				letterLineLength := runewidth.StringWidth(RemoveColorFromString(barLine))
-				if letterLineLength < maxBarWidth {
-					barLine += strings.Repeat(" ", maxBarWidth-letterLineLength)
-				}
-
-				ret.WriteString(barLine)
-			}
-
-			ret.WriteByte('\n')
-		}
+// intAbs returns the absolute value of an int.
+func intAbs(value int) int {
+	if value < 0 {
+		return -value
 	}
 
-	return ret.String(), nil
+	return value
 }
 
 // Render prints the Template to the terminal.
 func (p BarChartPrinter) Render() error {
-	s, _ := p.Srender()
+	s, err := p.Srender()
+	if err != nil {
+		return err
+	}
+
 	Fprintln(p.Writer, s)
 
 	return nil

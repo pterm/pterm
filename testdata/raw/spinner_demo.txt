@@ -1,57 +1,4 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-────────────────────────────────────────────────────────────────────────────────
-
+>
 
 
 
@@ -104,7 +51,60 @@
 
 
 ────────────────────────────────────────────────────────────────────────────────
+>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
 
 
 
@@ -316,7 +316,7 @@
 
 
 ────────────────────────────────────────────────────────────────────────────────
-▀  Some informational action... (0s)
+⠋ Some informational action... (0s)
 
 
 
@@ -333,11 +333,11 @@
 
 
 ────────────────────────────────────────────────────────────────────────────────
- INFO  Some informational action...
+  INFO    Some informational action...
  SUCCESS  Doing something important... (will succeed)
  WARNING  Doing something important... (will warn)
   ERROR   Doing something important... (will fail)
-  NOCHG   No change were required
+  NOCHG   No changes were required
  SUCCESS  Finally!
 >
 
@@ -350,11 +350,11 @@
 
 
 ────────────────────────────────────────────────────────────────────────────────
- INFO  Some informational action...
+  INFO    Some informational action...
  SUCCESS  Doing something important... (will succeed)
  WARNING  Doing something important... (will warn)
   ERROR   Doing something important... (will fail)
-  NOCHG   No change were required
+  NOCHG   No changes were required
  SUCCESS  Finally!
 >
 

@@ -10,15 +10,18 @@ import (
 	"github.com/pterm/pterm/internal"
 )
 
+// rgbLegendSteps is the number of cells the legend fades through in RGB mode.
+const rgbLegendSteps = 10
+
 // DefaultHeatmap contains standards, which can be used to print a HeatmapPrinter.
 var DefaultHeatmap = HeatmapPrinter{
 	AxisStyle:                  &ThemeDefault.HeatmapHeaderStyle,
 	SeparatorStyle:             &ThemeDefault.HeatmapSeparatorStyle,
 	VerticalSeparator:          "│",
-	TopRightCornerSeparator:    "└",
-	TopLeftCornerSeparator:     "┘",
-	BottomLeftCornerSeparator:  "┐",
-	BottomRightCornerSeparator: "┌",
+	TopRightCornerSeparator:    "╰",
+	TopLeftCornerSeparator:     "╯",
+	BottomLeftCornerSeparator:  "╮",
+	BottomRightCornerSeparator: "╭",
 	HorizontalSeparator:        "─",
 	TSeparator:                 "┬",
 	TReverseSeparator:          "┴",
@@ -29,10 +32,10 @@ var DefaultHeatmap = HeatmapPrinter{
 	Boxed:                      true,
 	Grid:                       true,
 	Legend:                     true,
-	TextRGB:                    RGB{0, 0, 0, false},
-	RGBRange:                   []RGB{{R: 255, G: 0, B: 0, Background: true}, {R: 255, G: 165, B: 0, Background: true}, {R: 0, G: 255, B: 0, Background: true}},
-	TextColor:                  FgBlack,
-	Colors:                     []Color{BgRed, BgLightRed, BgYellow, BgLightYellow, BgLightGreen, BgGreen},
+	TextRGB:                    ThemeDefault.HeatmapTextRGB,
+	RGBRange:                   ThemeDefault.HeatmapRGBRange,
+	TextColor:                  ThemeDefault.HeatmapTextColor,
+	Colors:                     ThemeDefault.HeatmapColors,
 
 	EnableRGB: false,
 }
@@ -40,6 +43,7 @@ var DefaultHeatmap = HeatmapPrinter{
 // HeatmapData is the type that contains the data of a HeatmapPrinter.
 type HeatmapData [][]float32
 
+// HeatmapAxis contains the labels of the X and Y axis of a HeatmapPrinter.
 type HeatmapAxis struct {
 	XAxis []string
 	YAxis []string
@@ -80,8 +84,6 @@ type HeatmapPrinter struct {
 
 	minValue float32
 	maxValue float32
-
-	rgbLegendValue int
 }
 
 var complementaryColors = map[Color]Color{
@@ -259,50 +261,39 @@ func (p HeatmapPrinter) Srender() (string, error) {
 		p.AxisStyle = DefaultHeatmap.AxisStyle
 	}
 
-	if RawOutput {
+	if rawOutput() {
 		p.Legend = false
 	}
 
-	buffer := bytes.NewBufferString("")
-	xAmount := len(p.Data[0]) - 1
-	yAmount := len(p.Data) - 1
 	p.minValue, p.maxValue = minMaxFloat32(p.Data)
 
-	var data string
-
-	for _, datum := range p.Data {
-		for _, f := range datum {
-			data += Sprintf("%v\n", f)
-		}
-	}
-
-	if p.HasHeader {
-		data, xAmount, yAmount = p.computeAxisData(data, xAmount, yAmount)
-	}
-
-	colWidth := internal.GetStringMaxWidth(data)
+	colWidth := p.columnWidth()
 	legendColWidth := colWidth + 2
 
 	if p.OnlyColoredCells && (p.CellSize > colWidth || !p.HasHeader) {
 		colWidth = p.CellSize
 	}
 
+	buffer := bytes.NewBufferString("")
+
 	if p.Boxed {
-		p.renderSeparatorRow(buffer, colWidth, xAmount, true)
+		p.writeGridLine(buffer, colWidth, p.BottomRightCornerSeparator, p.TSeparator, p.BottomLeftCornerSeparator)
+		buffer.WriteString("\n")
 	}
 
-	p.renderData(buffer, colWidth, xAmount, yAmount)
+	p.writeRows(buffer, colWidth)
 
 	if p.HasHeader {
-		p.renderHeader(buffer, colWidth, xAmount)
+		p.writeXAxisRow(buffer, colWidth)
 	}
 
 	if p.Boxed {
-		p.renderSeparatorRow(buffer, colWidth, xAmount, false)
+		buffer.WriteString("\n")
+		p.writeGridLine(buffer, colWidth, p.TopRightCornerSeparator, p.TReverseSeparator, p.TopLeftCornerSeparator)
 	}
 
 	if p.Legend {
-		p.renderLegend(buffer, legendColWidth)
+		p.writeLegend(buffer, legendColWidth)
 	}
 
 	buffer.WriteString("\n")
@@ -310,72 +301,64 @@ func (p HeatmapPrinter) Srender() (string, error) {
 	return buffer.String(), nil
 }
 
-func (p HeatmapPrinter) computeAxisData(data string, xAmount, yAmount int) (string, int, int) {
-	var header string
-	for _, h := range p.Axis.XAxis {
-		header += h + "\n"
-	}
+// columnWidth returns the width of the widest cell content: every data value,
+// plus every axis label when a header is rendered. With OnlyColoredCells the
+// values themselves are not printed, so only the axis labels count.
+func (p HeatmapPrinter) columnWidth() int {
+	var width int
 
-	for _, h := range p.Axis.YAxis {
-		header += h + "\n"
-	}
-
-	if p.OnlyColoredCells {
-		data = header
-	} else {
-		data += header
-	}
-
-	xAmount++
-	yAmount++
-
-	p.Axis.YAxis = append(p.Axis.YAxis, "")
-
-	return data, xAmount, yAmount
-}
-
-func (p HeatmapPrinter) renderSeparatorRow(buffer *bytes.Buffer, colWidth, xAmount int, top bool) {
-	tSep := p.TReverseSeparator
-	rightSep := p.TopRightCornerSeparator
-	leftSep := p.TopLeftCornerSeparator
-
-	if top {
-		tSep = p.TSeparator
-		rightSep = p.BottomRightCornerSeparator
-		leftSep = p.BottomLeftCornerSeparator
-	} else {
-		buffer.WriteString("\n")
-	}
-
-	buffer.WriteString(p.SeparatorStyle.Sprint(rightSep))
-
-	for i := 0; i < xAmount+1; i++ {
-		buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), colWidth))
-
-		if i < xAmount {
-			buffer.WriteString(p.SeparatorStyle.Sprint(tSep))
+	if !p.HasHeader || !p.OnlyColoredCells {
+		for _, row := range p.Data {
+			for _, value := range row {
+				width = max(width, internal.GetStringMaxWidth(Sprintf("%v", value)))
+			}
 		}
 	}
 
-	buffer.WriteString(p.SeparatorStyle.Sprint(leftSep))
+	if p.HasHeader {
+		for _, label := range p.Axis.XAxis {
+			width = max(width, internal.GetStringMaxWidth(label))
+		}
 
-	if top {
-		buffer.WriteString("\n")
+		for _, label := range p.Axis.YAxis {
+			width = max(width, internal.GetStringMaxWidth(label))
+		}
 	}
+
+	return width
 }
 
-func (p HeatmapPrinter) renderLegend(buffer *bytes.Buffer, legendColWidth int) {
-	buffer.WriteString("\n")
-	buffer.WriteString("\n")
-
-	if p.Boxed {
-		p.boxLegend(buffer, p.LegendLabel, legendColWidth)
-	} else {
-		p.generateLegend(buffer, p.LegendLabel, legendColWidth)
+// gridColumns returns the number of rendered columns: one per data column,
+// plus the Y-axis label column when a header is rendered.
+func (p HeatmapPrinter) gridColumns() int {
+	if p.HasHeader {
+		return len(p.Data[0]) + 1
 	}
+
+	return len(p.Data[0])
 }
 
-func (p HeatmapPrinter) renderHeader(buffer *bytes.Buffer, colWidth int, xAmount int) {
+// writeGridLine writes one horizontal boundary line, e.g. "┌──┬──┐":
+// left separator, one segment per column joined by cross separators, right
+// separator. Used for the top and bottom edge of the box.
+func (p HeatmapPrinter) writeGridLine(buffer *bytes.Buffer, colWidth int, left, cross, right string) {
+	buffer.WriteString(p.SeparatorStyle.Sprint(left))
+
+	for i := 0; i < p.gridColumns(); i++ {
+		if i > 0 {
+			buffer.WriteString(p.SeparatorStyle.Sprint(cross))
+		}
+
+		buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), colWidth))
+	}
+
+	buffer.WriteString(p.SeparatorStyle.Sprint(right))
+}
+
+// writeRowSeparator writes the horizontal line between two grid rows,
+// e.g. "\n├──┼──┤\n". The edge separators appear only when boxed, the
+// segments and crosses only when the grid is enabled.
+func (p HeatmapPrinter) writeRowSeparator(buffer *bytes.Buffer, colWidth int) {
 	buffer.WriteString("\n")
 
 	if p.Boxed {
@@ -383,12 +366,12 @@ func (p HeatmapPrinter) renderHeader(buffer *bytes.Buffer, colWidth int, xAmount
 	}
 
 	if p.Grid {
-		for i := 0; i < xAmount+1; i++ {
-			buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), colWidth))
-
-			if i < xAmount {
+		for i := 0; i < p.gridColumns(); i++ {
+			if i > 0 {
 				buffer.WriteString(p.SeparatorStyle.Sprint(p.TCrossSeparator))
 			}
+
+			buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), colWidth))
 		}
 	}
 
@@ -399,303 +382,283 @@ func (p HeatmapPrinter) renderHeader(buffer *bytes.Buffer, colWidth int, xAmount
 	if p.Grid {
 		buffer.WriteString("\n")
 	}
-
-	for j, f := range p.Axis.XAxis {
-		if j == 0 {
-			if p.Boxed {
-				buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
-			}
-
-			ct := internal.CenterText(" ", colWidth)
-			if len(ct) < colWidth {
-				ct += strings.Repeat(" ", colWidth-len(ct))
-			}
-
-			buffer.WriteString(p.AxisStyle.Sprint(ct))
-
-			if p.Grid {
-				buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
-			}
-		}
-		var ct string
-
-		ct = internal.CenterText(Sprintf("%v", f), colWidth)
-		if len(ct) < colWidth {
-			ct += strings.Repeat(" ", colWidth-len(ct))
-		}
-
-		buffer.WriteString(p.AxisStyle.Sprint(ct))
-
-		if j < xAmount {
-			if !p.Boxed && j == xAmount-1 {
-				continue
-			}
-
-			if p.Grid {
-				buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
-			}
-		}
-	}
 }
 
-func (p HeatmapPrinter) renderData(buffer *bytes.Buffer, colWidth int, xAmount int, yAmount int) {
-	for i, datum := range p.Data {
+// writeRows writes one grid row per data row, prefixed with the Y-axis label
+// when a header is rendered, separated by grid lines.
+func (p HeatmapPrinter) writeRows(buffer *bytes.Buffer, colWidth int) {
+	lastCol := len(p.Data[0]) - 1
+	lastRow := len(p.Data) - 1
+
+	for rowIdx, row := range p.Data {
 		if p.Boxed {
 			buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
 		}
 
-		for j, f := range datum {
-			if j == 0 && p.HasHeader {
-				ct := internal.CenterText(p.Axis.YAxis[i], colWidth)
-				if len(ct) < colWidth {
-					ct += strings.Repeat(" ", colWidth-len(ct))
-				}
+		if p.HasHeader {
+			buffer.WriteString(p.AxisStyle.Sprint(padCell(p.Axis.YAxis[rowIdx], colWidth, false)))
 
-				buffer.WriteString(p.AxisStyle.Sprint(ct))
-
-				if p.Grid {
-					buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
-				}
-			}
-
-			var ct string
-			if p.OnlyColoredCells {
-				ct = internal.CenterText(" ", colWidth)
-			} else {
-				ct = internal.CenterText(Sprintf("%v", f), colWidth)
-			}
-
-			if len(ct) < colWidth {
-				if len(Sprintf("%v", f)) == 1 {
-					ct += strings.Repeat(" ", colWidth-len(ct))
-				} else {
-					ct = strings.Repeat(" ", colWidth-len(ct)) + ct
-				}
-			}
-
-			if p.EnableRGB {
-				rgb := p.RGBRange[0].Fade(p.minValue, p.maxValue, f, p.RGBRange[1:]...)
-
-				rgbStyle := NewRGBStyle(p.TextRGB, rgb)
-				if p.EnableComplementaryColor {
-					complimentary := NewRGB(internal.Complementary(rgb.R, rgb.G, rgb.B))
-					rgbStyle = NewRGBStyle(complimentary, rgb)
-				}
-
-				buffer.WriteString(rgbStyle.Sprint(ct))
-			} else {
-				color := getColor(p.minValue, p.maxValue, f, p.Colors...)
-
-				fgColor := p.TextColor
-				if p.EnableComplementaryColor {
-					fgColor = complementaryColors[color]
-				}
-
-				buffer.WriteString(fgColor.Sprint(color.Sprintf("%s", ct)))
-			}
-
-			if j < xAmount {
-				if !p.Boxed && p.HasHeader && j == xAmount-1 {
-					continue
-				}
-
-				if p.Grid {
-					buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
-				}
-			}
-
-			if p.Boxed && !p.HasHeader && j == xAmount {
+			if p.Grid {
 				buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
 			}
 		}
 
-		if i < yAmount {
-			if p.HasHeader && i == yAmount-1 {
-				continue
-			}
+		for colIdx, value := range row {
+			buffer.WriteString(p.sprintCell(value, colWidth))
+			p.writeCellSeparator(buffer, colIdx == lastCol)
+		}
 
-			buffer.WriteString("\n")
-
-			if p.Boxed {
-				buffer.WriteString(p.SeparatorStyle.Sprint(p.LSeparator))
-			}
-
-			if p.Grid {
-				for i := 0; i < xAmount+1; i++ {
-					buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), colWidth))
-
-					if i < xAmount {
-						buffer.WriteString(p.SeparatorStyle.Sprint(p.TCrossSeparator))
-					}
-				}
-			}
-
-			if p.Boxed {
-				buffer.WriteString(p.SeparatorStyle.Sprint(p.LReverseSeparator))
-			}
-
-			if p.Grid {
-				buffer.WriteString("\n")
-			}
+		if rowIdx < lastRow {
+			p.writeRowSeparator(buffer, colWidth)
 		}
 	}
 }
 
-func (p HeatmapPrinter) generateLegend(buffer *bytes.Buffer, legend string, legendColWidth int) {
-	buffer.WriteString(p.AxisStyle.Sprint(legend))
+// writeCellSeparator writes the vertical separator following a data cell.
+// After the last cell of a row it becomes the closing border: with a header
+// it requires both box and grid, without a header the box alone suffices
+// (matching the historical layout).
+func (p HeatmapPrinter) writeCellSeparator(buffer *bytes.Buffer, lastCol bool) {
+	switch {
+	case !lastCol:
+		if p.Grid {
+			buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
+		}
+
+	case p.HasHeader:
+		if p.Boxed && p.Grid {
+			buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
+		}
+
+	default:
+		if p.Boxed {
+			buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
+		}
+	}
+}
+
+// writeXAxisRow writes the last grid row: a blank cell above the Y-axis
+// labels followed by the X-axis labels.
+func (p HeatmapPrinter) writeXAxisRow(buffer *bytes.Buffer, colWidth int) {
+	p.writeRowSeparator(buffer, colWidth)
+
+	if p.Boxed {
+		buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
+	}
+
+	buffer.WriteString(p.AxisStyle.Sprint(padCell(" ", colWidth, false)))
 
 	if p.Grid {
-		buffer.WriteString(p.SeparatorStyle.Sprintf("%s", p.VerticalSeparator))
+		buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
+	}
+
+	lastCol := len(p.Axis.XAxis) - 1
+
+	for colIdx, label := range p.Axis.XAxis {
+		buffer.WriteString(p.AxisStyle.Sprint(padCell(label, colWidth, false)))
+
+		if colIdx < lastCol {
+			if p.Grid {
+				buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
+			}
+		} else if p.Boxed && p.Grid {
+			buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
+		}
+	}
+}
+
+// sprintCell formats and colors a single data cell. The cell text is the
+// value itself, or a blank cell with OnlyColoredCells. Values wider than one
+// character are right-aligned within the cell.
+func (p HeatmapPrinter) sprintCell(value float32, colWidth int) string {
+	text := " "
+	if !p.OnlyColoredCells {
+		text = Sprintf("%v", value)
+	}
+
+	cell := padCell(text, colWidth, len(Sprintf("%v", value)) > 1)
+
+	if p.EnableRGB {
+		return p.rgbStyleFor(value).Sprint(cell)
+	}
+
+	background := getColor(p.minValue, p.maxValue, value, p.Colors...)
+
+	return p.textColorFor(background).Sprint(background.Sprint(cell))
+}
+
+// rgbStyleFor fades the value into the configured RGB range and pairs the
+// resulting background with the text color (or its computed complement).
+func (p HeatmapPrinter) rgbStyleFor(value float32) RGBStyle {
+	background := p.RGBRange[0].Fade(p.minValue, p.maxValue, value, p.RGBRange[1:]...)
+
+	if p.EnableComplementaryColor {
+		return NewRGBStyle(NewRGB(internal.Complementary(background.R, background.G, background.B)), background)
+	}
+
+	return NewRGBStyle(p.TextRGB, background)
+}
+
+// textColorFor returns the text color to use on the given background color.
+func (p HeatmapPrinter) textColorFor(background Color) Color {
+	if p.EnableComplementaryColor {
+		return complementaryColors[background]
+	}
+
+	return p.TextColor
+}
+
+// writeLegend writes the legend below the heatmap, boxed if the heatmap
+// itself is boxed.
+func (p HeatmapPrinter) writeLegend(buffer *bytes.Buffer, legendColWidth int) {
+	buffer.WriteString("\n\n")
+
+	if p.Boxed {
+		p.writeBoxedLegend(buffer, legendColWidth)
+	} else {
+		p.writeLegendRow(buffer, legendColWidth)
+	}
+}
+
+// writeBoxedLegend wraps the legend row in a box.
+func (p HeatmapPrinter) writeBoxedLegend(buffer *bytes.Buffer, legendColWidth int) {
+	buffer.WriteString(p.SeparatorStyle.Sprint(p.BottomRightCornerSeparator))
+	p.writeLegendSeparatorRow(buffer, legendColWidth, true)
+	buffer.WriteString(p.SeparatorStyle.Sprint(p.BottomLeftCornerSeparator))
+	buffer.WriteString("\n")
+
+	buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
+	p.writeLegendRow(buffer, legendColWidth)
+	buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
+	buffer.WriteString("\n")
+
+	buffer.WriteString(p.SeparatorStyle.Sprint(p.TopRightCornerSeparator))
+	p.writeLegendSeparatorRow(buffer, legendColWidth, false)
+	buffer.WriteString(p.SeparatorStyle.Sprint(p.TopLeftCornerSeparator))
+}
+
+// writeLegendRow writes the legend label followed by one colored cell per
+// legend step.
+func (p HeatmapPrinter) writeLegendRow(buffer *bytes.Buffer, legendColWidth int) {
+	buffer.WriteString(p.AxisStyle.Sprint(p.LegendLabel))
+
+	if p.Grid {
+		buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
 	} else {
 		buffer.WriteString(" ")
 	}
 
 	if p.EnableRGB {
-		p.generateRGBLegend(buffer, legendColWidth)
+		p.writeRGBLegendCells(buffer, legendColWidth)
 	} else {
-		p.generateColorLegend(buffer, legendColWidth)
+		p.writeColorLegendCells(buffer, legendColWidth)
 	}
 }
 
-func (p HeatmapPrinter) generateColorLegend(buffer *bytes.Buffer, legendColWidth int) {
+// writeColorLegendCells writes one legend cell per configured color, fading
+// linearly from the minimum to the maximum data value.
+func (p HeatmapPrinter) writeColorLegendCells(buffer *bytes.Buffer, legendColWidth int) {
 	for i, color := range p.Colors {
-		// the first color is the min value and the last color is the max value
-		var f float32
-		if i == 0 {
-			f = p.minValue
-		} else if i == len(p.Colors)-1 {
-			f = p.maxValue
-		} else {
-			f = p.minValue + (p.maxValue-p.minValue)*float32(i)/float32(len(p.Colors)-1)
-		}
-
-		fgColor := p.TextColor
-		if p.EnableComplementaryColor {
-			fgColor = complementaryColors[color]
-		}
-
-		buffer.WriteString(fgColor.Sprint(color.Sprint(centerAndShorten(f, legendColWidth, p.LegendOnlyColoredCells))))
+		value := p.legendValue(i, len(p.Colors))
+		cell := centerAndShorten(value, legendColWidth, p.LegendOnlyColoredCells)
+		buffer.WriteString(p.textColorFor(color).Sprint(color.Sprint(cell)))
 
 		if p.Grid && i < len(p.Colors)-1 && !p.LegendOnlyColoredCells {
-			buffer.WriteString(p.SeparatorStyle.Sprintf("%s", p.VerticalSeparator))
+			buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
 		}
 	}
 }
 
-func (p HeatmapPrinter) generateRGBLegend(buffer *bytes.Buffer, legendColWidth int) {
-	p.rgbLegendValue = 10
-
-	steps := len(p.RGBRange)
-	if steps < p.rgbLegendValue {
-		steps = p.rgbLegendValue
-	}
+// writeRGBLegendCells writes the RGB legend cells. With LegendOnlyColoredCells
+// the legend becomes a smooth gradient: three times as many cells, each one
+// character wide and without values.
+func (p HeatmapPrinter) writeRGBLegendCells(buffer *bytes.Buffer, legendColWidth int) {
+	steps := max(len(p.RGBRange), rgbLegendSteps)
+	cellWidth := legendColWidth
 
 	if p.LegendOnlyColoredCells {
 		steps *= 3
+		cellWidth = 1
 	}
 
 	for i := 0; i < steps; i++ {
-		// the first color is the min value and the last color is the max value
-		var f float32
-
-		switch i {
-		case 0:
-			f = p.minValue
-		case steps - 1:
-			f = p.maxValue
-		default:
-			f = p.minValue + (p.maxValue-p.minValue)*float32(i)/float32(steps-1)
-		}
-
-		rgb := p.RGBRange[0].Fade(p.minValue, p.maxValue, f, p.RGBRange[1:]...)
-
-		rgbStyle := NewRGBStyle(p.TextRGB, rgb)
-		if p.EnableComplementaryColor {
-			complimentary := NewRGB(internal.Complementary(rgb.R, rgb.G, rgb.B))
-			rgbStyle = NewRGBStyle(complimentary, rgb)
-		}
-
-		if p.LegendOnlyColoredCells {
-			buffer.WriteString(rgbStyle.Sprint(centerAndShorten(f, 1, p.LegendOnlyColoredCells)))
-		} else {
-			buffer.WriteString(rgbStyle.Sprint(centerAndShorten(f, legendColWidth, p.LegendOnlyColoredCells)))
-		}
+		value := p.legendValue(i, steps)
+		buffer.WriteString(p.rgbStyleFor(value).Sprint(centerAndShorten(value, cellWidth, p.LegendOnlyColoredCells)))
 
 		if p.Grid && i < steps-1 && !p.LegendOnlyColoredCells {
-			buffer.WriteString(p.SeparatorStyle.Sprintf("%s", p.VerticalSeparator))
+			buffer.WriteString(p.SeparatorStyle.Sprint(p.VerticalSeparator))
 		}
 	}
 }
 
-func (p HeatmapPrinter) boxLegend(buffer *bytes.Buffer, legend string, legendColWidth int) {
-	buffer.WriteString(p.SeparatorStyle.Sprint(p.BottomRightCornerSeparator))
-
-	p.generateSeparatorRow(buffer, legend, legendColWidth, true)
-
-	buffer.WriteString(p.SeparatorStyle.Sprint(p.BottomLeftCornerSeparator))
-	buffer.WriteString("\n")
-	buffer.WriteString(p.SeparatorStyle.Sprintf("%s", p.VerticalSeparator))
-
-	p.generateLegend(buffer, legend, legendColWidth)
-
-	buffer.WriteString(p.SeparatorStyle.Sprintf("%s", p.VerticalSeparator))
-	buffer.WriteString("\n")
-
-	buffer.WriteString(p.SeparatorStyle.Sprint(p.TopRightCornerSeparator))
-
-	p.generateSeparatorRow(buffer, legend, legendColWidth, false)
-
-	buffer.WriteString(p.SeparatorStyle.Sprint(p.TopLeftCornerSeparator))
-}
-
-func (p HeatmapPrinter) generateSeparatorRow(buffer *bytes.Buffer, legend string, legendColWidth int, top bool) {
-	p.rgbLegendValue = 10
-
-	steps := len(p.RGBRange)
-	if steps < p.rgbLegendValue {
-		steps = p.rgbLegendValue
+// writeLegendSeparatorRow writes a horizontal edge of the boxed legend. The
+// first segment spans the legend label and is always followed by a cross
+// separator; every further segment spans one legend cell, with crosses in
+// between unless the legend is a gradient (LegendOnlyColoredCells).
+func (p HeatmapPrinter) writeLegendSeparatorRow(buffer *bytes.Buffer, legendColWidth int, top bool) {
+	cross := p.TReverseSeparator
+	if top {
+		cross = p.TSeparator
 	}
 
-	if p.LegendOnlyColoredCells {
-		steps *= 3
-	}
+	segments := len(p.Colors)
+	segmentWidth := legendColWidth
 
-	var xValue int
 	if p.EnableRGB {
-		xValue = len(p.RGBRange)
-		if xValue < p.rgbLegendValue {
-			xValue = p.rgbLegendValue
+		segments = max(len(p.RGBRange), rgbLegendSteps)
+		if p.LegendOnlyColoredCells {
+			// the gradient legend renders three one-character cells per step
+			segmentWidth = 3
 		}
-	} else {
-		xValue = len(p.Colors)
 	}
 
-	for i := 0; i < xValue+1; i++ {
-		if i == 0 {
-			firstLength := len(legend)
-			buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), firstLength))
-		} else {
-			if p.LegendOnlyColoredCells {
-				if p.EnableRGB {
-					buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), steps/(xValue)))
-				} else {
-					buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), legendColWidth))
-				}
-			} else {
-				buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), legendColWidth))
-			}
-		}
+	buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), len(p.LegendLabel)))
+	buffer.WriteString(p.SeparatorStyle.Sprint(cross))
 
-		if i < xValue && !p.LegendOnlyColoredCells || i == 0 {
-			if top {
-				buffer.WriteString(p.SeparatorStyle.Sprint(p.TSeparator))
-			} else {
-				buffer.WriteString(p.SeparatorStyle.Sprint(p.TReverseSeparator))
-			}
+	for i := 0; i < segments; i++ {
+		buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), segmentWidth))
+
+		if !p.LegendOnlyColoredCells && i < segments-1 {
+			buffer.WriteString(p.SeparatorStyle.Sprint(cross))
 		}
 	}
 }
 
+// legendValue returns the value represented by legend cell i of steps, spread
+// linearly from the minimum to the maximum data value.
+func (p HeatmapPrinter) legendValue(i, steps int) float32 {
+	switch i {
+	case 0:
+		return p.minValue
+	case steps - 1:
+		return p.maxValue
+	default:
+		return p.minValue + (p.maxValue-p.minValue)*float32(i)/float32(steps-1)
+	}
+}
+
+// padCell centers text in a cell of the given width. internal.CenterText
+// drops the remainder space on odd padding, so the missing column is re-added
+// on the right, or on the left when padLeft is set (right-aligning the cell
+// content). Widths are measured in bytes, consistent with CenterText.
+func padCell(text string, width int, padLeft bool) string {
+	cell := internal.CenterText(text, width)
+
+	missing := width - len(cell)
+	if missing <= 0 {
+		return cell
+	}
+
+	if padLeft {
+		return strings.Repeat(" ", missing) + cell
+	}
+
+	return cell + strings.Repeat(" ", missing)
+}
+
+// centerAndShorten formats a legend value into a cell of lineLength
+// characters, reducing the value's precision if it does not fit. With
+// onlyColor the cell stays blank and only carries the background color.
 func centerAndShorten(f float32, lineLength int, onlyColor bool) string {
 	value := ""
 	if !onlyColor {
@@ -710,26 +673,16 @@ func centerAndShorten(f float32, lineLength int, onlyColor bool) string {
 		}
 	}
 
-	ct := internal.CenterText(value, lineLength)
-	if len(ct) < lineLength {
-		if len(Sprintf("%v", f)) == 1 {
-			ct += strings.Repeat(" ", lineLength-len(ct))
-		} else {
-			ct = strings.Repeat(" ", lineLength-len(ct)) + ct
-		}
-	}
-
-	return ct
+	return padCell(value, lineLength, len(Sprintf("%v", f)) > 1)
 }
 
+// getColor buckets current into len(colors) equal parts of the [minStep,
+// maxStep] range: the first color covers the minimum, the last color the
+// maximum (and, as the fallback, everything not matched by a bucket, e.g.
+// when all values are equal).
 func getColor(minStep float32, maxStep float32, current float32, colors ...Color) Color {
-	// split the range into equal parts
-	// and assign a color to each part
-	// the last color is assigned to the max value
-	// and the first color to the min value
-	// the rest of the colors are assigned to the
-	// middle values
 	step := (maxStep - minStep) / float32(len(colors))
+
 	for i := range colors {
 		if current >= minStep+float32(i)*step && current < minStep+float32(i+1)*step {
 			return colors[i]
@@ -769,8 +722,8 @@ func (p HeatmapPrinter) errCheck() error {
 			return errors.New("y axis is empty")
 		}
 
-		for i := 1; i < len(p.Data); i++ {
-			if len(p.Data[i]) != len(p.Axis.XAxis) {
+		for _, row := range p.Data {
+			if len(row) != len(p.Axis.XAxis) {
 				return errors.New("x axis length does not match data")
 			}
 		}
@@ -798,23 +751,17 @@ func (p HeatmapPrinter) errCheck() error {
 	return nil
 }
 
-// return min and max value of a slice
+// minMaxFloat32 returns the smallest and largest value in the data.
 func minMaxFloat32(s [][]float32) (float32, float32) {
-	var minslice, maxslice float32
-	minslice = math.MaxFloat32
-	maxslice = -math.MaxFloat32
+	minValue := float32(math.MaxFloat32)
+	maxValue := float32(-math.MaxFloat32)
 
-	for _, r := range s {
-		for _, c := range r {
-			if c < minslice {
-				minslice = c
-			}
-
-			if c > maxslice {
-				maxslice = c
-			}
+	for _, row := range s {
+		for _, value := range row {
+			minValue = min(minValue, value)
+			maxValue = max(maxValue, value)
 		}
 	}
 
-	return minslice, maxslice
+	return minValue, maxValue
 }

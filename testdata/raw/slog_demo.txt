@@ -1,4 +1,4 @@
->
+
 
 
 
@@ -316,10 +316,10 @@
 
 
 ────────────────────────────────────────────────────────────────────────────────
-2026-05-06 21:45:19 DEBUG This is a debug message changedLevel: true
-2026-05-06 21:45:19 INFO  This is an info message
-2026-05-06 21:45:19 WARN  This is a warning message
-2026-05-06 21:45:19 ERROR This is an error message
+2026-07-11 21:10:00 DEBUG This is a debug message changedLevel=true
+2026-07-11 21:10:00 INFO  This is an info message
+2026-07-11 21:10:00 WARN  This is a warning message
+2026-07-11 21:10:00 ERROR This is an error message
 >
 
 
@@ -333,10 +333,10 @@
 
 
 ────────────────────────────────────────────────────────────────────────────────
-2026-05-06 21:45:19 DEBUG This is a debug message changedLevel: true
-2026-05-06 21:45:19 INFO  This is an info message
-2026-05-06 21:45:19 WARN  This is a warning message
-2026-05-06 21:45:19 ERROR This is an error message
+2026-07-11 21:10:00 DEBUG This is a debug message changedLevel=true
+2026-07-11 21:10:00 INFO  This is an info message
+2026-07-11 21:10:00 WARN  This is a warning message
+2026-07-11 21:10:00 ERROR This is an error message
 >
 
 
@@ -350,10 +350,10 @@
 
 
 ────────────────────────────────────────────────────────────────────────────────
-2026-05-06 21:45:19 DEBUG This is a debug message changedLevel: true
-2026-05-06 21:45:19 INFO  This is an info message
-2026-05-06 21:45:19 WARN  This is a warning message
-2026-05-06 21:45:19 ERROR This is an error message
+2026-07-11 21:10:00 DEBUG This is a debug message changedLevel=true
+2026-07-11 21:10:00 INFO  This is an info message
+2026-07-11 21:10:00 WARN  This is a warning message
+2026-07-11 21:10:00 ERROR This is an error message
 >
 
 

@@ -321,8 +321,8 @@ Printing something... [1/15]
 Printing something... [2/15]
 Printing something... [3/15]
 Printing something... [4/15]
- INFO  Disabled Output!
- INFO  Enabled Output!
+  INFO    Disabled Output!
+  INFO    Enabled Output!
 Printing something... [10/15]
 Printing something... [11/15]
 Printing something... [12/15]
@@ -338,8 +338,8 @@ Printing something... [1/15]
 Printing something... [2/15]
 Printing something... [3/15]
 Printing something... [4/15]
- INFO  Disabled Output!
- INFO  Enabled Output!
+  INFO    Disabled Output!
+  INFO    Enabled Output!
 Printing something... [10/15]
 Printing something... [11/15]
 Printing something... [12/15]
@@ -355,8 +355,8 @@ Printing something... [1/15]
 Printing something... [2/15]
 Printing something... [3/15]
 Printing something... [4/15]
- INFO  Disabled Output!
- INFO  Enabled Output!
+  INFO    Disabled Output!
+  INFO    Enabled Output!
 Printing something... [10/15]
 Printing something... [11/15]
 Printing something... [12/15]

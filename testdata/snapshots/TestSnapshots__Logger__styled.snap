@@ -1,0 +1,3 @@
+\x1b[1;36mINFO \x1b[0m An info log \x1b[1;36mkey\x1b[0m\x1b[90m=\x1b[0mvalue
+\x1b[1;33mWARN \x1b[0m A warning log
+\x1b[1;31mERROR\x1b[0m An error log \x1b[1;31mcode\x1b[0m\x1b[90m=\x1b[0m42 \x1b[1;31mspaced\x1b[0m\x1b[90m=\x1b[0m\x1b[90m"\x1b[0ma quoted value\x1b[90m"\x1b[0m

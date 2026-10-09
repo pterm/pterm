@@ -7,20 +7,14 @@ import (
 )
 
 func main() {
-	// Start a new default area in the center of the terminal.
-	// The Start() function returns the created area and an error.
+	// WithCenter horizontally centers the area's content in the terminal.
 	area, _ := pterm.DefaultArea.WithCenter().Start()
 
-	// Loop 5 times to simulate a dynamic update.
-	for i := 0; i < 5; i++ {
-		// Update the content of the area with the current count.
-		// The Sprintf function is used to format the string.
-		area.Update(pterm.Sprintln("Current count: %d\nAreas can update their content dynamically!", i))
-
-		// Pause for a second to simulate a time-consuming task.
+	// Each Update redraws the area in place instead of appending new lines.
+	for i := range 5 {
+		area.Update(pterm.Sprintfln("Current count: %d\nAreas can update their content dynamically!", i))
 		time.Sleep(time.Second)
 	}
 
-	// Stop the area after all updates are done.
 	area.Stop()
 }

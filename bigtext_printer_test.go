@@ -1,169 +1,197 @@
 package pterm_test
 
+// Behavioral tests for BigTextPrinter: letters are rendered from the
+// BigCharacters font map and joined horizontally with per-letter width
+// padding; unknown characters are skipped. The builder/contract plumbing is
+// covered in contract_test.go, one representative output in snapshot_test.go.
+
 import (
 	"fmt"
-	"os"
 	"strings"
 	"testing"
 
-	"github.com/MarvinJWendt/testza"
+	"github.com/mattn/go-runewidth"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/pterm/pterm"
 )
 
-func TestBigTextPrinterNilPrint(t *testing.T) {
-	p := pterm.BigTextPrinter{}
-	p.Render()
+// joinedBigText builds the expected BigText output for the given characters
+// from the default font map: the tallest letter defines the line count, every
+// letter's lines are padded to that letter's width, and the letters are
+// concatenated line by line.
+func joinedBigText(t *testing.T, text string) string {
+	t.Helper()
+
+	entries := make([]string, 0, len(text))
+
+	for _, r := range text {
+		entry, ok := pterm.DefaultBigText.BigCharacters[string(r)]
+		require.True(t, ok, "character %q must exist in the font map", r)
+
+		entries = append(entries, entry)
+	}
+
+	var height int
+
+	for _, entry := range entries {
+		if h := len(strings.Split(entry, "\n")); h > height {
+			height = h
+		}
+	}
+
+	var sb strings.Builder
+
+	for i := 0; i < height; i++ {
+		for _, entry := range entries {
+			lines := strings.Split(entry, "\n")
+
+			var width int
+
+			for _, line := range lines {
+				if w := runewidth.StringWidth(line); w > width {
+					width = w
+				}
+			}
+
+			var line string
+			if i < len(lines) {
+				line = lines[i]
+			}
+
+			sb.WriteString(line + strings.Repeat(" ", width-runewidth.StringWidth(line)))
+		}
+
+		sb.WriteByte('\n')
+	}
+
+	return sb.String()
 }
 
-func TestBigTextPrinter_Render(t *testing.T) {
-	printer := pterm.DefaultBigText.WithLetters(pterm.NewLettersFromString("Hello"))
-	content, err := printer.Srender()
+func TestBigTextPrinter_SingleLetterMatchesFontMap(t *testing.T) {
+	printer := pterm.DefaultBigText.WithLetters(pterm.NewLettersFromString("A"))
 
-	testza.AssertNoError(t, err)
-	testza.AssertNotZero(t, content)
+	// Every line of "A" in the font map is already 8 cells wide, so the
+	// rendered output is exactly the map entry plus a trailing newline.
+	assert.Equal(t, pterm.DefaultBigText.BigCharacters["A"]+"\n", srenderPlain(t, printer))
 }
 
-func TestBigTextPrinter_RenderRGB(t *testing.T) {
-	printer := pterm.DefaultBigText.WithLetters(pterm.NewLettersFromStringWithRGB("Hello", pterm.NewRGB(255, 0, 0)))
-	content, err := printer.Srender()
+func TestBigTextPrinter_LettersAreJoinedHorizontally(t *testing.T) {
+	printer := pterm.DefaultBigText.WithLetters(pterm.NewLettersFromString("AB"))
 
-	testza.AssertNoError(t, err)
-	testza.AssertNotZero(t, content)
+	assert.Equal(t, joinedBigText(t, "AB"), srenderPlain(t, printer))
 }
 
-func TestBigTextPrinter_RenderRawOutput(t *testing.T) {
-	printer := pterm.DefaultBigText.WithLetters(pterm.NewLettersFromString("Hello"))
+func TestBigTextPrinter_ShorterLettersArePaddedToTallestLetter(t *testing.T) {
+	// "Q" is six lines tall while "A" only has five; "A" must be padded with
+	// a line of spaces at the bottom.
+	printer := pterm.DefaultBigText.WithLetters(pterm.NewLettersFromString("AQ"))
 
+	out := srenderPlain(t, printer)
+	assert.Equal(t, joinedBigText(t, "AQ"), out)
+	assert.Len(t, strings.Split(strings.TrimSuffix(out, "\n"), "\n"), 6)
+}
+
+func TestBigTextPrinter_UnknownCharactersAreSkipped(t *testing.T) {
+	withUnknown := srenderPlain(t, pterm.DefaultBigText.WithLetters(pterm.NewLettersFromString("A~B")))
+	without := srenderPlain(t, pterm.DefaultBigText.WithLetters(pterm.NewLettersFromString("AB")))
+
+	assert.Equal(t, without, withUnknown)
+}
+
+func TestBigTextPrinter_NoLettersRenderSingleEmptyLine(t *testing.T) {
+	// Documents current behavior: without (known) letters a single newline
+	// is emitted.
+	assert.Equal(t, "\n", srenderPlain(t, pterm.BigTextPrinter{}))
+}
+
+func TestBigTextPrinter_RawOutputReturnsPlainText(t *testing.T) {
+	restoreGlobalStyling(t)
 	pterm.DisableStyling()
 
-	content, err := printer.Srender()
+	out, err := pterm.DefaultBigText.WithLetters(pterm.NewLettersFromString("Hi")).Srender()
+	require.NoError(t, err)
 
-	pterm.EnableStyling()
-
-	testza.AssertNoError(t, err)
-	testza.AssertNotZero(t, content)
+	assert.Equal(t, "Hi", out)
 }
 
-func TestBigTextPrinter_WithBigCharacters(t *testing.T) {
-	e := map[string]string{"a": "b", "c": "d"}
-	p := pterm.BigTextPrinter{}
-	p2 := p.WithBigCharacters(e)
+func TestBigTextPrinter_LetterStyleIsApplied(t *testing.T) {
+	style := pterm.NewStyle(pterm.FgRed)
+	printer := pterm.DefaultBigText.WithLetters(pterm.NewLettersFromStringWithStyle("I", style))
 
-	testza.AssertEqual(t, e, p2.BigCharacters)
-	testza.AssertZero(t, p.BigCharacters)
+	styled, err := printer.Srender()
+	require.NoError(t, err)
+
+	assert.Contains(t, styled, style.Sprint("██ "), "letter lines must be wrapped in the letter's style")
 }
 
-func TestBigTextPrinter_WithLetters(t *testing.T) {
-	e := pterm.Letters{
-		pterm.Letter{
-			String: "test",
-			Style:  pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
-		},
-		pterm.Letter{
-			String: "test2",
-			Style:  pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
-		},
-	}
-	p := pterm.BigTextPrinter{}
-	p2 := p.WithLetters(e)
+func TestBigTextPrinter_LetterRGBIsApplied(t *testing.T) {
+	printer := pterm.DefaultBigText.WithLetters(pterm.NewLettersFromStringWithRGB("I", pterm.NewRGB(255, 0, 0)))
 
-	testza.AssertEqual(t, e, p2.Letters)
-	testza.AssertZero(t, p.Letters)
+	styled, err := printer.Srender()
+	require.NoError(t, err)
+
+	assert.Contains(t, styled, "38;2;255;0;0", "letter lines must use the letter's RGB color")
 }
 
-func TestLetter_WithString(t *testing.T) {
-	e := "Hello, World!"
-	p := pterm.Letter{}
-	p2 := p.WithString(e)
+func TestBigTextPrinter_SrenderIsPure(t *testing.T) {
+	letters := pterm.NewLettersFromString("AB")
+	printer := pterm.DefaultBigText.WithLetters(letters)
 
-	testza.AssertEqual(t, e, p2.String)
-	testza.AssertZero(t, p.String)
+	first, err := printer.Srender()
+	require.NoError(t, err)
+
+	second, err := printer.Srender()
+	require.NoError(t, err)
+
+	assert.Equal(t, first, second, "rendering twice must yield identical output")
+	assert.Equal(t, pterm.NewLettersFromString("AB"), letters, "rendering must not modify the input letters")
 }
 
-func TestLetter_WithStyle(t *testing.T) {
-	p := pterm.Letter{}
-	s := pterm.NewStyle(pterm.FgRed, pterm.BgRed, pterm.Bold)
-	p2 := p.WithStyle(s)
+func TestNewLettersFromString(t *testing.T) {
+	t.Run("default style", func(t *testing.T) {
+		assert.Equal(t, pterm.Letters{
+			{String: "a", Style: &pterm.ThemeDefault.LetterStyle},
+			{String: "b", Style: &pterm.ThemeDefault.LetterStyle},
+		}, pterm.NewLettersFromString("ab"))
+	})
 
-	testza.AssertEqual(t, s, p2.Style)
-	testza.AssertZero(t, p.Style)
+	t.Run("with style", func(t *testing.T) {
+		style := pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold)
+		assert.Equal(t, pterm.Letters{
+			{String: "a", Style: style},
+			{String: "b", Style: style},
+		}, pterm.NewLettersFromStringWithStyle("ab", style))
+	})
+
+	t.Run("with RGB", func(t *testing.T) {
+		rgb := pterm.NewRGB(1, 2, 3)
+		assert.Equal(t, pterm.Letters{
+			{String: "a", Style: pterm.NewStyle(), RGB: rgb},
+			{String: "b", Style: pterm.NewStyle(), RGB: rgb},
+		}, pterm.NewLettersFromStringWithRGB("ab", rgb))
+	})
 }
 
-func TestLetter_WithRGB(t *testing.T) {
-	p := pterm.Letter{}
-	rgb := pterm.NewRGB(0, 0, 0)
-	p2 := p.WithRGB(rgb)
+// Letter is a builder-style helper type that is not part of the printer list
+// in contract_test.go, so its With* methods are verified here.
+func TestLetter_Builders(t *testing.T) {
+	style := pterm.NewStyle(pterm.FgRed)
+	rgb := pterm.NewRGB(1, 2, 3)
+	letter := pterm.Letter{}.WithString("x").WithStyle(style).WithRGB(rgb)
 
-	testza.AssertEqual(t, rgb, p2.RGB)
-	testza.AssertZero(t, p.RGB)
+	assert.Equal(t, pterm.Letter{String: "x", Style: style, RGB: rgb}, *letter)
 }
 
-func TestNewLettersFromText(t *testing.T) {
-	e := pterm.Letters{
-		pterm.Letter{
-			String: "a",
-			Style:  &pterm.ThemeDefault.LetterStyle,
-		},
-		pterm.Letter{
-			String: "b",
-			Style:  &pterm.ThemeDefault.LetterStyle,
-		},
-	}
-	p := pterm.NewLettersFromString("ab")
-
-	testza.AssertEqual(t, e, p)
-}
-
-func TestNewLettersFromTextWithStyle(t *testing.T) {
-	e := pterm.Letters{
-		pterm.Letter{
-			String: "a",
-			Style:  pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
-		},
-		pterm.Letter{
-			String: "b",
-			Style:  pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold),
-		},
-	}
-	p := pterm.NewLettersFromStringWithStyle("ab", pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold))
-
-	testza.AssertEqual(t, e, p)
-}
-
-func TestNewLettersFromTextWithRGB(t *testing.T) {
-	e := pterm.Letters{
-		pterm.Letter{
-			String: "a",
-			Style:  pterm.NewStyle(),
-			RGB:    pterm.NewRGB(0, 0, 0),
-		},
-		pterm.Letter{
-			String: "b",
-			Style:  pterm.NewStyle(),
-			RGB:    pterm.NewRGB(0, 0, 0),
-		},
-	}
-	p := pterm.NewLettersFromStringWithRGB("ab", pterm.NewRGB(0, 0, 0))
-
-	testza.AssertEqual(t, e, p)
-}
-
+// The letter join pads every letter to the height of the tallest letter in
+// the rendered text, but printers combining BigText output (and the README
+// examples) assume the default font stays at most six lines tall.
 func TestDefaultLettersMaxHeight(t *testing.T) {
 	maxHeight := 5
 
-	chars := pterm.DefaultBigText.BigCharacters
-	for s, l := range chars {
+	for s, l := range pterm.DefaultBigText.BigCharacters {
 		h := strings.Count(l, "\n")
-		testza.AssertTrue(t, h <= maxHeight, fmt.Sprintf("'%s' is too high", s))
+		assert.LessOrEqual(t, h, maxHeight, fmt.Sprintf("%q is too high", s))
 	}
-}
-
-func TestBigTextPrinter_WithWriter(t *testing.T) {
-	p := pterm.BigTextPrinter{}
-	s := os.Stderr
-	p2 := p.WithWriter(s)
-
-	testza.AssertEqual(t, s, p2.Writer)
-	testza.AssertZero(t, p.Writer)
 }

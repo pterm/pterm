@@ -1,7 +1,6 @@
 package pterm
 
 import (
-	"fmt"
 	"io"
 	"strings"
 
@@ -12,13 +11,16 @@ import (
 
 // BoxPrinter is able to render a box around printables.
 type BoxPrinter struct {
-	Title                   string
-	TitleTopLeft            bool
-	TitleTopRight           bool
-	TitleTopCenter          bool
-	TitleBottomLeft         bool
-	TitleBottomRight        bool
-	TitleBottomCenter       bool
+	Title             string
+	TitleTopLeft      bool
+	TitleTopRight     bool
+	TitleTopCenter    bool
+	TitleBottomLeft   bool
+	TitleBottomRight  bool
+	TitleBottomCenter bool
+	// TitleStyle styles the Title. When nil, the theme's BoxTitleStyle is
+	// used.
+	TitleStyle              *Style
 	TextStyle               *Style
 	VerticalString          string
 	BoxStyle                *Style
@@ -37,13 +39,14 @@ type BoxPrinter struct {
 // DefaultBox is the default BoxPrinter.
 var DefaultBox = BoxPrinter{
 	VerticalString:          "│",
-	TopRightCornerString:    "└",
-	TopLeftCornerString:     "┘",
-	BottomLeftCornerString:  "┐",
-	BottomRightCornerString: "┌",
+	TopRightCornerString:    "╰",
+	TopLeftCornerString:     "╯",
+	BottomLeftCornerString:  "╮",
+	BottomRightCornerString: "╭",
 	HorizontalString:        "─",
 	BoxStyle:                &ThemeDefault.BoxStyle,
 	TextStyle:               &ThemeDefault.BoxTextStyle,
+	TitleStyle:              &ThemeDefault.BoxTitleStyle,
 	RightPadding:            1,
 	LeftPadding:             1,
 	TopPadding:              0,
@@ -54,6 +57,12 @@ var DefaultBox = BoxPrinter{
 // WithTitle returns a new box with a specific Title.
 func (p BoxPrinter) WithTitle(str string) *BoxPrinter {
 	p.Title = str
+	return &p
+}
+
+// WithTitleStyle returns a new box with a specific TitleStyle.
+func (p BoxPrinter) WithTitleStyle(style *Style) *BoxPrinter {
+	p.TitleStyle = style
 	return &p
 }
 
@@ -282,6 +291,10 @@ func (p BoxPrinter) Sprint(a ...any) string {
 		p.TextStyle = &ThemeDefault.BoxTextStyle
 	}
 
+	if p.TitleStyle == nil {
+		p.TitleStyle = &ThemeDefault.BoxTitleStyle
+	}
+
 	maxWidth := internal.GetStringMaxWidth(Sprint(a...))
 
 	var topLine string
@@ -298,27 +311,35 @@ func (p BoxPrinter) Sprint(a ...any) string {
 			p.RightPadding = internal.GetStringMaxWidth(p.Title) - (maxWidth + p.RightPadding + p.LeftPadding - 5)
 		}
 
-		if p.TitleTopLeft {
+		p.Title = p.TitleStyle.Sprint(p.Title)
+
+		switch {
+		case p.TitleTopLeft:
 			topLine = p.BoxStyle.Sprint(p.BottomRightCornerString) + internal.AddTitleToLine(p.Title, p.BoxStyle.Sprint(p.HorizontalString), maxWidth+p.LeftPadding+p.RightPadding, true) + p.BoxStyle.Sprint(p.BottomLeftCornerString)
 			bottomLine = p.BoxStyle.Sprint(p.TopRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString),
 				maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.TopLeftCornerString)
-		} else if p.TitleTopRight {
+
+		case p.TitleTopRight:
 			topLine = p.BoxStyle.Sprint(p.BottomRightCornerString) + internal.AddTitleToLine(p.Title, p.BoxStyle.Sprint(p.HorizontalString), maxWidth+p.LeftPadding+p.RightPadding, false) + p.BoxStyle.Sprint(p.BottomLeftCornerString)
 			bottomLine = p.BoxStyle.Sprint(p.TopRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString),
 				maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.TopLeftCornerString)
-		} else if p.TitleTopCenter {
+
+		case p.TitleTopCenter:
 			topLine = p.BoxStyle.Sprint(p.BottomRightCornerString) + internal.AddTitleToLineCenter(p.Title, p.BoxStyle.Sprint(p.HorizontalString), maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.BottomLeftCornerString)
 			bottomLine = p.BoxStyle.Sprint(p.TopRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString),
 				maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.TopLeftCornerString)
-		} else if p.TitleBottomLeft {
+
+		case p.TitleBottomLeft:
 			topLine = p.BoxStyle.Sprint(p.BottomRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString),
 				maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.BottomLeftCornerString)
 			bottomLine = p.BoxStyle.Sprint(p.TopRightCornerString) + internal.AddTitleToLine(p.Title, p.BoxStyle.Sprint(p.HorizontalString), maxWidth+p.LeftPadding+p.RightPadding, true) + p.BoxStyle.Sprint(p.TopLeftCornerString)
-		} else if p.TitleBottomRight {
+
+		case p.TitleBottomRight:
 			topLine = p.BoxStyle.Sprint(p.BottomRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString),
 				maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.BottomLeftCornerString)
 			bottomLine = p.BoxStyle.Sprint(p.TopRightCornerString) + internal.AddTitleToLine(p.Title, p.BoxStyle.Sprint(p.HorizontalString), maxWidth+p.LeftPadding+p.RightPadding, false) + p.BoxStyle.Sprint(p.TopLeftCornerString)
-		} else if p.TitleBottomCenter {
+
+		case p.TitleBottomCenter:
 			topLine = p.BoxStyle.Sprint(p.BottomRightCornerString) + strings.Repeat(p.BoxStyle.Sprint(p.HorizontalString),
 				maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.BottomLeftCornerString)
 			bottomLine = p.BoxStyle.Sprint(p.TopRightCornerString) + internal.AddTitleToLineCenter(p.Title, p.BoxStyle.Sprint(p.HorizontalString), maxWidth+p.LeftPadding+p.RightPadding) + p.BoxStyle.Sprint(p.TopLeftCornerString)
@@ -402,13 +423,7 @@ func (p BoxPrinter) Printfln(format string, a ...any) *TextPrinter {
 // If every error is nil, nothing will be printed.
 // This can be used for simple error checking.
 func (p BoxPrinter) PrintOnError(a ...any) *TextPrinter {
-	for _, arg := range a {
-		if err, ok := arg.(error); ok {
-			if err != nil {
-				p.Println(err)
-			}
-		}
-	}
+	printOnError(p, a...)
 
 	tp := TextPrinter(p)
 
@@ -419,13 +434,7 @@ func (p BoxPrinter) PrintOnError(a ...any) *TextPrinter {
 // If every error is nil, nothing will be printed.
 // This can be used for simple error checking.
 func (p BoxPrinter) PrintOnErrorf(format string, a ...any) *TextPrinter {
-	for _, arg := range a {
-		if err, ok := arg.(error); ok {
-			if err != nil {
-				p.Println(fmt.Errorf(format, err))
-			}
-		}
-	}
+	printOnErrorf(p, format, a...)
 
 	tp := TextPrinter(p)
 

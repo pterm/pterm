@@ -12,9 +12,9 @@ import (
 var DefaultTable = TablePrinter{
 	Style:                   &ThemeDefault.TableStyle,
 	HeaderStyle:             &ThemeDefault.TableHeaderStyle,
-	HeaderRowSeparator:      "",
+	HeaderRowSeparator:      "─",
 	HeaderRowSeparatorStyle: &ThemeDefault.TableSeparatorStyle,
-	Separator:               " | ",
+	Separator:               " │ ",
 	SeparatorStyle:          &ThemeDefault.TableSeparatorStyle,
 	RowSeparator:            "",
 	RowSeparatorStyle:       &ThemeDefault.TableSeparatorStyle,
@@ -222,21 +222,22 @@ func (p TablePrinter) Srender() (string, error) {
 		t.rows = append(t.rows, r)
 	}
 
+	// Render every row once and reuse the result for measuring and output.
+	renderedRows := make([]string, len(t.rows))
+
 	var maxRowWidth int
 
-	for _, r := range t.rows {
-		rowWidth := internal.GetStringMaxWidth(p.renderRow(t, r))
-		if rowWidth > maxRowWidth {
-			maxRowWidth = rowWidth
-		}
+	for i, r := range t.rows {
+		renderedRows[i] = p.renderRow(t, r)
+		maxRowWidth = max(maxRowWidth, internal.GetStringMaxWidth(renderedRows[i]))
 	}
 
 	// render table
 	var ret strings.Builder
 
-	for i, r := range t.rows {
+	for i, renderedRow := range renderedRows {
 		if i == 0 && p.HasHeader {
-			ret.WriteString(p.HeaderStyle.Sprint(p.renderRow(t, r)))
+			ret.WriteString(p.HeaderStyle.Sprint(renderedRow))
 
 			if p.HeaderRowSeparator != "" {
 				ret.WriteString(strings.Repeat(p.HeaderRowSeparatorStyle.Sprint(p.HeaderRowSeparator), maxRowWidth))
@@ -248,9 +249,9 @@ func (p TablePrinter) Srender() (string, error) {
 
 		// Apply AlternateRowStyle if needed
 		if i%2 == 1 && p.AlternateRowStyle != nil {
-			ret.WriteString(p.AlternateRowStyle.Sprint(p.renderRow(t, r)))
+			ret.WriteString(p.AlternateRowStyle.Sprint(renderedRow))
 		} else {
-			ret.WriteString(p.renderRow(t, r))
+			ret.WriteString(renderedRow)
 		}
 
 		if p.RowSeparator != "" && i < len(t.rows)-1 {
@@ -269,7 +270,7 @@ func (p TablePrinter) Srender() (string, error) {
 // It merges the cells of a row into one string.
 // Each line of each cell is merged with the same line of the other cells.
 func (p TablePrinter) renderRow(t table, r row) string {
-	var s string
+	var s strings.Builder
 
 	// Merge lines of cells and add separator
 	// Use t.maxColumnWidths to add padding to corresponding cell
@@ -285,36 +286,40 @@ func (p TablePrinter) renderRow(t table, r row) string {
 
 			// Add right alignment if necessary
 			if p.RightAlignment {
-				s += strings.Repeat(" ", paddingForLine)
+				s.WriteString(strings.Repeat(" ", paddingForLine))
 			}
 
 			// Add line content
 			if i < len(c.lines) {
-				s += c.lines[i]
+				s.WriteString(c.lines[i])
 			}
 
 			// Add padding for left alignment, except for last column
 			if j < len(r.cells)-1 {
 				if p.LeftAlignment {
-					s += strings.Repeat(" ", paddingForLine)
+					s.WriteString(strings.Repeat(" ", paddingForLine))
 				}
 
-				s += p.SeparatorStyle.Sprint(p.Separator)
+				s.WriteString(p.SeparatorStyle.Sprint(p.Separator))
 			} else if p.LeftAlignment {
 				// Add padding after last column
-				s += strings.Repeat(" ", paddingForLine)
+				s.WriteString(strings.Repeat(" ", paddingForLine))
 			}
 		}
 
-		s += "\n"
+		s.WriteString("\n")
 	}
 
-	return s
+	return s.String()
 }
 
 // Render prints the TablePrinter to the terminal.
 func (p TablePrinter) Render() error {
-	s, _ := p.Srender()
+	s, err := p.Srender()
+	if err != nil {
+		return err
+	}
+
 	Fprintln(p.Writer, s)
 
 	return nil

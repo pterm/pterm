@@ -5,25 +5,22 @@ import (
 )
 
 func main() {
-	// Print an informational message.
+	// RGB colors need a TrueColor terminal; on anything less PTerm
+	// downsamples them to the closest supported color.
 	pterm.Info.Println("RGB colors only work in Terminals which support TrueColor.")
 
-	// Define the start and end points for the color gradient.
-	startColor := pterm.NewRGB(0, 255, 255) // Cyan
-	endColor := pterm.NewRGB(255, 0, 255)   // Magenta
+	startColor := pterm.NewRGB(0, 255, 255) // cyan
+	endColor := pterm.NewRGB(255, 0, 255)   // magenta
 
-	// Get the terminal height to determine the gradient range.
+	// Spread the gradient over the visible terminal height, one line per step.
 	terminalHeight := pterm.GetTerminalHeight()
 
-	// Loop over the range of the terminal height to create a color gradient.
 	for i := 0; i < terminalHeight-2; i++ {
-		// Calculate the fade factor for the current step in the gradient.
+		// Fade interpolates between the two colors; the factor 0..1 selects
+		// the position on the gradient.
 		fadeFactor := float32(i) / float32(terminalHeight-2)
-
-		// Create a color that represents the current step in the gradient.
 		currentColor := startColor.Fade(0, 1, fadeFactor, endColor)
 
-		// Print a string with the current color.
 		currentColor.Println("Hello, World!")
 	}
 }

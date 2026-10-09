@@ -104,7 +104,7 @@
 
 
 ────────────────────────────────────────────────────────────────────────────────
->
+
 
 
 
@@ -317,7 +317,7 @@
 
 ────────────────────────────────────────────────────────────────────────────────
 Please select your options [type to search]:
-> [✗] Option 0
+❯ [✗] Option 0
   [✗] Option 1
   [✗] Option 2
   [✗] Option 3
@@ -334,14 +334,14 @@ enter: select | tab: confirm | left: none | right: all | type to filter
 
 ────────────────────────────────────────────────────────────────────────────────
 Please select your options: fuzzy
-  > Option 1
-  > Option 3
-  > Option 5
-  > Option 7
-  > Option 9
-  > You can use fuzzy searching (2)
- INFO  Selected options: [Option 1 Option 3 Option 5 Option 7 Option 9 You
-can use fuzzy searching (2)]
+  ❯ Option 1
+  ❯ Option 3
+  ❯ Option 5
+  ❯ Option 7
+  ❯ Option 9
+  ❯ You can use fuzzy searching (2)
+  INFO    Selected options: [Option 1 Option 3 Option 5 Option 7 Option 9 Y
+ou can use fuzzy searching (2)]
 >
 
 
@@ -351,14 +351,14 @@ can use fuzzy searching (2)]
 
 ────────────────────────────────────────────────────────────────────────────────
 Please select your options: fuzzy
-  > Option 1
-  > Option 3
-  > Option 5
-  > Option 7
-  > Option 9
-  > You can use fuzzy searching (2)
- INFO  Selected options: [Option 1 Option 3 Option 5 Option 7 Option 9 You
-can use fuzzy searching (2)]
+  ❯ Option 1
+  ❯ Option 3
+  ❯ Option 5
+  ❯ Option 7
+  ❯ Option 9
+  ❯ You can use fuzzy searching (2)
+  INFO    Selected options: [Option 1 Option 3 Option 5 Option 7 Option 9 Y
+ou can use fuzzy searching (2)]
 >
 
 

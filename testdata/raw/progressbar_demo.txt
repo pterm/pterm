@@ -317,7 +317,7 @@
 
 ────────────────────────────────────────────────────────────────────────────────
  SUCCESS  Downloading pseudo-excel
-Downloading pseudo-excel [01/12] ████████████████████████████████   8% | 0s
+Downloading pseudo-excel  1/12 ██▊░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░   8% · 0s
 
 
 
@@ -345,7 +345,7 @@ Downloading pseudo-excel [01/12] ███████████████�
  SUCCESS  Downloading pseudo-minecraft
  SUCCESS  Downloading pseudo-scoop
  SUCCESS  Downloading pseudo-chocolatey
-Downloading pseudo-chocolatey [12/12] ███████████████████████████ 100% | 7s
+Downloading pseudo-chocolatey 12/12 █████████████████████████████ 100% · 7s
 >
 
 
@@ -362,7 +362,7 @@ Downloading pseudo-chocolatey [12/12] ██████████████
  SUCCESS  Downloading pseudo-minecraft
  SUCCESS  Downloading pseudo-scoop
  SUCCESS  Downloading pseudo-chocolatey
-Downloading pseudo-chocolatey [12/12] ███████████████████████████ 100% | 7s
+Downloading pseudo-chocolatey 12/12 █████████████████████████████ 100% · 7s
 >
 
 

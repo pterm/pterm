@@ -1,6 +1,6 @@
 ### interactive_textinput/demo
 
-![Animation](https://vhs.charm.sh/vhs-7tXyy2wsH9KgIXwJQtrmIH.gif)
+![Animation](https://vhs.charm.sh/vhs-7xu04W1sjODqqV4xW1bQrY.gif)
 
 <details>
 
@@ -14,13 +14,10 @@ import (
 )
 
 func main() {
-	// Create an interactive text input with single line input mode and show it
+	// The text input is single-line by default; enter submits the input.
 	result, _ := pterm.DefaultInteractiveTextInput.Show()
 
-	// Print a blank line for better readability
 	pterm.Println()
-
-	// Print the user's answer with an info prefix
 	pterm.Info.Printfln("You answered: %s", result)
 }
 ```
@@ -29,7 +26,7 @@ func main() {
 
 ### interactive_textinput/default-value
 
-![Animation](https://vhs.charm.sh/vhs-5DeRRhXi4O6FLuMCby1A2T.gif)
+![Animation](https://vhs.charm.sh/vhs-5TfbfjgGuvVPj5xOcB8nQZ.gif)
 
 <details>
 
@@ -43,13 +40,11 @@ import (
 )
 
 func main() {
-	// Create an interactive text input with single line input mode and show it
+	// The default value is shown as a pre-filled suggestion. Pressing enter
+	// right away returns it; typing anything replaces it.
 	result, _ := pterm.DefaultInteractiveTextInput.WithDefaultValue("Some default value").Show()
 
-	// Print a blank line for better readability
 	pterm.Println()
-
-	// Print the user's answer with an info prefix
 	pterm.Info.Printfln("You answered: %s", result)
 }
 ```
@@ -58,7 +53,7 @@ func main() {
 
 ### interactive_textinput/multi-line
 
-![Animation](https://vhs.charm.sh/vhs-15THY2bAaKN3cHTDnoa1IH.gif)
+![Animation](https://vhs.charm.sh/vhs-6BcAPqMvP68DHVX0tCfZg5.gif)
 
 <details>
 
@@ -72,19 +67,12 @@ import (
 )
 
 func main() {
-	// Create a default interactive text input with multi-line enabled.
-	// This allows the user to input multiple lines of text.
+	// In multi-line mode, enter inserts a new line and tab submits the input.
 	textInput := pterm.DefaultInteractiveTextInput.WithMultiLine()
 
-	// Show the text input to the user and store the result.
-	// The second return value (an error) is ignored with '_'.
 	result, _ := textInput.Show()
 
-	// Print a blank line for better readability in the output.
 	pterm.Println()
-
-	// Print the user's input prefixed with an informational message.
-	// The '%s' placeholder is replaced with the user's input.
 	pterm.Info.Printfln("You answered: %s", result)
 }
 ```
@@ -93,7 +81,7 @@ func main() {
 
 ### interactive_textinput/password
 
-![Animation](https://vhs.charm.sh/vhs-7frTfYg9xKrnSszR3KFYbp.gif)
+![Animation](https://vhs.charm.sh/vhs-7a9giWv4rH3696aO44jmgZ.gif)
 
 <details>
 
@@ -105,17 +93,14 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Create an interactive text input with a mask for password input
+	// WithMask echoes the given string instead of the typed characters,
+	// which turns the text input into a password prompt.
 	passwordInput := pterm.DefaultInteractiveTextInput.WithMask("*")
 
-	// Show the password input prompt and store the result
 	result, _ := passwordInput.Show("Enter your password")
 
-	// Get the default logger from PTerm
+	// Never log passwords in a real application, this is just a demo.
 	logger := pterm.DefaultLogger
-
-	// Log the received password (masked)
-	// Note: In a real-world application, you should never log passwords
 	logger.Info("Password received", logger.Args("password", result))
 }
 ```

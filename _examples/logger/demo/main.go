@@ -1,62 +1,52 @@
 package main
 
 import (
-	"github.com/pterm/pterm"
 	"time"
+
+	"github.com/pterm/pterm"
 )
 
 func main() {
-	// Create a logger with trace level
+	// The default log level is Info. Lower it to Trace so every level shows up.
 	logger := pterm.DefaultLogger.WithLevel(pterm.LogLevelTrace)
 
-	// Log a trace level message
+	// logger.Args pairs up keys and values for structured output.
 	logger.Trace("Doing not so important stuff", logger.Args("priority", "super low"))
 
-	// Pause for 3 seconds
 	sleep()
 
-	// Define a map with interesting stuff
-	interstingStuff := map[string]any{
+	interestingStuff := map[string]any{
 		"when were crayons invented":  "1903",
 		"what is the meaning of life": 42,
 		"is this interesting":         true,
 	}
 
-	// Log a debug level message with arguments from the map
-	logger.Debug("This might be interesting", logger.ArgsFromMap(interstingStuff))
+	// ArgsFromMap turns an existing map into logger arguments.
+	logger.Debug("This might be interesting", logger.ArgsFromMap(interestingStuff))
 
-	// Pause for 3 seconds
 	sleep()
 
-	// Log an info level message
 	logger.Info("That was actually interesting", logger.Args("such", "wow"))
 
-	// Pause for 3 seconds
 	sleep()
 
-	// Log a warning level message
 	logger.Warn("Oh no, I see an error coming to us!", logger.Args("speed", 88, "measures", "mph"))
 
-	// Pause for 3 seconds
 	sleep()
 
-	// Log an error level message
 	logger.Error("Damn, here it is!", logger.Args("error", "something went wrong"))
 
-	// Pause for 3 seconds
 	sleep()
 
-	// Log an info level message with a long text that will be automatically wrapped
+	// Long messages are wrapped to the terminal width automatically.
 	logger.Info("But what's really cool is, that you can print very long logs, and PTerm will automatically wrap them for you! Say goodbye to text, that has weird line breaks!", logger.Args("very", "long"))
 
-	// Pause for 3 seconds
 	sleep()
 
-	// Log a fatal level message
+	// Fatal logs the message and then exits the process.
 	logger.Fatal("Oh no, this process is getting killed!", logger.Args("fatal", true))
 }
 
-// Function to pause the execution for 3 seconds
 func sleep() {
 	time.Sleep(time.Second * 3)
 }

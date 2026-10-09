@@ -1,204 +1,243 @@
 package pterm_test
 
+// Behavioral tests for TablePrinter: column width math, alignment, separators,
+// header styling, boxing and CSV input. The builder/contract plumbing is
+// covered generically in contract_test.go, one representative output is locked
+// in snapshot_test.go.
+
 import (
 	"encoding/csv"
-	"io"
-	"os"
+	"strings"
 	"testing"
 
-	"github.com/MarvinJWendt/testza"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/pterm/pterm"
 )
 
-func TestTablePrinter_NilPrint(t *testing.T) {
-	p := pterm.TablePrinter{}
-	p.Render()
+// srenderPlain renders a RenderPrinter and strips all ANSI escape codes, so
+// tests can assert on the exact visible layout. Shared by the render printer
+// test files (table, tree, bullet list, panel, bar chart, heatmap, big text).
+func srenderPlain(t *testing.T, p pterm.RenderPrinter) string {
+	t.Helper()
+
+	out, err := p.Srender()
+	require.NoError(t, err)
+
+	return stripANSI(out)
 }
 
-func TestTablePrinter_Render(t *testing.T) {
-	d := pterm.TableData{
-		{"Firstname", "Lastname", "Email"},
-		{"Paul", "Dean", "nisi.dictum.augue@velitAliquam.co.uk"},
-		{"Callie", "Mckay", "egestas.nunc.sed@est.com"},
-		{"Libby", "Camacho", "aliquet.lobortis@semper.com"},
-	}
-	// WithLeftAlignment
-	printer := pterm.DefaultTable.WithHasHeader().WithLeftAlignment().WithData(d)
-	content, err := printer.Srender()
+// styledPrefix returns the escape sequence a style emits directly before its
+// content, so tests can detect which style a rendered region starts with.
+func styledPrefix(t *testing.T, style *pterm.Style) string {
+	t.Helper()
 
-	testza.AssertNoError(t, err)
-	testza.AssertNotNil(t, content)
-	// WithRightAlignment
-	printer = pterm.DefaultTable.WithHasHeader().WithRightAlignment().WithData(d)
-	content, err = printer.Srender()
+	parts := strings.SplitN(style.Sprint("X"), "X", 2)
+	require.NotEmpty(t, parts[0], "style must emit an escape sequence")
 
-	testza.AssertNoError(t, err)
-	testza.AssertNotNil(t, content)
+	return parts[0]
 }
 
-func TestTablePrinterWithAlternateStyle_Render(t *testing.T) {
-	d := pterm.TableData{
-		{"Firstname", "Lastname", "Email"},
-		{"Paul", "Dean", "nisi.dictum.augue@velitAliquam.co.uk"},
-		{"Callie", "Mckay", "egestas.nunc.sed@est.com"},
-		{"Libby", "Camacho", "aliquet.lobortis@semper.com"},
-	}
-
-	// Define the alternate row style
-	alternateStyle := pterm.NewStyle(pterm.BgDarkGray)
-
-	// Create a printer with the alternate row style
-	printer := pterm.DefaultTable.WithHasHeader().WithAlternateRowStyle(alternateStyle).WithData(d)
-	content, err := printer.Srender()
-	testza.AssertNoError(t, err)
-	testza.AssertNotNil(t, content)
-}
-
-func TestTablePrinterWithRowSeparators_Render(t *testing.T) {
-	d := pterm.TableData{
-		{"Firstname", "Lastname", "Email"},
-		{"Paul", "Dean", "nisi.dictum.augue@velitAliquam.co.uk"},
-		{"Callie", "Mckay", "egestas.nunc.sed@est.com"},
-		{"Libby", "Camacho", "aliquet.lobortis@semper.com"},
-	}
-	// WithHeaderSeparator
-	printer := pterm.DefaultTable.WithHasHeader().WithHeaderRowSeparator("=").WithData(d)
-	content, err := printer.Srender()
-	testza.AssertNoError(t, err)
-	testza.AssertNotNil(t, content)
-	// WithRowSeparator
-	printer = pterm.DefaultTable.WithHasHeader().WithRowSeparator("-").WithData(d)
-	content, err = printer.Srender()
-	testza.AssertNoError(t, err)
-	testza.AssertNotNil(t, content)
-	// WithHeaderRowSeparator & WithRowSeparator
-	printer = pterm.DefaultTable.WithHasHeader().WithHeaderRowSeparator("=").WithRowSeparator("-").WithData(d)
-	content, err = printer.Srender()
-	testza.AssertNoError(t, err)
-	testza.AssertNotNil(t, content)
-}
-
-func TestTablePrinter_WithCSVReader(t *testing.T) {
-	content := captureStdout(func(w io.Writer) {
-		r := csv.NewReader(&outBuf)
-		p := pterm.TablePrinter{}
-		p.WithCSVReader(r)
+func TestTablePrinter_ColumnsPaddedToWidestCell(t *testing.T) {
+	printer := pterm.DefaultTable.WithData(pterm.TableData{
+		{"Name", "Age"},
+		{"Alice", "1"},
+		{"Bob", "22"},
 	})
-	testza.AssertNotNil(t, content)
+
+	// Column 0 is padded to "Alice" (5), column 1 to "Age" (3); the last
+	// column is padded too, so every separator lines up across all rows.
+	expected := "" +
+		"Name  │ Age\n" +
+		"Alice │ 1  \n" +
+		"Bob   │ 22 \n"
+
+	assert.Equal(t, expected, srenderPlain(t, printer))
 }
 
-func TestTablePrinter_WithBoxed(t *testing.T) {
-	_, err := pterm.DefaultTable.WithBoxed().Srender()
-	if err != nil {
-		t.Error(err)
+func TestTablePrinter_WideUnicodeCellsAlign(t *testing.T) {
+	printer := pterm.DefaultTable.WithData(pterm.TableData{
+		{"汉字", "x"},
+		{"abc", "y"},
+	})
+
+	// "汉字" occupies 4 terminal cells, so "abc" gets one space of padding.
+	expected := "" +
+		"汉字 │ x\n" +
+		"abc  │ y\n"
+
+	assert.Equal(t, expected, srenderPlain(t, printer))
+}
+
+func TestTablePrinter_ANSICodesInCellsDoNotAffectPadding(t *testing.T) {
+	printer := pterm.DefaultTable.WithData(pterm.TableData{
+		{pterm.FgRed.Sprint("a"), "b"},
+		{"cc", "d"},
+	})
+
+	// The styled "a" is much longer in bytes than "cc", but only its visible
+	// width (1) may count for the column width.
+	expected := "" +
+		"a  │ b\n" +
+		"cc │ d\n"
+
+	assert.Equal(t, expected, srenderPlain(t, printer))
+}
+
+func TestTablePrinter_RightAlignment(t *testing.T) {
+	printer := pterm.DefaultTable.WithRightAlignment().WithData(pterm.TableData{
+		{"Name", "Age"},
+		{"Alice", "1"},
+		{"Bob", "22"},
+	})
+
+	expected := "" +
+		" Name │ Age\n" +
+		"Alice │   1\n" +
+		"  Bob │  22\n"
+
+	assert.Equal(t, expected, srenderPlain(t, printer))
+}
+
+func TestTablePrinter_MultilineCellsStayInTheirColumn(t *testing.T) {
+	printer := pterm.DefaultTable.WithData(pterm.TableData{
+		{"a\nb", "x"},
+		{"c", "y"},
+	})
+
+	// The second line of the multiline cell stays in column 0; column 1 is
+	// padded with spaces on that line.
+	expected := "" +
+		"a │ x\n" +
+		"b │  \n" +
+		"c │ y\n"
+
+	assert.Equal(t, expected, srenderPlain(t, printer))
+}
+
+func TestTablePrinter_HeaderRowSeparatorSpansTableWidth(t *testing.T) {
+	printer := pterm.DefaultTable.WithHasHeader().WithHeaderRowSeparator("=").WithData(pterm.TableData{
+		{"Name", "Age"},
+		{"Bob", "1"},
+	})
+
+	expected := "" +
+		"Name │ Age\n" +
+		"==========\n" +
+		"Bob  │ 1  \n"
+
+	assert.Equal(t, expected, srenderPlain(t, printer))
+}
+
+func TestTablePrinter_RowSeparatorBetweenRowsOnly(t *testing.T) {
+	printer := pterm.DefaultTable.WithRowSeparator("-").WithData(pterm.TableData{
+		{"a"},
+		{"b"},
+		{"c"},
+	})
+
+	// A separator line (as wide as the widest row) between rows, but not
+	// after the last one.
+	expected := "a\n-\nb\n-\nc\n"
+
+	assert.Equal(t, expected, srenderPlain(t, printer))
+}
+
+func TestTablePrinter_HasHeaderStylesOnlyFirstRow(t *testing.T) {
+	data := pterm.TableData{
+		{"Name", "Age"},
+		{"Alice", "1"},
 	}
+
+	styled, err := pterm.DefaultTable.WithHasHeader().WithData(data).Srender()
+	require.NoError(t, err)
+
+	prefix := styledPrefix(t, &pterm.ThemeDefault.TableHeaderStyle)
+	assert.Contains(t, styled, prefix+"Name", "header row must be wrapped in the header style")
+	assert.NotContains(t, styled, prefix+"Alice", "data rows must not get the header style")
+
+	// Apart from the header separator line, the header style must not change
+	// the visible layout.
+	expected := "" +
+		"Name  │ Age\n" +
+		"───────────\n" +
+		"Alice │ 1  \n"
+	assert.Equal(t, expected, stripANSI(styled))
 }
 
-func TestTablePrinter_WithData(t *testing.T) {
-	proxyToDevNull()
+func TestTablePrinter_AlternateRowStyleOnEverySecondRow(t *testing.T) {
+	alt := pterm.NewStyle(pterm.FgMagenta)
+	printer := pterm.DefaultTable.WithHasHeader().WithAlternateRowStyle(alt).WithData(pterm.TableData{
+		{"Name", "Age"},
+		{"Bob", "1"},
+		{"Callie", "2"},
+		{"Dean", "3"},
+	})
 
-	d := pterm.TableData{
-		{"Firstname", "Lastname", "Email"},
-		{"Paul", "Dean", "nisi.dictum.augue@velitAliquam.co.uk"},
-		{"Callie", "Mckay", "egestas.nunc.sed@est.com"},
-		{"Libby", "Camacho", "aliquet.lobortis@semper.com"},
+	styled, err := printer.Srender()
+	require.NoError(t, err)
+
+	prefix := styledPrefix(t, alt)
+	assert.Contains(t, styled, prefix+"Bob", "row 1 must use the alternate style")
+	assert.Contains(t, styled, prefix+"Dean", "row 3 must use the alternate style")
+	assert.NotContains(t, styled, prefix+"Callie", "row 2 must not use the alternate style")
+}
+
+func TestTablePrinter_BoxedWrapsTableInAlignedBox(t *testing.T) {
+	printer := pterm.DefaultTable.WithBoxed().WithData(pterm.TableData{
+		{"a", "b"},
+		{"cc", "dd"},
+	})
+
+	expected := "" +
+		"╭─────────╮\n" +
+		"│ a  │ b  │\n" +
+		"│ cc │ dd │\n" +
+		"╰─────────╯"
+
+	assert.Equal(t, expected, srenderPlain(t, printer))
+}
+
+func TestTablePrinter_EmptyDataRendersEmptyString(t *testing.T) {
+	// Documents current behavior: a table without data renders as an empty
+	// string and does not return an error.
+	out, err := pterm.DefaultTable.Srender()
+	require.NoError(t, err)
+	assert.Empty(t, out)
+}
+
+func TestTablePrinter_WithCSVReaderParsesRecordsIntoData(t *testing.T) {
+	reader := csv.NewReader(strings.NewReader("Name,Age\nAlice,30\n"))
+	printer := pterm.DefaultTable.WithCSVReader(reader)
+
+	require.Equal(t, pterm.TableData{{"Name", "Age"}, {"Alice", "30"}}, printer.Data)
+
+	// The CSV-fed table must render exactly like the same data set directly.
+	fromData := srenderPlain(t, pterm.DefaultTable.WithData(pterm.TableData{{"Name", "Age"}, {"Alice", "30"}}))
+	assert.Equal(t, fromData, srenderPlain(t, printer))
+}
+
+func TestTablePrinter_WithCSVReaderKeepsDataOnParseError(t *testing.T) {
+	reader := csv.NewReader(strings.NewReader("a,b\nc\n")) // inconsistent field count
+	printer := pterm.DefaultTable.WithCSVReader(reader)
+
+	assert.Nil(t, printer.Data, "malformed CSV must leave Data unchanged")
+}
+
+func TestTablePrinter_SrenderIsPure(t *testing.T) {
+	data := pterm.TableData{
+		{"Name", "Age"},
+		{"Alice", "1"},
 	}
-	p := pterm.TablePrinter{}
-	p2 := p.WithData(d)
+	printer := pterm.DefaultTable.WithHasHeader().WithData(data)
 
-	testza.AssertEqual(t, d, p2.Data)
-}
+	first, err := printer.Srender()
+	require.NoError(t, err)
 
-func TestTablePrinter_WithHasHeader(t *testing.T) {
-	p := pterm.TablePrinter{}
-	p2 := p.WithHasHeader()
+	second, err := printer.Srender()
+	require.NoError(t, err)
 
-	testza.AssertTrue(t, p2.HasHeader)
-}
-
-func TestTablePrinter_WithHeaderStyle(t *testing.T) {
-	s := pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold)
-	p := pterm.TablePrinter{}
-	p2 := p.WithHeaderStyle(s)
-
-	testza.AssertEqual(t, s, p2.HeaderStyle)
-}
-
-func TestTablePrinter_WithSeparator(t *testing.T) {
-	p := pterm.TablePrinter{}
-	p2 := p.WithSeparator("-")
-
-	testza.AssertEqual(t, "-", p2.Separator)
-}
-
-func TestTablePrinter_WithSeparatorStyle(t *testing.T) {
-	s := pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold)
-	p := pterm.TablePrinter{}
-	p2 := p.WithSeparatorStyle(s)
-
-	testza.AssertEqual(t, s, p2.SeparatorStyle)
-}
-
-func TestTablePrinter_WithHeaderRowSeparator(t *testing.T) {
-	p := pterm.TablePrinter{}
-	p2 := p.WithHeaderRowSeparator("-")
-
-	testza.AssertEqual(t, "-", p2.HeaderRowSeparator)
-}
-
-func TestTablePrinter_WithHeaderRowSeparatorStyle(t *testing.T) {
-	s := pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold)
-	p := pterm.TablePrinter{}
-	p2 := p.WithHeaderRowSeparatorStyle(s)
-
-	testza.AssertEqual(t, s, p2.HeaderRowSeparatorStyle)
-}
-
-func TestTablePrinter_WithRowSeparator(t *testing.T) {
-	p := pterm.TablePrinter{}
-	p2 := p.WithRowSeparator("-")
-
-	testza.AssertEqual(t, "-", p2.RowSeparator)
-}
-
-func TestTablePrinter_WithRowSeparatorStyle(t *testing.T) {
-	s := pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold)
-	p := pterm.TablePrinter{}
-	p2 := p.WithRowSeparatorStyle(s)
-
-	testza.AssertEqual(t, s, p2.RowSeparatorStyle)
-}
-
-func TestTablePrinter_WithStyle(t *testing.T) {
-	s := pterm.NewStyle(pterm.FgRed, pterm.BgBlue, pterm.Bold)
-	p := pterm.TablePrinter{}
-	p2 := p.WithStyle(s)
-
-	testza.AssertEqual(t, s, p2.Style)
-}
-
-func TestTablePrinter_WithLeftAlignment(t *testing.T) {
-	s := true
-	p := pterm.TablePrinter{}
-	p2 := p.WithLeftAlignment(s)
-
-	testza.AssertEqual(t, s, p2.LeftAlignment)
-}
-
-func TestTablePrinter_WithRightAlignment(t *testing.T) {
-	s := true
-	p := pterm.TablePrinter{}
-	p2 := p.WithRightAlignment(s)
-
-	testza.AssertEqual(t, s, p2.RightAlignment)
-}
-
-func TestTablePrinter_WithWriter(t *testing.T) {
-	p := pterm.TablePrinter{}
-	s := os.Stderr
-	p2 := p.WithWriter(s)
-
-	testza.AssertEqual(t, s, p2.Writer)
-	testza.AssertZero(t, p.Writer)
+	assert.Equal(t, first, second, "rendering twice must yield identical output")
+	assert.Equal(t, pterm.TableData{{"Name", "Age"}, {"Alice", "1"}}, data, "rendering must not modify the input data")
 }

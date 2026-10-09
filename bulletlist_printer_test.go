@@ -1,165 +1,140 @@
 package pterm_test
 
+// Behavioral tests for BulletListPrinter: indentation math, bullet selection,
+// multiline continuation lines and per-item styling. The builder/contract
+// plumbing is covered in contract_test.go, one representative output in
+// snapshot_test.go.
+
 import (
-	"fmt"
-	"io"
-	"os"
 	"testing"
 
-	"github.com/MarvinJWendt/testza"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	"github.com/pterm/pterm"
 )
 
-func TestBulletListPrinterNilPrint(t *testing.T) {
-	p := pterm.BulletListPrinter{}
-	p.Render()
-}
-
-func TestBulletListPrinter_Render(t *testing.T) {
-	testPrintContains(t, func(w io.Writer, a any) {
-		pterm.DefaultBulletList.WithItems([]pterm.BulletListItem{
-			{Level: 0, Text: fmt.Sprint(a)},
-		}).Render()
+func TestBulletListPrinter_IndentationAndBullets(t *testing.T) {
+	printer := pterm.DefaultBulletList.WithItems([]pterm.BulletListItem{
+		{Level: 0, Text: "zero"},
+		{Level: 1, Text: "one", Bullet: "-"},
+		{Level: 3, Text: "three"},
 	})
+
+	// Indentation is exactly two spaces per Level; items without their own
+	// bullet use the printer's default bullet.
+	expected := "" +
+		"• zero\n" +
+		"  - one\n" +
+		"      • three\n"
+
+	assert.Equal(t, expected, srenderPlain(t, printer))
 }
 
-func TestBulletListPrinter_RenderWithoutStyle(t *testing.T) {
-	testPrintContains(t, func(w io.Writer, a any) {
-		pterm.BulletListPrinter{}.WithItems([]pterm.BulletListItem{
-			{Level: 0, Text: fmt.Sprint(a)},
-		}).Render()
+func TestBulletListPrinter_CustomPrinterBullet(t *testing.T) {
+	printer := pterm.DefaultBulletList.WithBullet(">").WithItems([]pterm.BulletListItem{
+		{Level: 0, Text: "a"},
+		{Level: 0, Text: "b", Bullet: "*"}, // item bullet wins over printer bullet
 	})
+
+	expected := "" +
+		"> a\n" +
+		"* b\n"
+
+	assert.Equal(t, expected, srenderPlain(t, printer))
 }
 
-func TestBulletListPrinter_RenderWithBullet(t *testing.T) {
-	testPrintContains(t, func(w io.Writer, a any) {
-		pterm.DefaultBulletList.WithItems([]pterm.BulletListItem{
-			{
-				Level:  0,
-				Text:   fmt.Sprint(a),
-				Bullet: "-",
-			},
-		}).Render()
+func TestBulletListPrinter_MultilineItemContinuationLines(t *testing.T) {
+	printer := pterm.DefaultBulletList.WithItems([]pterm.BulletListItem{
+		{Level: 1, Text: "first\nsecond"},
 	})
+
+	// Continuation lines keep the item's indentation and align under the
+	// text, not under the bullet.
+	expected := "" +
+		"  • first\n" +
+		"    second\n"
+
+	assert.Equal(t, expected, srenderPlain(t, printer))
 }
 
-func TestBulletListPrinter_Srender(t *testing.T) {
-	testSprintContainsWithoutError(t, func(a any) (string, error) {
-		return pterm.DefaultBulletList.WithItems([]pterm.BulletListItem{
-			{Level: 0, Text: fmt.Sprint(a)},
-		}).Srender()
+func TestBulletListPrinter_PerItemStyles(t *testing.T) {
+	textStyle := pterm.NewStyle(pterm.FgRed)
+	bulletStyle := pterm.NewStyle(pterm.FgCyan)
+	printer := pterm.DefaultBulletList.WithItems([]pterm.BulletListItem{
+		{Level: 0, Text: "styled", TextStyle: textStyle, BulletStyle: bulletStyle},
+		{Level: 0, Text: "unstyled"},
 	})
+
+	styled, err := printer.Srender()
+	require.NoError(t, err)
+
+	assert.Contains(t, styled, textStyle.Sprint("styled"), "item text must use the item's TextStyle")
+	assert.Contains(t, styled, bulletStyle.Sprint("•"), "bullet must use the item's BulletStyle")
+	assert.NotContains(t, styled, textStyle.Sprint("unstyled"), "other items must not inherit the style")
 }
 
-func TestBulletListPrinter_WithBullet(t *testing.T) {
-	p := pterm.BulletListPrinter{}
-	p2 := p.WithBullet("-")
+func TestBulletListPrinter_PrinterStylesAreItemFallback(t *testing.T) {
+	printerStyle := pterm.NewStyle(pterm.FgGreen)
+	itemStyle := pterm.NewStyle(pterm.FgRed)
+	printer := pterm.DefaultBulletList.WithTextStyle(printerStyle).WithItems([]pterm.BulletListItem{
+		{Level: 0, Text: "inherits"},
+		{Level: 0, Text: "own style", TextStyle: itemStyle},
+	})
 
-	testza.AssertEqual(t, "-", p2.Bullet)
-	testza.AssertZero(t, p.Bullet)
-}
+	styled, err := printer.Srender()
+	require.NoError(t, err)
 
-func TestBulletListPrinter_WithBulletStyle(t *testing.T) {
-	p := pterm.BulletListPrinter{}
-	s := pterm.NewStyle(pterm.FgRed, pterm.BgRed, pterm.Bold)
-	p2 := p.WithBulletStyle(s)
-
-	testza.AssertEqual(t, s, p2.BulletStyle)
-	testza.AssertZero(t, p.BulletStyle)
-}
-
-func TestBulletListPrinter_WithItems(t *testing.T) {
-	p := pterm.BulletListPrinter{}
-	li := []pterm.BulletListItem{{
-		Level:       0,
-		Text:        "test",
-		TextStyle:   nil,
-		Bullet:      "+",
-		BulletStyle: nil,
-	}}
-	p2 := p.WithItems(li)
-
-	testza.AssertEqual(t, li, p2.Items)
-	testza.AssertZero(t, p.Items)
-}
-
-func TestBulletListPrinter_WithTextStyle(t *testing.T) {
-	p := pterm.BulletListPrinter{}
-	s := pterm.NewStyle(pterm.FgRed, pterm.BgRed, pterm.Bold)
-	p2 := p.WithTextStyle(s)
-
-	testza.AssertEqual(t, s, p2.TextStyle)
-	testza.AssertZero(t, p.TextStyle)
-}
-
-func TestBulletListItem_WithBullet(t *testing.T) {
-	p := pterm.BulletListItem{}
-	p2 := p.WithBullet("-")
-
-	testza.AssertEqual(t, "-", p2.Bullet)
-	testza.AssertZero(t, p.Bullet)
-}
-
-func TestBulletListItem_WithBulletStyle(t *testing.T) {
-	p := pterm.BulletListItem{}
-	s := pterm.NewStyle(pterm.FgRed, pterm.BgRed, pterm.Bold)
-	p2 := p.WithBulletStyle(s)
-
-	testza.AssertEqual(t, s, p2.BulletStyle)
-	testza.AssertZero(t, p.BulletStyle)
-}
-
-func TestBulletListItem_WithLevel(t *testing.T) {
-	p := pterm.BulletListItem{}
-	p2 := p.WithLevel(1)
-
-	testza.AssertEqual(t, 1, p2.Level)
-	testza.AssertZero(t, p.Level)
-}
-
-func TestBulletListItem_WithText(t *testing.T) {
-	p := pterm.BulletListItem{}
-	p2 := p.WithText("test")
-
-	testza.AssertEqual(t, "test", p2.Text)
-	testza.AssertZero(t, p.Text)
-}
-
-func TestBulletListItem_WithTextStyle(t *testing.T) {
-	p := pterm.BulletListItem{}
-	s := pterm.NewStyle(pterm.FgRed, pterm.BgRed, pterm.Bold)
-	p2 := p.WithTextStyle(s)
-
-	testza.AssertEqual(t, s, p2.TextStyle)
-	testza.AssertZero(t, p.TextStyle)
+	assert.Contains(t, styled, printerStyle.Sprint("inherits"), "items without a style must use the printer style")
+	assert.Contains(t, styled, itemStyle.Sprint("own style"), "an item's own style must win over the printer style")
 }
 
 func TestNewBulletListFromString(t *testing.T) {
-	p := *pterm.DefaultBulletList.WithItems([]pterm.BulletListItem{
+	expected := *pterm.DefaultBulletList.WithItems([]pterm.BulletListItem{
 		{Level: 0, Text: "0"},
 		{Level: 1, Text: "1"},
 		{Level: 2, Text: "2"},
-		{Level: 3, Text: "3"},
-		{Level: 4, Text: "4"},
-		{Level: 5, Text: "5"},
 	})
 
-	s := `0
- 1
-  2
-   3
-    4
-     5`
-	p2 := pterm.NewBulletListFromString(s, " ")
-
-	testza.AssertEqual(t, p, p2)
+	assert.Equal(t, expected, pterm.NewBulletListFromString("0\n 1\n  2", " "))
 }
 
-func TestBulletListPrinter_WithWriter(t *testing.T) {
-	p := pterm.BulletListPrinter{}
-	s := os.Stderr
-	p2 := p.WithWriter(s)
+func TestBulletListPrinter_SrenderIsPure(t *testing.T) {
+	items := []pterm.BulletListItem{
+		{Level: 0, Text: "a"},
+		{Level: 1, Text: "b"},
+	}
+	printer := pterm.DefaultBulletList.WithItems(items)
 
-	testza.AssertEqual(t, s, p2.Writer)
-	testza.AssertZero(t, p.Writer)
+	first, err := printer.Srender()
+	require.NoError(t, err)
+
+	second, err := printer.Srender()
+	require.NoError(t, err)
+
+	assert.Equal(t, first, second, "rendering twice must yield identical output")
+	assert.Equal(t, []pterm.BulletListItem{
+		{Level: 0, Text: "a"},
+		{Level: 1, Text: "b"},
+	}, items, "rendering must not modify the input items (e.g. write back styles)")
+}
+
+// BulletListItem is a builder-style helper type that is not part of the
+// printer list in contract_test.go, so its With* methods are verified here.
+func TestBulletListItem_Builders(t *testing.T) {
+	style := pterm.NewStyle(pterm.FgRed)
+	item := pterm.BulletListItem{}.
+		WithLevel(2).
+		WithText("text").
+		WithBullet("-").
+		WithTextStyle(style).
+		WithBulletStyle(style)
+
+	assert.Equal(t, pterm.BulletListItem{
+		Level:       2,
+		Text:        "text",
+		Bullet:      "-",
+		TextStyle:   style,
+		BulletStyle: style,
+	}, *item)
 }

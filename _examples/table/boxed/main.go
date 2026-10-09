@@ -3,9 +3,7 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Define the data for the table.
-	// Each inner slice represents a row in the table.
-	// The first row is considered as the header of the table.
+	// The first row becomes the header via WithHasHeader.
 	tableData := pterm.TableData{
 		{"Firstname", "Lastname", "Email", "Note"},
 		{"Paul", "Dean", "augue@velitAliquam.co.uk", ""},
@@ -14,8 +12,6 @@ func main() {
 		{"张", "小宝", "zhang@example.com", ""},
 	}
 
-	// Create a table with the defined data.
-	// The table has a header and is boxed.
-	// Finally, render the table to print it.
+	// WithBoxed draws a box around the whole table.
 	pterm.DefaultTable.WithHasHeader().WithBoxed().WithData(tableData).Render()
 }

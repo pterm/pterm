@@ -1,7 +1,6 @@
 package pterm
 
 import (
-	"fmt"
 	"strings"
 
 	"atomicgo.dev/cursor"
@@ -88,7 +87,7 @@ func (p InteractiveConfirmPrinter) WithSuffixStyle(style *Style) *InteractiveCon
 	return &p
 }
 
-// OnInterrupt sets the function to execute on exit of the input reader
+// WithOnInterruptFunc sets the function to execute on exit of the input reader.
 func (p InteractiveConfirmPrinter) WithOnInterruptFunc(exitFunc func()) *InteractiveConfirmPrinter {
 	p.OnInterruptFunc = exitFunc
 	return &p
@@ -125,10 +124,6 @@ func (p InteractiveConfirmPrinter) Show(text ...string) (bool, error) {
 	err := keyboard.Listen(func(keyInfo keys.Key) (stop bool, err error) {
 		key := keyInfo.Code
 		char := strings.ToLower(keyInfo.String())
-
-		if err != nil {
-			return false, fmt.Errorf("failed to get key: %w", err)
-		}
 
 		switch key {
 		case keys.RuneKey:

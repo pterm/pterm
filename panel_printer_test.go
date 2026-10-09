@@ -1,162 +1,122 @@
 package pterm_test
 
+// Behavioral tests for PanelPrinter: side-by-side line merging, padding math,
+// column width normalization, bottom padding and boxed panels. The
+// builder/contract plumbing is covered in contract_test.go, one representative
+// output in snapshot_test.go.
+
 import (
-	"io"
-	"os"
 	"testing"
 
-	"github.com/MarvinJWendt/testza"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	"github.com/pterm/pterm"
 )
 
-func TestPanelPrinterNilPrint(t *testing.T) {
-	p := pterm.PanelPrinter{}
-	err := p.Render()
-	testza.AssertNoError(t, err)
+func TestPanelPrinter_SideBySideLayout(t *testing.T) {
+	printer := pterm.DefaultPanel.WithPanels(pterm.Panels{
+		{{Data: "a\nbc"}, {Data: "xyz"}},
+	})
+
+	// Both panels share output lines: every panel line is padded to its
+	// panel's width plus the default padding of one space; missing lines of
+	// shorter panels become spaces.
+	expected := "" +
+		"a  xyz \n" +
+		"bc     \n"
+
+	assert.Equal(t, expected, srenderPlain(t, printer))
 }
 
-func TestPanelPrinterNilPrintWithPanels(t *testing.T) {
+func TestPanelPrinter_PaddingBetweenColumns(t *testing.T) {
+	printer := pterm.DefaultPanel.WithPadding(3).WithPanels(pterm.Panels{
+		{{Data: "a"}, {Data: "b"}},
+	})
+
+	expected := "a   b   \n"
+
+	assert.Equal(t, expected, srenderPlain(t, printer))
+}
+
+func TestPanelPrinter_SameColumnWidthPadsAllRowsToWidestPanel(t *testing.T) {
+	printer := pterm.DefaultPanel.WithSameColumnWidth().WithPanels(pterm.Panels{
+		{{Data: "a"}},
+		{{Data: "cccc"}},
+	})
+
+	// Without SameColumnWidth the first row would be 2 cells wide; with it,
+	// every row of the column is padded to the widest panel (4) plus padding.
+	expected := "" +
+		"a    \n" +
+		"cccc \n"
+
+	assert.Equal(t, expected, srenderPlain(t, printer))
+}
+
+func TestPanelPrinter_BottomPaddingAddsBlankLinesBetweenRows(t *testing.T) {
+	printer := pterm.DefaultPanel.WithBottomPadding(1).WithPanels(pterm.Panels{
+		{{Data: "a"}},
+		{{Data: "b"}},
+	})
+
+	// One blank line after every row except the last.
+	expected := "" +
+		"a \n" +
+		"  \n" +
+		"b \n"
+
+	assert.Equal(t, expected, srenderPlain(t, printer))
+}
+
+func TestPanelPrinter_BoxedPanelsAlign(t *testing.T) {
+	printer := pterm.DefaultPanel.WithBoxPrinter(pterm.DefaultBox).WithPanels(pterm.Panels{
+		{{Data: "a"}, {Data: "b\nc"}},
+	})
+
+	// Each panel is boxed individually; the shorter box is padded with
+	// spaces so the columns stay aligned.
+	expected := "" +
+		"╭───╮ ╭───╮ \n" +
+		"│ a │ │ b │ \n" +
+		"╰───╯ │ c │ \n" +
+		"      ╰───╯ \n"
+
+	assert.Equal(t, expected, srenderPlain(t, printer))
+}
+
+func TestPanelPrinter_RawOutputListsPanelsSequentially(t *testing.T) {
+	restoreGlobalStyling(t)
+	pterm.DisableStyling()
+
+	out, err := pterm.DefaultPanel.WithPanels(pterm.Panels{
+		{{Data: "left"}, {Data: "right"}},
+	}).Srender()
+	require.NoError(t, err)
+
+	// Documents current behavior: raw mode does not lay panels out
+	// side-by-side but prints them one below the other.
+	assert.Equal(t, "left\n\nright\n\n\n", out)
+}
+
+func TestPanelPrinter_SrenderIsPure(t *testing.T) {
+	// Trailing newlines are trimmed, boxes and bottom padding are added
+	// during rendering — none of that may leak into the caller's panels.
 	panels := pterm.Panels{
-		{
-			{Data: "Hello, World"},
-		},
+		{{Data: "a\n"}, {Data: "b"}},
+		{{Data: "c"}},
 	}
-	p := pterm.PanelPrinter{}.WithPanels(panels)
-	err := p.Render()
-	testza.AssertNoError(t, err)
-}
+	printer := pterm.DefaultPanel.WithBoxPrinter(pterm.DefaultBox).WithBottomPadding(2).WithPanels(panels)
 
-func TestPanelPrinter_Render(t *testing.T) {
-	testPrintContains(t, func(w io.Writer, a any) {
-		panels := pterm.Panels{
-			{{Data: pterm.Sprint(a)}},
-		}
-		p := pterm.PanelPrinter{}.WithPanels(panels)
-		err := p.Render()
-		testza.AssertNoError(t, err)
-	})
-}
+	first, err := printer.Srender()
+	require.NoError(t, err)
 
-func TestPanelPrinter_RenderMultiplePanels(t *testing.T) {
-	testPrintContains(t, func(w io.Writer, a any) {
-		panels := pterm.Panels{
-			{{Data: pterm.Sprint("a\nbc\ndef")}, {Data: pterm.Sprint("abcd")}},
-			{{Data: pterm.Sprint(a)}},
-		}
-		p := pterm.PanelPrinter{}.WithPanels(panels)
-		err := p.Render()
-		testza.AssertNoError(t, err)
-	})
-}
+	second, err := printer.Srender()
+	require.NoError(t, err)
 
-func TestPanelPrinter_RenderMultiplePanelsWithBorder(t *testing.T) {
-	testPrintContains(t, func(w io.Writer, a any) {
-		panels := pterm.Panels{
-			{{Data: pterm.Sprint("a\nbc\ndef")}, {Data: pterm.Sprint("abcd")}},
-			{{Data: pterm.Sprint(a)}},
-		}
-		p := pterm.PanelPrinter{}.WithPanels(panels).WithBoxPrinter(pterm.DefaultBox)
-		err := p.Render()
-		testza.AssertNoError(t, err)
-	})
-}
-
-func TestPanelPrinter_RenderWithSameColumnWidth(t *testing.T) {
-	testPrintContains(t, func(w io.Writer, a any) {
-		panels := pterm.Panels{
-			{{Data: pterm.Sprint(a)}},
-			{{Data: pterm.Sprint("test")}},
-			{{Data: pterm.Sprint("Hello, World!")}},
-		}
-		p := pterm.PanelPrinter{}.WithPanels(panels).WithSameColumnWidth()
-		err := p.Render()
-		testza.AssertNoError(t, err)
-	})
-}
-
-func TestPanelPrinter_RenderWithBottomPadding(t *testing.T) {
-	testPrintContains(t, func(w io.Writer, a any) {
-		panels := pterm.Panels{
-			{{Data: pterm.Sprint(a)}},
-			{{Data: pterm.Sprint("test")}},
-			{{Data: pterm.Sprint("Hello, World!")}},
-		}
-		p := pterm.PanelPrinter{}.WithPanels(panels).WithBottomPadding(1)
-		err := p.Render()
-		testza.AssertNoError(t, err)
-	})
-}
-
-func TestPanelPrinter_WithPanels(t *testing.T) {
-	panels := pterm.Panels{
-		{
-			{Data: "Hello, World!"},
-		},
-	}
-	p := pterm.PanelPrinter{}
-	p2 := p.WithPanels(panels)
-
-	testza.AssertEqual(t, panels, p2.Panels)
-	testza.AssertZero(t, p.Panels)
-}
-
-func TestPanelPrinter_WithPadding(t *testing.T) {
-	padding := 1337
-	p := pterm.PanelPrinter{}
-	p2 := p.WithPadding(padding)
-
-	testza.AssertEqual(t, padding, p2.Padding)
-	testza.AssertZero(t, p.Padding)
-}
-
-func TestPanelPrinter_WithInvalidPadding(t *testing.T) {
-	padding := -5
-	p := pterm.PanelPrinter{}
-	p2 := p.WithPadding(padding)
-
-	testza.AssertEqual(t, 0, p2.Padding)
-	testza.AssertZero(t, p.Padding)
-}
-
-func TestPanelPrinter_WithBottomPadding(t *testing.T) {
-	padding := 1337
-	p := pterm.PanelPrinter{}
-	p2 := p.WithBottomPadding(padding)
-
-	testza.AssertEqual(t, padding, p2.BottomPadding)
-	testza.AssertZero(t, p.BottomPadding)
-}
-
-func TestPanelPrinter_WithInvalidBottomPadding(t *testing.T) {
-	padding := -5
-	p := pterm.PanelPrinter{}
-	p2 := p.WithBottomPadding(padding)
-
-	testza.AssertEqual(t, 0, p2.BottomPadding)
-	testza.AssertZero(t, p.BottomPadding)
-}
-
-func TestPanelPrinter_WithSameColumnWidth(t *testing.T) {
-	p := pterm.PanelPrinter{}
-	p2 := p.WithSameColumnWidth()
-
-	testza.AssertTrue(t, p2.SameColumnWidth)
-	testza.AssertFalse(t, p.SameColumnWidth)
-}
-
-func TestPanelPrinter_WithBoxPrinter(t *testing.T) {
-	p := pterm.PanelPrinter{}
-	p2 := p.WithBoxPrinter(pterm.DefaultBox)
-
-	testza.AssertEqual(t, pterm.DefaultBox, p2.BoxPrinter)
-	testza.AssertZero(t, p.BoxPrinter)
-}
-
-func TestPanelPrinter_WithWriter(t *testing.T) {
-	p := pterm.PanelPrinter{}
-	s := os.Stderr
-	p2 := p.WithWriter(s)
-
-	testza.AssertEqual(t, s, p2.Writer)
-	testza.AssertZero(t, p.Writer)
+	assert.Equal(t, first, second, "rendering twice must yield identical output")
+	assert.Equal(t, pterm.Panels{
+		{{Data: "a\n"}, {Data: "b"}},
+		{{Data: "c"}},
+	}, panels, "rendering must not modify the input panels")
 }

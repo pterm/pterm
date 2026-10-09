@@ -3,6 +3,8 @@ package pterm
 import (
 	"io"
 	"strings"
+
+	"github.com/pterm/pterm/internal"
 )
 
 // BulletListItem is able to render a ListItem.
@@ -92,7 +94,11 @@ func (l BulletListPrinter) WithWriter(writer io.Writer) *BulletListPrinter {
 
 // Render prints the list to the terminal.
 func (l BulletListPrinter) Render() error {
-	s, _ := l.Srender()
+	s, err := l.Srender()
+	if err != nil {
+		return err
+	}
+
 	Fprintln(l.Writer, s)
 
 	return nil
@@ -119,21 +125,21 @@ func (l BulletListPrinter) Srender() (string, error) {
 			}
 		}
 
+		bullet := item.Bullet
+		if bullet == "" {
+			bullet = l.Bullet
+		}
+
 		split := strings.Split(item.Text, "\n")
 		for i, line := range split {
-			ret.WriteString(strings.Repeat(" ", item.Level))
+			ret.WriteString(strings.Repeat("  ", item.Level))
 
 			if i == 0 {
-				if item.Bullet == "" {
-					ret.WriteString(item.BulletStyle.Sprint(l.Bullet))
-				} else {
-					ret.WriteString(item.BulletStyle.Sprint(item.Bullet))
-				}
-
+				ret.WriteString(item.BulletStyle.Sprint(bullet))
 				ret.WriteByte(' ')
 			} else {
-				ret.WriteString(strings.Repeat(" ", len(item.Bullet)))
-				ret.WriteString("  ")
+				// Align continuation lines under the first line's text.
+				ret.WriteString(strings.Repeat(" ", internal.GetStringMaxWidth(bullet)+1))
 			}
 
 			ret.WriteString(item.TextStyle.Sprint(line))

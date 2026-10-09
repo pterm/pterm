@@ -1,6 +1,6 @@
 # barchart/custom-width
 
-![Animation](https://vhs.charm.sh/vhs-3gAVvSZRjLEHeZWZf7mrCy.gif)
+![Animation](https://vhs.charm.sh/vhs-6GmiN2pa05uOn1wNnHqYQ3.gif)
 
 ```go
 package main
@@ -8,7 +8,6 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Define the data for the bar chart
 	barData := []pterm.Bar{
 		{Label: "A", Value: 10},
 		{Label: "B", Value: 20},
@@ -21,9 +20,8 @@ func main() {
 		{Label: "I", Value: 10},
 	}
 
-	// Create a bar chart with the defined data
-	// The chart is horizontal and has a width of 5
-	// The Render() function is called to display the chart
+	// In a horizontal chart, WithWidth limits how far the bars extend
+	// to the right; the values are scaled to fit into 5 columns.
 	pterm.DefaultBarChart.WithBars(barData).WithHorizontal().WithWidth(5).Render()
 }
 ```

@@ -1,7 +1,6 @@
 package pterm
 
 import (
-	"fmt"
 	"strings"
 
 	"atomicgo.dev/cursor"
@@ -114,6 +113,12 @@ func (p InteractiveContinuePrinter) WithSuffixStyle(style *Style) *InteractiveCo
 	return &p
 }
 
+// WithOnInterruptFunc sets the function to execute on exit of the input reader.
+func (p InteractiveContinuePrinter) WithOnInterruptFunc(exitFunc func()) *InteractiveContinuePrinter {
+	p.OnInterruptFunc = exitFunc
+	return &p
+}
+
 // WithDelimiter sets the delimiter between the message and the input.
 func (p InteractiveContinuePrinter) WithDelimiter(delimiter string) *InteractiveContinuePrinter {
 	p.Delimiter = delimiter
@@ -141,10 +146,6 @@ func (p InteractiveContinuePrinter) Show(text ...string) (string, error) {
 	p.TextStyle.Print(text[0] + " " + p.getSuffix() + p.Delimiter)
 
 	err := keyboard.Listen(func(keyInfo keys.Key) (stop bool, err error) {
-		if err != nil {
-			return false, fmt.Errorf("failed to get key: %w", err)
-		}
-
 		key := keyInfo.Code
 		char := keyInfo.String()
 
@@ -188,7 +189,7 @@ func (p InteractiveContinuePrinter) Show(text ...string) (string, error) {
 
 // getShortHandles returns the short hand answers for the continueation prompt
 func (p InteractiveContinuePrinter) getShortHandles() []string {
-	var handles []string
+	handles := make([]string, 0, len(p.Options))
 	for _, option := range p.Options {
 		handles = append(handles, strings.ToLower(string([]rune(option)[0])))
 	}

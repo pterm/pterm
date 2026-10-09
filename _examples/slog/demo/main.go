@@ -7,27 +7,20 @@ import (
 )
 
 func main() {
-	// Create a new slog handler with the default PTerm logger
+	// PTerm's logger can act as a handler for the standard library's slog
+	// package, so existing slog code gets styled output for free.
 	handler := pterm.NewSlogHandler(&pterm.DefaultLogger)
-
-	// Create a new slog logger with the handler
 	logger := slog.New(handler)
 
-	// Log a debug message (won't show by default)
+	// The PTerm logger decides which levels are shown. Its default level is
+	// Info, so this debug message is dropped.
 	logger.Debug("This is a debug message that won't show")
 
-	// Change the log level to debug to enable debug messages
+	// Lowering the level on the PTerm logger takes effect immediately.
 	pterm.DefaultLogger.Level = pterm.LogLevelDebug
 
-	// Log a debug message (will show because debug level is enabled)
 	logger.Debug("This is a debug message", "changedLevel", true)
-
-	// Log an info message
 	logger.Info("This is an info message")
-
-	// Log a warning message
 	logger.Warn("This is a warning message")
-
-	// Log an error message
 	logger.Error("This is an error message")
 }

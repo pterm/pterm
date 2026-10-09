@@ -316,14 +316,14 @@
 
 
 ────────────────────────────────────────────────────────────────────────────────
-Black      | Red           | Green       | Yellow
-           | Light Red     | Light Green | Light Yellow
-Black      | Red           | Green       | Yellow
-           | Light Red     | Light Green | Light Yellow
-Blue       | Magenta       | Cyan        | White
-Light Blue | Light Magenta | Light Cyan  | Light White
-Blue       | Magenta       | Cyan        | White
-Light Blue | Light Magenta | Light Cyan  | Light White
+Black      │ Red           │ Green       │ Yellow
+           │ Light Red     │ Light Green │ Light Yellow
+Black      │ Red           │ Green       │ Yellow
+           │ Light Red     │ Light Green │ Light Yellow
+Blue       │ Magenta       │ Cyan        │ White
+Light Blue │ Light Magenta │ Light Cyan  │ Light White
+Blue       │ Magenta       │ Cyan        │ White
+Light Blue │ Light Magenta │ Light Cyan  │ Light White
 
 
 Hello, World!
@@ -333,14 +333,14 @@ This text uses a style and is bold and light green with a red background!
 >
 
 ────────────────────────────────────────────────────────────────────────────────
-Black      | Red           | Green       | Yellow
-           | Light Red     | Light Green | Light Yellow
-Black      | Red           | Green       | Yellow
-           | Light Red     | Light Green | Light Yellow
-Blue       | Magenta       | Cyan        | White
-Light Blue | Light Magenta | Light Cyan  | Light White
-Blue       | Magenta       | Cyan        | White
-Light Blue | Light Magenta | Light Cyan  | Light White
+Black      │ Red           │ Green       │ Yellow
+           │ Light Red     │ Light Green │ Light Yellow
+Black      │ Red           │ Green       │ Yellow
+           │ Light Red     │ Light Green │ Light Yellow
+Blue       │ Magenta       │ Cyan        │ White
+Light Blue │ Light Magenta │ Light Cyan  │ Light White
+Blue       │ Magenta       │ Cyan        │ White
+Light Blue │ Light Magenta │ Light Cyan  │ Light White
 
 
 Hello, World!
@@ -350,14 +350,14 @@ This text uses a style and is bold and light green with a red background!
 >
 
 ────────────────────────────────────────────────────────────────────────────────
-Black      | Red           | Green       | Yellow
-           | Light Red     | Light Green | Light Yellow
-Black      | Red           | Green       | Yellow
-           | Light Red     | Light Green | Light Yellow
-Blue       | Magenta       | Cyan        | White
-Light Blue | Light Magenta | Light Cyan  | Light White
-Blue       | Magenta       | Cyan        | White
-Light Blue | Light Magenta | Light Cyan  | Light White
+Black      │ Red           │ Green       │ Yellow
+           │ Light Red     │ Light Green │ Light Yellow
+Black      │ Red           │ Green       │ Yellow
+           │ Light Red     │ Light Green │ Light Yellow
+Blue       │ Magenta       │ Cyan        │ White
+Light Blue │ Light Magenta │ Light Cyan  │ Light White
+Blue       │ Magenta       │ Cyan        │ White
+Light Blue │ Light Magenta │ Light Cyan  │ Light White
 
 
 Hello, World!

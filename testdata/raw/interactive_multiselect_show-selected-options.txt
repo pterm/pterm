@@ -1,4 +1,4 @@
->
+
 
 
 
@@ -51,7 +51,7 @@
 
 
 ────────────────────────────────────────────────────────────────────────────────
->
+
 
 
 
@@ -104,7 +104,7 @@
 
 
 ────────────────────────────────────────────────────────────────────────────────
->
+
 
 
 
@@ -157,7 +157,7 @@
 
 
 ────────────────────────────────────────────────────────────────────────────────
->
+
 
 
 
@@ -210,7 +210,7 @@
 
 
 ────────────────────────────────────────────────────────────────────────────────
->
+
 
 
 
@@ -317,7 +317,7 @@
 
 ────────────────────────────────────────────────────────────────────────────────
 Please select your options [type to search]:
-> [✗] Option 0
+❯ [✗] Option 0
   [✗] Option 1
   [✗] Option 2
   [✗] Option 3
@@ -334,7 +334,7 @@ enter: select | tab: confirm | left: none | right: all | type to filter
 
 ────────────────────────────────────────────────────────────────────────────────
 Please select your options [type to search]:
-> [✗] Option 0
+❯ [✗] Option 0
   [✗] Option 1
   [✗] Option 2
   [✗] Option 3
@@ -351,7 +351,7 @@ enter: select | tab: confirm | left: none | right: all | type to filter
 
 ────────────────────────────────────────────────────────────────────────────────
 Please select your options [type to search]:
-> [✓] Option 0
+❯ [✓] Option 0
   [✗] Option 1
   [✗] Option 2
   [✗] Option 3
@@ -370,7 +370,7 @@ Selected: Option 0
 Please select your options [type to search]:
   [✓] Option 0
   [✗] Option 1
-> [✗] Option 2
+❯ [✗] Option 2
   [✗] Option 3
   [✗] Option 4
 enter: select | tab: confirm | left: none | right: all | type to filter
@@ -387,7 +387,7 @@ Selected: Option 0
 Please select your options [type to search]:
   [✓] Option 0
   [✗] Option 1
-> [✓] Option 2
+❯ [✓] Option 2
   [✗] Option 3
   [✗] Option 4
 enter: select | tab: confirm | left: none | right: all | type to filter
@@ -402,9 +402,9 @@ Selected: Option 0, Option 2
 
 ────────────────────────────────────────────────────────────────────────────────
 Please select your options:
-  > Option 0
-  > Option 2
- INFO  Selected options: [Option 0 Option 2]
+  ❯ Option 0
+  ❯ Option 2
+  INFO    Selected options: [Option 0 Option 2]
 >
 
 
@@ -419,9 +419,9 @@ Please select your options:
 
 ────────────────────────────────────────────────────────────────────────────────
 Please select your options:
-  > Option 0
-  > Option 2
- INFO  Selected options: [Option 0 Option 2]
+  ❯ Option 0
+  ❯ Option 2
+  INFO    Selected options: [Option 0 Option 2]
 >
 
 
@@ -436,9 +436,9 @@ Please select your options:
 
 ────────────────────────────────────────────────────────────────────────────────
 Please select your options:
-  > Option 0
-  > Option 2
- INFO  Selected options: [Option 0 Option 2]
+  ❯ Option 0
+  ❯ Option 2
+  INFO    Selected options: [Option 0 Option 2]
 >
 
 

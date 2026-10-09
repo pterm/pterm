@@ -1,37 +1,35 @@
 # interactive_multiselect/custom-keys
 
-![Animation](https://vhs.charm.sh/vhs-5evJmE7RK94d65Fd9W7gSZ.gif)
+![Animation](https://vhs.charm.sh/vhs-3X9IsnHV4BcVJfjuKiDbTp.gif)
 
 ```go
 package main
 
 import (
-	"atomicgo.dev/keyboard/keys"
 	"fmt"
+
+	"atomicgo.dev/keyboard/keys"
+
 	"github.com/pterm/pterm"
 )
 
 func main() {
-	// Initialize an empty slice to hold the options
 	var options []string
-
-	// Populate the options slice with 5 options
 	for i := 0; i < 5; i++ {
 		options = append(options, fmt.Sprintf("Option %d", i))
 	}
 
-	// Create a new interactive multiselect printer with the options
-	// Disable the filter and set the keys for confirming and selecting options
+	// By default, enter toggles an option and tab confirms the selection.
+	// Both keys can be rebound, here to space for toggling and enter for
+	// confirming. The filter is disabled so typing is not needed.
 	printer := pterm.DefaultInteractiveMultiselect.
 		WithOptions(options).
 		WithFilter(false).
 		WithKeyConfirm(keys.Enter).
 		WithKeySelect(keys.Space)
 
-	// Show the interactive multiselect and get the selected options
 	selectedOptions, _ := printer.Show()
 
-	// Print the selected options
 	pterm.Info.Printfln("Selected options: %s", pterm.Green(selectedOptions))
 }
 ```

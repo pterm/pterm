@@ -3,7 +3,8 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Create a table with different foreground and background colors.
+	// Show every built-in foreground (Fg*) and background (Bg*) color in one
+	// table. The "Light" variants map to the bright ANSI colors.
 	pterm.DefaultTable.WithData([][]string{
 		{pterm.FgBlack.Sprint("Black"), pterm.FgRed.Sprint("Red"), pterm.FgGreen.Sprint("Green"), pterm.FgYellow.Sprint("Yellow")},
 		{"", pterm.FgLightRed.Sprint("Light Red"), pterm.FgLightGreen.Sprint("Light Green"), pterm.FgLightYellow.Sprint("Light Yellow")},
@@ -13,18 +14,18 @@ func main() {
 		{pterm.FgLightBlue.Sprint("Light Blue"), pterm.FgLightMagenta.Sprint("Light Magenta"), pterm.FgLightCyan.Sprint("Light Cyan"), pterm.FgLightWhite.Sprint("Light White")},
 		{pterm.BgBlue.Sprint("Blue"), pterm.BgMagenta.Sprint("Magenta"), pterm.BgCyan.Sprint("Cyan"), pterm.BgWhite.Sprint("White")},
 		{pterm.BgLightBlue.Sprint("Light Blue"), pterm.BgLightMagenta.Sprint("Light Magenta"), pterm.BgLightCyan.Sprint("Light Cyan"), pterm.BgLightWhite.Sprint("Light White")},
-	}).Render() // Render the table.
+	}).Render()
 
 	pterm.Println()
 
-	// Print words in different colors.
+	// Shorthand functions like pterm.Red return colored strings that can be
+	// concatenated, even nested inside each other.
 	pterm.Println(pterm.Red("Hello, ") + pterm.Green("World") + pterm.Cyan("!"))
 	pterm.Println(pterm.Red("Even " + pterm.Cyan("nested ") + pterm.Green("colors ") + "are supported!"))
 
 	pterm.Println()
 
-	// Create a new style with a red background, light green foreground, and bold text.
+	// NewStyle combines multiple attributes into a reusable style.
 	style := pterm.NewStyle(pterm.BgRed, pterm.FgLightGreen, pterm.Bold)
-	// Print text using the created style.
 	style.Println("This text uses a style and is bold and light green with a red background!")
 }

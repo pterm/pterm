@@ -335,7 +335,7 @@ Do you want to continue [Yes/no/all/cancel]:
 ────────────────────────────────────────────────────────────────────────────────
 Do you want to continue [Yes/no/all/cancel]: yes
 
- INFO  You answered: yes
+  INFO    You answered: yes
 >
 
 
@@ -352,7 +352,7 @@ Do you want to continue [Yes/no/all/cancel]: yes
 ────────────────────────────────────────────────────────────────────────────────
 Do you want to continue [Yes/no/all/cancel]: yes
 
- INFO  You answered: yes
+  INFO    You answered: yes
 >
 
 

@@ -5,28 +5,82 @@ import (
 	"io"
 	"os"
 	"strings"
+	"sync"
 	"time"
 
 	"atomicgo.dev/schedule"
 )
 
+// DefaultMultiPrinter contains the default configuration for a MultiPrinter.
 var DefaultMultiPrinter = MultiPrinter{
 	printers:    []LivePrinter{},
 	Writer:      os.Stdout,
 	UpdateDelay: time.Millisecond * 200,
 
-	buffers: []*bytes.Buffer{},
+	buffers: []*multiPrinterBuffer{},
 	area:    DefaultArea,
 }
 
+// multiPrinterBuffer is the thread-safe buffer handed out by NewWriter.
+// Live printers write to it from their own goroutines while the MultiPrinter's
+// update task reads it, so all access must be synchronized. bytes.Buffer alone
+// is not safe for concurrent use.
+type multiPrinterBuffer struct {
+	mu  sync.Mutex
+	buf bytes.Buffer
+}
+
+// Write appends p to the buffer under the buffer lock.
+func (b *multiPrinterBuffer) Write(p []byte) (int, error) {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+
+	return b.buf.Write(p)
+}
+
+// String returns the buffered content under the buffer lock.
+func (b *multiPrinterBuffer) String() string {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+
+	return b.buf.String()
+}
+
+// MultiPrinter is able to print the output of multiple live printers
+// (e.g. spinners and progressbars) at the same time.
 type MultiPrinter struct {
 	IsActive    bool
 	Writer      io.Writer
 	UpdateDelay time.Duration
 
 	printers []LivePrinter
-	buffers  []*bytes.Buffer
+	buffers  []*multiPrinterBuffer
 	area     AreaPrinter
+
+	// updateTask repaints the area on every UpdateDelay tick while the
+	// MultiPrinter is active. Stop stops it explicitly so the goroutine cannot
+	// leak or repaint after Stop.
+	updateTask *schedule.Task
+
+	// mu serializes access to the printer's mutable state once Start has run.
+	// It is a pointer so the value-receiver With* methods can copy the struct
+	// without tripping go vet's copylocks check; it is lazily allocated.
+	mu *sync.Mutex
+}
+
+// lock locks the printer's runtime mutex, allocating it on first use so the
+// value-receiver builders can be used safely before Start.
+func (p *MultiPrinter) lock() {
+	if p.mu == nil {
+		p.mu = &sync.Mutex{}
+	}
+
+	p.mu.Lock()
+}
+
+// unlock releases the printer's runtime mutex.
+func (p *MultiPrinter) unlock() {
+	p.mu.Unlock()
 }
 
 // SetWriter sets the writer for the AreaPrinter.
@@ -46,15 +100,21 @@ func (p MultiPrinter) WithUpdateDelay(delay time.Duration) *MultiPrinter {
 	return &p
 }
 
+// NewWriter returns a new writer that can be passed to a live printer
+// (e.g. via WithWriter) so its output is rendered inside the MultiPrinter.
 func (p *MultiPrinter) NewWriter() io.Writer {
-	buf := bytes.NewBufferString("")
+	p.lock()
+	defer p.unlock()
+
+	buf := &multiPrinterBuffer{}
 	p.buffers = append(p.buffers, buf)
 
 	return buf
 }
 
-// getString returns all buffers appended and separated by a newline.
-func (p *MultiPrinter) getString() string {
+// getStringLocked returns all buffers appended and separated by a newline.
+// The caller must hold p.mu.
+func (p *MultiPrinter) getStringLocked() string {
 	var buffer bytes.Buffer
 
 	for _, b := range p.buffers {
@@ -79,34 +139,70 @@ func (p *MultiPrinter) getString() string {
 	return buffer.String()
 }
 
+// Start starts the MultiPrinter and all its registered live printers.
 func (p *MultiPrinter) Start() (*MultiPrinter, error) {
+	p.lock()
 	p.IsActive = true
-	for _, printer := range p.printers {
-		printer.GenericStart()
+	// Render the area to the configured writer if the cursor can be moved on
+	// it (i.e. it exposes a file descriptor); otherwise it stays on stdout.
+	p.area.SetWriter(p.Writer)
+
+	printers := make([]LivePrinter, len(p.printers))
+	copy(printers, p.printers)
+
+	delay := p.UpdateDelay
+	p.unlock()
+
+	for _, printer := range printers {
+		_, _ = printer.GenericStart()
 	}
 
-	schedule.Every(p.UpdateDelay, func() bool {
+	task := schedule.Every(delay, func() bool {
+		p.lock()
+		defer p.unlock()
+
 		if !p.IsActive {
 			return false
 		}
 
-		p.area.Update(p.getString())
+		p.area.Update(p.getStringLocked())
 
 		return true
 	})
 
+	p.lock()
+	p.updateTask = task
+	p.unlock()
+
 	return p, nil
 }
 
+// Stop stops the MultiPrinter and all its registered live printers.
 func (p *MultiPrinter) Stop() (*MultiPrinter, error) {
+	p.lock()
 	p.IsActive = false
-	for _, printer := range p.printers {
-		printer.GenericStop()
+	task := p.updateTask
+	p.updateTask = nil
+
+	printers := make([]LivePrinter, len(p.printers))
+	copy(printers, p.printers)
+	p.unlock()
+
+	// Stop the repaint task before the final repaint below. An in-flight tick
+	// serializes on p.mu and skips its repaint once IsActive is false.
+	if task != nil && task.IsActive() {
+		task.Stop()
 	}
 
-	time.Sleep(time.Millisecond * 20)
-	p.area.Update(p.getString())
-	p.area.Stop()
+	for _, printer := range printers {
+		_, _ = printer.GenericStop()
+	}
+
+	// Repaint once more so the printers' final output is visible.
+	p.lock()
+	p.area.Update(p.getStringLocked())
+	_ = p.area.Stop()
+	p.unlock()
 
 	return p, nil
 }

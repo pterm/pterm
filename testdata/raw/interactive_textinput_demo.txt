@@ -1,4 +1,4 @@
-
+>
 
 
 
@@ -335,7 +335,7 @@ Input text:
 ────────────────────────────────────────────────────────────────────────────────
 Input text: Hello, World!
 
- INFO  You answered: Hello, World!
+  INFO    You answered: Hello, World!
 >
 
 
@@ -352,7 +352,7 @@ Input text: Hello, World!
 ────────────────────────────────────────────────────────────────────────────────
 Input text: Hello, World!
 
- INFO  You answered: Hello, World!
+  INFO    You answered: Hello, World!
 >
 
 

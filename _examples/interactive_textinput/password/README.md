@@ -1,6 +1,6 @@
 # interactive_textinput/password
 
-![Animation](https://vhs.charm.sh/vhs-7frTfYg9xKrnSszR3KFYbp.gif)
+![Animation](https://vhs.charm.sh/vhs-7a9giWv4rH3696aO44jmgZ.gif)
 
 ```go
 package main
@@ -8,17 +8,14 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Create an interactive text input with a mask for password input
+	// WithMask echoes the given string instead of the typed characters,
+	// which turns the text input into a password prompt.
 	passwordInput := pterm.DefaultInteractiveTextInput.WithMask("*")
 
-	// Show the password input prompt and store the result
 	result, _ := passwordInput.Show("Enter your password")
 
-	// Get the default logger from PTerm
+	// Never log passwords in a real application, this is just a demo.
 	logger := pterm.DefaultLogger
-
-	// Log the received password (masked)
-	// Note: In a real-world application, you should never log passwords
 	logger.Info("Password received", logger.Args("password", result))
 }
 ```

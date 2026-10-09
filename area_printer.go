@@ -21,6 +21,7 @@ type AreaPrinter struct {
 
 	content  string
 	isActive bool
+	writer   cursor.Writer
 
 	area *cursor.Area
 }
@@ -49,15 +50,29 @@ func (p AreaPrinter) WithCenter(b ...bool) *AreaPrinter {
 }
 
 // SetWriter sets the writer for the AreaPrinter.
+// The writer must provide a file descriptor (like os.Stdout or os.Stderr) so
+// the cursor can be moved; other writers are silently ignored.
 func (p *AreaPrinter) SetWriter(writer io.Writer) {
+	if w, ok := writer.(cursor.Writer); ok {
+		p.writer = w
+	}
+}
 
+// newArea creates a cursor area honoring the configured writer.
+func (p *AreaPrinter) newArea() cursor.Area {
+	area := cursor.NewArea()
+	if p.writer != nil {
+		area = area.WithWriter(p.writer)
+	}
+
+	return area
 }
 
 // Update overwrites the content of the AreaPrinter.
 // Can be used live.
 func (p *AreaPrinter) Update(text ...any) {
 	if p.area == nil {
-		newArea := cursor.NewArea()
+		newArea := p.newArea()
 		p.area = &newArea
 	}
 
@@ -94,7 +109,7 @@ func (p *AreaPrinter) Update(text ...any) {
 func (p *AreaPrinter) Start(text ...any) (*AreaPrinter, error) {
 	p.isActive = true
 	str := Sprint(text...)
-	newArea := cursor.NewArea()
+	newArea := p.newArea()
 	p.area = &newArea
 
 	p.Update(str)

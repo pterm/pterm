@@ -317,7 +317,7 @@
 
 ────────────────────────────────────────────────────────────────────────────────
 Please select your options:
-> [✗] Option 0
+❯ [✗] Option 0
   [✗] Option 1
   [✗] Option 2
   [✗] Option 3
@@ -334,9 +334,9 @@ space: select | enter: confirm | left: none | right: all
 
 ────────────────────────────────────────────────────────────────────────────────
 Please select your options:
-  > Option 1
-  > Option 2
- INFO  Selected options: [Option 1 Option 2]
+  ❯ Option 1
+  ❯ Option 2
+  INFO    Selected options: [Option 1 Option 2]
 >
 
 
@@ -351,9 +351,9 @@ Please select your options:
 
 ────────────────────────────────────────────────────────────────────────────────
 Please select your options:
-  > Option 1
-  > Option 2
- INFO  Selected options: [Option 1 Option 2]
+  ❯ Option 1
+  ❯ Option 2
+  INFO    Selected options: [Option 1 Option 2]
 >
 
 

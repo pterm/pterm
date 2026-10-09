@@ -1,4 +1,4 @@
->
+
 
 
 
@@ -51,7 +51,7 @@
 
 
 ────────────────────────────────────────────────────────────────────────────────
->
+
 
 
 
@@ -104,7 +104,7 @@
 
 
 ────────────────────────────────────────────────────────────────────────────────
->
+
 
 
 
@@ -317,53 +317,53 @@
 
 ────────────────────────────────────────────────────────────────────────────────
 Computer
-├─┬C:
-│ ├──Users
-│ ├──Windows
-│ ├──Programs
-│ ├──Programs(x86)
-│ └──dev
-├──D:
-├─┬E:
-│ ├──Movies
-│ ├─┬Music
-│ │ └──LinkinPark
-│ └─┬Games
-│   └─┬Shooter
-│     ├──CallOfDuty
-│     ├──CS:GO
+├── C:
+│   ├── Users
+│   ├── Windows
+│   ├── Programs
+│   ├── Programs(x86)
+│   └── dev
+├── D:
+├── E:
+│   ├── Movies
+│   ├── Music
+│   │   └── LinkinPark
+│   └── Games
+│       └── Shooter
+│           ├── CallOfDuty
+│           ├── CS:GO
 ────────────────────────────────────────────────────────────────────────────────
 Computer
-├─┬C:
-│ ├──Users
-│ ├──Windows
-│ ├──Programs
-│ ├──Programs(x86)
-│ └──dev
-├──D:
-├─┬E:
-│ ├──Movies
-│ ├─┬Music
-│ │ └──LinkinPark
-│ └─┬Games
-│   └─┬Shooter
-│     ├──CallOfDuty
-│     ├──CS:GO
+├── C:
+│   ├── Users
+│   ├── Windows
+│   ├── Programs
+│   ├── Programs(x86)
+│   └── dev
+├── D:
+├── E:
+│   ├── Movies
+│   ├── Music
+│   │   └── LinkinPark
+│   └── Games
+│       └── Shooter
+│           ├── CallOfDuty
+│           ├── CS:GO
 ────────────────────────────────────────────────────────────────────────────────
 Computer
-├─┬C:
-│ ├──Users
-│ ├──Windows
-│ ├──Programs
-│ ├──Programs(x86)
-│ └──dev
-├──D:
-├─┬E:
-│ ├──Movies
-│ ├─┬Music
-│ │ └──LinkinPark
-│ └─┬Games
-│   └─┬Shooter
-│     ├──CallOfDuty
-│     ├──CS:GO
+├── C:
+│   ├── Users
+│   ├── Windows
+│   ├── Programs
+│   ├── Programs(x86)
+│   └── dev
+├── D:
+├── E:
+│   ├── Movies
+│   ├── Music
+│   │   └── LinkinPark
+│   └── Games
+│       └── Shooter
+│           ├── CallOfDuty
+│           ├── CS:GO
 ────────────────────────────────────────────────────────────────────────────────
