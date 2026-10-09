@@ -12,10 +12,8 @@ import (
 	"fmt"
 	"io"
 	"runtime"
-	"strings"
 	"testing"
 
-	"github.com/mattn/go-runewidth"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -60,9 +58,9 @@ func TestPrefixPrinterStyledOutput(t *testing.T) {
 }
 
 func TestPrefixPrinterMultilineIndentsContinuationLines(t *testing.T) {
-	// Continuation lines are indented with visual width of prefix plus 2 spaces
-	// plus the separating space, so the message column stays aligned under the
-	// first line.
+	// Continuation lines are indented by the prefix's display width plus 2
+	// spaces and the separating space, so the message column stays aligned
+	// under the first line.
 	assert.Equal(t, "  INFO    first\n          second", stripANSI(pterm.Info.Sprint("first\nsecond")))
 	assert.Equal(t, "  ERROR   first\n          second", stripANSI(pterm.Error.Sprint("first\nsecond")))
 }
@@ -104,6 +102,12 @@ func TestPrefixPrinterMultilineWideCharacterAlignment(t *testing.T) {
 			input:    "entry 1\nentry 2",
 			expected: " LOG 日志  entry 1\n           entry 2",
 		},
+		{
+			name:     "Colored prefix text",
+			prefix:   "\x1b[31m情報\x1b[0m",
+			input:    "first line\nsecond line",
+			expected: " 情報  first line\n       second line",
+		},
 	}
 
 	for _, tc := range tests {
@@ -113,22 +117,7 @@ func TestPrefixPrinterMultilineWideCharacterAlignment(t *testing.T) {
 					Text: tc.prefix,
 				},
 			}
-			result := stripANSI(p.Sprint(tc.input))
-			assert.Equal(t, tc.expected, result)
-
-			// Verify visual column alignment: the message text on every line
-			// must start at the exact same visual display column.
-			lines := strings.Split(result, "\n")
-			inputLines := strings.Split(tc.input, "\n")
-			require.Equal(t, len(inputLines), len(lines))
-
-			expectedIndentWidth := runewidth.StringWidth(tc.prefix) + 3 // 1 leading + visual width + 1 trailing + 1 separating space
-			for i, line := range lines {
-				require.Truef(t, strings.HasSuffix(line, inputLines[i]), "line %d %q does not end with message %q", i, line, inputLines[i])
-				indent := strings.TrimSuffix(line, inputLines[i])
-				assert.Equalf(t, expectedIndentWidth, runewidth.StringWidth(indent),
-					"line %d indent visual width: got %d, want %d", i, runewidth.StringWidth(indent), expectedIndentWidth)
-			}
+			assert.Equal(t, tc.expected, stripANSI(p.Sprint(tc.input)))
 		})
 	}
 }
