@@ -38,6 +38,7 @@ type TablePrinter struct {
 	RowSeparatorStyle       *Style
 	Data                    TableData
 	Boxed                   bool
+	BoxPrinter              *BoxPrinter
 	LeftAlignment           bool
 	RightAlignment          bool
 	Writer                  io.Writer
@@ -111,6 +112,21 @@ func (p TablePrinter) WithCSVReader(reader *csv.Reader) *TablePrinter {
 	}
 
 	return &p
+}
+
+// WithBoxPrinter returns a new TablePrinter with a custom BoxPrinter.
+func (p TablePrinter) WithBoxPrinter(boxPrinter *BoxPrinter) *TablePrinter {
+	p.BoxPrinter = boxPrinter
+	if boxPrinter != nil {
+		p.Boxed = true
+	}
+
+	return &p
+}
+
+// WithBox returns a new TablePrinter with a custom BoxPrinter.
+func (p TablePrinter) WithBox(box *BoxPrinter) *TablePrinter {
+	return p.WithBoxPrinter(box)
 }
 
 // WithBoxed returns a new TablePrinter with a box around the table.
@@ -260,7 +276,12 @@ func (p TablePrinter) Srender() (string, error) {
 	}
 
 	if p.Boxed {
-		return DefaultBox.Sprint(strings.TrimSuffix(ret.String(), "\n")), nil
+		box := p.BoxPrinter
+		if box == nil {
+			box = &DefaultBox
+		}
+
+		return box.Sprint(strings.TrimSuffix(ret.String(), "\n")), nil
 	}
 
 	return ret.String(), nil

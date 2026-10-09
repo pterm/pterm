@@ -199,6 +199,110 @@ func TestTablePrinter_BoxedWrapsTableInAlignedBox(t *testing.T) {
 	assert.Equal(t, expected, srenderPlain(t, printer))
 }
 
+func TestTablePrinter_WithBoxPrinterCustomBorders(t *testing.T) {
+	customBox := pterm.BoxPrinter{
+		VerticalString:          "#",
+		TopRightCornerString:    "+",
+		TopLeftCornerString:     "+",
+		BottomLeftCornerString:  "+",
+		BottomRightCornerString: "+",
+		HorizontalString:        "=",
+		RightPadding:            1,
+		LeftPadding:             1,
+	}
+
+	printer := pterm.DefaultTable.WithBoxPrinter(&customBox).WithData(pterm.TableData{
+		{"a", "b"},
+		{"cc", "dd"},
+	})
+
+	expected := "" +
+		"+=========+\n" +
+		"# a  │ b  #\n" +
+		"# cc │ dd #\n" +
+		"+=========+"
+
+	assert.Equal(t, expected, srenderPlain(t, printer))
+}
+
+func TestTablePrinter_WithBoxPrinterBoxStyle(t *testing.T) {
+	style := pterm.NewStyle(pterm.FgCyan)
+	customBox := pterm.DefaultBox.WithBoxStyle(style)
+
+	printer := pterm.DefaultTable.WithBoxPrinter(customBox).WithData(pterm.TableData{
+		{"a", "b"},
+	})
+
+	out, err := printer.Srender()
+	require.NoError(t, err)
+
+	prefix := styledPrefix(t, style)
+	assert.Contains(t, out, prefix, "custom box style must be applied to box borders")
+}
+
+func TestTablePrinter_WithBoxPrinterWithTitle(t *testing.T) {
+	customBox := pterm.DefaultBox.WithTitle("Table Title")
+
+	printer := pterm.DefaultTable.WithBoxPrinter(customBox).WithData(pterm.TableData{
+		{"a", "b"},
+	})
+
+	plain := srenderPlain(t, printer)
+	assert.Contains(t, plain, "Table Title", "box title must be rendered")
+}
+
+func TestTablePrinter_WithBoxAlias(t *testing.T) {
+	customBox := pterm.BoxPrinter{
+		VerticalString:          "!",
+		TopRightCornerString:    "*",
+		TopLeftCornerString:     "*",
+		BottomLeftCornerString:  "*",
+		BottomRightCornerString: "*",
+		HorizontalString:        "~",
+		RightPadding:            1,
+		LeftPadding:             1,
+	}
+
+	printer := pterm.DefaultTable.WithBox(&customBox).WithData(pterm.TableData{
+		{"a", "b"},
+		{"cc", "dd"},
+	})
+
+	expected := "" +
+		"*~~~~~~~~~*\n" +
+		"! a  │ b  !\n" +
+		"! cc │ dd !\n" +
+		"*~~~~~~~~~*"
+
+	assert.Equal(t, expected, srenderPlain(t, printer))
+}
+
+func TestTablePrinter_WithBoxPrinterDisablingViaWithBoxedFalse(t *testing.T) {
+	customBox := pterm.DefaultBox.WithVerticalString("#")
+
+	printer := pterm.DefaultTable.WithBoxPrinter(customBox).WithBoxed(false).WithData(pterm.TableData{
+		{"a", "b"},
+	})
+
+	expected := "a │ b\n"
+	assert.Equal(t, expected, srenderPlain(t, printer))
+}
+
+func TestTablePrinter_WithBoxPrinterNilFallsBackToDefaultBox(t *testing.T) {
+	printer := pterm.DefaultTable.WithBoxed().WithBoxPrinter(nil).WithData(pterm.TableData{
+		{"a", "b"},
+		{"cc", "dd"},
+	})
+
+	expected := "" +
+		"╭─────────╮\n" +
+		"│ a  │ b  │\n" +
+		"│ cc │ dd │\n" +
+		"╰─────────╯"
+
+	assert.Equal(t, expected, srenderPlain(t, printer))
+}
+
 func TestTablePrinter_EmptyDataRendersEmptyString(t *testing.T) {
 	// Documents current behavior: a table without data renders as an empty
 	// string and does not return an error.
