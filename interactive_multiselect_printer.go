@@ -2,6 +2,7 @@ package pterm
 
 import (
 	"fmt"
+	"slices"
 	"sort"
 	"strings"
 
@@ -248,24 +249,25 @@ func (p *InteractiveMultiselectPrinter) Show(text ...string) ([]string, error) {
 			area.Update(p.renderSelectMenu())
 
 		case keys.Left:
-			// Unselect all currently visible options.
-			// When a fuzzy filter is active this deselects only the matching
-			// subset; without a filter it deselects everything.
+			// Deselect only the options visible under the current filter.
 			for _, match := range p.fuzzySearchMatches {
 				if p.isSelected(match) {
 					p.selectOption(match)
 				}
 			}
+
 			area.Update(p.renderSelectMenu())
+
 		case keys.Right:
-			// Select all currently visible options.
-			// When a fuzzy filter is active this selects only the matching
-			// subset; without a filter it selects everything.
+			// Select only the options visible under the current filter.
 			for _, match := range p.fuzzySearchMatches {
 				if !p.isSelected(match) {
 					p.selectOption(match)
 				}
 			}
+
+			// Keep the result in option order instead of selection order.
+			slices.Sort(p.selectedOptions)
 			area.Update(p.renderSelectMenu())
 
 		case keys.Up, keys.CtrlP:
