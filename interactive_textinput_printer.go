@@ -128,17 +128,9 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 			}
 
 		case keys.Enter:
-			if p.DefaultValue != "" && !p.startedTyping {
-				for i := range p.input {
-					p.input[i] = RemoveColorFromString(p.input[i])
-				}
-
-				if p.MultiLine {
-					area.Bottom()
-				}
-			}
-
 			if p.MultiLine {
+				p.startedTyping = true
+
 				if key.AltPressed {
 					p.cursorXPos = 0
 				}
