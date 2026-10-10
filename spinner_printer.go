@@ -49,7 +49,10 @@ type spinnerRun struct {
 	frame   int
 	region  *screen.Region
 	done    chan struct{}
-	stopped bool
+	// finished prints the final line once. Callers that end the spinner at
+	// the same time wait until it is printed, so a Stop right before the
+	// program exits never loses it.
+	finished sync.Once
 }
 
 // Spinner is the default spinner.
@@ -234,26 +237,20 @@ func (p *SpinnerPrinter) finish(st status, text string) {
 		return
 	}
 
-	p.run.mu.Lock()
-	if p.run.stopped {
-		p.run.mu.Unlock()
-		return
-	}
+	p.run.finished.Do(func() {
+		close(p.run.done)
 
-	p.run.stopped = true
-	close(p.run.done)
-	p.run.mu.Unlock()
+		if p.run.region == nil {
+			return
+		}
 
-	if p.run.region == nil {
-		return
-	}
+		final := ""
+		if !p.RemoveWhenDone {
+			final = p.final(canvasFor(p.out()), st, text)
+		}
 
-	final := ""
-	if !p.RemoveWhenDone {
-		final = p.final(canvasFor(p.out()), st, text)
-	}
-
-	p.run.region.Close(final)
+		p.run.region.Close(final)
+	})
 }
 
 // final renders the status line the spinner leaves behind.
