@@ -16,8 +16,11 @@ var (
 	_ RenderPrinter = KeyHintsPrinter{}
 	_ RenderPrinter = RulePrinter{}
 
-	_ LivePrinter = (*SpinnerPrinter)(nil)
+	_ LivePrinter = (*AreaPrinter)(nil)
 	_ LivePrinter = (*FlowPrinter)(nil)
+	_ LivePrinter = (*MultiPrinter)(nil)
+	_ LivePrinter = (*ProgressbarPrinter)(nil)
+	_ LivePrinter = (*SpinnerPrinter)(nil)
 
 	_ InteractivePrinter[bool] = ConfirmPrinter{}
 )

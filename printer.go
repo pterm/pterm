@@ -187,7 +187,7 @@ func orDefault(w io.Writer) io.Writer {
 }
 
 // orErrorOutput returns w, or the error output when w is nil.
-func orErrorOutput(w io.Writer) io.Writer { //nolint:unused // TODO: used by the render printers, remove this directive when they land.
+func orErrorOutput(w io.Writer) io.Writer {
 	if w == nil {
 		return ErrorOutput()
 	}

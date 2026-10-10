@@ -1,0 +1,7 @@
+\x1b[38;2;138;173;244m●\x1b[0m \x1b[38;2;138;173;244minfo \x1b[0m \x1b[38;2;202;211;245mRetrying the upload of the nightly backup to the\x1b[0m
+        \x1b[38;2;202;211;245msecondary region\x1b[0m
+        \x1b[38;2;128;135;162mbucket\x1b[0m\x1b[38;2;128;135;162m=\x1b[0m\x1b[38;2;128;135;162ms3://backups\x1b[0m
+        \x1b[38;2;128;135;162mreason\x1b[0m\x1b[38;2;128;135;162m=\x1b[0m\x1b[38;2;128;135;162m"connection reset"\x1b[0m
+        \x1b[38;2;128;135;162mtrace\x1b[0m\x1b[38;2;128;135;162m=\x1b[0m
+          \x1b[38;2;128;135;162mline one\x1b[0m
+          \x1b[38;2;128;135;162mline two\x1b[0m

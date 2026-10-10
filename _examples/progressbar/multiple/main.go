@@ -1,46 +1,35 @@
 package main
 
 import (
+	"sync"
 	"time"
 
 	"github.com/pterm/pterm"
 )
 
 func main() {
-	// A MultiPrinter renders several live printers at once. Each progressbar
-	// writes to its own writer obtained from the multi printer.
-	multi := pterm.DefaultMultiPrinter
-
-	pb1, _ := pterm.DefaultProgressbar.WithTotal(100).WithWriter(multi.NewWriter()).Start("Progressbar 1")
-	pb2, _ := pterm.DefaultProgressbar.WithTotal(100).WithWriter(multi.NewWriter()).Start("Progressbar 2")
-	pb3, _ := pterm.DefaultProgressbar.WithTotal(100).WithWriter(multi.NewWriter()).Start("Progressbar 3")
-	pb4, _ := pterm.DefaultProgressbar.WithTotal(100).WithWriter(multi.NewWriter()).Start("Progressbar 4")
-	pb5, _ := pterm.DefaultProgressbar.WithTotal(100).WithWriter(multi.NewWriter()).Start("Progressbar 5")
-
-	multi.Start()
-
-	// Advance the bars at different speeds so they visibly run independently.
-	for i := 1; i <= 100; i++ {
-		pb1.Increment()
-
-		if i%2 == 0 {
-			pb2.Add(3)
-		}
-
-		if i%5 == 0 {
-			pb3.Increment()
-		}
-
-		if i%10 == 0 {
-			pb4.Increment()
-		}
-
-		if i%3 == 0 {
-			pb5.Increment()
-		}
-
-		time.Sleep(time.Millisecond * 50)
+	downloads := []struct {
+		name   string
+		chunks int
+	}{
+		{"ubuntu-24.04.iso", 60},
+		{"node-v22.tar.gz", 25},
+		{"go1.27.zip", 40},
 	}
 
-	multi.Stop()
+	// Bars that run at the same time stack below each other on their own.
+	var wg sync.WaitGroup
+
+	for _, d := range downloads {
+		bar, _ := pterm.Progressbar.WithTotal(d.chunks).Start(d.name)
+
+		wg.Go(func() {
+			for range d.chunks {
+				time.Sleep(50 * time.Millisecond)
+				bar.Increment()
+			}
+		})
+	}
+
+	wg.Wait()
 }

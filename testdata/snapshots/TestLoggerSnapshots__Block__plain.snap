@@ -1,0 +1,7 @@
+● info  Retrying the upload of the nightly backup to the
+        secondary region
+        bucket=s3://backups
+        reason="connection reset"
+        trace=
+          line one
+          line two
