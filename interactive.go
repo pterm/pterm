@@ -4,12 +4,15 @@ import (
 	"context"
 	"io"
 	"os"
+	"slices"
+	"strings"
 	"sync"
 
 	"atomicgo.dev/keyboard"
 	"atomicgo.dev/keyboard/keys"
 
 	"github.com/pterm/pterm/internal/screen"
+	"github.com/pterm/pterm/internal/text"
 )
 
 // promptConfig is what every interactive printer shares: where it reads
@@ -45,6 +48,14 @@ var inputMu sync.Mutex
 // Tests replace it.
 var stdinIsTerminal = func() bool { return screen.IsTerminal(os.Stdin) }
 
+// listenKeys reads key presses from the terminal. Tests replace it to feed
+// key presses the way a terminal groups them, such as pasted text.
+var listenKeys = keyboard.Listen
+
+// viewHook receives every view a prompt draws. Tests use it to look at a
+// prompt while it waits.
+var viewHook func(view string)
+
 // run shows the prompt and returns the answer. When standard input is not
 // a terminal and the printer reads no other input, it returns fallback and
 // ErrNotInteractive, or fallback and nil when hasDefault is set.
@@ -72,9 +83,16 @@ func (p prompt[T]) run(fallback T, hasDefault bool) (T, error) {
 	}
 
 	draw := func() {
-		if region != nil {
-			region.Set(p.view(canvasFor(w)))
+		if region == nil {
+			return
 		}
+
+		view := p.view(canvasFor(w))
+		if viewHook != nil {
+			viewHook(view)
+		}
+
+		region.Set(view)
 	}
 
 	draw()
@@ -113,7 +131,7 @@ func (p prompt[T]) run(fallback T, hasDefault bool) (T, error) {
 			// Wake the listener so it sees the canceled context.
 			_ = keyboard.SimulateKeyPress(keys.Null)
 		})
-		err = keyboard.Listen(onKey)
+		err = listenKeys(onKey)
 
 		stop()
 	}
@@ -175,3 +193,52 @@ func answered(c canvas, st status, text, answer string) string {
 
 	return node(line)
 }
+
+// keyHint is a key and what it does, shown in the footer of a prompt.
+type keyHint struct {
+	key    string
+	action string
+	// drop orders the hints that go when the footer is too wide: higher
+	// goes first. Zero never goes.
+	drop int
+}
+
+// hints renders the key hint footer of a prompt:
+// [space] toggle · [enter] confirm. Keys are Text inside muted brackets,
+// actions are muted.
+func hints(c canvas, hs ...keyHint) string {
+	parts := make([]string, 0, len(hs))
+	for _, h := range hs {
+		parts = append(parts, c.paint(ToneMuted, "[")+c.paint(ToneText, h.key)+c.paint(ToneMuted, "] "+h.action))
+	}
+
+	return strings.Join(parts, c.paint(ToneMuted, " "+c.g.Dot+" "))
+}
+
+// footer renders the key hints of a prompt as its last line. When they do
+// not fit the width, the least important hints are left out.
+func footer(c canvas, hs ...keyHint) string {
+	line := promptIndent + hints(c, hs...)
+
+	for c.width > 0 && text.Width(line) > c.width-1 {
+		worst := -1
+
+		for i, h := range hs {
+			if h.drop > 0 && (worst < 0 || h.drop >= hs[worst].drop) {
+				worst = i
+			}
+		}
+
+		if worst < 0 {
+			break
+		}
+
+		hs = slices.Delete(slices.Clone(hs), worst, worst+1)
+		line = promptIndent + hints(c, hs...)
+	}
+
+	return line
+}
+
+// promptIndent indents the body of a prompt under its question.
+const promptIndent = "  "

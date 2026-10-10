@@ -25,6 +25,8 @@ type Glyphs struct {
 	Checked   string // ◉ a selected option
 	Unchecked string // ○ an option that is not selected
 	Dot       string // · the separator between inline items
+	ArrowUp   string // ↑ more above, the up key
+	ArrowDown string // ↓ more below, the down key
 
 	Bar       string // ┃ the left bar of a callout
 	RailStart string // ┌ the top of a flow
@@ -76,6 +78,8 @@ var GlyphsUnicode = Glyphs{
 	Checked:   "◉",
 	Unchecked: "○",
 	Dot:       "·",
+	ArrowUp:   "↑",
+	ArrowDown: "↓",
 
 	Bar:       "┃",
 	RailStart: "┌",
@@ -117,6 +121,8 @@ var GlyphsASCII = Glyphs{
 	Checked:   "*",
 	Unchecked: "o",
 	Dot:       "-",
+	ArrowUp:   "^",
+	ArrowDown: "v",
 
 	Bar:       "|",
 	RailStart: "+",

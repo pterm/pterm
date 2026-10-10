@@ -1,0 +1,9 @@
+? What should be cleaned? 2 of 7 /gocache
+
+  BUILD CACHES
+  ❯ ◉ go build cache     ~/Library/Caches/go-build    5.8 GB
+
+  PACKAGE MANAGERS
+    ○ go module cache    ~/go/pkg/mod                 3.4 GB
+
+  [space] toggle · [↑↓] move · [enter] confirm · [esc] clear filter

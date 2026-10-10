@@ -1,0 +1,6 @@
+? Which cluster? k8s
+  ❯ kapp-k8s-at  Vienna                  3 nodes
+    kapp-k8s-de  Frankfurt               5 nodes
+    kapp-k8s-us  Virginia               12 nodes
+
+  [↑↓] move · [enter] select · [type] filter

@@ -1,0 +1,8 @@
+? Which cluster?
+    kapp-k8s-at  Vienna                  3 nodes
+  ❯ kapp-k8s-de  Frankfurt               5 nodes
+    kapp-k8s-us  Virginia               12 nodes
+    staging      shared playground       2 nodes
+    legacy-eu    read only until March    1 node
+
+  [↑↓] move · [enter] select · [type] filter

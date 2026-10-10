@@ -1,0 +1,11 @@
+? What should be cleaned? 2 of 7
+  ↑ 2 more
+  PACKAGE MANAGERS
+    ○ go module cache    ~/go/pkg/mod                 3.4 GB
+
+  BUILD CACHES
+    ◉ go build cache     ~/Library/Caches/go-build    5.8 GB
+  ❯ ○ Bazel output base  in use by a running build    7.2 GB
+  ↓ 2 more
+
+  [space] toggle · [a] all · [n] none · [enter] confirm · [/] filter
