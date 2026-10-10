@@ -34,5 +34,9 @@ var (
 	_ LivePrinter = (*ProgressbarPrinter)(nil)
 	_ LivePrinter = (*SpinnerPrinter)(nil)
 
-	_ InteractivePrinter[bool] = ConfirmPrinter{}
+	_ InteractivePrinter[bool]     = ConfirmPrinter{}
+	_ InteractivePrinter[string]   = SelectPrinter{}
+	_ InteractivePrinter[[]string] = MultiselectPrinter{}
+	_ InteractivePrinter[string]   = TextInputPrinter{}
+	_ InteractivePrinter[string]   = ContinuePrinter{}
 )

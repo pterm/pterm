@@ -105,8 +105,8 @@ func (p KeyHintsPrinter) WithWriter(w io.Writer) *KeyHintsPrinter {
 
 func (p KeyHintsPrinter) out() io.Writer { return orDefault(p.Writer) }
 
-// render draws the hint line on c, cut to the canvas width. Interactive
-// printers call it for their footer. It returns "" without hints.
+// render draws the hint line on c, cut to the canvas width. The footers
+// of interactive printers are drawn with it too. It returns "" without hints.
 func (p KeyHintsPrinter) render(c canvas) string {
 	sep := p.Separator
 	if sep == "" {
@@ -136,14 +136,6 @@ func (p KeyHintsPrinter) render(c canvas) string {
 	}
 
 	return c.cut(strings.Join(parts, sep), c.width)
-}
-
-// keyHints draws hints with the default key hint printer, for the footers
-// of interactive printers.
-//
-//nolint:unused // the interactive printers call it.
-func keyHints(c canvas, hints ...KeyHint) string {
-	return KeyHints.WithHints(hints...).render(c)
 }
 
 // Srender returns the hint line. It returns ErrEmpty without hints.

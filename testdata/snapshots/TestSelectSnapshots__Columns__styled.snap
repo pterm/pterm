@@ -1,0 +1,8 @@
+\x1b[38;2;183;189;248m?\x1b[0m \x1b[1;38;2;202;211;245mWhich cluster?\x1b[0m
+    \x1b[38;2;202;211;245mkapp-k8s-at\x1b[0m  \x1b[38;2;128;135;162mVienna\x1b[0m                  \x1b[38;2;202;211;245m3 nodes\x1b[0m
+  \x1b[38;2;183;189;248m❯\x1b[0m \x1b[1;38;2;183;189;248mkapp-k8s-de\x1b[0m  \x1b[38;2;128;135;162mFrankfurt\x1b[0m               \x1b[38;2;202;211;245m5 nodes\x1b[0m
+    \x1b[38;2;202;211;245mkapp-k8s-us\x1b[0m  \x1b[38;2;128;135;162mVirginia\x1b[0m               \x1b[38;2;202;211;245m12 nodes\x1b[0m
+    \x1b[38;2;202;211;245mstaging\x1b[0m      \x1b[38;2;128;135;162mshared playground\x1b[0m       \x1b[38;2;202;211;245m2 nodes\x1b[0m
+    \x1b[38;2;128;135;162mlegacy-eu\x1b[0m    \x1b[38;2;128;135;162mread only until March\x1b[0m    \x1b[38;2;128;135;162m1 node\x1b[0m
+
+  \x1b[38;2;128;135;162m[\x1b[0m\x1b[38;2;202;211;245m↑↓\x1b[0m\x1b[38;2;128;135;162m]\x1b[0m \x1b[38;2;128;135;162mmove\x1b[0m\x1b[38;2;128;135;162m · \x1b[0m\x1b[38;2;128;135;162m[\x1b[0m\x1b[38;2;202;211;245menter\x1b[0m\x1b[38;2;128;135;162m]\x1b[0m \x1b[38;2;128;135;162mselect\x1b[0m\x1b[38;2;128;135;162m · \x1b[0m\x1b[38;2;128;135;162m[\x1b[0m\x1b[38;2;202;211;245mtype\x1b[0m\x1b[38;2;128;135;162m]\x1b[0m \x1b[38;2;128;135;162mfilter\x1b[0m

@@ -1,0 +1,4 @@
+\x1b[38;2;183;189;248m?\x1b[0m \x1b[1;38;2;202;211;245mWhich cluster?\x1b[0m \x1b[38;2;128;135;162mtype to search\x1b[0m
+  \x1b[38;2;183;189;248m>\x1b[0m \x1b[1;38;2;183;189;248mGo\x1b[0m
+    \x1b[38;2;202;211;245mRust\x1b[0m
+    \x1b[38;2;202;211;245mTypeScript\x1b[0m
