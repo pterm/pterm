@@ -1,0 +1,7 @@
+\x1b[38;2;128;135;162mCOMMANDS\x1b[0m
+  \x1b[38;2;139;213;202mdoctor\x1b[0m         \x1b[38;2;202;211;245mCheck the installation\x1b[0m
+  \x1b[38;2;139;213;202mdisk clean\x1b[0m     \x1b[38;2;202;211;245mFree space used by caches\x1b[0m
+
+\x1b[38;2;128;135;162mFLAGS\x1b[0m
+  \x1b[38;2;139;213;202m-v, --verbose\x1b[0m  \x1b[38;2;202;211;245mPrint what is happening\x1b[0m
+  \x1b[38;2;139;213;202m-h, --help\x1b[0m     \x1b[38;2;202;211;245mShow this help\x1b[0m

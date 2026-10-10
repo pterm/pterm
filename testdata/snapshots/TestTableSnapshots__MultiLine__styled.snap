@@ -1,0 +1,5 @@
+\x1b[38;2;128;135;162mCOMMAND\x1b[0m  \x1b[38;2;128;135;162mDESCRIPTION\x1b[0m
+\x1b[38;2;91;96;120m─────────────────────────\x1b[0m
+\x1b[38;2;202;211;245minit\x1b[0m     \x1b[38;2;202;211;245mCreate a project\x1b[0m
+         \x1b[38;2;202;211;245min this folder\x1b[0m
+\x1b[38;2;202;211;245mbuild\x1b[0m    \x1b[38;2;202;211;245mCompile\x1b[0m

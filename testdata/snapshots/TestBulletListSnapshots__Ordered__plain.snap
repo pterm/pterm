@@ -1,0 +1,4 @@
+1. Measure what can be freed
+   1. npm and bun caches
+   2. Docker images
+2. Clean up

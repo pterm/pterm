@@ -3,15 +3,12 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// The first row becomes the header via WithHasHeader.
-	tableData := pterm.TableData{
-		{"Firstname", "Lastname", "Email", "Note"},
-		{"Paul", "Dean", "augue@velitAliquam.co.uk", ""},
-		{"Callie", "Mckay", "nunc.sed@est.com", "这是一个测试, haha!"},
-		{"Libby", "Camacho", "lobortis@semper.com", "just a test, hey!"},
-		{"张", "小宝", "zhang@example.com", ""},
-	}
-
-	// WithBoxed draws a box around the whole table.
-	pterm.DefaultTable.WithHasHeader().WithBoxed().WithData(tableData).Render()
+	// A boxed table gets a rounded frame with its title inset into the top
+	// edge. Use it when the table has to stand apart from the output around it.
+	pterm.Table.WithBoxed().WithTitle("Services").WithData(pterm.TableData{
+		{"Service", "Region", "Status", "Latency"},
+		{"api", "eu-west-1", "running", "42 ms"},
+		{"worker", "eu-west-1", "running", "118 ms"},
+		{"billing", "us-east-1", "degraded", "1.4 s"},
+	}).Render()
 }
