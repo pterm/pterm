@@ -114,6 +114,36 @@ func TestInteractiveMultiselectPrinter_SelectAllAndSelectNone(t *testing.T) {
 		require.NoError(t, err)
 		assert.Empty(t, result)
 	})
+
+	t.Run("right selects only filtered options", func(t *testing.T) {
+		captureAreaOutput(t)
+		simulateKeys(t, 't', 'e', 's', 't', keys.Right, keys.Backspace, keys.Backspace, keys.Backspace, keys.Backspace, keys.Tab)
+
+		result, err := showMultiselect(t, pterm.DefaultInteractiveMultiselect.WithOptions([]string{"alpha", "test-1", "beta", "test-2"}))
+
+		require.NoError(t, err)
+		assert.Equal(t, []string{"test-1", "test-2"}, result)
+	})
+
+	t.Run("left deselects only filtered options", func(t *testing.T) {
+		captureAreaOutput(t)
+		simulateKeys(t, keys.Right, 't', 'e', 's', 't', keys.Left, keys.Tab)
+
+		result, err := showMultiselect(t, pterm.DefaultInteractiveMultiselect.WithOptions([]string{"alpha", "test-1", "beta", "test-2"}))
+
+		require.NoError(t, err)
+		assert.Equal(t, []string{"alpha", "beta"}, result)
+	})
+
+	t.Run("right returns options in option order", func(t *testing.T) {
+		captureAreaOutput(t)
+		simulateKeys(t, keys.Down, keys.Down, keys.Enter, keys.Right, keys.Tab)
+
+		result, err := showMultiselect(t, pterm.DefaultInteractiveMultiselect.WithOptions([]string{"a", "b", "c"}))
+
+		require.NoError(t, err)
+		assert.Equal(t, []string{"a", "b", "c"}, result)
+	})
 }
 
 func TestInteractiveMultiselectPrinter_MaxHeightScrollsWindow(t *testing.T) {

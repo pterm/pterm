@@ -199,6 +199,84 @@ func TestTablePrinter_BoxedWrapsTableInAlignedBox(t *testing.T) {
 	assert.Equal(t, expected, srenderPlain(t, printer))
 }
 
+func TestTablePrinter_WithBoxPrinterCustomBorders(t *testing.T) {
+	customBox := pterm.BoxPrinter{
+		VerticalString:          "#",
+		TopRightCornerString:    "+",
+		TopLeftCornerString:     "+",
+		BottomLeftCornerString:  "+",
+		BottomRightCornerString: "+",
+		HorizontalString:        "=",
+		RightPadding:            1,
+		LeftPadding:             1,
+	}
+
+	printer := pterm.DefaultTable.WithBoxPrinter(customBox).WithData(pterm.TableData{
+		{"a", "b"},
+		{"cc", "dd"},
+	})
+
+	expected := "" +
+		"+=========+\n" +
+		"# a  │ b  #\n" +
+		"# cc │ dd #\n" +
+		"+=========+"
+
+	assert.Equal(t, expected, srenderPlain(t, printer))
+}
+
+func TestTablePrinter_WithBoxPrinterBoxStyle(t *testing.T) {
+	style := pterm.NewStyle(pterm.FgCyan)
+	customBox := *pterm.DefaultBox.WithBoxStyle(style)
+
+	printer := pterm.DefaultTable.WithBoxPrinter(customBox).WithData(pterm.TableData{
+		{"a", "b"},
+	})
+
+	out, err := printer.Srender()
+	require.NoError(t, err)
+
+	prefix := styledPrefix(t, style)
+	assert.Contains(t, out, prefix, "custom box style must be applied to box borders")
+}
+
+func TestTablePrinter_WithBoxPrinterWithTitle(t *testing.T) {
+	customBox := *pterm.DefaultBox.WithTitle("Table Title")
+
+	printer := pterm.DefaultTable.WithBoxPrinter(customBox).WithData(pterm.TableData{
+		{"a", "b"},
+	})
+
+	plain := srenderPlain(t, printer)
+	assert.Contains(t, plain, "Table Title", "box title must be rendered")
+}
+
+func TestTablePrinter_WithBoxPrinterDisablingViaWithBoxedFalse(t *testing.T) {
+	customBox := *pterm.DefaultBox.WithVerticalString("#")
+
+	printer := pterm.DefaultTable.WithBoxPrinter(customBox).WithBoxed(false).WithData(pterm.TableData{
+		{"a", "b"},
+	})
+
+	expected := "a │ b\n"
+	assert.Equal(t, expected, srenderPlain(t, printer))
+}
+
+func TestTablePrinter_WithBoxPrinterZeroValueFallsBackToDefaultBox(t *testing.T) {
+	printer := pterm.DefaultTable.WithBoxPrinter(pterm.BoxPrinter{}).WithData(pterm.TableData{
+		{"a", "b"},
+		{"cc", "dd"},
+	})
+
+	expected := "" +
+		"╭─────────╮\n" +
+		"│ a  │ b  │\n" +
+		"│ cc │ dd │\n" +
+		"╰─────────╯"
+
+	assert.Equal(t, expected, srenderPlain(t, printer))
+}
+
 func TestTablePrinter_EmptyDataRendersEmptyString(t *testing.T) {
 	// Documents current behavior: a table without data renders as an empty
 	// string and does not return an error.
@@ -240,4 +318,63 @@ func TestTablePrinter_SrenderIsPure(t *testing.T) {
 
 	assert.Equal(t, first, second, "rendering twice must yield identical output")
 	assert.Equal(t, pterm.TableData{{"Name", "Age"}, {"Alice", "1"}}, data, "rendering must not modify the input data")
+}
+
+func TestTablePrinter_ColumnMinWidthsWidenNarrowColumns(t *testing.T) {
+	printer := pterm.DefaultTable.
+		WithColumnMinWidths(8, 5).
+		WithData(pterm.TableData{
+			{"Name", "Age"},
+			{"Bob", "22"},
+		})
+
+	// Column 0 is only 4 wide by content ("Name") but is padded to the
+	// requested minimum of 8; column 1 to 5. The last column is padded too.
+	expected := "" +
+		"Name     │ Age  \n" +
+		"Bob      │ 22   \n"
+
+	assert.Equal(t, expected, srenderPlain(t, printer))
+}
+
+func TestTablePrinter_ColumnMinWidthsNeverShrinkWideColumns(t *testing.T) {
+	// A minimum below the natural content width has no effect: content wins.
+	data := pterm.TableData{
+		{"Firstname", "Age"},
+		{"Alice", "1"},
+	}
+	withMin := pterm.DefaultTable.WithColumnMinWidths(2, 2).WithData(data)
+	plain := pterm.DefaultTable.WithData(data)
+
+	assert.Equal(t, srenderPlain(t, plain), srenderPlain(t, withMin))
+}
+
+func TestTablePrinter_ColumnMinWidthsAlignSeparateTables(t *testing.T) {
+	// The main use case: two tables with different content render with the
+	// same column layout when given the same minimum widths, so they line up
+	// when printed one after another.
+	widths := []int{10, 6}
+
+	first := srenderPlain(t, pterm.DefaultTable.
+		WithColumnMinWidths(widths...).
+		WithData(pterm.TableData{{"Alice", "1"}}))
+	second := srenderPlain(t, pterm.DefaultTable.
+		WithColumnMinWidths(widths...).
+		WithData(pterm.TableData{{"Bob", "22"}}))
+
+	// Both tables are single ASCII rows, so a byte count is their width.
+	firstWidth := len(strings.TrimRight(first, "\n"))
+	secondWidth := len(strings.TrimRight(second, "\n"))
+	assert.Equal(t, firstWidth, secondWidth, "tables sharing minimum widths must render at the same width")
+}
+
+func TestTablePrinter_ColumnMinWidthsExtraEntriesIgnored(t *testing.T) {
+	// More minimums than columns must not panic; the surplus is ignored.
+	printer := pterm.DefaultTable.
+		WithColumnMinWidths(3, 3, 3, 3).
+		WithData(pterm.TableData{{"a", "b"}})
+
+	out, err := printer.Srender()
+	require.NoError(t, err)
+	assert.NotEmpty(t, out)
 }

@@ -3,6 +3,7 @@ package pterm_test
 import (
 	"fmt"
 	"regexp"
+	"runtime"
 	"strings"
 	"testing"
 	"time"
@@ -314,6 +315,10 @@ func TestProgressbarPrinter_ZeroElapsedTimeRoundingFactor(t *testing.T) {
 	defer p.Stop()
 
 	p.SetStartedAt(time.Now().Add(-90 * time.Second))
+
+	if runtime.GOOS == "windows" {
+		t.Skip("the 15ms timer resolution makes fractional elapsed output nondeterministic")
+	}
 
 	assert.NotPanics(t, func() { p.Add(1) })
 	assert.Contains(t, stripTerminalEscapes(buf.String()), "1m30.", "the unrounded elapsed time must be rendered")

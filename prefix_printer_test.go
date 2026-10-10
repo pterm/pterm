@@ -58,11 +58,81 @@ func TestPrefixPrinterStyledOutput(t *testing.T) {
 }
 
 func TestPrefixPrinterMultilineIndentsContinuationLines(t *testing.T) {
-	// Continuation lines are indented with len(prefix)+2 spaces plus the
-	// separating space, so the message column stays aligned under the first
-	// line.
+	// Continuation lines are indented by the prefix's display width plus 2
+	// spaces and the separating space, so the message column stays aligned
+	// under the first line.
 	assert.Equal(t, "  INFO    first\n          second", stripANSI(pterm.Info.Sprint("first\nsecond")))
 	assert.Equal(t, "  ERROR   first\n          second", stripANSI(pterm.Error.Sprint("first\nsecond")))
+}
+
+func TestPrefixPrinterMultilineWideCharacterAlignment(t *testing.T) {
+	tests := []struct {
+		name     string
+		prefix   string
+		input    string
+		expected string
+	}{
+		{
+			name:     "ASCII control",
+			prefix:   "INFO",
+			input:    "first line\nsecond line",
+			expected: " INFO  first line\n       second line",
+		},
+		{
+			name:     "CJK two characters",
+			prefix:   "情報",
+			input:    "first line\nsecond line",
+			expected: " 情報  first line\n       second line",
+		},
+		{
+			name:     "CJK four characters three lines",
+			prefix:   "警告です",
+			input:    "line 1\nline 2\nline 3",
+			expected: " 警告です  line 1\n           line 2\n           line 3",
+		},
+		{
+			name:     "Emoji wide character",
+			prefix:   "\U0001F680",
+			input:    "line 1\nline 2",
+			expected: " \U0001F680  line 1\n     line 2",
+		},
+		{
+			name:     "Mixed ASCII and CJK",
+			prefix:   "LOG 日志",
+			input:    "entry 1\nentry 2",
+			expected: " LOG 日志  entry 1\n           entry 2",
+		},
+		{
+			name:     "Colored prefix text",
+			prefix:   "\x1b[31m情報\x1b[0m",
+			input:    "first line\nsecond line",
+			expected: " 情報  first line\n       second line",
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			p := pterm.PrefixPrinter{
+				Prefix: pterm.Prefix{
+					Text: tc.prefix,
+				},
+			}
+			assert.Equal(t, tc.expected, stripANSI(p.Sprint(tc.input)))
+		})
+	}
+}
+
+func TestPrefixPrinterMultilineWideCharacterStyled(t *testing.T) {
+	style := pterm.NewStyle(pterm.BgCyan, pterm.FgBlack)
+	p := pterm.PrefixPrinter{
+		Prefix: pterm.Prefix{
+			Text:  "情報",
+			Style: style,
+		},
+	}
+	out := p.Sprint("first\nsecond")
+	expected := style.Sprint(" 情報 ") + " first\n" + style.Sprint("      ") + " second"
+	assert.Equal(t, expected, out)
 }
 
 func TestPrefixPrinterSprintlnAppendsNewline(t *testing.T) {

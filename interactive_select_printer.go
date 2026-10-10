@@ -31,10 +31,13 @@ var (
 
 // InteractiveSelectPrinter is a printer for interactive select menus.
 type InteractiveSelectPrinter struct {
-	TextStyle              *Style
-	DefaultText            string
-	Options                []string
-	OptionStyle            *Style
+	TextStyle   *Style
+	DefaultText string
+	Options     []string
+	OptionStyle *Style
+	// SelectedOptionStyle styles the highlighted option. When nil, OptionStyle
+	// is used.
+	SelectedOptionStyle    *Style
 	DefaultOption          string
 	MaxHeight              int
 	Selector               string
@@ -86,6 +89,12 @@ func (p InteractiveSelectPrinter) WithOnInterruptFunc(exitFunc func()) *Interact
 // WithFilter sets the Filter option
 func (p InteractiveSelectPrinter) WithFilter(b ...bool) *InteractiveSelectPrinter {
 	p.Filter = internal.WithBoolean(b)
+	return &p
+}
+
+// WithSelectedOptionStyle sets the style of the highlighted option.
+func (p InteractiveSelectPrinter) WithSelectedOptionStyle(style *Style) *InteractiveSelectPrinter {
+	p.SelectedOptionStyle = style
 	return &p
 }
 
@@ -276,6 +285,14 @@ func (p *InteractiveSelectPrinter) Show(text ...string) (string, error) {
 	return p.result, nil
 }
 
+func (p *InteractiveSelectPrinter) selectedOptionStyle() *Style {
+	if p.SelectedOptionStyle == nil {
+		return p.OptionStyle
+	}
+
+	return p.SelectedOptionStyle
+}
+
 func (p *InteractiveSelectPrinter) renderSelectMenu() string {
 	var content strings.Builder
 	if p.Filter {
@@ -314,7 +331,7 @@ func (p *InteractiveSelectPrinter) renderSelectMenu() string {
 		}
 
 		if i == p.selectedOption {
-			content.WriteString(Sprintf("%s %s\n", p.renderSelector(), p.OptionStyle.Sprint(option)))
+			content.WriteString(Sprintf("%s %s\n", p.renderSelector(), p.selectedOptionStyle().Sprint(option)))
 		} else {
 			content.WriteString(Sprintf("  %s\n", p.OptionStyle.Sprint(option)))
 		}
