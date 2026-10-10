@@ -102,7 +102,7 @@ func (c canvas) wrap(s string, indent int) []string {
 
 // cut shortens s to w columns with an ellipsis. A w of zero or less leaves
 // s alone.
-func (c canvas) cut(s string, w int) string {
+func (c canvas) cut(s string, w int) string { //nolint:unused // TODO: used by the render printers, remove this directive when they land.
 	return text.Truncate(s, w, c.g.Ellipsis)
 }
 
@@ -131,7 +131,7 @@ func sprintText(p textRenderer, s string) string {
 	return screen.Strip(p.render(canvasFor(p.out()), s))
 }
 
-func printText(p textRenderer, s string) {
+func printText(p textRenderer, s string) { //nolint:unused // TODO: used by the render printers, remove this directive when they land.
 	if !OutputEnabled() {
 		return
 	}
@@ -167,7 +167,7 @@ func sprintln(a ...any) string {
 }
 
 // renderTo writes the output of a render printer to w.
-func renderTo(w io.Writer, s string, err error) error {
+func renderTo(w io.Writer, s string, err error) error { //nolint:unused // TODO: used by the render printers, remove this directive when they land.
 	if err != nil {
 		return err
 	}
@@ -187,7 +187,7 @@ func orDefault(w io.Writer) io.Writer {
 }
 
 // orErrorOutput returns w, or the error output when w is nil.
-func orErrorOutput(w io.Writer) io.Writer {
+func orErrorOutput(w io.Writer) io.Writer { //nolint:unused // TODO: used by the render printers, remove this directive when they land.
 	if w == nil {
 		return ErrorOutput()
 	}

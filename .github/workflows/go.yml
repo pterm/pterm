@@ -86,7 +86,10 @@ jobs:
       - name: Run golangci-lint
         uses: golangci/golangci-lint-action@v9
         with:
-          version: v2.11.4
+          version: v2.14.0
+          # Build golangci-lint with the Go version from go.mod. Release
+          # binaries lag behind new Go versions and refuse to lint newer code.
+          install-mode: goinstall
           args: --timeout=3m
 
       - name: Lint summary

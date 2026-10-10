@@ -66,6 +66,7 @@ func TestFlowPlain(t *testing.T) {
 		flow, _ := pterm.Flow.WithSpacing(false).Start("build")
 		flow.Step("compile")
 		pterm.Info.Println("cached")
+
 		_ = flow.Stop()
 	})
 
