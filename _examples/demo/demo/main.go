@@ -1,27 +1,33 @@
+// The demo is the trailer at the top of the README. Every scene is a
+// regular pterm call; the animations are an Area that gets redrawn with
+// the next frame.
 package main
 
 import (
 	"fmt"
+	"io"
 	"math"
+	"os"
 	"time"
+
+	"golang.org/x/term"
 
 	"github.com/pterm/pterm"
 )
 
-// This demo is the trailer at the top of the README. Every scene is a
-// regular pterm call; the animations are an Area that gets redrawn with
-// the next frame.
 func main() {
 	intro()
 	install()
 	data()
 	charts()
+	clean()
 	outro()
 }
 
-// clear starts a new scene on an empty screen.
-func clear() {
-	if pterm.StylingEnabled() {
+// newScene starts a new scene on an empty screen. Piped output keeps every
+// scene.
+func newScene() {
+	if term.IsTerminal(int(os.Stdout.Fd())) {
 		fmt.Print("\x1b[H\x1b[2J")
 	}
 }
@@ -38,7 +44,7 @@ func frames(d time.Duration, draw func(t float64)) {
 }
 
 // ease slows an animation down towards its end.
-func ease(t float64) float64 { return 1 - math.Pow(1-t, 3) }
+func ease(t float64) float64 { return 1 - (1-t)*(1-t)*(1-t) }
 
 func intro() {
 	area, _ := pterm.Area.WithRemoveWhenDone().Start()
@@ -54,21 +60,24 @@ func intro() {
 }
 
 func install() {
-	clear()
+	newScene()
 
 	flow, _ := pterm.Flow.WithSubtitle("3 services").Start("deploy")
 
 	step := flow.Step("Resolving dependencies")
+
 	time.Sleep(900 * time.Millisecond)
 	step.Success("Resolved 128 dependencies")
 
 	bar, _ := pterm.Progressbar.WithTotal(40).Start("Building images")
+
 	for range 40 {
 		time.Sleep(40 * time.Millisecond)
 		bar.Increment()
 	}
 
 	step = flow.Step("Running migrations")
+
 	time.Sleep(800 * time.Millisecond)
 	step.Success("Applied 4 migrations")
 
@@ -77,6 +86,7 @@ func install() {
 	flow.Step("Deploying billing").Skip("Skipped billing")
 
 	step = flow.Step("Deploying api and worker")
+
 	time.Sleep(time.Second)
 	step.Success("Deployed api and worker")
 
@@ -85,8 +95,8 @@ func install() {
 }
 
 func data() {
-	clear()
-	pterm.Header.WithBadge("POD").WithSubtitle("production").Println("Cluster status")
+	newScene()
+	pterm.Header.WithBadge("K8S").WithSubtitle("production").Println("Cluster status")
 
 	rows := pterm.TableData{
 		{"Pod", "Status", "CPU", "Memory", "Restarts"},
@@ -142,6 +152,7 @@ func firstNodes(root pterm.TreeNode, n int) pterm.TreeNode {
 			}
 
 			n--
+
 			out.Children = append(out.Children, walk(child))
 		}
 
@@ -152,7 +163,7 @@ func firstNodes(root pterm.TreeNode, n int) pterm.TreeNode {
 }
 
 func charts() {
-	clear()
+	newScene()
 	pterm.Section.WithTopPadding(0).Println("Requests per service")
 
 	services := []string{"api", "worker", "billing", "search"}
@@ -191,14 +202,45 @@ func charts() {
 	time.Sleep(1500 * time.Millisecond)
 }
 
+func clean() {
+	newScene()
+
+	// The keys are scripted, so the trailer plays on its own. A real
+	// program leaves out WithInput and reads the keyboard.
+	keys, typist := io.Pipe()
+
+	go func() {
+		for _, key := range []string{"\x1b[B", " ", "\x1b[B", "\x1b[B", " ", "\x1b[B", " ", "\r"} {
+			time.Sleep(450 * time.Millisecond)
+
+			_, _ = typist.Write([]byte(key))
+		}
+	}()
+
+	selected, _ := pterm.Multiselect.WithInput(keys).WithItems([]pterm.Option{
+		{Label: "npm cache", Description: "~/.npm/_cacache", Detail: "1.2 GB", Group: "Package managers", Selected: true},
+		{Label: "go build cache", Description: "~/.cache/go-build", Detail: "5.8 GB", Group: "Package managers"},
+		{Label: "pip cache", Description: "~/.cache/pip", Detail: "87 MB", Group: "Package managers"},
+		{Label: "Docker images", Description: "dangling and unused", Detail: "18.3 GB", Group: "Containers"},
+		{Label: "Docker volumes", Description: "may hold databases", Detail: "4.7 GB", Group: "Containers", Disabled: true},
+	}).Show("What should be cleaned?")
+
+	spinner, _ := pterm.Spinner.Start(fmt.Sprintf("Cleaning %d caches", len(selected)))
+
+	time.Sleep(1500 * time.Millisecond)
+	spinner.Success("Freed 24.1 GB")
+
+	time.Sleep(1500 * time.Millisecond)
+}
+
 func outro() {
-	clear()
+	newScene()
 
 	pterm.Println()
 	pterm.Box.
 		WithTitle("pterm").
-		WithPadding(2).
-		Println("Go get it:\n\n" + pterm.ToneAccent.Sprint("go get github.com/pterm/pterm"))
+		WithHorizontalPadding(2).
+		Println(pterm.ToneAccent.Sprint("go get github.com/pterm/pterm"))
 	pterm.Println()
 	pterm.Success.Println("Themes, glyphs and widths adapt to every terminal")
 	pterm.Info.Println("Read the docs at " + pterm.ToneInfo.Sprint("https://pterm.sh"))
