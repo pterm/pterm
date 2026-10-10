@@ -63,7 +63,7 @@ func snap(t *testing.T, name string, render func() string) {
 }
 
 // srender adapts a Srender method for snap and fails the test on errors.
-func srender(t *testing.T, render func() (string, error)) func() string { //nolint:unused // TODO: used by the render printers, remove this directive when they land.
+func srender(t *testing.T, render func() (string, error)) func() string {
 	t.Helper()
 
 	return func() string {

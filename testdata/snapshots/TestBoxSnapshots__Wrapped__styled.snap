@@ -1,0 +1,4 @@
+\x1b[38;2;91;96;120m╭\x1b[0m\x1b[38;2;91;96;120m────────────────────────────────────────────────────────────────────────────\x1b[0m\x1b[38;2;91;96;120m╮\x1b[0m
+\x1b[38;2;91;96;120m│\x1b[0m \x1b[38;2;202;211;245mA box wraps text that is wider than the terminal. A box wraps text that is\x1b[0m \x1b[38;2;91;96;120m│\x1b[0m
+\x1b[38;2;91;96;120m│\x1b[0m \x1b[38;2;202;211;245mwider than the terminal. A box wraps text that is wider than the terminal.\x1b[0m \x1b[38;2;91;96;120m│\x1b[0m
+\x1b[38;2;91;96;120m╰\x1b[0m\x1b[38;2;91;96;120m────────────────────────────────────────────────────────────────────────────\x1b[0m\x1b[38;2;91;96;120m╯\x1b[0m

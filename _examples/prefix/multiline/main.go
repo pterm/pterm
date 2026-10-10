@@ -5,7 +5,7 @@ import "github.com/pterm/pterm"
 func main() {
 	// A message with more than one line turns into a callout. The first
 	// line becomes the title.
-	pterm.Error.Println("Unknown command disk\nRun `mjw --help` to see available commands.")
+	pterm.Error.Println("Unknown command disk\nRun `app --help` to see available commands.")
 
 	pterm.Println()
 

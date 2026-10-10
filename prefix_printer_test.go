@@ -13,7 +13,7 @@ func TestPrefixSnapshots(t *testing.T) {
 	snap(t, "Warning", func() string { return pterm.Warning.Sprint("The cache is stale") })
 	snap(t, "Error", func() string { return pterm.Error.Sprint("Unknown command") })
 	snap(t, "ErrorMultiline", func() string {
-		return pterm.Error.Sprint("Unknown command disk\nRun `mjw --help` to see available commands.")
+		return pterm.Error.Sprint("Unknown command disk\nRun `app --help` to see available commands.")
 	})
 	snap(t, "WithTitle", func() string { return pterm.Info.WithTitle("Note").Sprint("Neutral information.") })
 	snap(t, "Wrapped", func() string {

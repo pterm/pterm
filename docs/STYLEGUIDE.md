@@ -134,7 +134,7 @@ Multi-line messages of `Info`, `Success`, `Warning` and `Error` render as callou
 - Sentence case for titles and messages: "Measuring what can be freed", not "Measuring What Can Be Freed".
 - Messages do not end with a period unless they have more than one sentence.
 - Group titles in lists are uppercase and muted: `PACKAGE MANAGERS`.
-- Say what happened and what to do next. "Run `mjw --help` to see available commands." beats "An error occurred."
+- Say what happened and what to do next. "Run `app --help` to see available commands." beats "An error occurred."
 
 ## Checklist for a printer
 
