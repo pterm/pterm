@@ -1,0 +1,6 @@
+# Run from the repository root: shellcheck scripts/*.sh
+source-path=SCRIPTDIR
+external-sources=true
+
+# sed '$a\' and literal backticks in printf formats are intended.
+disable=SC1003,SC2016

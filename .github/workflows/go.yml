@@ -101,10 +101,29 @@ jobs:
             echo "| golangci-lint | ${{ job.status }} |"
           } >> "$GITHUB_STEP_SUMMARY"
 
+  examples:
+    name: Build examples
+    runs-on: ubuntu-latest
+    if: "${{ github.event_name != 'push' || !contains(github.event.head_commit.message, 'docs: autoupdate') }}"
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v6
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      # The underscore keeps _examples out of "go build ./...", so the
+      # examples need their own check to catch API changes that break them.
+      - name: Build and vet examples
+        run: scripts/build-examples.sh
+
   summary:
     name: CI summary
     runs-on: ubuntu-latest
-    needs: [test, lint]
+    needs: [test, lint, examples]
     if: "${{ always() && (github.event_name != 'push' || !contains(github.event.head_commit.message, 'docs: autoupdate')) }}"
     steps:
       - name: Write workflow summary
@@ -117,9 +136,10 @@ jobs:
             echo "| --- | --- |"
             echo "| Tests | ${{ needs.test.result }} |"
             echo "| Lint | ${{ needs.lint.result }} |"
+            echo "| Examples | ${{ needs.examples.result }} |"
           } >> "$GITHUB_STEP_SUMMARY"
 
-          if [[ "${{ needs.test.result }}" != "success" || "${{ needs.lint.result }}" != "success" ]]; then
+          if [[ "${{ needs.test.result }}" != "success" || "${{ needs.lint.result }}" != "success" || "${{ needs.examples.result }}" != "success" ]]; then
             echo "::error::One or more CI checks failed."
             exit 1
           fi

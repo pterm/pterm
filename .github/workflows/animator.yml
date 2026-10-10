@@ -1,46 +1,123 @@
-on:
-  workflow_dispatch:
+name: Animations
 
-name: Update Animations
+# Records every example in _examples with VHS. Pull requests get the GIFs as a
+# workflow artifact for review. Pushes to master commit the GIFs and the
+# regenerated READMEs back to the repository.
+
+on:
+  pull_request:
+    paths:
+      - "**.go"
+      - "go.mod"
+      - "go.sum"
+      - "_examples/**"
+      - "scripts/**"
+      - ".github/workflows/animator.yml"
+  push:
+    branches:
+      - master
+    paths:
+      - "**.go"
+      - "go.mod"
+      - "go.sum"
+      - "_examples/**"
+      - "scripts/**"
+      - ".github/workflows/animator.yml"
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: Commit the GIFs and docs back to the branch
+        type: boolean
+        default: false
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
-  group: update-animations-${{ github.ref }}
+  group: animations-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  animations:
+  render:
+    name: Render animations
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 45
+    # Our own "docs: autoupdate" commit must not start another round.
+    if: "${{ github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'docs: autoupdate') }}"
     env:
-      ANIMATE_JOBS: 2
+      ANIMATE_JOBS: 4
       TERM: xterm-256color
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.ACCESS_TOKEN || github.token }}
+        uses: actions/checkout@v6
 
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version-file: go.mod
           cache: true
 
-      - name: Install VHS dependencies
+      - name: Pull VHS image
         run: scripts/install-vhs-deps.sh
 
-      - name: Render and publish animations
-        run: scripts/animate.sh
+      # Pull requests only need the GIFs. Pushes to master (and manual runs
+      # that ask for it) also regenerate the READMEs.
+      - name: Render animations
+        run: |
+          if [[ "${{ github.event_name }}" == "push" || "${{ inputs.commit }}" == "true" ]]; then
+            scripts/animate.sh
+          else
+            scripts/animate.sh --dry-run
+          fi
 
-      - name: Commit generated docs
+      - name: Upload GIFs
+        uses: actions/upload-artifact@v7
+        with:
+          name: example-animations
+          # The common root is _examples, so the artifact is laid out as
+          # <printer>/<example>/animation.gif.
+          path: _examples/**/animation.gif
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload generated docs
+        if: github.event_name == 'push' || inputs.commit
+        uses: actions/upload-artifact@v7
+        with:
+          name: generated-docs
+          path: |
+            README.md
+            docs/index.html
+            _examples/**/README.md
+            _examples/**/animation.gif
+          if-no-files-found: error
+          retention-days: 3
+
+  commit:
+    name: Commit animations
+    needs: render
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: "${{ (github.event_name == 'push' && github.ref == 'refs/heads/master') || (github.event_name == 'workflow_dispatch' && inputs.commit) }}"
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.ACCESS_TOKEN || github.token }}
+
+      - name: Download generated docs
+        uses: actions/download-artifact@v8
+        with:
+          name: generated-docs
+          path: .
+
+      - name: Commit and push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A README.md _examples docs/index.html testdata/raw
+          git add -A README.md docs/index.html _examples
 
           if git diff --cached --quiet; then
             echo "No generated changes to commit."
@@ -48,4 +125,6 @@ jobs:
           fi
 
           git commit -m "docs: autoupdate animations"
+          # Someone may have pushed while the animations were rendering.
+          git pull --rebase
           git push

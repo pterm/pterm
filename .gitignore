@@ -23,11 +23,11 @@ vendor/
 /.idea
 /.cursor
 
-# Generated animation artifacts
+# Generated animation artifacts. The example GIFs are committed so the READMEs
+# can link them by relative path.
 *.svg
 *.gif
 *.tape
+!/_examples/**/animation.gif
 !/_examples/**/keys.tape
 !/_examples/**/options.tape
-/_examples/**/.pterm-vhs-example
-/_examples/**/.pterm-vhs-run
