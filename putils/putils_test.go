@@ -168,3 +168,12 @@ func TestDownloadWithProgress(t *testing.T) {
 		t.Fatal("want an error for a 404")
 	}
 }
+
+func TestBarsFromMap(t *testing.T) {
+	equal(t, putils.BarsFromMap(map[string]int{"yarn": 611, "npm": 1284, "bun": 287, "pnpm": 611}), pterm.Bars{
+		{Label: "npm", Value: 1284},
+		{Label: "pnpm", Value: 611},
+		{Label: "yarn", Value: 611},
+		{Label: "bun", Value: 287},
+	})
+}
