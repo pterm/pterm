@@ -1,26 +1,45 @@
 package main
 
 import (
+	"fmt"
+	"strings"
 	"time"
 
 	"github.com/pterm/pterm"
-	"github.com/pterm/pterm/putils"
 )
 
 func main() {
-	// A live clock: only the area redraws, anything printed before it stays put.
-	pterm.Info.Println("The previous text will stay in place, while the area updates.")
-	pterm.Print("\n\n")
+	services := []string{"api", "worker", "scheduler", "web"}
+	healthy := 0
 
-	area, _ := pterm.DefaultArea.WithCenter().Start()
+	// An area redraws any text in place. Here it shows a small health board
+	// that updates as services come up.
+	area, _ := pterm.Area.Start(board(services, healthy))
 
-	for range 10 {
-		// Render the current time as big letters into a string, then swap it
-		// into the area. Srender returns the output instead of printing it.
-		str, _ := pterm.DefaultBigText.WithLetters(putils.LettersFromString(time.Now().Format("15:04:05"))).Srender()
-		area.Update(str)
-		time.Sleep(time.Second)
+	for healthy < len(services) {
+		time.Sleep(700 * time.Millisecond)
+
+		healthy++
+		area.Update(board(services, healthy))
 	}
 
+	// The last content stays on screen.
 	area.Stop()
+}
+
+// board renders one line per service, with the first n marked as healthy.
+func board(services []string, n int) string {
+	var b strings.Builder
+
+	fmt.Fprintf(&b, "Waiting for services %s\n", pterm.ToneMuted.Sprintf("%d/%d", n, len(services)))
+
+	for i, s := range services {
+		if i < n {
+			b.WriteString("  " + pterm.ToneSuccess.Sprint("up  ") + " " + s + "\n")
+		} else {
+			b.WriteString("  " + pterm.ToneMuted.Sprint("down") + " " + s + "\n")
+		}
+	}
+
+	return b.String()
 }
