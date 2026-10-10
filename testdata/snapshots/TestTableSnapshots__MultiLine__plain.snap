@@ -1,0 +1,5 @@
+COMMAND  DESCRIPTION
+─────────────────────────
+init     Create a project
+         in this folder
+build    Compile

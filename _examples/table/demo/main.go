@@ -3,28 +3,14 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// With WithHasHeader the first row is styled as the header. The CJK
-	// characters are measured by display width, so the columns stay aligned.
-	tableData1 := pterm.TableData{
-		{"Firstname", "Lastname", "Email", "Note"},
-		{"Paul", "Dean", "augue@velitAliquam.co.uk", ""},
-		{"Callie", "Mckay", "nunc.sed@est.com", "这是一个测试, haha!"},
-		{"Libby", "Camacho", "lobortis@semper.com", "just a test, hey!"},
-		{"张", "小宝", "zhang@example.com", ""},
-	}
-
-	pterm.DefaultTable.WithHasHeader().WithData(tableData1).Render()
-
-	pterm.Println()
-
-	// Cells may contain newlines; a row grows to fit its tallest cell.
-	tableData2 := pterm.TableData{
-		{"Firstname", "Lastname", "Email"},
-		{"Paul\n\nNewline", "Dean", "augue@velitAliquam.co.uk"},
-		{"Callie", "Mckay", "nunc.sed@est.com\nNewline"},
-		{"Libby", "Camacho", "lobortis@semper.com"},
-		{"张", "小宝", "zhang@example.com"},
-	}
-
-	pterm.DefaultTable.WithHasHeader().WithData(tableData2).Render()
+	// The first row is the header. Sizes and numbers are detected and
+	// right-aligned, so the SIZE and FILES columns line up on their units.
+	pterm.Table.WithData(pterm.TableData{
+		{"Cache", "State", "Size", "Files", "Path"},
+		{"npm", "stale", "1.20 GB", "48,211", "~/.npm/_cacache"},
+		{"bun", "fresh", "393 MB", "9,874", "~/.bun/install/cache"},
+		{"go", "fresh", "2.84 GB", "112,530", "~/go/pkg/mod"},
+		{"pip", "stale", "87 MB", "1,302", "~/.cache/pip"},
+		{"cargo", "fresh", "640 MB", "20,447", "~/.cargo/registry"},
+	}).Render()
 }

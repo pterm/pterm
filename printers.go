@@ -13,8 +13,14 @@ var (
 	_ TextPrinter = RulePrinter{}
 	_ TextPrinter = SectionPrinter{}
 
+	_ RenderPrinter = BulletListPrinter{}
+	_ RenderPrinter = DefinitionsPrinter{}
 	_ RenderPrinter = KeyHintsPrinter{}
+	_ RenderPrinter = KeyValuePrinter{}
+	_ RenderPrinter = PanelPrinter{}
 	_ RenderPrinter = RulePrinter{}
+	_ RenderPrinter = TablePrinter{}
+	_ RenderPrinter = TreePrinter{}
 
 	_ LivePrinter = (*AreaPrinter)(nil)
 	_ LivePrinter = (*FlowPrinter)(nil)

@@ -120,3 +120,17 @@ func escapeAt(s string, i int) string {
 
 	return ""
 }
+
+// Escapes returns the start and end offsets of every escape sequence in s.
+func Escapes(s string) [][2]int {
+	var locs [][2]int
+
+	for i := 0; i < len(s); i++ {
+		if seq := escapeAt(s, i); seq != "" {
+			locs = append(locs, [2]int{i, i + len(seq)})
+			i += len(seq) - 1
+		}
+	}
+
+	return locs
+}
