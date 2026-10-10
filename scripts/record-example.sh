@@ -258,7 +258,8 @@ append_file() {
 }
 
 tape_file="$stage_dir/animation.tape"
-{
+write_tape() {
+	{
 	cat <<EOF
 Output animation.gif
 
@@ -287,7 +288,10 @@ EOF
 Wait@$wait_timeout
 Sleep $end_sleep
 EOF
-} >"$tape_file"
+	} >"$tape_file"
+}
+
+write_tape
 
 cat >"$stage_dir/run.sh" <<EOF
 #!/usr/bin/env bash
@@ -320,10 +324,27 @@ if [[ "$(id -u)" != "0" ]]; then
 	docker_args+=(--user "$(id -u):$(id -g)")
 fi
 
-info "Recording $example_rel"
-rm -f "$gif_file"
-timeout --kill-after=10s "${record_timeout}s" docker "${docker_args[@]}" "$VHS_DOCKER_IMAGE" /work/animation.tape ||
+# VHS sizes the browser viewport in pixels and gives up when no viewport
+# yields exactly the requested rows, which happens for some row counts at
+# this font size. One more row always resolves, so retry a few times with a
+# taller terminal before failing.
+vhs_log="$stage_dir/vhs.log"
+for ((attempt = 1; ; attempt++)); do
+	info "Recording $example_rel"
+	rm -f "$gif_file"
+	if timeout --kill-after=10s "${record_timeout}s" docker "${docker_args[@]}" "$VHS_DOCKER_IMAGE" /work/animation.tape 2>&1 | tee "$vhs_log"; then
+		break
+	fi
+
+	if ((attempt < 3)) && grep -q 'could not resolve a viewport' "$vhs_log"; then
+		rows=$((rows + 1))
+		warn "$example_rel: VHS could not size the terminal, retrying at ${columns}x${rows}"
+		write_tape
+		continue
+	fi
+
 	die "VHS failed or timed out after ${record_timeout}s for $example_rel"
+done
 [[ -s "$gif_file" ]] || die "VHS finished but did not write $gif_file"
 
 gif_ref="animation.gif"
