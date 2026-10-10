@@ -191,12 +191,20 @@ func TestInteractiveTextInputPrinter_MultiLine(t *testing.T) {
 		assert.Equal(t, "keep", result)
 	})
 
-	t.Run("enter submits an untouched default value", func(t *testing.T) {
-		simulateKeys(t, keys.Enter)
+	t.Run("enter adds a line after an untouched default value", func(t *testing.T) {
+		simulateKeys(t, keys.Enter, "newline", keys.Tab)
 
 		result := showTextInput(t, pterm.DefaultInteractiveTextInput.WithMultiLine().WithDefaultValue("keep"))
 
-		assert.Equal(t, "keep", result)
+		assert.Equal(t, "keep\nnewline", result)
+	})
+
+	t.Run("enter then tab keeps the newline", func(t *testing.T) {
+		simulateKeys(t, keys.Enter, keys.Tab)
+
+		result := showTextInput(t, pterm.DefaultInteractiveTextInput.WithMultiLine().WithDefaultValue("keep"))
+
+		assert.Equal(t, "keep\n", result)
 	})
 }
 
