@@ -156,6 +156,8 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 			}
 
 			if p.MultiLine {
+				p.startedTyping = true
+
 				if key.AltPressed {
 					p.cursorXPos = 0
 				}
