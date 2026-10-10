@@ -29,7 +29,7 @@ Rules:
 
 - Text in a printer's own tone is short: a glyph, a title, a word. Bodies are Text.
 - Muted text is never essential. If the user must read it, it is Text.
-- Backgrounds are only used for badges. A badge is a tone background with dark text on dark themes and light text on light themes.
+- Backgrounds are only used for badges. A badge is a tone background with bold text in a deep shade of that tone, or a pale tint when the tone itself is dark, so it stays readable on any theme.
 - Bold is for titles and the selected item. Never bold a whole paragraph.
 - No italics, blinking or reverse video.
 
