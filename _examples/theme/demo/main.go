@@ -1,33 +1,30 @@
 package main
 
 import (
-	"reflect"
-	"time"
+	"fmt"
 
 	"github.com/pterm/pterm"
 )
 
 func main() {
-	pterm.Info.Println("These are the default theme styles.\nYou can modify them easily to your personal preference,\nor create new themes from scratch :)")
-
-	pterm.Println()
-
-	// The theme fields are plain pterm.Style values, so we can walk them with
-	// reflection and print every style the theme defines without listing each
-	// field by hand. Overriding one is as simple as assigning a new Style.
-	v := reflect.ValueOf(pterm.ThemeDefault)
-	typeOfS := v.Type()
-
-	if typeOfS == reflect.TypeOf(pterm.Theme{}) {
-		for i := 0; i < v.NumField(); i++ {
-			field, ok := v.Field(i).Interface().(pterm.Style)
-			if ok {
-				// Print each field name in its own style, so you can see
-				// exactly how it looks.
-				field.Println(typeOfS.Field(i).Name)
-			}
-
-			time.Sleep(time.Millisecond * 250)
-		}
+	// Every printer colors itself from the nine theme slots, so this list is
+	// the whole palette pterm draws with.
+	tones := []pterm.Tone{
+		pterm.TonePrimary, pterm.ToneAccent, pterm.ToneSuccess,
+		pterm.ToneWarning, pterm.ToneError, pterm.ToneInfo,
+		pterm.ToneText, pterm.ToneMuted, pterm.ToneBorder,
 	}
+
+	for _, tone := range tones {
+		swatch := pterm.NewStyle(pterm.ToneDefault).On(tone).Sprint("      ")
+		fmt.Printf("%s %s %s\n", swatch, tone.Bold().Sprintf("%-8s", tone), pterm.ToneMuted.Sprint(tone.Color()))
+	}
+
+	fmt.Println()
+
+	// Status messages pick their tone from the same slots.
+	pterm.Success.Println("Built 12 packages")
+	pterm.Info.Println("Cache is 2.3 GB")
+	pterm.Warning.Println("3 dependencies are outdated")
+	pterm.Error.Println("Could not reach the registry")
 }
