@@ -56,6 +56,9 @@ All glyphs come from `CurrentGlyphs()`, never from string literals in a printer.
 | Flow rail | ┌ │ └ | + \| \` | Border |
 | Rule | ─ | - | Border |
 | Meter fill / track | █ ░ | # . | tone / Border |
+| Bar ends | ▏▎▍▌▋▊▉ ▐ ▀ | none, rounded | the bar's tone |
+| Columns | ▁▂▃▄▅▆▇█ | . : \| # | the series tone |
+| Legend swatch | ■ | # | the series tone |
 | Box | ╭ ╮ ╰ ╯ ─ │ | + - \| | Border |
 | Tree | ├─ └─ │ | \|- \`- \| | Border |
 | Ellipsis | … | ~ | as the cut text |
@@ -121,6 +124,8 @@ Multi-line messages of `Info`, `Success`, `Warning` and `Error` render as callou
 - A meter is a fill in a tone on a track of `░` in Border, followed by a right-aligned percentage and a muted label.
 - Bars use eighth blocks so their length is exact to an eighth of a column.
 - A chart colors its series from a fixed cycle: Primary, Accent, Info, Success, Warning, Error.
+- Labels are Text, values are Muted and right-aligned, baselines and zero axes are Border.
+- Grouped and stacked charts end with a legend: a swatch in the series tone and the name in Text.
 
 ## Prompts
 

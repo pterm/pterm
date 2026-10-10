@@ -38,6 +38,10 @@ type Glyphs struct {
 	MeterTrack string   // ░ the empty part of a meter or bar
 	Eighths    []string // ▏▎▍▌▋▊▉ partial horizontal blocks, 1/8 to 7/8
 	Columns    []string // ▁▂▃▄▅▆▇█ vertical blocks, 1/8 to 8/8
+	RightHalf  string   // ▐ the end of a bar that grows to the left
+	UpperHalf  string   // ▀ the end of a column that grows down
+	LowerHalf  string   // ▄ the lower half of a cell, used by the big text font
+	Swatch     string   // ■ a color sample in a chart legend
 	Spinner    []string // ⠋⠙⠹... spinner frames
 
 	Box  BoxGlyphs
@@ -46,8 +50,8 @@ type Glyphs struct {
 
 // BoxGlyphs draw frames.
 type BoxGlyphs struct {
-	TopLeft, TopRight, BottomLeft, BottomRight string
-	Horizontal, Vertical                       string
+	TopLeft, TopRight, BottomLeft, BottomRight  string
+	Horizontal, Vertical                        string
 	TeeLeft, TeeRight, TeeTop, TeeBottom, Cross string
 }
 
@@ -89,6 +93,10 @@ var GlyphsUnicode = Glyphs{
 	MeterTrack: "░",
 	Eighths:    []string{"▏", "▎", "▍", "▌", "▋", "▊", "▉"},
 	Columns:    []string{"▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"},
+	RightHalf:  "▐",
+	UpperHalf:  "▀",
+	LowerHalf:  "▄",
+	Swatch:     "■",
 	Spinner:    []string{"⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"},
 
 	Box: BoxGlyphs{
@@ -130,6 +138,10 @@ var GlyphsASCII = Glyphs{
 	MeterTrack: ".",
 	Eighths:    []string{"", "", "", "", "", "", ""},
 	Columns:    []string{".", ".", ":", ":", "|", "|", "#", "#"},
+	RightHalf:  "",
+	UpperHalf:  "",
+	LowerHalf:  "",
+	Swatch:     "#",
 	Spinner:    []string{"|", "/", "-", "\\"},
 
 	Box: BoxGlyphs{
