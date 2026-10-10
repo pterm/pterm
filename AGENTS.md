@@ -149,11 +149,13 @@ Example conventions:
 - Keep examples short and self-contained; use small, realistic demo data.
 - Comments should sound human-written and explain intent or PTerm behavior,
   not narrate syntax. Do not use em-dashes in comments.
-- Interactive examples need CI automation so animations can be recorded:
-  either a `ci.go` that simulates key presses when `CI=true` (see
-  `interactive_confirm/demo/ci.go`) or a `keys.tape` file.
-- Each example must build on its own: `go build ./...` inside the example
-  folder (the underscore prefix keeps `_examples/` out of the root build).
+- Interactive examples need a `keys.tape` with the VHS key presses that drive
+  them, so the animation can be recorded. The terminal size is measured
+  automatically for other examples; interactive ones get 100x20 unless a
+  `size.env` sets `COLUMNS` and `ROWS`. See `scripts/README.md`.
+- Each example must build on its own. `task examples:build` builds and vets
+  all of them (`go build ./_examples/...` matches nothing because of the
+  underscore and still passes).
 
 ## Conventions & gotchas
 
@@ -163,7 +165,8 @@ Example conventions:
   from the closest existing printer of the same family.
 - `_examples/` is not built by `go build ./...` (underscore prefix). Examples
   feed the README/animations pipeline; see the "Examples" section above. You
-  don't normally need to run VHS locally.
+  don't normally need to run VHS locally: CI records the GIFs, attaches them
+  to pull requests as an artifact and commits them on `master`.
 - `deprecated.go` holds deprecated aliases kept for backward compatibility;
   don't remove them, add new deprecations there.
 - The public API is widely depended upon — avoid breaking exported signatures.

@@ -1,9 +1,15 @@
 #!/usr/bin/env bash
+# Sourced by the other scripts, which use the variables defined here.
+# shellcheck disable=SC2034
 
 set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd -- "$SCRIPT_DIR/.." && pwd)"
+
+# Pinned so recordings stay reproducible. Set Columns and Set Rows need VHS
+# 0.12 or newer; older images only work with ANIMATE_SIZE_MODE=pixels.
+VHS_DOCKER_IMAGE="${VHS_DOCKER_IMAGE:-ghcr.io/charmbracelet/vhs:v0.12.1}"
 
 if [[ -t 1 && -z "${NO_COLOR:-}" ]] || [[ "${GITHUB_ACTIONS:-}" == "true" && -z "${NO_COLOR:-}" ]]; then
 	RESET=$'\033[0m'
@@ -76,6 +82,23 @@ require_cmd() {
 example_key() {
 	local rel="$1"
 	printf '%s' "${rel//\//_}"
+}
+
+# Builds the example in $1 to $2. Pass "linux" as $3 to cross-compile the
+# binary that runs inside the VHS container.
+build_example() {
+	local dir="$1"
+	local output="$2"
+	local goos="${3:-}"
+
+	(
+		cd "$dir"
+		if [[ -n "$goos" ]]; then
+			export GOOS="$goos"
+			export GOARCH="${ANIMATE_DOCKER_ARCH:-$(go env GOARCH)}"
+		fi
+		CGO_ENABLED=0 go build -o "$output" .
+	)
 }
 
 replace_between() {

@@ -17,19 +17,29 @@ tasks:
       - go test -race ./...
 
   animations:
-    desc: Render and publish example animations with VHS
+    desc: Record every example with VHS and regenerate the example docs
     cmds:
       - scripts/animate.sh
 
   animations:dry:
-    desc: Render examples locally without publishing or updating docs
+    desc: Record every example without touching the docs
     cmds:
       - scripts/animate.sh --dry-run
 
+  animations:measure:
+    desc: Measure the examples and print the generated VHS tapes (no Docker needed)
+    cmds:
+      - scripts/animate.sh --measure-only
+
   animate:
-    desc: Render one example locally, e.g. task animate -- logger/default
+    desc: Record one example, e.g. task animate -- table/demo
     cmds:
       - scripts/animate.sh --example "{{.CLI_ARGS}}"
+
+  examples:build:
+    desc: Build and vet every example
+    cmds:
+      - scripts/build-examples.sh
 
   unittestcount:
     desc: Update the README unit test count badge
