@@ -41,8 +41,11 @@ type TablePrinter struct {
 	// left. A column is still widened to fit its content, but never rendered
 	// narrower than its minimum. Columns without an entry (or with a zero or
 	// negative minimum) keep the default content-based width.
-	ColumnMinWidths   []int
-	Boxed             bool
+	ColumnMinWidths []int
+	Boxed           bool
+	// BoxPrinter draws the box around the table when Boxed is set. The zero
+	// value uses DefaultBox.
+	BoxPrinter        BoxPrinter
 	LeftAlignment     bool
 	RightAlignment    bool
 	Writer            io.Writer
@@ -124,6 +127,15 @@ func (p TablePrinter) WithCSVReader(reader *csv.Reader) *TablePrinter {
 	if records, err := reader.ReadAll(); err == nil {
 		p.Data = records
 	}
+
+	return &p
+}
+
+// WithBoxPrinter returns a new TablePrinter that draws its box with the given
+// BoxPrinter. It also enables Boxed; WithBoxed(false) turns the box off again.
+func (p TablePrinter) WithBoxPrinter(boxPrinter BoxPrinter) *TablePrinter {
+	p.BoxPrinter = boxPrinter
+	p.Boxed = true
 
 	return &p
 }
@@ -283,7 +295,12 @@ func (p TablePrinter) Srender() (string, error) {
 	}
 
 	if p.Boxed {
-		return DefaultBox.Sprint(strings.TrimSuffix(ret.String(), "\n")), nil
+		box := p.BoxPrinter
+		if box == (BoxPrinter{}) {
+			box = DefaultBox
+		}
+
+		return box.Sprint(strings.TrimSuffix(ret.String(), "\n")), nil
 	}
 
 	return ret.String(), nil
