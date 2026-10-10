@@ -1,22 +1,28 @@
 package main
 
-import (
-	"github.com/pterm/pterm"
-)
+import "github.com/pterm/pterm"
 
 func main() {
-	// One deliberately longer label shows how the horizontal chart
-	// aligns all bars to the widest label.
-	bars := []pterm.Bar{
-		{Label: "Go", Value: 5},
-		{Label: "Rust", Value: 3},
-		{Label: "TypeScript", Value: 7},
-	}
+	// Weekly downloads per package manager. Each bar takes the next tone
+	// of the theme's series cycle, and the values line up on the right.
+	pterm.BarChart.WithBars(pterm.Bars{
+		{Label: "npm", Value: 1284},
+		{Label: "pnpm", Value: 932.5},
+		{Label: "yarn", Value: 611},
+		{Label: "bun", Value: 287},
+	}).Render()
 
-	pterm.Info.Println("Chart example with positive values only (bars use the full chart area)")
+	pterm.Println()
 
-	pterm.DefaultBarChart.WithBars(bars).Render()
-
-	// The same data rendered horizontally.
-	pterm.DefaultBarChart.WithHorizontal().WithBars(bars).Render()
+	// Several series per label become a stacked bar with a legend.
+	pterm.BarChart.
+		WithSeries("compile", "test", "upload").
+		WithStacked().
+		WithUnit("s").
+		WithGroups(pterm.BarGroups{
+			{Label: "linux", Values: []float64{48, 31, 6}},
+			{Label: "macos", Values: []float64{62, 35, 9}},
+			{Label: "windows", Values: []float64{81, 44, 12}},
+		}).
+		Render()
 }

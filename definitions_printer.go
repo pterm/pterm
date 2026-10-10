@@ -186,7 +186,7 @@ func (p DefinitionsPrinter) Srender() (string, error) {
 
 		for _, d := range g.Definitions {
 			lead := strings.Repeat(" ", indent) + c.style(p.TermStyle, d.Term)
-			body := []segment{{d.Description, p.DescriptionStyle}}
+			body := []span{{d.Description, p.DescriptionStyle}}
 			lines = append(lines, hanging(c, lead, column, p.Gap, body)...)
 		}
 	}

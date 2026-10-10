@@ -140,15 +140,15 @@ func (p KeyValuePrinter) Srender() (string, error) {
 
 	for _, kv := range p.Pairs {
 		lead := strings.Repeat(" ", p.Indent) + c.style(p.KeyStyle, kv.Key)
-		body := []segment{{kv.Value, p.ValueStyle}, {kv.Suffix, p.SuffixStyle}}
+		body := []span{{kv.Value, p.ValueStyle}, {kv.Suffix, p.SuffixStyle}}
 		lines = append(lines, hanging(c, lead, p.Indent+keys, p.Gap, body)...)
 	}
 
 	return strings.Join(lines, "\n"), nil
 }
 
-// segment is a piece of text with its style.
-type segment struct {
+// span is a piece of text with its style.
+type span struct {
 	text  string
 	style Style
 }
@@ -156,7 +156,7 @@ type segment struct {
 // flow wraps segments to width columns, keeping each segment's style. Lines
 // break at spaces and at newlines; a word wider than a line is broken. A
 // width of zero or less only breaks at newlines.
-func flow(c canvas, segments []segment, width int) []string {
+func flow(c canvas, segments []span, width int) []string {
 	type run struct {
 		style Style
 		words []string
@@ -233,7 +233,7 @@ func flow(c canvas, segments []segment, width int) []string {
 // then gap spaces and body. Body wraps to the canvas with every following
 // line indented to where the body starts. A lead wider than the column
 // puts the body on the next line.
-func hanging(c canvas, lead string, column, gap int, body []segment) []string {
+func hanging(c canvas, lead string, column, gap int, body []span) []string {
 	start := column + gap
 	leadWidth := text.Width(lead)
 

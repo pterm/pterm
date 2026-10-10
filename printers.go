@@ -4,6 +4,7 @@ package pterm
 var (
 	_ TextPrinter = BadgePrinter{}
 	_ TextPrinter = BasicTextPrinter{}
+	_ TextPrinter = BigTextPrinter{}
 	_ TextPrinter = BoxPrinter{}
 	_ TextPrinter = CalloutPrinter{}
 	_ TextPrinter = CenterPrinter{}
@@ -13,12 +14,17 @@ var (
 	_ TextPrinter = RulePrinter{}
 	_ TextPrinter = SectionPrinter{}
 
+	_ RenderPrinter = BarChartPrinter{}
+	_ RenderPrinter = BigTextPrinter{}
 	_ RenderPrinter = BulletListPrinter{}
 	_ RenderPrinter = DefinitionsPrinter{}
+	_ RenderPrinter = HeatmapPrinter{}
 	_ RenderPrinter = KeyHintsPrinter{}
 	_ RenderPrinter = KeyValuePrinter{}
+	_ RenderPrinter = MeterPrinter{}
 	_ RenderPrinter = PanelPrinter{}
 	_ RenderPrinter = RulePrinter{}
+	_ RenderPrinter = SparklinePrinter{}
 	_ RenderPrinter = TablePrinter{}
 	_ RenderPrinter = TreePrinter{}
 

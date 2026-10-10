@@ -426,7 +426,7 @@ func (p *ProgressbarPrinter) frame(c canvas) string {
 	}
 
 	if p.ShowPercentage {
-		tail = append(tail, c.paint(p.PercentageTone, text.PadLeft(strconv.Itoa(percent(current, total))+"%", 4)))
+		tail = append(tail, c.paint(p.PercentageTone, text.PadLeft(strconv.Itoa(percentOf(current, total))+"%", 4)))
 	}
 
 	if p.ShowCount {
@@ -461,7 +461,7 @@ func (p *ProgressbarPrinter) frame(c canvas) string {
 			ratio = float64(current) / float64(total)
 		}
 
-		parts = append(parts, drawProgressBar(c, ratio, barWidth, p.Tone, p.TrackTone, p.Fill, p.Track))
+		parts = append(parts, drawMeter(p.barCanvas(c), ratio, barWidth, p.Tone, p.TrackTone))
 	}
 
 	return strings.Join(append(parts, tail...), gap)
@@ -532,7 +532,7 @@ func (p *ProgressbarPrinter) final(c canvas, st status, title string) string {
 	case p.ShowCount:
 		parts = append(parts, c.paint(p.DetailTone, p.count(p.run.current, p.run.total, false)))
 	case p.ShowPercentage || len(parts) == 1:
-		parts = append(parts, c.paint(p.DetailTone, strconv.Itoa(percent(p.run.current, p.run.total))+"%"))
+		parts = append(parts, c.paint(p.DetailTone, strconv.Itoa(percentOf(p.run.current, p.run.total))+"%"))
 	}
 
 	if p.ShowElapsedTime {
@@ -573,8 +573,9 @@ func (p *ProgressbarPrinter) finish(st status, title string) {
 	})
 }
 
-// percent returns current as a whole percentage of total, from 0 to 100.
-func percent(current, total int) int {
+// percentOf returns current as a whole percentage of total, from 0 to
+// 100. It rounds down, so a bar never shows 100% before it is done.
+func percentOf(current, total int) int {
 	if total <= 0 {
 		return 0
 	}
@@ -582,52 +583,16 @@ func percent(current, total int) int {
 	return min(max(current*100/total, 0), 100)
 }
 
-// drawProgressBar draws a bar width columns wide, filled to ratio. The
-// fill uses eighth blocks so it grows an eighth of a column at a time. A
-// custom fill glyph, or a glyph set without eighth blocks, fills whole
-// columns only.
-func drawProgressBar(c canvas, ratio float64, width int, fillTone, trackTone Tone, fill, track string) string {
-	if width <= 0 {
-		return ""
+// barCanvas returns c with the bar glyphs of p. A custom fill has no
+// eighth blocks to go with it, so the bar then fills whole columns.
+func (p *ProgressbarPrinter) barCanvas(c canvas) canvas {
+	if p.Fill != "" {
+		c.g.MeterFill, c.g.Eighths = p.Fill, nil
 	}
 
-	ratio = min(max(ratio, 0), 1)
-	eighths := c.g.Eighths
-
-	if fill == "" {
-		fill = c.g.MeterFill
-	} else {
-		eighths = nil
+	if p.Track != "" {
+		c.g.MeterTrack = p.Track
 	}
 
-	if track == "" {
-		track = c.g.MeterTrack
-	}
-
-	exact := ratio * float64(width)
-	full := int(exact)
-	partial := ""
-
-	if len(eighths) > 0 && full < width {
-		if i := int((exact - float64(full)) * float64(len(eighths)+1)); i > 0 {
-			partial = eighths[i-1]
-		}
-	}
-
-	cells := full
-	if partial != "" {
-		cells++
-	}
-
-	var b strings.Builder
-
-	if filled := strings.Repeat(fill, full) + partial; filled != "" {
-		b.WriteString(c.paint(fillTone, filled))
-	}
-
-	if cells < width {
-		b.WriteString(c.paint(trackTone, strings.Repeat(track, width-cells)))
-	}
-
-	return b.String()
+	return c
 }

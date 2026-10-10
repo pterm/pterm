@@ -44,8 +44,9 @@ func TestProgressbarRedrawsInPlace(t *testing.T) {
 
 	bar.Add(52)
 
-	// 52% of 30 columns is 15.6: 15 full blocks, a half block and the track.
-	want := "Downloading  " + strings.Repeat("█", 15) + "▌" + strings.Repeat("░", 14) + "   52%   52/100"
+	// 52% of 30 columns is 15.6: 15 full blocks, a five-eighths block (0.6
+	// rounds to 5/8) and the track.
+	want := "Downloading  " + strings.Repeat("█", 15) + "▋" + strings.Repeat("░", 14) + "   52%   52/100"
 	if got := term.Screen(); got != want {
 		t.Errorf("screen:\n%s\nwant:\n%s", got, want)
 	}
@@ -222,7 +223,7 @@ func TestProgressbarASCII(t *testing.T) {
 	bar, _ := quietBar.WithBarWidth(10).Start("Copying")
 	bar.Add(55)
 
-	if got, want := term.Screen(), "Copying  #####.....   55%   55/100"; got != want {
+	if got, want := term.Screen(), "Copying  ######....   55%   55/100"; got != want {
 		t.Errorf("screen = %q, want %q", got, want)
 	}
 
