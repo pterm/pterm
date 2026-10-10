@@ -1,0 +1,5 @@
+├─ doctor    diagnostics
+├─ mcp       manage MCP servers
+│  └─ start  boots a server
+└─ disk      local disk utilities
+   └─ clean

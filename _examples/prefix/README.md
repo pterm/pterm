@@ -1,6 +1,6 @@
 ### prefix/demo
 
-![Animation](https://vhs.charm.sh/vhs-6vnMXqfVTtzXZnMoifwpNo.gif)
+![Animation](demo/animation.gif)
 
 <details>
 
@@ -12,23 +12,15 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Debug messages are hidden by default. Enable them so pterm.Debug prints.
+	pterm.Info.Println("Fetching the latest release")
+	pterm.Success.Println("Deployed v1.4.2 to production")
+	pterm.Warning.Println("The build cache is older than 30 days")
+	pterm.Error.Println("Could not reach registry.example.com")
+
+	// Debug output only shows up after EnableDebugMessages, for example
+	// behind a --verbose flag.
 	pterm.EnableDebugMessages()
-
-	pterm.Debug.Println("Hello, World!")
-	pterm.Info.Println("Hello, World!")
-	pterm.Success.Println("Hello, World!")
-	pterm.Warning.Println("Hello, World!")
-
-	// Error prints the filename and line number of the call site.
-	pterm.Error.Println("Errors show the filename and linenumber inside the terminal!")
-
-	// Any PrefixPrinter can show line numbers via WithShowLineNumber.
-	pterm.Info.WithShowLineNumber().Println("Other PrefixPrinters can do that too!")
-
-	// Fatal would normally terminate the program. WithFatal(false) turns that
-	// off so this demo keeps running.
-	pterm.Fatal.WithFatal(false).Println("Hello, World!")
+	pterm.Debug.Println("Resolved 42 packages in 120ms")
 }
 ```
 
@@ -36,7 +28,7 @@ func main() {
 
 ### prefix/custom
 
-![Animation](https://vhs.charm.sh/vhs-67iqEMVRli3nNeB7gYEPxb.gif)
+![Animation](custom/animation.gif)
 
 <details>
 
@@ -48,31 +40,42 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// A PrefixPrinter is just a struct, so custom printers can be built from
-	// scratch. The built-ins (Info, Success, ...) are constructed the same way.
-	deploy := pterm.PrefixPrinter{
-		Prefix: pterm.Prefix{
-			Text:  "DEPLOY",
-			Style: pterm.NewStyle(pterm.BgLightMagenta, pterm.FgBlack),
-		},
-		// The scope is printed after the prefix in brackets. Useful for
-		// tagging messages with a subsystem or component name.
-		Scope: pterm.Scope{
-			Text:  "database",
-			Style: pterm.NewStyle(pterm.FgGray),
-		},
-		MessageStyle: pterm.NewStyle(pterm.FgLightMagenta),
-	}
+	// Status printers are values. With* returns a changed copy, so the
+	// package defaults stay untouched.
+	deploy := pterm.Success.WithGlyph("↑").WithTone(pterm.ToneAccent)
+	deploy.Println("Pushed 3 images to the registry")
 
-	deploy.Println("Running migrations...")
-	deploy.Println("Migrations complete!")
+	// Store a customized printer to reuse it across the program.
+	hint := pterm.Info.WithTone(pterm.ToneMuted)
+	hint.Println("Run with --verbose to see every request")
+}
+```
 
-	// Existing printers can be tweaked on the fly. With* methods return a
-	// modified copy, so pterm.Info itself stays untouched.
-	pterm.Info.WithScope(pterm.Scope{
-		Text:  "api",
-		Style: pterm.NewStyle(pterm.BgGray, pterm.FgLightWhite),
-	}).Println("Listening on port 8080")
+</details>
+
+### prefix/multiline
+
+![Animation](multiline/animation.gif)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	// A message with more than one line turns into a callout. The first
+	// line becomes the title.
+	pterm.Error.Println("Unknown command disk\nRun `app --help` to see available commands.")
+
+	pterm.Println()
+
+	// WithTitle sets the title explicitly and keeps the whole message as
+	// the body.
+	pterm.Warning.WithTitle("Heads up").Println("Nothing here can be undone.")
 }
 ```
 

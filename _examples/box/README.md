@@ -1,6 +1,6 @@
 ### box/demo
 
-![Animation](https://vhs.charm.sh/vhs-1YpsH81JEuvjgD6uxQ5iv3.gif)
+![Animation](demo/animation.gif)
 
 <details>
 
@@ -12,28 +12,22 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Boxes render to strings via Sprint, so they can be nested inside other
-	// printers. Titles can be placed on any side of the border.
-	panel1 := pterm.DefaultBox.Sprint("Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit,\nsed do eiusmod tempor incididunt\nut labore et dolore\nmagna aliqua.")
-	panel2 := pterm.DefaultBox.WithTitle("title").Sprint("Ut enim ad minim veniam,\nquis nostrud exercitation\nullamco laboris\nnisi ut aliquip\nex ea commodo\nconsequat.")
-	panel3 := pterm.DefaultBox.WithTitle("bottom center title").WithTitleBottomCenter().Sprint("Duis aute irure\ndolor in reprehenderit\nin voluptate velit esse cillum\ndolore eu fugiat\nnulla pariatur.")
+	// A box frames text that belongs together. The title sits in the
+	// border, so the frame costs no extra line.
+	pterm.Box.WithTitle("Result").Println("3 files changed\n128 insertions, 41 deletions")
 
-	// Arrange the boxes in a grid: one row with two panels, one row with one.
-	panels, _ := pterm.DefaultPanel.WithPanels(pterm.Panels{
-		{{Data: panel1}, {Data: panel2}},
-		{{Data: panel3}},
-	}).Srender()
-
-	// Wrap the whole grid in an outer box.
-	pterm.DefaultBox.WithTitle("Lorem Ipsum").WithTitleBottomRight().WithRightPadding(0).WithBottomPadding(0).Println(panels)
+	// Boxes are text printers, so their output can go into other printers,
+	// even into another box.
+	inner := pterm.Box.WithTitle("Cache").Sprint("12 entries\n4.1 MB")
+	pterm.Box.WithTitle("Status").Println(inner)
 }
 ```
 
 </details>
 
-### box/custom-padding
+### box/padding
 
-![Animation](https://vhs.charm.sh/vhs-cy3y8ESzFiFughcKeRmzu.gif)
+![Animation](padding/animation.gif)
 
 <details>
 
@@ -45,38 +39,21 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Padding adds empty space between the box border and its content,
-	// configurable per side.
-	pterm.DefaultBox.WithRightPadding(10).WithLeftPadding(10).WithTopPadding(2).WithBottomPadding(2).Println("Hello, World!")
+	// By default there is one column of space left and right of the text.
+	pterm.Box.Println("Default padding")
+
+	// Padding can be set for all sides at once or for each side.
+	pterm.Box.WithPadding(1).Println("One line and column on every side")
+	pterm.Box.WithHorizontalPadding(4).Println("Wide sides")
+	pterm.Box.WithLeftPadding(0).WithRightPadding(0).Println("No padding")
 }
 ```
 
 </details>
 
-### box/default
+### box/title-position
 
-![Animation](https://vhs.charm.sh/vhs-1DIyAbs7eXHIzVW2Z7p4Md.gif)
-
-<details>
-
-<summary>SHOW SOURCE</summary>
-
-```go
-package main
-
-import "github.com/pterm/pterm"
-
-func main() {
-	// The box sizes itself to fit whatever it prints.
-	pterm.DefaultBox.Println("Hello, World!")
-}
-```
-
-</details>
-
-### box/title
-
-![Animation](https://vhs.charm.sh/vhs-3xc4Z0HU2WGZnIaPCUjymS.gif)
+![Animation](title-position/animation.gif)
 
 <details>
 
@@ -88,26 +65,11 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// One box per title position. WithTitle* methods return a modified copy,
-	// so paddedBox can be reused as a template without being changed.
-	paddedBox := pterm.DefaultBox.WithLeftPadding(4).WithRightPadding(4).WithTopPadding(1).WithBottomPadding(1)
-
-	// Titles may contain styled text.
-	title := pterm.LightRed("I'm a box!")
-
-	box1 := paddedBox.WithTitle(title).Sprint("Hello, World!\n      1") // top left is the default
-	box2 := paddedBox.WithTitle(title).WithTitleTopCenter().Sprint("Hello, World!\n      2")
-	box3 := paddedBox.WithTitle(title).WithTitleTopRight().Sprint("Hello, World!\n      3")
-	box4 := paddedBox.WithTitle(title).WithTitleBottomRight().Sprint("Hello, World!\n      4")
-	box5 := paddedBox.WithTitle(title).WithTitleBottomCenter().Sprint("Hello, World!\n      5")
-	box6 := paddedBox.WithTitle(title).WithTitleBottomLeft().Sprint("Hello, World!\n      6")
-	box7 := paddedBox.WithTitle(title).WithTitleTopLeft().Sprint("Hello, World!\n      7")
-
-	pterm.DefaultPanel.WithPanels([][]pterm.Panel{
-		{{box1}, {box2}, {box3}},
-		{{box4}, {box5}, {box6}},
-		{{box7}},
-	}).Render()
+	// The title can sit on the left, in the center or on the right, at the
+	// top or at the bottom of the frame.
+	pterm.Box.WithTitle("top left").WithWidth(40).Println("The frame keeps its width.")
+	pterm.Box.WithTitle("top center").WithTitlePosition(pterm.BoxTitleTopCenter).WithWidth(40).Println("The title moves.")
+	pterm.Box.WithTitle("bottom right").WithTitlePosition(pterm.BoxTitleBottomRight).WithWidth(40).Println("Even to the bottom.")
 }
 ```
 

@@ -1,6 +1,6 @@
 ### spinner/demo
 
-![Animation](https://vhs.charm.sh/vhs-3Zy8BjZTjS9OkbJkLLflis.gif)
+![Animation](demo/animation.gif)
 
 <details>
 
@@ -16,54 +16,104 @@ import (
 )
 
 func main() {
-	// A spinner can resolve as Info, Success, Warning or Fail. The spinner
-	// line is replaced by the matching prefix printer output.
-	spinnerInfo, _ := pterm.DefaultSpinner.Start("Some informational action...")
-	time.Sleep(time.Second * 2)
-	spinnerInfo.Info()
+	spinner, _ := pterm.Spinner.Start("Resolving dependencies")
+	time.Sleep(2 * time.Second)
+	spinner.UpdateText("Downloading 42 packages")
+	time.Sleep(2 * time.Second)
 
-	spinnerSuccess, _ := pterm.DefaultSpinner.Start("Doing something important... (will succeed)")
-	time.Sleep(time.Second * 2)
-	spinnerSuccess.Success()
+	// Output printed while the spinner runs appears above it.
+	pterm.Info.Println("Using the module cache at ~/go/pkg/mod")
+	time.Sleep(time.Second)
 
-	spinnerWarning, _ := pterm.DefaultSpinner.Start("Doing something important... (will warn)")
-	time.Sleep(time.Second * 2)
-	spinnerWarning.Warning()
+	spinner.Success("Installed 42 packages")
+}
+```
 
-	spinnerFail, _ := pterm.DefaultSpinner.Start("Doing something important... (will fail)")
-	time.Sleep(time.Second * 2)
-	spinnerFail.Fail()
+</details>
 
-	// The resolve printers are plain PrefixPrinters, so they can be swapped
-	// out. Here Info resolves with a custom "NOCHG" prefix instead.
-	spinnerNochange, _ := pterm.DefaultSpinner.Start("Checking something important... (will result in no change)")
-	spinnerNochange.InfoPrinter = &pterm.PrefixPrinter{
-		MessageStyle: &pterm.Style{pterm.FgLightBlue},
-		Prefix: pterm.Prefix{
-			Style: &pterm.Style{pterm.FgBlack, pterm.BgLightBlue},
-			Text:  " NOCHG ",
-		},
+### spinner/context
+
+![Animation](context/animation.gif)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"context"
+	"time"
+
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	// The spinner stops as canceled when the context ends, which makes
+	// timeouts a one-liner.
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+
+	spinner, _ := pterm.Spinner.WithContext(ctx).Start("Waiting for the database")
+
+	<-ctx.Done()
+	time.Sleep(100 * time.Millisecond)
+
+	// Stopping a spinner that already ended does nothing.
+	_ = spinner.Stop()
+}
+```
+
+</details>
+
+### spinner/run-with-spinner
+
+![Animation](run-with-spinner/animation.gif)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"context"
+	"errors"
+	"time"
+
+	"github.com/pterm/pterm"
+	"github.com/pterm/pterm/putils"
+)
+
+func main() {
+	ctx := context.Background()
+
+	// The spinner ends as a success when the function returns nil.
+	_ = putils.RunWithSpinner(ctx, "Fetching releases", func(ctx context.Context, s *pterm.SpinnerPrinter) error {
+		time.Sleep(time.Second)
+		s.UpdateText("Fetched 12 releases")
+
+		return nil
+	})
+
+	// An error ends it as a failure that names the task and the error.
+	err := putils.RunWithSpinner(ctx, "Uploading report", func(ctx context.Context, _ *pterm.SpinnerPrinter) error {
+		time.Sleep(time.Second)
+		return errors.New("the bucket does not exist")
+	})
+	if err != nil {
+		pterm.Info.Println("Create the bucket and run the upload again.")
 	}
-
-	time.Sleep(time.Second * 2)
-	spinnerNochange.Info("No changes were required")
-
-	// The text can be updated while the spinner keeps running.
-	spinnerLiveText, _ := pterm.DefaultSpinner.Start("Doing a lot of stuff...")
-	time.Sleep(time.Second)
-	spinnerLiveText.UpdateText("It's really much")
-	time.Sleep(time.Second)
-	spinnerLiveText.UpdateText("We're nearly done!")
-	time.Sleep(time.Second)
-	spinnerLiveText.Success("Finally!")
 }
 ```
 
 </details>
 
-### spinner/custom
+### spinner/statuses
 
-![Animation](https://vhs.charm.sh/vhs-7yMMUFKhhlDSkKnbXrdVEO.gif)
+![Animation](statuses/animation.gif)
 
 <details>
 
@@ -79,64 +129,22 @@ import (
 )
 
 func main() {
-	// The spinner animation is just a sequence of frames, so any set of
-	// strings works. WithStyle colors the animation.
-	spinner, _ := pterm.DefaultSpinner.
-		WithSequence("▁", "▃", "▅", "▇", "▅", "▃").
-		WithStyle(pterm.NewStyle(pterm.FgCyan)).
-		Start("Uploading assets...")
+	// A spinner ends as a status line. Pick the ending that matches what
+	// happened.
+	s, _ := pterm.Spinner.Start("Compiling")
+	time.Sleep(time.Second)
+	s.Success("Compiled 18 packages")
 
-	time.Sleep(time.Second * 2)
+	s, _ = pterm.Spinner.Start("Running tests")
+	time.Sleep(time.Second)
+	s.Warning("2 tests were skipped")
 
-	// The text can change while the spinner keeps running.
-	spinner.UpdateText("Finalizing upload...")
-	time.Sleep(time.Second * 2)
+	s, _ = pterm.Spinner.Start("Uploading coverage")
+	time.Sleep(time.Second)
+	s.Fail("Coverage upload timed out")
 
-	spinner.Success("Upload complete")
-}
-```
-
-</details>
-
-### spinner/multiple
-
-![Animation](https://vhs.charm.sh/vhs-7DrAMyia1pQbonfygvudY9.gif)
-
-<details>
-
-<summary>SHOW SOURCE</summary>
-
-```go
-package main
-
-import (
-	"time"
-
-	"github.com/pterm/pterm"
-)
-
-func main() {
-	// A MultiPrinter lets several spinners run at the same time. Each spinner
-	// writes to its own writer obtained from the multi printer.
-	multi := pterm.DefaultMultiPrinter
-
-	spinner1, _ := pterm.DefaultSpinner.WithWriter(multi.NewWriter()).Start("Spinner 1")
-	spinner2, _ := pterm.DefaultSpinner.WithWriter(multi.NewWriter()).Start("Spinner 2")
-	spinner3, _ := pterm.DefaultSpinner.WithWriter(multi.NewWriter()).Start("Spinner 3")
-
-	multi.Start()
-
-	// Each spinner can resolve on its own while the others keep spinning.
-	time.Sleep(time.Millisecond * 1000)
-	spinner1.Success("Spinner 1 is done!")
-
-	time.Sleep(time.Millisecond * 750)
-	spinner2.Fail("Spinner 2 failed!")
-
-	time.Sleep(time.Millisecond * 500)
-	spinner3.Warning("Spinner 3 has a warning!")
-
-	multi.Stop()
+	s, _ = pterm.Spinner.Start("Publishing docs")
+	s.Skip("Docs are unchanged")
 }
 ```
 

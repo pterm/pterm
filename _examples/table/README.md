@@ -1,6 +1,6 @@
 ### table/demo
 
-![Animation](https://vhs.charm.sh/vhs-6GyT4ctanulsK2hMwSXivY.gif)
+![Animation](demo/animation.gif)
 
 <details>
 
@@ -12,38 +12,24 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// With WithHasHeader the first row is styled as the header. The CJK
-	// characters are measured by display width, so the columns stay aligned.
-	tableData1 := pterm.TableData{
-		{"Firstname", "Lastname", "Email", "Note"},
-		{"Paul", "Dean", "augue@velitAliquam.co.uk", ""},
-		{"Callie", "Mckay", "nunc.sed@est.com", "这是一个测试, haha!"},
-		{"Libby", "Camacho", "lobortis@semper.com", "just a test, hey!"},
-		{"张", "小宝", "zhang@example.com", ""},
-	}
-
-	pterm.DefaultTable.WithHasHeader().WithData(tableData1).Render()
-
-	pterm.Println()
-
-	// Cells may contain newlines; a row grows to fit its tallest cell.
-	tableData2 := pterm.TableData{
-		{"Firstname", "Lastname", "Email"},
-		{"Paul\n\nNewline", "Dean", "augue@velitAliquam.co.uk"},
-		{"Callie", "Mckay", "nunc.sed@est.com\nNewline"},
-		{"Libby", "Camacho", "lobortis@semper.com"},
-		{"张", "小宝", "zhang@example.com"},
-	}
-
-	pterm.DefaultTable.WithHasHeader().WithData(tableData2).Render()
+	// The first row is the header. Sizes and numbers are detected and
+	// right-aligned, so the SIZE and FILES columns line up on their units.
+	pterm.Table.WithData(pterm.TableData{
+		{"Cache", "State", "Size", "Files", "Path"},
+		{"npm", "stale", "1.20 GB", "48,211", "~/.npm/_cacache"},
+		{"bun", "fresh", "393 MB", "9,874", "~/.bun/install/cache"},
+		{"go", "fresh", "2.84 GB", "112,530", "~/go/pkg/mod"},
+		{"pip", "stale", "87 MB", "1,302", "~/.cache/pip"},
+		{"cargo", "fresh", "640 MB", "20,447", "~/.cargo/registry"},
+	}).Render()
 }
 ```
 
 </details>
 
-### table/alternate-row-style
+### table/alignment
 
-![Animation](https://vhs.charm.sh/vhs-12EtzQW8xBhTNQQ6zHqsUV.gif)
+![Animation](alignment/animation.gif)
 
 <details>
 
@@ -55,19 +41,21 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// WithAlternateRowStyle applies this style to every second data row,
-	// which makes wide tables easier to scan.
-	alternateStyle := pterm.NewStyle(pterm.BgDarkGray)
-
-	tableData := pterm.TableData{
-		{"Firstname", "Lastname", "Email", "Note"},
-		{"Paul", "Dean", "augue@velitAliquam.co.uk", ""},
-		{"Callie", "Mckay", "nunc.sed@est.com", "这是一个测试, haha!"},
-		{"Libby", "Camacho", "lobortis@semper.com", "just a test, hey!"},
-		{"张", "小宝", "zhang@example.com", ""},
+	data := pterm.TableData{
+		{"Package", "Version", "Downloads"},
+		{"pterm", "v0.13.0", "1,204,331"},
+		{"color", "v0.2.0", "88,412"},
+		{"keyboard", "v0.3.1", "41,007"},
 	}
 
-	pterm.DefaultTable.WithHasHeader().WithBoxed().WithData(tableData).WithAlternateRowStyle(alternateStyle).Render()
+	// Numbers are right-aligned on their own. Columns can still be aligned
+	// by hand, here the version column is centered.
+	pterm.Table.WithData(data).WithColumnAlignment(1, pterm.AlignCenter).Render()
+
+	pterm.Println()
+
+	// WithRightAlignment aligns every column to the right.
+	pterm.Table.WithData(data).WithRightAlignment().Render()
 }
 ```
 
@@ -75,7 +63,7 @@ func main() {
 
 ### table/boxed
 
-![Animation](https://vhs.charm.sh/vhs-3Nbskbte7xbT79fb7staX5.gif)
+![Animation](boxed/animation.gif)
 
 <details>
 
@@ -87,17 +75,50 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// The first row becomes the header via WithHasHeader.
-	tableData := pterm.TableData{
-		{"Firstname", "Lastname", "Email", "Note"},
-		{"Paul", "Dean", "augue@velitAliquam.co.uk", ""},
-		{"Callie", "Mckay", "nunc.sed@est.com", "这是一个测试, haha!"},
-		{"Libby", "Camacho", "lobortis@semper.com", "just a test, hey!"},
-		{"张", "小宝", "zhang@example.com", ""},
-	}
+	// A boxed table gets a rounded frame with its title inset into the top
+	// edge. Use it when the table has to stand apart from the output around it.
+	pterm.Table.WithBoxed().WithTitle("Services").WithData(pterm.TableData{
+		{"Service", "Region", "Status", "Latency"},
+		{"api", "eu-west-1", "running", "42 ms"},
+		{"worker", "eu-west-1", "running", "118 ms"},
+		{"billing", "us-east-1", "degraded", "1.4 s"},
+	}).Render()
+}
+```
 
-	// WithBoxed draws a box around the whole table.
-	pterm.DefaultTable.WithHasHeader().WithBoxed().WithData(tableData).Render()
+</details>
+
+### table/column-min-widths
+
+![Animation](column-min-widths/animation.gif)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	// The same minimum widths keep two tables aligned when they are printed
+	// one after another, even though their content differs in length.
+	widths := []int{14, 8}
+
+	pterm.Table.WithColumnMinWidths(widths...).WithData(pterm.TableData{
+		{"Name", "Score"},
+		{"Alice", "1"},
+		{"Bob", "22"},
+	}).Render()
+
+	pterm.Println()
+
+	pterm.Table.WithColumnMinWidths(widths...).WithData(pterm.TableData{
+		{"Name", "Score"},
+		{"Christopher", "3"},
+		{"Dan", "444"},
+	}).Render()
 }
 ```
 
@@ -105,7 +126,39 @@ func main() {
 
 ### table/from-csv
 
-![Animation](https://vhs.charm.sh/vhs-7xdQkX1Aaj9YV9wPXnXX0l.gif)
+![Animation](from-csv/animation.gif)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"encoding/csv"
+	"strings"
+
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	data := `Name,Role,Commits
+Ada,maintainer,1204
+Grace,reviewer,388
+Linus,contributor,57`
+
+	// WithCSVReader reads every record. The CSV header line becomes the
+	// table header.
+	pterm.Table.WithCSVReader(csv.NewReader(strings.NewReader(data))).Render()
+}
+```
+
+</details>
+
+### table/from-structs
+
+![Animation](from-structs/animation.gif)
 
 <details>
 
@@ -119,53 +172,25 @@ import (
 	"github.com/pterm/pterm/putils"
 )
 
-func main() {
-	csv := `Firstname,Lastname,Email
-Paul,Dean,paul@example.com
-Callie,Mckay,callie@example.com
-Libby,Camacho,libby@example.com`
-
-	// TableDataFromCSV converts raw CSV into pterm.TableData. The CSV header
-	// line ends up as the first row, so WithHasHeader renders it as such.
-	pterm.DefaultTable.WithHasHeader().WithData(putils.TableDataFromCSV(csv)).Render()
-}
-```
-
-</details>
-
-### table/from-structs
-
-![Animation](https://vhs.charm.sh/vhs-7JLw6Gm8B76cG5m18AysEs.gif)
-
-<details>
-
-<summary>SHOW SOURCE</summary>
-
-```go
-package main
-
-import (
-	"github.com/pterm/pterm/putils"
-)
-
-// User is a regular struct; no tags or interfaces are needed.
-type User struct {
+type cache struct {
 	Name  string
-	Age   int
-	Email string
+	State string
+	Size  string
+	Files int
+	Path  string `pterm:"Location"`
+	inode uint64
 }
 
 func main() {
-	users := []User{
-		{Name: "Ada Lovelace", Age: 36, Email: "ada@example.com"},
-		{Name: "Alan Turing", Age: 41, Email: "alan@example.com"},
-		{Name: "Grace Hopper", Age: 85, Email: "grace@example.com"},
+	caches := []cache{
+		{Name: "npm", State: "stale", Size: "1.20 GB", Files: 48211, Path: "~/.npm/_cacache"},
+		{Name: "go", State: "fresh", Size: "2.84 GB", Files: 112530, Path: "~/go/pkg/mod"},
+		{Name: "pip", State: "stale", Size: "87 MB", Files: 1302, Path: "~/.cache/pip"},
 	}
 
-	// DefaultTableFromStructSlice fills the default table via reflection: the
-	// field names become the first row, so WithHasHeader styles them as the
-	// header.
-	putils.DefaultTableFromStructSlice(users).WithHasHeader().Render()
+	// Field names become the header. A pterm tag renames a column, and
+	// unexported fields are left out.
+	_ = pterm.Table.WithData(putils.TableFromStructs(caches)).Render()
 }
 ```
 
@@ -173,7 +198,7 @@ func main() {
 
 ### table/multiple-lines
 
-![Animation](https://vhs.charm.sh/vhs-roshTIYM84GqS1s50v2rM.gif)
+![Animation](multiple-lines/animation.gif)
 
 <details>
 
@@ -185,25 +210,22 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Cells may contain newlines; a row grows to fit its tallest cell.
-	data := pterm.TableData{
-		{"Firstname", "Lastname", "Email"},
-		{"Paul\n\nNewline", "Dean", "augue@velitAliquam.co.uk"},
-		{"Callie", "Mckay", "nunc.sed@est.com\nNewline"},
-		{"Libby", "Camacho", "lobortis@semper.com"},
-		{"张", "小宝", "zhang@example.com"},
-	}
-
-	// Row separators keep multi-line rows visually apart.
-	pterm.DefaultTable.WithHasHeader().WithRowSeparator("-").WithHeaderRowSeparator("-").WithData(data).Render()
+	// Cells can hold several lines. A row grows to fit its tallest cell, and
+	// row separators keep the rows apart.
+	pterm.Table.WithRowSeparators().WithData(pterm.TableData{
+		{"Command", "Description"},
+		{"init", "Create a new project\nin the current folder"},
+		{"build", "Compile the project"},
+		{"deploy", "Upload the build\nand restart the service\non every host"},
+	}).Render()
 }
 ```
 
 </details>
 
-### table/right-alignment
+### table/row-separators
 
-![Animation](https://vhs.charm.sh/vhs-1ZkWcvqqmfoUT5tHGxJbX1.gif)
+![Animation](row-separators/animation.gif)
 
 <details>
 
@@ -215,17 +237,59 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// The first row becomes the header via WithHasHeader.
-	tableData := pterm.TableData{
-		{"Firstname", "Lastname", "Email", "Note"},
-		{"Paul", "Dean", "augue@velitAliquam.co.uk", ""},
-		{"Callie", "Mckay", "nunc.sed@est.com", "这是一个测试, haha!"},
-		{"Libby", "Camacho", "lobortis@semper.com", "just a test, hey!"},
-		{"张", "小宝", "zhang@example.com", ""},
-	}
+	// Row separators work in boxed tables too, where they join the frame.
+	pterm.Table.WithBoxed().WithRowSeparators().WithData(pterm.TableData{
+		{"Region", "Nodes", "Load"},
+		{"eu-central", "12", "64%"},
+		{"us-east", "30", "81%"},
+		{"ap-south", "6", "23%"},
+	}).Render()
+}
+```
 
-	// WithRightAlignment right-aligns every cell in the table.
-	pterm.DefaultTable.WithHasHeader().WithRightAlignment().WithData(tableData).Render()
+</details>
+
+### table/styles
+
+![Animation](styles/animation.gif)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	// Styles use theme tones, so the table follows the active theme. Here the
+	// status column is toned and the failed row stands out.
+	pterm.Table.
+		WithData(pterm.TableData{
+			{"Job", "Status", "Duration"},
+			{"lint", "passed", "12.4s"},
+			{"test", "passed", "1m 3s"},
+			{"build", "failed", "48.0s"},
+			{"deploy", "skipped", "-"},
+		}).
+		WithColumnStyle(1, pterm.ToneAccent.Style()).
+		WithRowStyle(2, pterm.ToneError.Style()).
+		Render()
+
+	pterm.Println()
+
+	// An alternate row style makes long rows easier to follow.
+	pterm.Table.
+		WithData(pterm.TableData{
+			{"Firstname", "Lastname", "Email"},
+			{"Paul", "Dean", "paul@example.com"},
+			{"Callie", "Mckay", "callie@example.com"},
+			{"Libby", "Camacho", "libby@example.com"},
+			{"张", "小宝", "zhang@example.com"},
+		}).
+		WithAlternateRowStyle(pterm.ToneMuted.Style()).
+		Render()
 }
 ```
 

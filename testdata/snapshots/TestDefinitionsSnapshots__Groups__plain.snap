@@ -1,0 +1,7 @@
+COMMANDS
+  doctor         Check the installation
+  disk clean     Free space used by caches
+
+FLAGS
+  -v, --verbose  Print what is happening
+  -h, --help     Show this help

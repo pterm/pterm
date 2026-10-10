@@ -1,242 +1,224 @@
 package pterm
 
 import (
+	"fmt"
 	"io"
 	"strings"
 
-	"github.com/mattn/go-runewidth"
-
-	"github.com/pterm/pterm/internal"
+	"github.com/pterm/pterm/internal/text"
 )
 
-var (
-	// DefaultHeader returns the printer for a default header text.
-	// Defaults to LightWhite, Bold Text and a Gray DefaultHeader background.
-	DefaultHeader = HeaderPrinter{
-		TextStyle:       &ThemeDefault.HeaderTextStyle,
-		BackgroundStyle: &ThemeDefault.HeaderBackgroundStyle,
-		Margin:          5,
-	}
-)
-
-// HeaderPrinter contains the data used to craft a header.
-// A header is printed as a big box with text in it.
-// Can be used as title screens or section separator.
+// HeaderPrinter prints the head of a program's output: a badge, a bold
+// title and a muted subtitle on one line, with a rule under them and one
+// blank line before.
+//
+//	 APP  debug ui  Design system gallery
+//	──────────────────────────────────────
+//
+// The text passed to Sprint and Print is the title. Without badge text,
+// the title itself is shown in the badge.
 type HeaderPrinter struct {
-	TextStyle       *Style
-	BackgroundStyle *Style
-	Margin          int
-	FullWidth       bool
-	Writer          io.Writer
+	// Badge is the text of the badge, usually the name of the program.
+	Badge string
+	// Subtitle follows the title, muted.
+	Subtitle string
+	// BadgeTone is the background of the badge.
+	BadgeTone Tone
+	// TitleStyle styles the title next to the badge.
+	TitleStyle Style
+	// SubtitleStyle styles the subtitle.
+	SubtitleStyle Style
+	// RuleTone colors the rule under the header.
+	RuleTone Tone
+	// NoRule leaves out the rule.
+	NoRule bool
+	// FullWidth makes the rule span the terminal. Otherwise, and when the
+	// terminal width is unknown, it is as wide as the header line.
+	FullWidth bool
+	// Margin is the number of spaces on each side of the badge text.
+	Margin int
+	// TopPadding is the number of blank lines before the header.
+	TopPadding int
+	// Writer receives the output. Nil means the default output.
+	Writer io.Writer
 }
 
-// WithTextStyle returns a new HeaderPrinter with changed
-func (p HeaderPrinter) WithTextStyle(style *Style) *HeaderPrinter {
-	p.TextStyle = style
+// Header is the default header.
+var Header = HeaderPrinter{
+	BadgeTone:     TonePrimary,
+	TitleStyle:    TonePrimary.Bold(),
+	SubtitleStyle: ToneMuted.Style(),
+	RuleTone:      ToneBorder,
+	FullWidth:     true,
+	Margin:        1,
+	TopPadding:    1,
+}
+
+// WithBadge returns a copy of p with badge text s.
+func (p HeaderPrinter) WithBadge(s string) *HeaderPrinter {
+	p.Badge = s
 	return &p
 }
 
-// WithBackgroundStyle changes the background styling of the header.
-func (p HeaderPrinter) WithBackgroundStyle(style *Style) *HeaderPrinter {
-	p.BackgroundStyle = style
+// WithSubtitle returns a copy of p with subtitle s.
+func (p HeaderPrinter) WithSubtitle(s string) *HeaderPrinter {
+	p.Subtitle = s
 	return &p
 }
 
-// WithMargin changes the background styling of the header.
-func (p HeaderPrinter) WithMargin(margin int) *HeaderPrinter {
-	p.Margin = margin
+// WithBadgeTone returns a copy of p whose badge is in tone t.
+func (p HeaderPrinter) WithBadgeTone(t Tone) *HeaderPrinter {
+	p.BadgeTone = t
 	return &p
 }
 
-// WithFullWidth enables full width on a HeaderPrinter.
+// WithTitleStyle returns a copy of p that styles the title with s.
+func (p HeaderPrinter) WithTitleStyle(s Style) *HeaderPrinter {
+	p.TitleStyle = s
+	return &p
+}
+
+// WithSubtitleStyle returns a copy of p that styles the subtitle with s.
+func (p HeaderPrinter) WithSubtitleStyle(s Style) *HeaderPrinter {
+	p.SubtitleStyle = s
+	return &p
+}
+
+// WithRuleTone returns a copy of p whose rule is in tone t.
+func (p HeaderPrinter) WithRuleTone(t Tone) *HeaderPrinter {
+	p.RuleTone = t
+	return &p
+}
+
+// WithNoRule returns a copy of p without the rule under the header.
+func (p HeaderPrinter) WithNoRule(b ...bool) *HeaderPrinter {
+	p.NoRule = flag(b)
+	return &p
+}
+
+// WithFullWidth returns a copy of p whose rule spans the terminal.
 func (p HeaderPrinter) WithFullWidth(b ...bool) *HeaderPrinter {
-	p.FullWidth = internal.WithBoolean(b)
+	p.FullWidth = flag(b)
 	return &p
 }
 
-// WithWriter sets the custom Writer.
-func (p HeaderPrinter) WithWriter(writer io.Writer) *HeaderPrinter {
-	p.Writer = writer
+// WithMargin returns a copy of p with n spaces on each side of the badge
+// text.
+func (p HeaderPrinter) WithMargin(n int) *HeaderPrinter {
+	p.Margin = max(n, 0)
 	return &p
 }
 
-// Sprint formats using the default formats for its operands and returns the resulting string.
-// Spaces are added between operands when neither is a string.
-func (p HeaderPrinter) Sprint(a ...any) string {
-	if rawOutput() {
-		return Sprint(a...)
-	}
-
-	if p.TextStyle == nil {
-		p.TextStyle = NewStyle()
-	}
-
-	if p.BackgroundStyle == nil {
-		p.BackgroundStyle = NewStyle()
-	}
-
-	text := Sprint(a...)
-
-	var blankLine string
-
-	longestLine := internal.ReturnLongestLine(text, "\n")
-	longestLineLen := runewidth.StringWidth(RemoveColorFromString(longestLine)) + p.Margin*2
-
-	if p.FullWidth {
-		text = splitText(text, GetTerminalWidth()-p.Margin*2)
-		blankLine = strings.Repeat(" ", GetTerminalWidth())
-	} else {
-		if longestLineLen > GetTerminalWidth() {
-			text = splitText(text, GetTerminalWidth()-p.Margin*2)
-			blankLine = strings.Repeat(" ", GetTerminalWidth())
-		} else {
-			text = splitText(text, longestLineLen-p.Margin*2)
-			blankLine = strings.Repeat(" ", longestLineLen)
-		}
-	}
-
-	var marginString string
-	var ret strings.Builder
-
-	if p.FullWidth {
-		longestLineLen = runewidth.StringWidth(RemoveColorFromString(internal.ReturnLongestLine(text, "\n")))
-		marginString = strings.Repeat(" ", (GetTerminalWidth()-longestLineLen)/2)
-	} else {
-		marginString = strings.Repeat(" ", p.Margin)
-	}
-
-	ret.WriteString(p.BackgroundStyle.Sprint(blankLine))
-	ret.WriteByte('\n')
-
-	for line := range strings.SplitSeq(text, "\n") {
-		line = strings.ReplaceAll(line, "\n", "")
-
-		line = marginString + line + marginString
-		if runewidth.StringWidth(line) < runewidth.StringWidth(blankLine) {
-			line += strings.Repeat(" ", runewidth.StringWidth(blankLine)-runewidth.StringWidth(line))
-		}
-
-		ret.WriteString(p.BackgroundStyle.Sprint(p.TextStyle.Sprint(line)))
-		ret.WriteByte('\n')
-	}
-
-	ret.WriteString(p.BackgroundStyle.Sprint(blankLine))
-	ret.WriteByte('\n')
-
-	return ret.String()
+// WithTopPadding returns a copy of p with n blank lines before the header.
+func (p HeaderPrinter) WithTopPadding(n int) *HeaderPrinter {
+	p.TopPadding = max(n, 0)
+	return &p
 }
 
-func splitText(text string, width int) string {
-	var lines []string
+// WithWriter returns a copy of p that writes to w.
+func (p HeaderPrinter) WithWriter(w io.Writer) *HeaderPrinter {
+	p.Writer = w
+	return &p
+}
 
-	linesTmp := strings.SplitSeq(text, "\n")
-	for line := range linesTmp {
-		if runewidth.StringWidth(RemoveColorFromString(line)) > width {
-			extraLines := []string{""}
-			extraLinesCounter := 0
+func (p HeaderPrinter) out() io.Writer { return orDefault(p.Writer) }
 
-			for i, letter := range line {
-				if i%width == 0 && i != 0 {
-					extraLinesCounter++
+func (p HeaderPrinter) render(c canvas, s string) string {
+	title := strings.Join(strings.Fields(s), " ")
+	badge := strings.Join(strings.Fields(p.Badge), " ")
+	subtitle := strings.Join(strings.Fields(p.Subtitle), " ")
 
-					extraLines = append(extraLines, "")
-				}
+	if badge == "" {
+		badge, title = title, ""
+	}
 
-				extraLines[extraLinesCounter] += string(letter)
+	pad := 2 * p.Margin
+	badgeW := text.Width(badge) + pad
+
+	// Make the line fit: the subtitle goes first, then the title is cut,
+	// and only then the badge.
+	if c.width > 0 {
+		used := badgeW
+		if title != "" {
+			used += 1 + text.Width(title)
+		}
+
+		if subtitle != "" && used+2+text.Width(subtitle) > c.width {
+			if room := c.width - used - 2; room >= 8 {
+				subtitle = c.cut(subtitle, room)
+			} else {
+				subtitle = ""
 			}
+		}
 
-			for _, extraLine := range extraLines {
-				extraLine += "\n"
-				lines = append(lines, extraLine)
+		if title != "" && used > c.width {
+			if room := c.width - badgeW - 1; room >= 4 {
+				title = c.cut(title, room)
+			} else {
+				title = ""
 			}
-		} else {
-			line += "\n"
-			lines = append(lines, line)
+		}
+
+		if title == "" && badgeW > c.width {
+			badge = c.cut(badge, max(c.width-pad, 1))
 		}
 	}
 
-	var line strings.Builder
-	for _, s := range lines {
-		line.WriteString(s)
+	line := c.badge(p.BadgeTone, badge, p.Margin)
+	if badge == "" {
+		line = ""
 	}
 
-	return strings.TrimSuffix(line.String(), "\n")
+	if title != "" {
+		line += " " + c.style(p.TitleStyle, title)
+	}
+
+	if subtitle != "" {
+		line += "  " + c.style(p.SubtitleStyle, subtitle)
+	}
+
+	out := strings.Repeat("\n", p.TopPadding) + line
+
+	if !p.NoRule {
+		width := text.Width(line)
+		if p.FullWidth && c.width > 0 {
+			width = c.width
+		}
+
+		out += "\n" + rule(c, width, c.g.Rule, p.RuleTone, 0, "")
+	}
+
+	return out
 }
 
-// Sprintln formats using the default formats for its operands and returns the resulting string.
-// Spaces are always added between operands and a newline is appended.
-func (p HeaderPrinter) Sprintln(a ...any) string {
-	return p.Sprint(strings.TrimSuffix(Sprintln(a...), "\n"))
-}
+// Sprint returns the header with the text as title.
+func (p HeaderPrinter) Sprint(a ...any) string { return sprintText(p, fmt.Sprint(a...)) }
 
-// Sprintf formats according to a format specifier and returns the resulting string.
+// Sprintln is like Sprint and adds a newline.
+func (p HeaderPrinter) Sprintln(a ...any) string { return sprintText(p, sprintln(a...)) + "\n" }
+
+// Sprintf formats the title and returns the header.
 func (p HeaderPrinter) Sprintf(format string, a ...any) string {
-	return p.Sprint(Sprintf(format, a...))
+	return sprintText(p, fmt.Sprintf(format, a...))
 }
 
-// Sprintfln formats according to a format specifier and returns the resulting string.
-// Spaces are always added between operands and a newline is appended.
+// Sprintfln is like Sprintf and adds a newline.
 func (p HeaderPrinter) Sprintfln(format string, a ...any) string {
-	return p.Sprintf(format, a...) + "\n"
+	return sprintText(p, fmt.Sprintf(format, a...)) + "\n"
 }
 
-// Print formats using the default formats for its operands and writes to standard output.
-// Spaces are added between operands when neither is a string.
-// It returns the number of bytes written and any write error encountered.
-func (p *HeaderPrinter) Print(a ...any) *TextPrinter {
-	Fprint(p.Writer, p.Sprint(a...))
-	tp := TextPrinter(p)
+// Print prints the header with the text as title. A header is a whole
+// block, so Print and Println print the same.
+func (p HeaderPrinter) Print(a ...any) { printLine(p, fmt.Sprint(a...)) }
 
-	return &tp
-}
+// Println prints the header with the text as title.
+func (p HeaderPrinter) Println(a ...any) { printLine(p, sprintln(a...)) }
 
-// Println formats using the default formats for its operands and writes to standard output.
-// Spaces are always added between operands and a newline is appended.
-// It returns the number of bytes written and any write error encountered.
-func (p *HeaderPrinter) Println(a ...any) *TextPrinter {
-	Fprint(p.Writer, p.Sprintln(a...))
-	tp := TextPrinter(p)
+// Printf formats the title and prints the header.
+func (p HeaderPrinter) Printf(format string, a ...any) { printLine(p, fmt.Sprintf(format, a...)) }
 
-	return &tp
-}
+// Printfln formats the title and prints the header.
+func (p HeaderPrinter) Printfln(format string, a ...any) { printLine(p, fmt.Sprintf(format, a...)) }
 
-// Printf formats according to a format specifier and writes to standard output.
-// It returns the number of bytes written and any write error encountered.
-func (p *HeaderPrinter) Printf(format string, a ...any) *TextPrinter {
-	Fprint(p.Writer, p.Sprintf(format, a...))
-	tp := TextPrinter(p)
-
-	return &tp
-}
-
-// Printfln formats according to a format specifier and writes to standard output.
-// Spaces are always added between operands and a newline is appended.
-// It returns the number of bytes written and any write error encountered.
-func (p *HeaderPrinter) Printfln(format string, a ...any) *TextPrinter {
-	Fprint(p.Writer, p.Sprintfln(format, a...))
-	tp := TextPrinter(p)
-
-	return &tp
-}
-
-// PrintOnError prints every error which is not nil.
-// If every error is nil, nothing will be printed.
-// This can be used for simple error checking.
-func (p *HeaderPrinter) PrintOnError(a ...any) *TextPrinter {
-	printOnError(p, a...)
-
-	tp := TextPrinter(p)
-
-	return &tp
-}
-
-// PrintOnErrorf wraps every error which is not nil and prints it.
-// If every error is nil, nothing will be printed.
-// This can be used for simple error checking.
-func (p *HeaderPrinter) PrintOnErrorf(format string, a ...any) *TextPrinter {
-	printOnErrorf(p, format, a...)
-
-	tp := TextPrinter(p)
-
-	return &tp
-}
+// PrintOnError prints a header titled with every non-nil error in a.
+func (p HeaderPrinter) PrintOnError(a ...any) { printOnError(p, a...) }

@@ -1,232 +1,6 @@
 ### heatmap/demo
 
-![Animation](https://vhs.charm.sh/vhs-7FApY9pxrlKjoDh6ZmBpAS.gif)
-
-<details>
-
-<summary>SHOW SOURCE</summary>
-
-```go
-package main
-
-import (
-	"github.com/pterm/pterm"
-)
-
-func main() {
-	// Each inner slice is one row; cell colors are scaled between the
-	// smallest and largest value in the whole matrix.
-	data := [][]float32{
-		{0.9, 0.2, -0.7, 0.4, -0.5, 0.6, -0.3, 0.8, -0.1, -1.0, 0.1, -0.8, 0.3},
-		{0.2, -0.7, -0.5, -0.3, -0.1, 0.1, 0.3, 0.5, 0.9, -0.9, -0.7, -0.5, -0.3},
-		{0.4, 0.4, -0.3, -1.0, 0.3, -0.2, -0.9, 0.5, -0.3, -1.0, 0.6, -0.2, -0.9},
-		{0.9, -0.5, -0.1, 0.3, 1, -0.7, -0.3, 0.1, 0.7, -0.9, -0.5, 0.2, 0.6},
-		{0.5, 0.6, 0.1, -0.2, -0.7, 0.8, 0.6, 0.1, -0.5, -0.7, 0.7, 0.3, 0.0},
-	}
-
-	// Axis labels must match the data: one X label per column, one Y label per row.
-	headerData := pterm.HeatmapAxis{
-		XAxis: []string{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m"},
-		YAxis: []string{"1", "2", "3", "4", "5"},
-	}
-
-	// WithEnableRGB uses smooth TrueColor gradients instead of the ANSI palette.
-	pterm.DefaultHeatmap.WithAxisData(headerData).WithData(data).WithEnableRGB().Render()
-}
-```
-
-</details>
-
-### heatmap/custom_colors
-
-![Animation](https://vhs.charm.sh/vhs-40tFqFRTyMehjbEq2wxUlv.gif)
-
-<details>
-
-<summary>SHOW SOURCE</summary>
-
-```go
-package main
-
-import (
-	"github.com/pterm/pterm"
-)
-
-func main() {
-	data := [][]float32{
-		{0.9, 0.2, -0.7, 0.4, -0.5, 0.6, -0.3, 0.8, -0.1, -1.0, 0.1, -0.8, 0.3},
-		{0.2, -0.7, -0.5, -0.3, -0.1, 0.1, 0.3, 0.5, 0.9, -0.9, -0.7, -0.5, -0.3},
-		{0.4, 0.4, -0.3, -1.0, 0.3, -0.2, -0.9, 0.5, -0.3, -1.0, 0.6, -0.2, -0.9},
-		{0.9, -0.5, -0.1, 0.3, 1, -0.7, -0.3, 0.1, 0.7, -0.9, -0.5, 0.2, 0.6},
-		{0.5, 0.6, 0.1, -0.2, -0.7, 0.8, 0.6, 0.1, -0.5, -0.7, 0.7, 0.3, 0.0},
-	}
-
-	headerData := pterm.HeatmapAxis{
-		XAxis: []string{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m"},
-		YAxis: []string{"1", "2", "3", "4", "5"},
-	}
-
-	pterm.Info.Println("The following table has no rgb (supported by every terminal), axis data and a legend.")
-	pterm.Println()
-
-	// WithColors replaces the default palette with custom ANSI background
-	// colors, mapped from the lowest to the highest value. Unlike RGB mode,
-	// this works in every terminal.
-	pterm.DefaultHeatmap.
-		WithData(data).
-		WithBoxed(false).
-		WithAxisData(headerData).
-		WithColors(pterm.BgBlue, pterm.BgRed, pterm.BgGreen, pterm.BgYellow).
-		WithLegend().
-		Render()
-}
-```
-
-</details>
-
-### heatmap/custom_legend
-
-![Animation](https://vhs.charm.sh/vhs-48ixpZ0WEIHgIzAzzQqzAc.gif)
-
-<details>
-
-<summary>SHOW SOURCE</summary>
-
-```go
-package main
-
-import (
-	"github.com/pterm/pterm"
-)
-
-func main() {
-	data := [][]float32{
-		{0.9, 0.2, -0.7, 0.4, -0.5, 0.6, -0.3, 0.8, -0.1, -1.0, 0.1, -0.8, 0.3},
-		{0.2, -0.7, -0.5, -0.3, -0.1, 0.1, 0.3, 0.5, 0.9, -0.9, -0.7, -0.5, -0.3},
-		{0.4, 0.4, -0.3, -1.0, 0.3, -0.2, -0.9, 0.5, -0.3, -1.0, 0.6, -0.2, -0.9},
-		{0.9, -0.5, -0.1, 0.3, 1, -0.7, -0.3, 0.1, 0.7, -0.9, -0.5, 0.2, 0.6},
-		{0.5, 0.6, 0.1, -0.2, -0.7, 0.8, 0.6, 0.1, -0.5, -0.7, 0.7, 0.3, 0.0},
-	}
-
-	headerData := pterm.HeatmapAxis{
-		XAxis: []string{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m"},
-		YAxis: []string{"1", "2", "3", "4", "5"},
-	}
-
-	pterm.Info.Println("The following table has rgb (not supported by every terminal), axis data and a custom legend.")
-	pterm.Println()
-
-	// WithLegendLabel changes the legend title, and WithLegendOnlyColoredCells
-	// hides the numeric values in the legend, leaving just the color swatches.
-	pterm.DefaultHeatmap.
-		WithData(data).
-		WithBoxed(false).
-		WithAxisData(headerData).
-		WithEnableRGB().
-		WithLegendLabel("custom").
-		WithLegendOnlyColoredCells().
-		Render()
-}
-```
-
-</details>
-
-### heatmap/custom_rgb
-
-![Animation](https://vhs.charm.sh/vhs-3tw0H5srGAkzITd1rocxW2.gif)
-
-<details>
-
-<summary>SHOW SOURCE</summary>
-
-```go
-package main
-
-import (
-	"github.com/pterm/pterm"
-)
-
-func main() {
-	data := [][]float32{
-		{0.9, 0.2, -0.7, 0.4, -0.5, 0.6, -0.3, 0.8, -0.1, -1.0, 0.1, -0.8, 0.3},
-		{0.2, -0.7, -0.5, -0.3, -0.1, 0.1, 0.3, 0.5, 0.9, -0.9, -0.7, -0.5, -0.3},
-		{0.4, 0.4, -0.3, -1.0, 0.3, -0.2, -0.9, 0.5, -0.3, -1.0, 0.6, -0.2, -0.9},
-		{0.9, -0.5, -0.1, 0.3, 1, -0.7, -0.3, 0.1, 0.7, -0.9, -0.5, 0.2, 0.6},
-		{0.5, 0.6, 0.1, -0.2, -0.7, 0.8, 0.6, 0.1, -0.5, -0.7, 0.7, 0.3, 0.0},
-	}
-
-	axisLabels := pterm.HeatmapAxis{
-		XAxis: []string{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m"},
-		YAxis: []string{"1", "2", "3", "4", "5"},
-	}
-
-	pterm.Info.Println("The following table has rgb (not supported by every terminal), axis data and a legend.")
-	pterm.Println()
-
-	// The RGB range defines the gradient stops: the lowest value gets the
-	// first color, the highest the last, and everything in between is faded.
-	rgbRange := []pterm.RGB{
-		pterm.NewRGB(0, 0, 255),
-		pterm.NewRGB(255, 0, 0),
-		pterm.NewRGB(0, 255, 0),
-		pterm.NewRGB(255, 255, 0),
-	}
-
-	pterm.DefaultHeatmap.
-		WithData(data).
-		WithBoxed(false).
-		WithAxisData(axisLabels).
-		WithEnableRGB().
-		WithRGBRange(rgbRange...).
-		Render()
-}
-```
-
-</details>
-
-### heatmap/no_grid
-
-![Animation](https://vhs.charm.sh/vhs-qpNfpg5o7MUCBnwYwAKkL.gif)
-
-<details>
-
-<summary>SHOW SOURCE</summary>
-
-```go
-package main
-
-import (
-	"github.com/pterm/pterm"
-)
-
-func main() {
-	data := [][]float32{
-		{0.9, 0.2, -0.7, 0.4, -0.5, 0.6, -0.3, 0.8, -0.1, -1.0, 0.1, -0.8, 0.3},
-		{0.2, -0.7, -0.5, -0.3, -0.1, 0.1, 0.3, 0.5, 0.9, -0.9, -0.7, -0.5, -0.3},
-		{0.4, 0.4, -0.3, -1.0, 0.3, -0.2, -0.9, 0.5, -0.3, -1.0, 0.6, -0.2, -0.9},
-		{0.9, -0.5, -0.1, 0.3, 1, -0.7, -0.3, 0.1, 0.7, -0.9, -0.5, 0.2, 0.6},
-		{0.5, 0.6, 0.1, -0.2, -0.7, 0.8, 0.6, 0.1, -0.5, -0.7, 0.7, 0.3, 0.0},
-	}
-
-	axisData := pterm.HeatmapAxis{
-		XAxis: []string{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m"},
-		YAxis: []string{"1", "2", "3", "4", "5"},
-	}
-
-	pterm.Info.Println("The following table has rgb (not supported by every terminal), axis data and a legend.")
-	pterm.Println()
-
-	// WithGrid(false) drops the separators between cells, so the colors form
-	// one continuous surface.
-	pterm.DefaultHeatmap.WithData(data).WithBoxed(false).WithAxisData(axisData).WithEnableRGB().WithLegend().WithGrid(false).Render()
-}
-```
-
-</details>
-
-### heatmap/separated
-
-![Animation](https://vhs.charm.sh/vhs-2Wr5jMuur70arKrVpHJ0TQ.gif)
+![Animation](demo/animation.gif)
 
 <details>
 
@@ -238,22 +12,107 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	data := [][]float32{
-		{0.9, 0.2, -0.7, 0.4, -0.5, 0.6, -0.3, 0.8, -0.1, -1.0, 0.1, -0.8, 0.3},
-		{0.2, -0.7, -0.5, -0.3, -0.1, 0.1, 0.3, 0.5, 0.9, -0.9, -0.7, -0.5, -0.3},
-		{0.4, 0.4, -0.3, -1.0, 0.3, -0.2, -0.9, 0.5, -0.3, -1.0, 0.6, -0.2, -0.9},
-		{0.9, -0.5, -0.1, 0.3, 1, -0.7, -0.3, 0.1, 0.7, -0.9, -0.5, 0.2, 0.6},
-		{0.5, 0.6, 0.1, -0.2, -0.7, 0.8, 0.6, 0.1, -0.5, -0.7, 0.7, 0.3, 0.0},
+	// Commits per weekday, in two-hour slots. Each row is one day, and the
+	// colors run from Border through Primary to Accent.
+	data := pterm.HeatmapData{
+		{3, 6, 4, 7, 12, 24, 34, 32, 28, 12, 3, 6},
+		{5, 3, 6, 4, 14, 26, 31, 34, 25, 14, 5, 3},
+		{7, 5, 3, 6, 11, 28, 33, 31, 27, 11, 7, 5},
+		{4, 7, 5, 3, 13, 25, 35, 33, 24, 13, 4, 7},
+		{6, 4, 7, 5, 10, 27, 32, 35, 26, 10, 6, 4},
+		{1, 4, 2, 5, 5, 6, 11, 9, 10, 5, 1, 4},
+		{3, 1, 4, 2, 7, 8, 8, 11, 7, 7, 3, 1},
 	}
 
-	headerData := pterm.HeatmapAxis{
-		XAxis: []string{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m"},
-		YAxis: []string{"1", "2", "3", "4", "5"},
+	// One X label per column and one Y label per row.
+	axis := pterm.HeatmapAxis{
+		XAxis: []string{"00", "02", "04", "06", "08", "10", "12", "14", "16", "18", "20", "22"},
+		YAxis: []string{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"},
 	}
 
-	// Without the surrounding box and legend, only the grid separators remain
-	// between the cells.
-	pterm.DefaultHeatmap.WithData(data).WithBoxed(false).WithAxisData(headerData).WithLegend(false).Render()
+	pterm.Heatmap.WithData(data).WithAxisData(axis).WithLegendLabel("commits").Render()
+}
+```
+
+</details>
+
+### heatmap/grid
+
+![Animation](grid/animation.gif)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	// A correlation matrix: values from -1 to 1.
+	data := pterm.HeatmapData{
+		{1, 0.82, -0.4, 0.1},
+		{0.82, 1, -0.25, 0.3},
+		{-0.4, -0.25, 1, -0.7},
+		{0.1, 0.3, -0.7, 1},
+	}
+
+	axis := pterm.HeatmapAxis{
+		XAxis: []string{"cpu", "mem", "idle", "io"},
+		YAxis: []string{"cpu", "mem", "idle", "io"},
+	}
+
+	// A fixed range keeps 0 in the middle of the gradient. The frame
+	// implies the grid.
+	pterm.Heatmap.
+		WithData(data).
+		WithAxisData(axis).
+		WithRange(-1, 1).
+		WithGradient(pterm.ToneError, pterm.ToneBorder, pterm.ToneInfo).
+		WithShowValues().
+		WithBoxed().
+		Render()
+}
+```
+
+</details>
+
+### heatmap/values
+
+![Animation](values/animation.gif)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	// Response times in milliseconds per region and hour.
+	data := pterm.HeatmapData{
+		{42, 45, 51, 88, 120, 96},
+		{38, 40, 47, 61, 75, 70},
+		{110, 128, 142, 190, 240, 205},
+	}
+
+	axis := pterm.HeatmapAxis{
+		XAxis: []string{"9h", "10h", "11h", "12h", "13h", "14h"},
+		YAxis: []string{"eu", "us", "ap"},
+	}
+
+	// The values themselves, colored from Success to Warning to Error,
+	// because high response times are bad.
+	pterm.Heatmap.
+		WithData(data).
+		WithAxisData(axis).
+		WithShowValues().
+		WithGradient(pterm.TrafficTones()...).
+		WithLegendLabel("ms").
+		Render()
 }
 ```
 

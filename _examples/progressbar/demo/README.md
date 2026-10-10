@@ -1,37 +1,45 @@
 # progressbar/demo
 
-![Animation](https://vhs.charm.sh/vhs-7wWqFXiNFydcIw4FCmNZQG.gif)
+![Animation](animation.gif)
 
 ```go
 package main
 
 import (
-	"strings"
 	"time"
 
 	"github.com/pterm/pterm"
 )
 
-// Pretend we have a list of packages to download.
-var fakeInstallList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chrome pseudo-outlook pseudo-explorer "+
-	"pseudo-dops pseudo-git pseudo-vsc pseudo-intellij pseudo-minecraft pseudo-scoop pseudo-chocolatey", " ")
-
 func main() {
-	p, _ := pterm.DefaultProgressbar.WithTotal(len(fakeInstallList)).WithTitle("Downloading stuff").Start()
+	packages := []string{
+		"react", "react-dom", "typescript", "vite", "eslint", "prettier",
+		"vitest", "zod", "date-fns", "clsx", "tailwindcss", "postcss",
+	}
 
-	for i := 0; i < p.Total; i++ {
-		// Simulate one download taking much longer than the rest.
+	bar, _ := pterm.Progressbar.WithTotal(len(packages)).Start("Installing packages")
+
+	for i, pkg := range packages {
+		bar.UpdateTitle("Installing " + pkg)
+
+		// One package takes a while, which the ETA picks up.
 		if i == 6 {
-			time.Sleep(time.Second * 3)
+			time.Sleep(1500 * time.Millisecond)
 		}
 
-		p.UpdateTitle("Downloading " + fakeInstallList[i])
+		time.Sleep(300 * time.Millisecond)
 
-		// Printing through pterm while the progressbar runs places the output
-		// above the bar instead of breaking it.
-		pterm.Success.Println("Downloading " + fakeInstallList[i])
-		p.Increment()
-		time.Sleep(time.Millisecond * 350)
+		// Output printed while the bar runs appears above it.
+		pterm.Success.Println("Installed " + pkg)
+
+		// The bar stops on its own at its total and keeps its title in the
+		// status line it leaves behind, so name the result before the last
+		// step.
+		if i == len(packages)-1 {
+			bar.UpdateTitle("Installed packages")
+		}
+
+		bar.Increment()
 	}
 }
 ```

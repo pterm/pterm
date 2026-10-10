@@ -1,245 +1,88 @@
 package pterm_test
 
-// Behavioral tests for BoxPrinter.
-//
-// Builder methods, Print*/Sprint* delegation and the global styling invariants
-// are covered generically in contract_test.go. This file verifies the box
-// geometry: border characters, padding, title placement and visible-width
-// alignment for multiline, unicode and pre-colored content.
-
 import (
 	"strings"
 	"testing"
 
-	"github.com/mattn/go-runewidth"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
-
 	"github.com/pterm/pterm"
+	"github.com/pterm/pterm/internal/text"
 )
 
-// boxLines strips ANSI codes from a rendered box and returns its lines.
-func boxLines(s string) []string {
-	return strings.Split(stripANSI(s), "\n")
+func TestBoxSnapshots(t *testing.T) {
+	snap(t, "Default", func() string { return pterm.Box.Sprint("3 files changed\n128 insertions, 41 deletions") })
+	snap(t, "Title", func() string { return pterm.Box.WithTitle("Result").Sprint("3 files changed") })
+	snap(t, "TitleCenter", func() string {
+		return pterm.Box.WithTitle("Result").WithTitlePosition(pterm.BoxTitleTopCenter).WithWidth(30).Sprint("centered")
+	})
+	snap(t, "TitleBottomRight", func() string {
+		return pterm.Box.WithTitle("Result").WithTitlePosition(pterm.BoxTitleBottomRight).WithWidth(30).Sprint("bottom")
+	})
+	snap(t, "Padding", func() string { return pterm.Box.WithPadding(1).Sprint("padded") })
+	snap(t, "Nested", func() string {
+		return pterm.Box.WithTitle("Outer").Sprint(pterm.Box.WithTitle("Inner").Sprint("content"))
+	})
+	snap(t, "Wrapped", func() string {
+		return pterm.Box.Sprint(strings.Repeat("A box wraps text that is wider than the terminal. ", 3))
+	})
 }
 
-// assertUniformVisibleWidth asserts that every rendered line occupies the same
-// number of terminal cells, i.e. the right border is perfectly aligned.
-func assertUniformVisibleWidth(t *testing.T, out string) {
-	t.Helper()
+func TestBoxPlainLayout(t *testing.T) {
+	setup(t)
 
-	lines := boxLines(out)
-	require.NotEmpty(t, lines)
+	out := capture(t, func() { pterm.Box.WithTitle("Result").Println("ok") })
 
-	want := runewidth.StringWidth(lines[0])
-	for i, line := range lines {
-		assert.Equalf(t, want, runewidth.StringWidth(line), "line %d %q has a different visible width", i, line)
+	want := "╭─ Result ─╮\n│ ok       │\n╰──────────╯\n"
+	if out != want {
+		t.Errorf("output =\n%s\nwant\n%s", out, want)
 	}
 }
 
-func TestBoxPrinterDefaultBox(t *testing.T) {
-	expected := "╭───────╮\n" +
-		"│ Hello │\n" +
-		"╰───────╯"
+func TestBoxLinesAreEqualWidth(t *testing.T) {
+	setup(t)
 
-	assert.Equal(t, expected, stripANSI(pterm.DefaultBox.Sprint("Hello")))
-}
-
-func TestBoxPrinterMultilinePadsToWidestLine(t *testing.T) {
-	expected := "╭──────────────╮\n" +
-		"│ longest line │\n" +
-		"│ short        │\n" +
-		"╰──────────────╯"
-
-	out := pterm.DefaultBox.Sprint("longest line\nshort")
-
-	assert.Equal(t, expected, stripANSI(out))
-	assertUniformVisibleWidth(t, out)
-}
-
-func TestBoxPrinterUnicodeContentKeepsBordersAligned(t *testing.T) {
-	t.Run("CJK", func(t *testing.T) {
-		// "汉字" is 4 terminal cells wide, not 6 bytes.
-		expected := "╭──────╮\n" +
-			"│ 汉字 │\n" +
-			"╰──────╯"
-
-		out := pterm.DefaultBox.Sprint("汉字")
-
-		assert.Equal(t, expected, stripANSI(out))
-		assertUniformVisibleWidth(t, out)
-	})
-
-	t.Run("emoji", func(t *testing.T) {
-		expected := "╭──────────╮\n" +
-			"│ 🦄 emoji │\n" +
-			"╰──────────╯"
-
-		out := pterm.DefaultBox.Sprint("🦄 emoji")
-
-		assert.Equal(t, expected, stripANSI(out))
-		assertUniformVisibleWidth(t, out)
-	})
-}
-
-func TestBoxPrinterColoredContentKeepsBordersAligned(t *testing.T) {
-	out := pterm.DefaultBox.Sprint("a " + pterm.FgRed.Sprint("red") + " b")
-
-	// The escape codes must not count towards the width: the stripped output
-	// is exactly the box around the plain text.
-	assert.Equal(t, stripANSI(pterm.DefaultBox.Sprint("a red b")), stripANSI(out))
-	assertUniformVisibleWidth(t, out)
-}
-
-func TestBoxPrinterTitlePlacement(t *testing.T) {
-	// Content "Hello World" (11 cells) + 1 cell padding each side = 13 border
-	// cells for the title line.
-	box := pterm.DefaultBox.WithTitle("Title")
-
-	tests := []struct {
-		name     string
-		printer  *pterm.BoxPrinter
-		expected string
-	}{
-		{
-			name:    "top left (default)",
-			printer: box,
-			expected: "╭─ Title ─────╮\n" +
-				"│ Hello World │\n" +
-				"╰─────────────╯",
-		},
-		{
-			name:    "top right",
-			printer: box.WithTitleTopRight(),
-			expected: "╭───── Title ─╮\n" +
-				"│ Hello World │\n" +
-				"╰─────────────╯",
-		},
-		{
-			name:    "top center",
-			printer: box.WithTitleTopCenter(),
-			expected: "╭─── Title ───╮\n" +
-				"│ Hello World │\n" +
-				"╰─────────────╯",
-		},
-		{
-			name:    "bottom left",
-			printer: box.WithTitleBottomLeft(),
-			expected: "╭─────────────╮\n" +
-				"│ Hello World │\n" +
-				"╰─ Title ─────╯",
-		},
-		{
-			name:    "bottom right",
-			printer: box.WithTitleBottomRight(),
-			expected: "╭─────────────╮\n" +
-				"│ Hello World │\n" +
-				"╰───── Title ─╯",
-		},
-		{
-			name:    "bottom center",
-			printer: box.WithTitleBottomCenter(),
-			expected: "╭─────────────╮\n" +
-				"│ Hello World │\n" +
-				"╰─── Title ───╯",
-		},
+	cases := []string{
+		"short",
+		"wide 中文 characters\nand a second line",
+		pterm.Text.WithTone(pterm.ToneAccent).Sprint("styled") + " text",
+		strings.Repeat("word ", 40),
 	}
 
-	for _, tc := range tests {
-		t.Run(tc.name, func(t *testing.T) {
-			out := tc.printer.Sprint("Hello World")
+	for _, c := range cases {
+		lines := strings.Split(pterm.Box.WithTitle("t").Sprint(c), "\n")
+		for _, line := range lines {
+			if text.Width(line) != text.Width(lines[0]) {
+				t.Errorf("%q: line %q has width %d, want %d", c, line, text.Width(line), text.Width(lines[0]))
+			}
 
-			assert.Equal(t, tc.expected, stripANSI(out))
-			assertUniformVisibleWidth(t, out)
-		})
+			if text.Width(line) > 80 {
+				t.Errorf("%q: line %q is wider than the terminal", c, line)
+			}
+		}
 	}
 }
 
-func TestBoxPrinterTitleWiderThanContentGrowsTheBox(t *testing.T) {
-	expected := "╭─ A very long title ─╮\n" +
-		"│ Hi                  │\n" +
-		"╰─────────────────────╯"
+func TestBoxCustomGlyphs(t *testing.T) {
+	setup(t)
 
-	out := pterm.DefaultBox.WithTitle("A very long title").Sprint("Hi")
-
-	assert.Equal(t, expected, stripANSI(out))
-	assertUniformVisibleWidth(t, out)
-}
-
-func TestBoxPrinterTitleNewlinesAreReplacedBySpaces(t *testing.T) {
-	out := boxLines(pterm.DefaultBox.WithTitle("a\nb").Sprint("Hello World"))
-
-	assert.Contains(t, out[0], " a b ")
-	assert.Len(t, out, 3, "a newline in the title must not add lines to the box")
-}
-
-func TestBoxPrinterPadding(t *testing.T) {
-	t.Run("all sides", func(t *testing.T) {
-		expected := "╭──────╮\n" +
-			"│      │\n" +
-			"│      │\n" +
-			"│  Hi  │\n" +
-			"│      │\n" +
-			"│      │\n" +
-			"╰──────╯"
-
-		assert.Equal(t, expected, stripANSI(pterm.DefaultBox.WithPadding(2).Sprint("Hi")))
+	out := capture(t, func() {
+		pterm.Box.WithGlyphs(pterm.BoxGlyphs{TopLeft: "+", TopRight: "+", BottomLeft: "+", BottomRight: "+"}).Println("x")
 	})
-
-	t.Run("asymmetric horizontal", func(t *testing.T) {
-		expected := "╭──────╮\n" +
-			"│   Hi │\n" +
-			"╰──────╯"
-
-		p := pterm.DefaultBox.WithLeftPadding(3).WithRightPadding(1)
-
-		assert.Equal(t, expected, stripANSI(p.Sprint("Hi")))
-	})
+	if out != "+───+\n│ x │\n+───+\n" {
+		t.Errorf("output = %q", out)
+	}
 }
 
-// The corner-string fields are historically swapped: the string configured as
-// BottomRightCornerString is rendered at the TOP LEFT, BottomLeftCornerString
-// at the top right, TopRightCornerString at the bottom left and
-// TopLeftCornerString at the bottom right (DefaultBox compensates by holding
-// the visually matching glyphs, e.g. TopLeftCornerString = "╯"). Existing
-// consumers — including _examples/demo — rely on this mapping, so it is locked
-// here as-is instead of being "fixed".
-func TestBoxPrinterCustomBorderStrings(t *testing.T) {
-	p := pterm.DefaultBox.
-		WithBottomRightCornerString("1").
-		WithBottomLeftCornerString("2").
-		WithTopRightCornerString("3").
-		WithTopLeftCornerString("4").
-		WithHorizontalString("-").
-		WithVerticalString("|")
+func TestBoxLongTitleIsCut(t *testing.T) {
+	setup(t)
 
-	expected := "1----2\n" +
-		"| ab |\n" +
-		"3----4"
+	got := pterm.RemoveColorFromString(pterm.Box.WithTitle(strings.Repeat("title ", 30)).Sprint("x"))
+	for line := range strings.SplitSeq(got, "\n") {
+		if text.Width(line) > 80 {
+			t.Errorf("line %q is wider than the terminal", line)
+		}
+	}
 
-	assert.Equal(t, expected, stripANSI(p.Sprint("ab")))
-}
-
-func TestBoxPrinterSprintlnAppendsNewline(t *testing.T) {
-	expected := "╭────╮\n" +
-		"│ Hi │\n" +
-		"╰────╯\n"
-
-	assert.Equal(t, expected, stripANSI(pterm.DefaultBox.Sprintln("Hi")))
-}
-
-func TestBoxPrinterEmptyInput(t *testing.T) {
-	// An empty string still renders a (collapsed) box.
-	expected := "╭──╮\n" +
-		"│  │\n" +
-		"╰──╯"
-
-	assert.Equal(t, expected, stripANSI(pterm.DefaultBox.Sprint("")))
-}
-
-func TestBoxPrinterZeroValueDoesNotPanic(t *testing.T) {
-	assert.NotPanics(t, func() {
-		p := pterm.BoxPrinter{}
-		_ = p.Sprint("Hello, World!")
-	})
+	if !strings.Contains(got, "…") {
+		t.Errorf("long title was not cut:\n%s", got)
+	}
 }

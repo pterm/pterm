@@ -1,6 +1,6 @@
 ### header/demo
 
-![Animation](https://vhs.charm.sh/vhs-3GdCjND3XJAaMx79ktH51Q.gif)
+![Animation](demo/animation.gif)
 
 <details>
 
@@ -12,21 +12,22 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// By default the header is only as wide as its content plus the margin.
-	pterm.DefaultHeader.Println("This is the default header!")
+	// A header opens the output of a program: its name in a badge, what is
+	// running and a short muted description, with a rule underneath.
+	pterm.Header.
+		WithBadge("APP").
+		WithSubtitle("Design system gallery").
+		Println("debug ui")
 
-	pterm.Println()
-
-	// WithFullWidth stretches the header background across the whole terminal.
-	pterm.DefaultHeader.WithFullWidth().Println("This is a full-width header.")
+	pterm.Text.Println("Everything below the header belongs to this run.")
 }
 ```
 
 </details>
 
-### header/custom
+### header/without-badge
 
-![Animation](https://vhs.charm.sh/vhs-5c8QzHYrjymhxB5DTG6XEF.gif)
+![Animation](without-badge/animation.gif)
 
 <details>
 
@@ -38,19 +39,16 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Restyle the default header on the fly. The margin adds horizontal
-	// padding on both sides of the text.
-	pterm.DefaultHeader.WithMargin(15).WithBackgroundStyle(pterm.NewStyle(pterm.BgCyan)).WithTextStyle(pterm.NewStyle(pterm.FgBlack)).Println("This is a custom header!")
+	// Without badge text, the title itself goes into the badge.
+	pterm.Header.Println("Release notes")
 
-	// Alternatively, build a HeaderPrinter from scratch instead of deriving
-	// from DefaultHeader.
-	newHeader := pterm.HeaderPrinter{
-		TextStyle:       pterm.NewStyle(pterm.FgBlack),
-		BackgroundStyle: pterm.NewStyle(pterm.BgRed),
-		Margin:          20,
-	}
-
-	newHeader.Println("This is a custom header!")
+	// The rule can match the width of the header line instead of the
+	// terminal, and the badge can use any tone.
+	pterm.Header.
+		WithBadge("beta").
+		WithBadgeTone(pterm.ToneWarning).
+		WithFullWidth(false).
+		Println("Features that may still change")
 }
 ```
 

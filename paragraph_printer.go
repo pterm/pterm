@@ -1,137 +1,101 @@
 package pterm
 
 import (
+	"fmt"
 	"io"
 	"strings"
+
+	"github.com/pterm/pterm/internal/text"
 )
 
-// DefaultParagraph contains the default values for a ParagraphPrinter.
-var DefaultParagraph = ParagraphPrinter{
-	MaxWidth: GetTerminalWidth(),
-}
-
-// ParagraphPrinter can print paragraphs to a fixed line width.
-// The text will split between words, so that words will stick together.
-// It's like in a book.
+// ParagraphPrinter prints running text, wrapped at word boundaries to the
+// terminal width or MaxWidth, whichever is smaller. Whitespace inside a
+// paragraph collapses to single spaces, and a blank line starts a new
+// paragraph.
 type ParagraphPrinter struct {
+	// MaxWidth is the widest a line gets. Zero only wraps to the terminal.
 	MaxWidth int
-	Writer   io.Writer
+	// Style styles the text.
+	Style Style
+	// Writer receives the output. Nil means the default output.
+	Writer io.Writer
 }
 
-// WithMaxWidth returns a new ParagraphPrinter with a specific MaxWidth
-func (p ParagraphPrinter) WithMaxWidth(width int) *ParagraphPrinter {
-	p.MaxWidth = width
+// Paragraph is the default paragraph printer. Its lines are at most 80
+// columns wide, which keeps long text readable on wide terminals.
+var Paragraph = ParagraphPrinter{
+	MaxWidth: 80,
+	Style:    ToneText.Style(),
+}
+
+// WithMaxWidth returns a copy of p whose lines are at most w columns wide.
+// Zero only wraps to the terminal.
+func (p ParagraphPrinter) WithMaxWidth(w int) *ParagraphPrinter {
+	p.MaxWidth = max(w, 0)
 	return &p
 }
 
-// WithWriter sets the custom Writer.
-func (p ParagraphPrinter) WithWriter(writer io.Writer) *ParagraphPrinter {
-	p.Writer = writer
+// WithStyle returns a copy of p that styles the text with s.
+func (p ParagraphPrinter) WithStyle(s Style) *ParagraphPrinter {
+	p.Style = s
 	return &p
 }
 
-// Sprint formats using the default formats for its operands and returns the resulting string.
-// Spaces are added between operands when neither is a string.
-func (p ParagraphPrinter) Sprint(a ...any) string {
-	if rawOutput() {
-		return Sprint(a...)
+// WithWriter returns a copy of p that writes to w.
+func (p ParagraphPrinter) WithWriter(w io.Writer) *ParagraphPrinter {
+	p.Writer = w
+	return &p
+}
+
+func (p ParagraphPrinter) out() io.Writer { return orDefault(p.Writer) }
+
+func (p ParagraphPrinter) render(c canvas, s string) string {
+	width := c.width
+	if p.MaxWidth > 0 && (width <= 0 || p.MaxWidth < width) {
+		width = p.MaxWidth
 	}
 
-	words := strings.Fields(strings.TrimSpace(Sprint(a...)))
-	if len(words) == 0 {
-		return ""
-	}
+	s = strings.ReplaceAll(s, "\r\n", "\n")
 
-	wrapped := words[0]
+	var paragraphs []string
 
-	spaceLeft := p.MaxWidth - len(wrapped)
-	for _, word := range words[1:] {
-		if len(word)+1 > spaceLeft {
-			wrapped += "\n" + word
-			spaceLeft = p.MaxWidth - len(word)
-		} else {
-			wrapped += " " + word
-			spaceLeft -= 1 + len(word)
+	for part := range strings.SplitSeq(s, "\n\n") {
+		if part = strings.Join(strings.Fields(part), " "); part != "" {
+			paragraphs = append(paragraphs, strings.Join(text.Wrap(part, width), "\n"))
 		}
 	}
 
-	return wrapped
+	return c.style(p.Style, strings.Join(paragraphs, "\n\n"))
 }
 
-// Sprintln formats using the default formats for its operands and returns the resulting string.
-// Spaces are always added between operands and a newline is appended.
-func (p ParagraphPrinter) Sprintln(a ...any) string {
-	return p.Sprint(Sprintln(a...)) + "\n"
-}
+// Sprint returns the wrapped text.
+func (p ParagraphPrinter) Sprint(a ...any) string { return sprintText(p, fmt.Sprint(a...)) }
 
-// Sprintf formats according to a format specifier and returns the resulting string.
+// Sprintln is like Sprint and adds a newline.
+func (p ParagraphPrinter) Sprintln(a ...any) string { return sprintText(p, sprintln(a...)) + "\n" }
+
+// Sprintf formats and returns the wrapped text.
 func (p ParagraphPrinter) Sprintf(format string, a ...any) string {
-	return p.Sprint(Sprintf(format, a...))
+	return sprintText(p, fmt.Sprintf(format, a...))
 }
 
-// Sprintfln formats according to a format specifier and returns the resulting string.
-// Spaces are always added between operands and a newline is appended.
+// Sprintfln is like Sprintf and adds a newline.
 func (p ParagraphPrinter) Sprintfln(format string, a ...any) string {
-	return p.Sprintf(format, a...) + "\n"
+	return sprintText(p, fmt.Sprintf(format, a...)) + "\n"
 }
 
-// Print formats using the default formats for its operands and writes to standard output.
-// Spaces are added between operands when neither is a string.
-// It returns the number of bytes written and any write error encountered.
-func (p *ParagraphPrinter) Print(a ...any) *TextPrinter {
-	Fprint(p.Writer, p.Sprint(a...))
-	tp := TextPrinter(p)
+// Print prints the wrapped text. A paragraph is a whole block, so Print
+// and Println print the same.
+func (p ParagraphPrinter) Print(a ...any) { printLine(p, fmt.Sprint(a...)) }
 
-	return &tp
-}
+// Println prints the wrapped text.
+func (p ParagraphPrinter) Println(a ...any) { printLine(p, sprintln(a...)) }
 
-// Println formats using the default formats for its operands and writes to standard output.
-// Spaces are always added between operands and a newline is appended.
-// It returns the number of bytes written and any write error encountered.
-func (p *ParagraphPrinter) Println(a ...any) *TextPrinter {
-	Fprint(p.Writer, p.Sprintln(a...))
-	tp := TextPrinter(p)
+// Printf formats and prints the wrapped text.
+func (p ParagraphPrinter) Printf(format string, a ...any) { printLine(p, fmt.Sprintf(format, a...)) }
 
-	return &tp
-}
+// Printfln formats and prints the wrapped text.
+func (p ParagraphPrinter) Printfln(format string, a ...any) { printLine(p, fmt.Sprintf(format, a...)) }
 
-// Printf formats according to a format specifier and writes to standard output.
-// It returns the number of bytes written and any write error encountered.
-func (p *ParagraphPrinter) Printf(format string, a ...any) *TextPrinter {
-	Fprint(p.Writer, p.Sprintf(format, a...))
-	tp := TextPrinter(p)
-
-	return &tp
-}
-
-// Printfln formats according to a format specifier and writes to standard output.
-// Spaces are always added between operands and a newline is appended.
-// It returns the number of bytes written and any write error encountered.
-func (p *ParagraphPrinter) Printfln(format string, a ...any) *TextPrinter {
-	Fprint(p.Writer, p.Sprintfln(format, a...))
-	tp := TextPrinter(p)
-
-	return &tp
-}
-
-// PrintOnError prints every error which is not nil.
-// If every error is nil, nothing will be printed.
-// This can be used for simple error checking.
-func (p *ParagraphPrinter) PrintOnError(a ...any) *TextPrinter {
-	printOnError(p, a...)
-
-	tp := TextPrinter(p)
-
-	return &tp
-}
-
-// PrintOnErrorf wraps every error which is not nil and prints it.
-// If every error is nil, nothing will be printed.
-// This can be used for simple error checking.
-func (p *ParagraphPrinter) PrintOnErrorf(format string, a ...any) *TextPrinter {
-	printOnErrorf(p, format, a...)
-
-	tp := TextPrinter(p)
-
-	return &tp
-}
+// PrintOnError prints every non-nil error in a as a paragraph.
+func (p ParagraphPrinter) PrintOnError(a ...any) { printOnError(p, a...) }

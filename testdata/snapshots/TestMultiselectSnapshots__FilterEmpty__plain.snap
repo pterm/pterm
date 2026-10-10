@@ -1,0 +1,16 @@
+? What should be cleaned? 2 of 7 /type to filter
+
+  PACKAGE MANAGERS
+  ❯ ◉ npm cache          ~/.npm/_cacache              1.2 GB
+    ○ yarn cache         ~/Library/Caches/Yarn        640 MB
+    ○ go module cache    ~/go/pkg/mod                 3.4 GB
+
+  BUILD CACHES
+    ◉ go build cache     ~/Library/Caches/go-build    5.8 GB
+    ○ Bazel output base  in use by a running build    7.2 GB
+
+  CONTAINERS
+    ○ Docker images      dangling and unused images  18.3 GB
+    ○ Docker volumes     may hold databases           4.7 GB
+
+  [space] toggle · [↑↓] move · [enter] confirm · [esc] clear filter

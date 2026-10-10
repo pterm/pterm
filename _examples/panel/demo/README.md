@@ -1,6 +1,6 @@
 # panel/demo
 
-![Animation](https://vhs.charm.sh/vhs-1ojPuB9SETuUW6zO274YLY.gif)
+![Animation](animation.gif)
 
 ```go
 package main
@@ -8,22 +8,18 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Panels form a 2D grid: the outer slice holds rows, the inner slices hold
-	// the panels of each row. Panel content can be multiline and may come from
-	// other printers.
-	panels := pterm.Panels{
-		{
-			{Data: "This is the first panel"},
-			{Data: pterm.DefaultHeader.Sprint("Hello, World!")},
-			{Data: "This\npanel\ncontains\nmultiple\nlines"},
-		},
-		{
-			{Data: pterm.Red("This is another\npanel line")},
-			{Data: "This is the second panel\nwith a new line"},
-		},
-	}
-
-	// Padding controls the horizontal space between panels in a row.
-	_ = pterm.DefaultPanel.WithPanels(panels).WithPadding(5).Render()
+	// Boxed panels make a small dashboard. Every row is laid out side by side
+	// and frames of one row end on the same line.
+	pterm.Panel.WithBoxed().
+		WithRow(
+			pterm.PanelItem{Title: "Uptime", Data: "99.99%\nlast 30 days"},
+			pterm.PanelItem{Title: "Requests", Data: "1.2M per day"},
+			pterm.PanelItem{Title: "Errors", Data: "0.02%\n14 in the last hour"},
+		).
+		WithRow(
+			pterm.PanelItem{Title: "Region", Data: "eu-central-1"},
+			pterm.PanelItem{Title: "Version", Data: "v2.4.1\nbuilt 5 minutes ago"},
+		).
+		Render()
 }
 ```

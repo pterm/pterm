@@ -1,167 +1,110 @@
 package pterm
 
 import (
+	"fmt"
 	"io"
 	"strings"
 
-	"github.com/mattn/go-runewidth"
-
-	"github.com/pterm/pterm/internal"
+	"github.com/pterm/pterm/internal/text"
 )
 
-// DefaultCenter is the default CenterPrinter.
-var DefaultCenter = CenterPrinter{
-	CenterEachLineSeparately: false,
-}
-
-// CenterPrinter prints centered text.
+// CenterPrinter centers text in the terminal. By default the text moves as
+// one block, so its lines stay aligned with each other; use it to center
+// the output of other printers, such as a box. When the terminal width is
+// unknown the text is printed as it is.
+//
+// The text keeps its own styling; the center printer adds no colors.
 type CenterPrinter struct {
+	// CenterEachLineSeparately centers every line on its own instead of
+	// the text as a block.
 	CenterEachLineSeparately bool
-	Writer                   io.Writer
+	// Width is the width to center in. Zero uses the terminal width.
+	Width int
+	// Writer receives the output. Nil means the default output.
+	Writer io.Writer
 }
 
-// WithCenterEachLineSeparately centers each line separately.
+// Center is the default center printer.
+var Center = CenterPrinter{}
+
+// WithCenterEachLineSeparately returns a copy of p that centers every line
+// on its own.
 func (p CenterPrinter) WithCenterEachLineSeparately(b ...bool) *CenterPrinter {
-	bt := internal.WithBoolean(b)
-	p.CenterEachLineSeparately = bt
-
+	p.CenterEachLineSeparately = flag(b)
 	return &p
 }
 
-// WithWriter sets the custom Writer.
-func (p CenterPrinter) WithWriter(writer io.Writer) *CenterPrinter {
-	p.Writer = writer
+// WithWidth returns a copy of p that centers in w columns. Zero uses the
+// terminal width.
+func (p CenterPrinter) WithWidth(w int) *CenterPrinter {
+	p.Width = max(w, 0)
 	return &p
 }
 
-// Sprint formats using the default formats for its operands and returns the resulting string.
-// Spaces are added between operands when neither is a string.
-func (p CenterPrinter) Sprint(a ...any) string {
-	if rawOutput() {
-		return Sprint(a...)
-	}
-
-	lines := strings.Split(Sprint(a...), "\n")
-
-	var ret strings.Builder
-
-	if p.CenterEachLineSeparately {
-		for _, line := range lines {
-			margin := (GetTerminalWidth() - runewidth.StringWidth(RemoveColorFromString(line))) / 2
-			if margin >= 1 {
-				ret.WriteString(strings.Repeat(" ", margin))
-			}
-
-			ret.WriteString(line)
-			ret.WriteByte('\n')
-		}
-
-		return ret.String()
-	}
-
-	var maxLineWidth int
-
-	for _, line := range lines {
-		lineLength := runewidth.StringWidth(RemoveColorFromString(line))
-		if maxLineWidth < lineLength {
-			maxLineWidth = lineLength
-		}
-	}
-
-	indent := GetTerminalWidth() - maxLineWidth
-
-	if indent/2 < 1 {
-		for _, line := range lines {
-			ret.WriteString(line)
-			ret.WriteByte('\n')
-		}
-
-		return ret.String()
-	}
-
-	for _, line := range lines {
-		ret.WriteString(strings.Repeat(" ", indent/2))
-		ret.WriteString(line)
-		ret.WriteByte('\n')
-	}
-
-	return ret.String()
+// WithWriter returns a copy of p that writes to w.
+func (p CenterPrinter) WithWriter(w io.Writer) *CenterPrinter {
+	p.Writer = w
+	return &p
 }
 
-// Sprintln formats using the default formats for its operands and returns the resulting string.
-// Spaces are always added between operands and a newline is appended.
-func (p CenterPrinter) Sprintln(a ...any) string {
-	return p.Sprint(Sprintln(a...))
+func (p CenterPrinter) out() io.Writer { return orDefault(p.Writer) }
+
+func (p CenterPrinter) render(c canvas, s string) string {
+	width := c.width
+	if p.Width > 0 {
+		width = p.Width
+	}
+
+	s = strings.TrimRight(s, "\n")
+	if width <= 0 {
+		return s
+	}
+
+	lines := strings.Split(s, "\n")
+	block := text.MaxWidth(s)
+
+	for i, line := range lines {
+		w := block
+		if p.CenterEachLineSeparately {
+			w = text.Width(line)
+		}
+
+		if margin := (width - w) / 2; margin > 0 && line != "" {
+			lines[i] = strings.Repeat(" ", margin) + line
+		}
+	}
+
+	return strings.Join(lines, "\n")
 }
 
-// Sprintf formats according to a format specifier and returns the resulting string.
+// Sprint returns the centered text.
+func (p CenterPrinter) Sprint(a ...any) string { return sprintText(p, fmt.Sprint(a...)) }
+
+// Sprintln is like Sprint and adds a newline.
+func (p CenterPrinter) Sprintln(a ...any) string { return sprintText(p, sprintln(a...)) + "\n" }
+
+// Sprintf formats and returns the centered text.
 func (p CenterPrinter) Sprintf(format string, a ...any) string {
-	return p.Sprint(Sprintf(format, a...))
+	return sprintText(p, fmt.Sprintf(format, a...))
 }
 
-// Sprintfln formats according to a format specifier and returns the resulting string.
-// Spaces are always added between operands and a newline is appended.
+// Sprintfln is like Sprintf and adds a newline.
 func (p CenterPrinter) Sprintfln(format string, a ...any) string {
-	return p.Sprintf(format, a...) + "\n"
+	return sprintText(p, fmt.Sprintf(format, a...)) + "\n"
 }
 
-// Print formats using the default formats for its operands and writes to standard output.
-// Spaces are added between operands when neither is a string.
-// It returns the number of bytes written and any write error encountered.
-func (p CenterPrinter) Print(a ...any) *TextPrinter {
-	Fprint(p.Writer, p.Sprint(a...))
-	tp := TextPrinter(p)
+// Print prints the centered text. Centered text is a whole block, so
+// Print and Println print the same.
+func (p CenterPrinter) Print(a ...any) { printLine(p, fmt.Sprint(a...)) }
 
-	return &tp
-}
+// Println prints the centered text.
+func (p CenterPrinter) Println(a ...any) { printLine(p, sprintln(a...)) }
 
-// Println formats using the default formats for its operands and writes to standard output.
-// Spaces are always added between operands and a newline is appended.
-// It returns the number of bytes written and any write error encountered.
-func (p CenterPrinter) Println(a ...any) *TextPrinter {
-	Fprint(p.Writer, p.Sprintln(a...))
-	tp := TextPrinter(p)
+// Printf formats and prints the centered text.
+func (p CenterPrinter) Printf(format string, a ...any) { printLine(p, fmt.Sprintf(format, a...)) }
 
-	return &tp
-}
+// Printfln formats and prints the centered text.
+func (p CenterPrinter) Printfln(format string, a ...any) { printLine(p, fmt.Sprintf(format, a...)) }
 
-// Printf formats according to a format specifier and writes to standard output.
-// It returns the number of bytes written and any write error encountered.
-func (p CenterPrinter) Printf(format string, a ...any) *TextPrinter {
-	Fprint(p.Writer, p.Sprintf(format, a...))
-	tp := TextPrinter(p)
-
-	return &tp
-}
-
-// Printfln formats according to a format specifier and writes to standard output.
-// Spaces are always added between operands and a newline is appended.
-// It returns the number of bytes written and any write error encountered.
-func (p CenterPrinter) Printfln(format string, a ...any) *TextPrinter {
-	Fprint(p.Writer, p.Sprintfln(format, a...))
-	tp := TextPrinter(p)
-
-	return &tp
-}
-
-// PrintOnError prints every error which is not nil.
-// If every error is nil, nothing will be printed.
-// This can be used for simple error checking.
-func (p CenterPrinter) PrintOnError(a ...any) *TextPrinter {
-	printOnError(p, a...)
-
-	tp := TextPrinter(p)
-
-	return &tp
-}
-
-// PrintOnErrorf wraps every error which is not nil and prints it.
-// If every error is nil, nothing will be printed.
-// This can be used for simple error checking.
-func (p CenterPrinter) PrintOnErrorf(format string, a ...any) *TextPrinter {
-	printOnErrorf(p, format, a...)
-
-	tp := TextPrinter(p)
-
-	return &tp
-}
+// PrintOnError prints every non-nil error in a, centered.
+func (p CenterPrinter) PrintOnError(a ...any) { printOnError(p, a...) }

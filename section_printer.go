@@ -4,166 +4,159 @@ import (
 	"fmt"
 	"io"
 	"strings"
+
+	"atomicgo.dev/color"
+
+	"github.com/pterm/pterm/internal/text"
 )
 
-// DefaultSection is the default section printer.
-var DefaultSection = SectionPrinter{
-	Style:           &ThemeDefault.SectionStyle,
-	Level:           1,
-	TopPadding:      1,
-	BottomPadding:   1,
-	IndentCharacter: "»",
-}
-
-// SectionPrinter prints a new section title.
-// It can be used to structure longer text, or different chapters of your program.
+// SectionPrinter prints the title of a part of the output, with one blank
+// line before it. Level 1 is a bold Primary title, level 2 a bold Text
+// title and deeper levels are muted.
 type SectionPrinter struct {
-	Style           *Style
-	Level           int
-	IndentCharacter string
-	TopPadding      int
-	BottomPadding   int
-	Writer          io.Writer
+	// Level is the depth of the section, starting at 1.
+	Level int
+	// Styles are the title styles per level: Styles[0] for level 1 and so
+	// on. Levels deeper than the list use its last style.
+	Styles []Style
+	// Prefix is repeated Level times before the title, like "#" in
+	// Markdown. Empty prints no prefix.
+	Prefix string
+	// PrefixTone colors the prefix.
+	PrefixTone Tone
+	// TopPadding is the number of blank lines before the title.
+	TopPadding int
+	// BottomPadding is the number of blank lines after the title.
+	BottomPadding int
+	// Writer receives the output. Nil means the default output.
+	Writer io.Writer
 }
 
-// WithStyle returns a new SectionPrinter with a specific style.
-func (p SectionPrinter) WithStyle(style *Style) *SectionPrinter {
-	p.Style = style
+// Section is the default section printer.
+var Section = SectionPrinter{
+	Level: 1,
+	Styles: []Style{
+		TonePrimary.Bold(),
+		ToneText.Bold(),
+		ToneMuted.Style(),
+	},
+	PrefixTone: ToneMuted,
+	TopPadding: 1,
+}
+
+// WithLevel returns a copy of p at level n, starting at 1.
+func (p SectionPrinter) WithLevel(n int) *SectionPrinter {
+	p.Level = max(n, 1)
 	return &p
 }
 
-// WithLevel returns a new SectionPrinter with a specific level.
-func (p SectionPrinter) WithLevel(level int) *SectionPrinter {
-	p.Level = level
+// WithStyle returns a copy of p that styles titles of every level with s.
+func (p SectionPrinter) WithStyle(s Style) *SectionPrinter {
+	p.Styles = []Style{s}
 	return &p
 }
 
-// WithIndentCharacter returns a new SectionPrinter with a specific IndentCharacter.
-func (p SectionPrinter) WithIndentCharacter(char string) *SectionPrinter {
-	p.IndentCharacter = char
+// WithStyles returns a copy of p with one title style per level.
+func (p SectionPrinter) WithStyles(s ...Style) *SectionPrinter {
+	p.Styles = s
 	return &p
 }
 
-// WithTopPadding returns a new SectionPrinter with a specific top padding.
-func (p SectionPrinter) WithTopPadding(padding int) *SectionPrinter {
-	p.TopPadding = padding
+// WithPrefix returns a copy of p that repeats s Level times before the
+// title.
+func (p SectionPrinter) WithPrefix(s string) *SectionPrinter {
+	p.Prefix = s
 	return &p
 }
 
-// WithBottomPadding returns a new SectionPrinter with a specific top padding.
-func (p SectionPrinter) WithBottomPadding(padding int) *SectionPrinter {
-	p.BottomPadding = padding
+// WithPrefixTone returns a copy of p whose prefix is in tone t.
+func (p SectionPrinter) WithPrefixTone(t Tone) *SectionPrinter {
+	p.PrefixTone = t
 	return &p
 }
 
-// WithWriter sets the custom Writer.
-func (p SectionPrinter) WithWriter(writer io.Writer) *SectionPrinter {
-	p.Writer = writer
+// WithTopPadding returns a copy of p with n blank lines before the title.
+func (p SectionPrinter) WithTopPadding(n int) *SectionPrinter {
+	p.TopPadding = max(n, 0)
 	return &p
 }
 
-// Sprint formats using the default formats for its operands and returns the resulting string.
-// Spaces are added between operands when neither is a string.
-func (p SectionPrinter) Sprint(a ...any) string {
-	if p.Style == nil {
-		p.Style = NewStyle()
+// WithBottomPadding returns a copy of p with n blank lines after the
+// title.
+func (p SectionPrinter) WithBottomPadding(n int) *SectionPrinter {
+	p.BottomPadding = max(n, 0)
+	return &p
+}
+
+// WithWriter returns a copy of p that writes to w.
+func (p SectionPrinter) WithWriter(w io.Writer) *SectionPrinter {
+	p.Writer = w
+	return &p
+}
+
+func (p SectionPrinter) out() io.Writer { return orDefault(p.Writer) }
+
+func (p SectionPrinter) style() Style {
+	if len(p.Styles) == 0 {
+		return Style{Attrs: color.Bold}
 	}
 
-	var ret strings.Builder
-
-	for i := 0; i < p.TopPadding; i++ {
-		ret.WriteByte('\n')
-	}
-
-	if p.Level > 0 {
-		ret.WriteString(p.Style.Sprint(strings.Repeat(p.IndentCharacter, p.Level)))
-		ret.WriteByte(' ')
-	}
-
-	ret.WriteString(p.Style.Sprint(a...))
-
-	for i := 0; i < p.BottomPadding; i++ {
-		ret.WriteByte('\n')
-	}
-
-	return ret.String()
+	return p.Styles[min(max(p.Level, 1), len(p.Styles))-1]
 }
 
-// Sprintln formats using the default formats for its operands and returns the resulting string.
-// Spaces are always added between operands and a newline is appended.
-func (p SectionPrinter) Sprintln(a ...any) string {
-	str := fmt.Sprintln(a...)
-	return Sprint(p.Sprint(str))
+func (p SectionPrinter) render(c canvas, s string) string {
+	s = strings.TrimRight(s, "\n")
+
+	indent := 0
+	prefix := ""
+
+	if p.Prefix != "" {
+		prefix = strings.Repeat(p.Prefix, max(p.Level, 1)) + " "
+		indent = text.Width(prefix)
+		prefix = c.paint(p.PrefixTone, prefix)
+	}
+
+	lines := c.wrap(s, indent)
+	for i, line := range lines {
+		lines[i] = c.style(p.style(), line)
+		if i == 0 {
+			lines[i] = prefix + lines[i]
+		} else if indent > 0 {
+			lines[i] = strings.Repeat(" ", indent) + lines[i]
+		}
+	}
+
+	return strings.Repeat("\n", p.TopPadding) + strings.Join(lines, "\n") + strings.Repeat("\n", p.BottomPadding)
 }
 
-// Sprintf formats according to a format specifier and returns the resulting string.
+// Sprint returns the section title, with its padding.
+func (p SectionPrinter) Sprint(a ...any) string { return sprintText(p, fmt.Sprint(a...)) }
+
+// Sprintln is like Sprint and adds a newline.
+func (p SectionPrinter) Sprintln(a ...any) string { return sprintText(p, sprintln(a...)) + "\n" }
+
+// Sprintf formats the title and returns the section title.
 func (p SectionPrinter) Sprintf(format string, a ...any) string {
-	return p.Sprint(Sprintf(format, a...))
+	return sprintText(p, fmt.Sprintf(format, a...))
 }
 
-// Sprintfln formats according to a format specifier and returns the resulting string.
-// Spaces are always added between operands and a newline is appended.
+// Sprintfln is like Sprintf and adds a newline.
 func (p SectionPrinter) Sprintfln(format string, a ...any) string {
-	return p.Sprintf(format, a...) + "\n"
+	return sprintText(p, fmt.Sprintf(format, a...)) + "\n"
 }
 
-// Print formats using the default formats for its operands and writes to standard output.
-// Spaces are added between operands when neither is a string.
-// It returns the number of bytes written and any write error encountered.
-func (p *SectionPrinter) Print(a ...any) *TextPrinter {
-	Fprint(p.Writer, p.Sprint(a...))
-	tp := TextPrinter(p)
+// Print prints the section title. A section is a whole line, so Print and
+// Println print the same.
+func (p SectionPrinter) Print(a ...any) { printLine(p, fmt.Sprint(a...)) }
 
-	return &tp
-}
+// Println prints the section title.
+func (p SectionPrinter) Println(a ...any) { printLine(p, sprintln(a...)) }
 
-// Println formats using the default formats for its operands and writes to standard output.
-// Spaces are always added between operands and a newline is appended.
-// It returns the number of bytes written and any write error encountered.
-func (p *SectionPrinter) Println(a ...any) *TextPrinter {
-	Fprint(p.Writer, p.Sprintln(a...))
-	tp := TextPrinter(p)
+// Printf formats and prints the section title.
+func (p SectionPrinter) Printf(format string, a ...any) { printLine(p, fmt.Sprintf(format, a...)) }
 
-	return &tp
-}
+// Printfln formats and prints the section title.
+func (p SectionPrinter) Printfln(format string, a ...any) { printLine(p, fmt.Sprintf(format, a...)) }
 
-// Printf formats according to a format specifier and writes to standard output.
-// It returns the number of bytes written and any write error encountered.
-func (p *SectionPrinter) Printf(format string, a ...any) *TextPrinter {
-	Fprint(p.Writer, p.Sprintf(format, a...))
-	tp := TextPrinter(p)
-
-	return &tp
-}
-
-// Printfln formats according to a format specifier and writes to standard output.
-// Spaces are always added between operands and a newline is appended.
-// It returns the number of bytes written and any write error encountered.
-func (p *SectionPrinter) Printfln(format string, a ...any) *TextPrinter {
-	Fprint(p.Writer, p.Sprintfln(format, a...))
-	tp := TextPrinter(p)
-
-	return &tp
-}
-
-// PrintOnError prints every error which is not nil.
-// If every error is nil, nothing will be printed.
-// This can be used for simple error checking.
-func (p *SectionPrinter) PrintOnError(a ...any) *TextPrinter {
-	printOnError(p, a...)
-
-	tp := TextPrinter(p)
-
-	return &tp
-}
-
-// PrintOnErrorf wraps every error which is not nil and prints it.
-// If every error is nil, nothing will be printed.
-// This can be used for simple error checking.
-func (p *SectionPrinter) PrintOnErrorf(format string, a ...any) *TextPrinter {
-	printOnErrorf(p, format, a...)
-
-	tp := TextPrinter(p)
-
-	return &tp
-}
+// PrintOnError prints a section titled with every non-nil error in a.
+func (p SectionPrinter) PrintOnError(a ...any) { printOnError(p, a...) }

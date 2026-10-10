@@ -1,6 +1,6 @@
 ### logger/demo
 
-![Animation](https://vhs.charm.sh/vhs-5ZEL81G8v6BoyEteQgEeTI.gif)
+![Animation](demo/animation.gif)
 
 <details>
 
@@ -10,136 +10,32 @@
 package main
 
 import (
+	"errors"
 	"time"
 
 	"github.com/pterm/pterm"
 )
 
 func main() {
-	// The default log level is Info. Lower it to Trace so every level shows up.
-	logger := pterm.DefaultLogger.WithLevel(pterm.LogLevelTrace)
+	// The default level is Info. Trace shows every level.
+	logger := pterm.Logger.WithLevel(pterm.LogLevelTrace)
 
-	// logger.Args pairs up keys and values for structured output.
-	logger.Trace("Doing not so important stuff", logger.Args("priority", "super low"))
+	logger.Trace("Reading config", logger.Args("path", "./config.yaml"))
+	logger.Debug("Config loaded", logger.ArgsFromMap(map[string]any{
+		"workers": 4,
+		"cache":   true,
+	}))
+	logger.Info("Server started", logger.Args("addr", ":8080", "env", "production"))
 
-	sleep()
+	time.Sleep(300 * time.Millisecond)
 
-	interestingStuff := map[string]any{
-		"when were crayons invented":  "1903",
-		"what is the meaning of life": 42,
-		"is this interesting":         true,
-	}
+	logger.Warn("Slow request", logger.Args("path", "/api/search", "took", 1240*time.Millisecond))
+	logger.Error("Payment failed", logger.Args("order", 1042, "error", errors.New("card declined")))
 
-	// ArgsFromMap turns an existing map into logger arguments.
-	logger.Debug("This might be interesting", logger.ArgsFromMap(interestingStuff))
-
-	sleep()
-
-	logger.Info("That was actually interesting", logger.Args("such", "wow"))
-
-	sleep()
-
-	logger.Warn("Oh no, I see an error coming to us!", logger.Args("speed", 88, "measures", "mph"))
-
-	sleep()
-
-	logger.Error("Damn, here it is!", logger.Args("error", "something went wrong"))
-
-	sleep()
-
-	// Long messages are wrapped to the terminal width automatically.
-	logger.Info("But what's really cool is, that you can print very long logs, and PTerm will automatically wrap them for you! Say goodbye to text, that has weird line breaks!", logger.Args("very", "long"))
-
-	sleep()
-
-	// Fatal logs the message and then exits the process.
-	logger.Fatal("Oh no, this process is getting killed!", logger.Args("fatal", true))
-}
-
-func sleep() {
-	time.Sleep(time.Second * 3)
-}
-```
-
-</details>
-
-### logger/custom-key-styles
-
-![Animation](https://vhs.charm.sh/vhs-XImFCwmCtfj6gxSAL1nPL.gif)
-
-<details>
-
-<summary>SHOW SOURCE</summary>
-
-```go
-package main
-
-import "github.com/pterm/pterm"
-
-func main() {
-	logger := pterm.DefaultLogger.WithLevel(pterm.LogLevelTrace)
-
-	// WithKeyStyles replaces the whole key style map, so only the keys listed
-	// here get a custom style.
-	logger = logger.WithKeyStyles(map[string]pterm.Style{
-		"priority": *pterm.NewStyle(pterm.FgRed),
-	})
-
-	logger.Info("The priority key should now be red", logger.Args("priority", "low", "foo", "bar"))
-
-	// AppendKeyStyle adds a single key style on top of the existing ones.
-	logger.AppendKeyStyle("foo", *pterm.NewStyle(pterm.FgBlue))
-
-	logger.Info("The foo key should now be blue", logger.Args("priority", "low", "foo", "bar"))
-}
-```
-
-</details>
-
-### logger/default
-
-![Animation](https://vhs.charm.sh/vhs-1L9BFUa3Jk9MMxZUxBowEA.gif)
-
-<details>
-
-<summary>SHOW SOURCE</summary>
-
-```go
-package main
-
-import (
-	"time"
-
-	"github.com/pterm/pterm"
-)
-
-func main() {
-	// The default log level is Info. Lower it to Trace so every level shows up.
-	logger := pterm.DefaultLogger.WithLevel(pterm.LogLevelTrace)
-
-	// logger.Args pairs up keys and values for structured output.
-	logger.Trace("Doing not so important stuff", logger.Args("priority", "super low"))
-
-	interestingStuff := map[string]any{
-		"when were crayons invented":  "1903",
-		"what is the meaning of life": 42,
-		"is this interesting":         true,
-	}
-
-	// ArgsFromMap turns an existing map into logger arguments.
-	logger.Debug("This might be interesting", logger.ArgsFromMap(interestingStuff))
-
-	logger.Info("That was actually interesting", logger.Args("such", "wow"))
-	logger.Warn("Oh no, I see an error coming to us!", logger.Args("speed", 88, "measures", "mph"))
-	logger.Error("Damn, here it is!", logger.Args("error", "something went wrong"))
-
-	// Long messages are wrapped to the terminal width automatically.
-	logger.Info("But what's really cool is, that you can print very long logs, and PTerm will automatically wrap them for you! Say goodbye to text, that has weird line breaks!", logger.Args("very", "long"))
-
-	time.Sleep(time.Second * 2)
-
-	// Fatal logs the message and then exits the process.
-	logger.Fatal("Oh no, this process is getting killed!", logger.Args("fatal", true))
+	// A line that is too long for the terminal puts its arguments on lines
+	// of their own.
+	logger.Info("Retrying the upload of the nightly backup to the secondary region",
+		logger.Args("bucket", "s3://backups-eu-west", "attempt", 2, "reason", "connection reset by peer"))
 }
 ```
 
@@ -147,7 +43,7 @@ func main() {
 
 ### logger/json
 
-![Animation](https://vhs.charm.sh/vhs-4ZkTNA9mnIREsQGFxbg6iH.gif)
+![Animation](json/animation.gif)
 
 <details>
 
@@ -159,29 +55,67 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// The JSON formatter emits one JSON object per log line, which is handy
-	// for machine-readable output in production.
-	logger := pterm.DefaultLogger.WithLevel(pterm.LogLevelTrace).WithFormatter(pterm.LogFormatterJSON)
+	// The JSON formatter prints one object per line, for log collectors
+	// that parse their input.
+	logger := pterm.Logger.WithFormatter(pterm.LogFormatterJSON).WithTimeFormat("2006-01-02T15:04:05Z07:00")
 
-	// logger.Args pairs up keys and values for structured output.
-	logger.Trace("Doing not so important stuff", logger.Args("priority", "super low"))
+	logger.Info("Server started", logger.Args("addr", ":8080", "env", "production"))
+	logger.Warn("Slow request", logger.Args("path", "/api/search", "ms", 1240))
+}
+```
 
-	interestingStuff := map[string]any{
-		"when were crayons invented":  "1903",
-		"what is the meaning of life": 42,
-		"is this interesting":         true,
-	}
+</details>
 
-	// ArgsFromMap turns an existing map into logger arguments.
-	logger.Debug("This might be interesting", logger.ArgsFromMap(interestingStuff))
+### logger/key-styles
 
-	logger.Info("That was actually interesting", logger.Args("such", "wow"))
-	logger.Warn("Oh no, I see an error coming to us!", logger.Args("speed", 88, "measures", "mph"))
-	logger.Error("Damn, here it is!", logger.Args("error", "something went wrong"))
-	logger.Info("But what's really cool is, that you can print very long logs, and PTerm will automatically wrap them for you! Say goodbye to text, that has weird line breaks!", logger.Args("very", "long"))
+![Animation](key-styles/animation.gif)
 
-	// Fatal logs the message and then exits the process.
-	logger.Fatal("Oh no, this process is getting killed!", logger.Args("fatal", true))
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	// Arguments are muted, except keys with a style of their own. "error"
+	// and "err" are styled by default; AppendKeyStyle adds more.
+	logger := pterm.Logger.AppendKeyStyle("user", pterm.ToneAccent.Style())
+
+	logger.Info("Signed in", logger.Args("user", "ada", "method", "passkey"))
+	logger.Error("Sign in failed", logger.Args("user", "grace", "error", "password expired"))
+}
+```
+
+</details>
+
+### logger/time
+
+![Animation](time/animation.gif)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"time"
+
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	// Lines have no time by default. WithTime adds it, muted, and
+	// WithTimeFormat picks the layout.
+	logger := pterm.Logger.WithTime().WithTimeFormat(time.DateTime)
+
+	logger.Info("Job queued", logger.Args("job", "nightly-report"))
+	time.Sleep(time.Second)
+	logger.Info("Job finished", logger.Args("job", "nightly-report", "rows", 48213))
 }
 ```
 
@@ -189,7 +123,7 @@ func main() {
 
 ### logger/with-caller
 
-![Animation](https://vhs.charm.sh/vhs-7nMQzoh4SQfQBmEDun2JHP.gif)
+![Animation](with-caller/animation.gif)
 
 <details>
 
@@ -201,30 +135,12 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// WithCaller adds the file and line of the log call to every message.
-	logger := pterm.DefaultLogger.WithLevel(pterm.LogLevelTrace).WithCaller()
+	// WithCaller adds the file and line that logged, which helps to find
+	// where a message comes from in a bigger program.
+	logger := pterm.Logger.WithCaller()
 
-	// logger.Args pairs up keys and values for structured output.
-	logger.Trace("Doing not so important stuff", logger.Args("priority", "super low"))
-
-	interestingStuff := map[string]any{
-		"when were crayons invented":  "1903",
-		"what is the meaning of life": 42,
-		"is this interesting":         true,
-	}
-
-	// ArgsFromMap turns an existing map into logger arguments.
-	logger.Debug("This might be interesting", logger.ArgsFromMap(interestingStuff))
-
-	logger.Info("That was actually interesting", logger.Args("such", "wow"))
-	logger.Warn("Oh no, I see an error coming to us!", logger.Args("speed", 88, "measures", "mph"))
-	logger.Error("Damn, here it is!", logger.Args("error", "something went wrong"))
-
-	// Long messages are wrapped to the terminal width automatically.
-	logger.Info("But what's really cool is, that you can print very long logs, and PTerm will automatically wrap them for you! Say goodbye to text, that has weird line breaks!", logger.Args("very", "long"))
-
-	// Fatal logs the message and then exits the process.
-	logger.Fatal("Oh no, this process is getting killed!", logger.Args("fatal", true))
+	logger.Info("Cache warmed", logger.Args("entries", 2048))
+	logger.Warn("Cache almost full", logger.Args("used", "93%"))
 }
 ```
 

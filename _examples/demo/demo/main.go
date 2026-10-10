@@ -1,261 +1,249 @@
+// The demo is the trailer at the top of the README. Every scene is a
+// regular pterm call; the animations are an Area that gets redrawn with
+// the next frame.
 package main
 
 import (
-	"flag"
 	"fmt"
-	"reflect"
-	"strconv"
-	"strings"
+	"io"
+	"math"
+	"os"
 	"time"
 
+	"golang.org/x/term"
+
 	"github.com/pterm/pterm"
-	"github.com/pterm/pterm/putils"
 )
 
-var speedup = flag.Bool("speedup", false, "Speed up the demo")
-var skipIntro = flag.Bool("skip-intro", false, "Skips the intro")
-var second = time.Second
-var section = pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithTextStyle(pterm.NewStyle(pterm.FgLightMagenta)).WithFullWidth()
-
-var pseudoProgramList = []string{"excel", "photoshop", "chrome", "outlook", "git", "vscode", "minecraft", "neovim", "gopls"}
-
 func main() {
-	setup()
-
-	if !*skipIntro {
-		introScreen()
-		clear()
-	}
-
-	showcase("Structured Logging", 5, func() {
-		logger := pterm.DefaultLogger.
-			WithLevel(pterm.LogLevelTrace)
-
-		logger.Trace("Doing not so important stuff", logger.Args("priority", "super low"))
-
-		time.Sleep(second * 3)
-
-		interestingStuff := map[string]any{
-			"when were crayons invented":  "1903",
-			"what is the meaning of life": 42,
-			"is this interesting":         true,
-		}
-		logger.Debug("This might be interesting", logger.ArgsFromMap(interestingStuff))
-		time.Sleep(second * 3)
-
-		logger.Info("That was actually interesting", logger.Args("such", "wow"))
-		time.Sleep(second * 3)
-		logger.Warn("Oh no, I see an error coming to us!", logger.Args("speed", 88, "measures", "mph"))
-		time.Sleep(second * 3)
-		logger.Error("Damn, here it is!", logger.Args("error", "something went wrong"))
-		time.Sleep(second * 3)
-		logger.Info("But what's really cool is, that you can print very long logs, and PTerm will automatically wrap them for you! Say goodbye to text, that has weird line breaks!", logger.Args("very", "long"))
-	})
-
-	showcase("Progress bar", 2, func() {
-		pb, _ := pterm.DefaultProgressbar.WithTotal(len(pseudoProgramList)).WithTitle("Installing stuff").Start()
-		for i := 0; i < pb.Total; i++ {
-			pb.UpdateTitle("Installing " + pseudoProgramList[i])
-			if pseudoProgramList[i] == "pseudo-minecraft" {
-				pterm.Warning.Println("Could not install pseudo-minecraft\nThe company policy forbids games.")
-			} else {
-				pterm.Success.Println("Installing " + pseudoProgramList[i])
-			}
-			pb.Increment()
-			time.Sleep(second / 2)
-		}
-		pb.Stop()
-	})
-
-	showcase("Spinner", 2, func() {
-		list := pseudoProgramList[7:]
-		spinner, _ := pterm.DefaultSpinner.Start("Installing stuff")
-		for i := 0; i < len(list); i++ {
-			spinner.UpdateText("Installing " + list[i])
-			if list[i] == "pseudo-minecraft" {
-				pterm.Warning.Println("Could not install pseudo-minecraft\nThe company policy forbids games.")
-			} else {
-				pterm.Success.Println("Installing " + list[i])
-			}
-			time.Sleep(second)
-		}
-		spinner.Success()
-	})
-
-	showcase("Live Output", 2, func() {
-		pterm.Info.Println("You can use an Area to display changing output:")
-		pterm.Println()
-		area, _ := pterm.DefaultArea.WithCenter().Start()
-		for i := 0; i < 10; i++ {
-			// Render the current time as big text and swap it into the area in place.
-			str, _ := pterm.DefaultBigText.WithLetters(putils.LettersFromString(time.Now().Format("15:04:05"))).Srender()
-			area.Update(str)
-			time.Sleep(second)
-		}
-		area.Stop()
-	})
-
-	showcase("Tables", 4, func() {
-		for i := 0; i < 3; i++ {
-			pterm.Println()
-		}
-		td := [][]string{
-			{"Library", "Description"},
-			{"PTerm", "Make beautiful CLIs"},
-			{"Testza", "Programmer friendly test framework"},
-			{"Cursor", "Move the cursor around the terminal"},
-		}
-		table, _ := pterm.DefaultTable.WithHasHeader().WithData(td).Srender()
-		boxedTable, _ := pterm.DefaultTable.WithHasHeader().WithData(td).WithBoxed().Srender()
-		pterm.DefaultCenter.Println(table)
-		pterm.DefaultCenter.Println(boxedTable)
-	})
-
-	showcase("TrueColor Support", 7, func() {
-		// Fade blends every character from the start color to the end color over the string.
-		from := pterm.NewRGB(0, 255, 255)
-		to := pterm.NewRGB(255, 0, 255)
-
-		str := "If your terminal has TrueColor support, you can use RGB colors!\nYou can even fade them :)\n\nLorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
-		strs := strings.Split(str, "")
-
-		var fadeInfo string
-		for i := 0; i < len(str); i++ {
-			fadeInfo += from.Fade(0, float32(len(str)), float32(i), to).Sprint(strs[i])
-		}
-		pterm.DefaultCenter.WithCenterEachLineSeparately().Println(fadeInfo)
-	})
-
-	showcase("Fully Customizable", 2, func() {
-		for i := 0; i < 4; i++ {
-			pterm.Println()
-		}
-		text := "All printers are fully customizable!"
-		area := pterm.DefaultArea.WithCenter()
-		area.Update(pterm.DefaultBox.Sprintln(text))
-		time.Sleep(second)
-		area.Update(pterm.DefaultBox.WithTopPadding(1).Sprintln(text))
-		time.Sleep(second / 3)
-		area.Update(pterm.DefaultBox.WithTopPadding(1).WithBottomPadding(1).Sprintln(text))
-		time.Sleep(second / 3)
-		area.Update(pterm.DefaultBox.WithTopPadding(1).WithBottomPadding(1).WithLeftPadding(1).Sprintln(text))
-		time.Sleep(second / 3)
-		area.Update(pterm.DefaultBox.WithTopPadding(1).WithBottomPadding(1).WithLeftPadding(1).WithRightPadding(1).Sprintln(text))
-		time.Sleep(second / 3)
-		area.Update(pterm.DefaultBox.WithTopPadding(1).WithBottomPadding(1).WithLeftPadding(1).WithRightPadding(1).WithTitle("Some title!").WithTitleTopLeft().Sprintln(text))
-		time.Sleep(second / 3)
-		area.Update(pterm.DefaultBox.WithTopPadding(1).WithBottomPadding(1).WithLeftPadding(1).WithRightPadding(1).WithTitle("Some title!").WithTitleTopCenter().Sprintln(text))
-		time.Sleep(second / 3)
-		area.Update(pterm.DefaultBox.WithTopPadding(1).WithBottomPadding(1).WithLeftPadding(1).WithRightPadding(1).WithTitle("Some title!").WithTitleTopRight().Sprintln(text))
-		time.Sleep(second / 3)
-		area.Update(pterm.DefaultBox.WithTopPadding(1).WithBottomPadding(1).WithLeftPadding(1).WithRightPadding(1).WithTitle("Some title!").WithTitleBottomRight().Sprintln(text))
-		time.Sleep(second / 3)
-		area.Update(pterm.DefaultBox.WithTopPadding(1).WithBottomPadding(1).WithLeftPadding(1).WithRightPadding(1).WithTitle("Some title!").WithTitleBottomCenter().Sprintln(text))
-		time.Sleep(second / 3)
-		area.Update(pterm.DefaultBox.WithTopPadding(1).WithBottomPadding(1).WithLeftPadding(1).WithRightPadding(1).WithTitle("Some title!").WithTitleBottomLeft().Sprintln(text))
-		time.Sleep(second / 3)
-		area.Update(pterm.DefaultBox.WithTopPadding(1).WithBottomPadding(1).WithLeftPadding(1).WithRightPadding(1).WithBoxStyle(pterm.NewStyle(pterm.FgCyan)).Sprintln(text))
-		time.Sleep(second / 5)
-		area.Update(pterm.DefaultBox.WithTopPadding(1).WithBottomPadding(1).WithLeftPadding(1).WithRightPadding(1).WithBoxStyle(pterm.NewStyle(pterm.FgRed)).Sprintln(text))
-		time.Sleep(second / 5)
-		area.Update(pterm.DefaultBox.WithTopPadding(1).WithBottomPadding(1).WithLeftPadding(1).WithRightPadding(1).WithBoxStyle(pterm.NewStyle(pterm.FgGreen)).Sprintln(text))
-		time.Sleep(second / 5)
-		area.Update(pterm.DefaultBox.WithTopPadding(1).
-			WithBottomPadding(1).
-			WithLeftPadding(1).
-			WithRightPadding(1).
-			WithHorizontalString("═").
-			WithVerticalString("║").
-			WithBottomLeftCornerString("╗").
-			WithBottomRightCornerString("╔").
-			WithTopLeftCornerString("╝").
-			WithTopRightCornerString("╚").
-			Sprintln(text))
-		area.Stop()
-	})
-
-	showcase("Themes", 2, func() {
-		pterm.Info.Println("You can change the color theme of PTerm easily to fit your needs!\nThis is the default one:")
-		time.Sleep(second / 2)
-
-		// Print every style of the default theme, each rendered in its own style.
-		v := reflect.ValueOf(pterm.ThemeDefault)
-		typeOfS := v.Type()
-
-		if typeOfS == reflect.TypeOf(pterm.Theme{}) {
-			for i := 0; i < v.NumField(); i++ {
-				field, ok := v.Field(i).Interface().(pterm.Style)
-				if ok {
-					field.Println(typeOfS.Field(i).Name)
-				}
-				time.Sleep(second / 4)
-			}
-		}
-	})
-
-	showcase("And much more!", 3, func() {
-		for i := 0; i < 4; i++ {
-			pterm.Println()
-		}
-		box := pterm.DefaultBox.
-			WithBottomPadding(1).
-			WithTopPadding(1).
-			WithLeftPadding(3).
-			WithRightPadding(3).
-			Sprintf("Have fun exploring %s!", pterm.Cyan("PTerm"))
-		pterm.DefaultCenter.Println(box)
-	})
+	intro()
+	install()
+	data()
+	charts()
+	clean()
+	outro()
 }
 
-func setup() {
-	flag.Parse()
-	if *speedup {
-		second = time.Millisecond * 200
+// newScene starts a new scene on an empty screen. Piped output keeps every
+// scene.
+func newScene() {
+	if term.IsTerminal(int(os.Stdout.Fd())) {
+		fmt.Print("\x1b[H\x1b[2J")
 	}
 }
 
-func introScreen() {
-	ptermLogo, _ := pterm.DefaultBigText.WithLetters(
-		putils.LettersFromStringWithStyle("P", pterm.NewStyle(pterm.FgLightCyan)),
-		putils.LettersFromStringWithStyle("Term", pterm.NewStyle(pterm.FgLightMagenta))).
-		Srender()
+// frames calls draw with t running from 0 to 1 over d.
+func frames(d time.Duration, draw func(t float64)) {
+	const fps = 30
 
-	pterm.DefaultCenter.Print(ptermLogo)
+	n := int(d.Seconds() * fps)
+	for i := range n + 1 {
+		draw(float64(i) / float64(n))
+		time.Sleep(time.Second / fps)
+	}
+}
 
-	section.Println("PTDP - PTerm Demo Program")
+// ease slows an animation down towards its end.
+func ease(t float64) float64 { return 1 - (1-t)*(1-t)*(1-t) }
 
-	fmt.Println()
+func intro() {
+	area, _ := pterm.Area.WithRemoveWhenDone().Start()
 
-	pterm.Info.Println("This animation was generated with the latest version of PTerm!" +
-		"\nPTerm works on nearly every terminal and operating system." +
-		"\nIt's super easy to use!" +
-		"\nIf you want, you can customize everything :)" +
-		"\nYou can see the code of this demo in the " + pterm.LightMagenta("./_examples/demo") + " directory." +
-		"\n" +
-		"\nThis demo was updated at: " + pterm.Green(time.Now().Format("02 Jan 2006 - 15:04:05 MST")))
+	frames(3*time.Second, func(t float64) {
+		logo, _ := pterm.BigText.WithText("PTerm").WithGradientOffset(t * 2).Srender()
+		tagline := pterm.ToneMuted.Sprint("Beautiful terminal output in one line of Go")
+
+		area.Update("\n" + logo + "\n\n" + tagline)
+	})
+
+	_ = area.Stop()
+}
+
+func install() {
+	newScene()
+
+	flow, _ := pterm.Flow.WithSubtitle("3 services").Start("deploy")
+
+	step := flow.Step("Resolving dependencies")
+
+	time.Sleep(900 * time.Millisecond)
+	step.Success("Resolved 128 dependencies")
+
+	bar, _ := pterm.Progressbar.WithTotal(40).Start("Building images")
+
+	for range 40 {
+		time.Sleep(40 * time.Millisecond)
+		bar.Increment()
+	}
+
+	step = flow.Step("Running migrations")
+
+	time.Sleep(800 * time.Millisecond)
+	step.Success("Applied 4 migrations")
+
+	pterm.Callout.Warn("Heads up").Println("billing is on an older runtime and was skipped.")
+
+	flow.Step("Deploying billing").Skip("Skipped billing")
+
+	step = flow.Step("Deploying api and worker")
+
+	time.Sleep(time.Second)
+	step.Success("Deployed api and worker")
+
+	flow.Success("Live on production in 4.8s")
+	time.Sleep(1500 * time.Millisecond)
+}
+
+func data() {
+	newScene()
+	pterm.Header.WithBadge("K8S").WithSubtitle("production").Println("Cluster status")
+
+	rows := pterm.TableData{
+		{"Pod", "Status", "CPU", "Memory", "Restarts"},
+		{"api-7f9c", "running", "42%", "512 MB", "0"},
+		{"api-2b1d", "running", "38%", "498 MB", "0"},
+		{"worker-91aa", "running", "71%", "1.20 GB", "2"},
+		{"billing-4c3e", "pending", "0%", "0 MB", "0"},
+	}
+
+	tree := pterm.TreeNode{Children: []pterm.TreeNode{
+		{Text: "production", Description: "eu-central-1", Children: []pterm.TreeNode{
+			{Text: "api", Description: "2 pods"},
+			{Text: "worker", Description: "1 pod"},
+			{Text: "billing", Description: "pending"},
+		}},
+		{Text: "staging", Description: "eu-west-1", Children: []pterm.TreeNode{
+			{Text: "api", Description: "1 pod"},
+		}},
+	}}
+
+	area, _ := pterm.Area.Start()
+
+	// Rows and branches appear one at a time.
+	for i := 2; i <= len(rows); i++ {
+		table, _ := pterm.Table.WithData(rows[:i]).Srender()
+		area.Update(table)
+		time.Sleep(250 * time.Millisecond)
+	}
+
+	table, _ := pterm.Table.WithData(rows).Srender()
+
+	for i := 1; i <= 6; i++ {
+		t, _ := pterm.Tree.WithRoot(firstNodes(tree, i)).Srender()
+		area.Update(table + "\n\n" + t)
+		time.Sleep(250 * time.Millisecond)
+	}
+
+	_ = area.Stop()
+
+	time.Sleep(1500 * time.Millisecond)
+}
+
+// firstNodes returns root with only its first n nodes, counted depth first.
+func firstNodes(root pterm.TreeNode, n int) pterm.TreeNode {
+	var walk func(node pterm.TreeNode) pterm.TreeNode
+
+	walk = func(node pterm.TreeNode) pterm.TreeNode {
+		out := pterm.TreeNode{Text: node.Text, Description: node.Description}
+
+		for _, child := range node.Children {
+			if n == 0 {
+				break
+			}
+
+			n--
+
+			out.Children = append(out.Children, walk(child))
+		}
+
+		return out
+	}
+
+	return walk(root)
+}
+
+func charts() {
+	newScene()
+	pterm.Section.WithTopPadding(0).Println("Requests per service")
+
+	services := []string{"api", "worker", "billing", "search"}
+	totals := []float64{1284, 932, 611, 287}
+	cpu := []float64{12, 18, 15, 22, 30, 28, 41, 38, 52, 47, 60, 58, 71, 66, 74, 69, 80, 77, 85, 79}
+
+	area, _ := pterm.Area.Start()
+
+	frames(3*time.Second, func(t float64) {
+		bars := make(pterm.Bars, len(services))
+		for i, name := range services {
+			bars[i] = pterm.Bar{Label: name, Value: math.Round(totals[i] * ease(t))}
+		}
+
+		chart, _ := pterm.BarChart.WithBars(bars).WithRange(0, 1300).Srender()
+
+		seen := max(1, int(t*float64(len(cpu))))
+		spark, _ := pterm.Sparkline.
+			WithValues(cpu[:seen]...).
+			WithRange(0, 100).
+			WithThresholds(pterm.LoadThresholds()...).
+			WithLabel("cpu").
+			Srender()
+
+		meters, _ := pterm.Meter.WithItems(
+			pterm.MeterItem{Label: "cpu", Value: 0.79 * ease(t)},
+			pterm.MeterItem{Label: "memory", Value: 0.64 * ease(t)},
+			pterm.MeterItem{Label: "disk", Value: 0.93 * ease(t)},
+		).Srender()
+
+		area.Update(chart + "\n\n" + spark + "\n\n" + meters)
+	})
+
+	_ = area.Stop()
+
+	time.Sleep(1500 * time.Millisecond)
+}
+
+func clean() {
+	newScene()
+
+	// The keys are scripted, so the trailer plays on its own. A real
+	// program leaves out WithInput and reads the keyboard.
+	keys, typist := io.Pipe()
+
+	go func() {
+		for _, key := range []string{"\x1b[B", " ", "\x1b[B", "\x1b[B", " ", "\x1b[B", " ", "\r"} {
+			time.Sleep(450 * time.Millisecond)
+
+			_, _ = typist.Write([]byte(key))
+		}
+	}()
+
+	selected, _ := pterm.Multiselect.WithInput(keys).WithItems([]pterm.Option{
+		{Label: "npm cache", Description: "~/.npm/_cacache", Detail: "1.2 GB", Group: "Package managers", Selected: true},
+		{Label: "go build cache", Description: "~/.cache/go-build", Detail: "5.8 GB", Group: "Package managers"},
+		{Label: "pip cache", Description: "~/.cache/pip", Detail: "87 MB", Group: "Package managers"},
+		{Label: "Docker images", Description: "dangling and unused", Detail: "18.3 GB", Group: "Containers"},
+		{Label: "Docker volumes", Description: "may hold databases", Detail: "4.7 GB", Group: "Containers", Disabled: true},
+	}).Show("What should be cleaned?")
+
+	spinner, _ := pterm.Spinner.Start(fmt.Sprintf("Cleaning %d caches", len(selected)))
+
+	time.Sleep(1500 * time.Millisecond)
+	spinner.Success("Freed 24.1 GB")
+
+	time.Sleep(1500 * time.Millisecond)
+}
+
+func outro() {
+	newScene()
+
 	pterm.Println()
-	introSpinner, _ := pterm.DefaultSpinner.WithShowTimer(false).WithRemoveWhenDone(true).Start("Waiting for 15 seconds...")
-	time.Sleep(second)
-	for i := 14; i > 0; i-- {
-		if i > 1 {
-			introSpinner.UpdateText("Waiting for " + strconv.Itoa(i) + " seconds...")
-		} else {
-			introSpinner.UpdateText("Waiting for " + strconv.Itoa(i) + " second...")
-		}
-		time.Sleep(second)
-	}
-	introSpinner.Stop()
-}
-
-func clear() {
-	print("\033[H\033[2J")
-}
-
-func showcase(title string, seconds int, content func()) {
-	section.Println(title)
+	pterm.Box.
+		WithTitle("pterm").
+		WithHorizontalPadding(2).
+		Println(pterm.ToneAccent.Sprint("go get github.com/pterm/pterm"))
 	pterm.Println()
-	time.Sleep(second / 2)
-	content()
-	time.Sleep(second * time.Duration(seconds))
-	print("\033[H\033[2J")
+	pterm.Success.Println("Themes, glyphs and widths adapt to every terminal")
+	pterm.Info.Println("Read the docs at " + pterm.ToneInfo.Sprint("https://pterm.sh"))
+
+	time.Sleep(3 * time.Second)
 }

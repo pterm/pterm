@@ -1,62 +1,53 @@
 package pterm_test
 
-// Behavioral tests for SectionPrinter.
-//
-// Builder methods, Print*/Sprint* delegation and the global styling invariants
-// are covered generically in contract_test.go. This file verifies the actual
-// layout: indent characters per level, padding newlines and styling scope.
-
 import (
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 
 	"github.com/pterm/pterm"
 )
 
-func TestSectionPrinterDefaultLayout(t *testing.T) {
-	// Level 1, one line of top and bottom padding, "»" indent character.
-	assert.Equal(t, "\n» Title\n", stripANSI(pterm.DefaultSection.Sprint("Title")))
+func TestSectionSnapshots(t *testing.T) {
+	snap(t, "Default", func() string { return pterm.Section.Sprint("Installation") })
+	snap(t, "Level2", func() string { return pterm.Section.WithLevel(2).Sprint("Runtime") })
+	snap(t, "Level3", func() string { return pterm.Section.WithLevel(3).Sprint("Indirect") })
+	snap(t, "Prefix", func() string {
+		return pterm.Section.WithPrefix("#").WithLevel(2).WithBottomPadding(1).Sprint("Development")
+	})
 }
 
-func TestSectionPrinterLevelRepeatsIndentCharacter(t *testing.T) {
-	assert.Equal(t, "\n» Title\n", stripANSI(pterm.DefaultSection.WithLevel(1).Sprint("Title")))
-	assert.Equal(t, "\n»» Title\n", stripANSI(pterm.DefaultSection.WithLevel(2).Sprint("Title")))
-	assert.Equal(t, "\n»»» Title\n", stripANSI(pterm.DefaultSection.WithLevel(3).Sprint("Title")))
+func TestSectionPadding(t *testing.T) {
+	setup(t)
+
+	out := capture(t, func() {
+		pterm.Section.Println("One")
+		pterm.Section.WithTopPadding(0).WithBottomPadding(2).Println("Two")
+	})
+	if out != "\nOne\nTwo\n\n\n" {
+		t.Errorf("output = %q", out)
+	}
 }
 
-func TestSectionPrinterLevelZeroOmitsIndent(t *testing.T) {
-	// Level 0 renders neither indent characters nor the separating space.
-	assert.Equal(t, "\nTitle\n", stripANSI(pterm.DefaultSection.WithLevel(0).Sprint("Title")))
+func TestSectionDeepLevelUsesLastStyle(t *testing.T) {
+	setup(t)
+
+	deep := pterm.Section.WithLevel(9).WithTopPadding(0).Sprint("x")
+	if want := pterm.Section.WithLevel(3).WithTopPadding(0).Sprint("x"); deep != want {
+		t.Errorf("level 9 = %q, want the level 3 look %q", deep, want)
+	}
+
+	if got := pterm.Section.WithLevel(0).WithTopPadding(0).Sprint("x"); got != pterm.Section.WithTopPadding(0).Sprint("x") {
+		t.Errorf("level 0 = %q, want level 1", got)
+	}
 }
 
-func TestSectionPrinterCustomIndentCharacter(t *testing.T) {
-	p := pterm.DefaultSection.WithIndentCharacter("=>").WithLevel(2)
+func TestSectionWrapsUnderPrefix(t *testing.T) {
+	setup(t)
+	t.Setenv("COLUMNS", "20")
 
-	assert.Equal(t, "\n=>=> Title\n", stripANSI(p.Sprint("Title")))
-}
-
-func TestSectionPrinterPaddingAddsExactNewlines(t *testing.T) {
-	p := pterm.DefaultSection.WithTopPadding(3).WithBottomPadding(2)
-
-	assert.Equal(t, "\n\n\n» Title\n\n", stripANSI(p.Sprint("Title")))
-}
-
-func TestSectionPrinterZeroPadding(t *testing.T) {
-	p := pterm.DefaultSection.WithTopPadding(0).WithBottomPadding(0)
-
-	assert.Equal(t, "» Title", stripANSI(p.Sprint("Title")))
-}
-
-func TestSectionPrinterStylesOnlyTheTitle(t *testing.T) {
-	// The indent characters and the title are wrapped in the section style
-	// (Bold=1, FgLightMagenta=95); the padding newlines stay unstyled.
-	assert.Equal(t, "\n\x1b[1;95m»\x1b[0m \x1b[1;95mT\x1b[0m\n", pterm.DefaultSection.Sprint("T"))
-}
-
-func TestSectionPrinterZeroValueRendersBareText(t *testing.T) {
-	p := pterm.SectionPrinter{}
-
-	// No padding, level 0, no style: the text passes through unchanged.
-	assert.Equal(t, "Title", p.Sprint("Title"))
+	out := capture(t, func() {
+		pterm.Section.WithPrefix("#").WithTopPadding(0).Println("a title that needs two lines")
+	})
+	if out != "# a title that needs\n  two lines\n" {
+		t.Errorf("output = %q", out)
+	}
 }

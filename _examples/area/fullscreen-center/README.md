@@ -1,6 +1,6 @@
 # area/fullscreen-center
 
-![Animation](https://vhs.charm.sh/vhs-Gi75JoygwXMXaFkJLn4z8.gif)
+![Animation](animation.gif)
 
 ```go
 package main
@@ -12,17 +12,16 @@ import (
 )
 
 func main() {
-	// Fullscreen takes over the whole terminal; WithCenter centers the
-	// content within it.
-	area, _ := pterm.DefaultArea.WithFullscreen().WithCenter().Start()
+	// Fullscreen fills the terminal height and Center puts the content in
+	// the middle of it, which suits a countdown or a splash screen.
+	area, _ := pterm.Area.WithFullscreen().WithCenter().WithRemoveWhenDone().Start()
 
-	// Each Update redraws the area in place instead of appending new lines.
-	for i := range 5 {
-		area.Update(pterm.Sprintf("Current count: %d\nAreas can update their content dynamically!", i))
+	for i := 5; i > 0; i-- {
+		area.Update(pterm.TonePrimary.Bold().Sprintf("Launching in %d", i))
 		time.Sleep(time.Second)
 	}
 
-	// Stop clears the area and restores the terminal.
 	area.Stop()
+	pterm.Success.Println("Launched")
 }
 ```

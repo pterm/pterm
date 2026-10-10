@@ -1,6 +1,6 @@
 ### slog/demo
 
-![Animation](https://vhs.charm.sh/vhs-5McCxcQOHt11nNBW1ZHpgP.gif)
+![Animation](demo/animation.gif)
 
 <details>
 
@@ -16,22 +16,18 @@ import (
 )
 
 func main() {
-	// PTerm's logger can act as a handler for the standard library's slog
-	// package, so existing slog code gets styled output for free.
-	handler := pterm.NewSlogHandler(&pterm.DefaultLogger)
+	// pterm's logger works as a handler for log/slog, so code that already
+	// logs with slog gets the same look.
+	handler := pterm.NewSlogHandler(pterm.Logger.WithLevel(pterm.LogLevelDebug))
 	logger := slog.New(handler)
 
-	// The PTerm logger decides which levels are shown. Its default level is
-	// Info, so this debug message is dropped.
-	logger.Debug("This is a debug message that won't show")
+	logger.Debug("Connecting", "host", "db.internal", "port", 5432)
+	logger.Info("Connected", "pool", 10)
 
-	// Lowering the level on the PTerm logger takes effect immediately.
-	pterm.DefaultLogger.Level = pterm.LogLevelDebug
-
-	logger.Debug("This is a debug message", "changedLevel", true)
-	logger.Info("This is an info message")
-	logger.Warn("This is a warning message")
-	logger.Error("This is an error message")
+	// Groups turn into dotted keys.
+	requests := logger.WithGroup("request")
+	requests.Warn("Slow query", "table", "orders", "ms", 830)
+	requests.Error("Query failed", "table", "users", "error", "deadlock detected")
 }
 ```
 

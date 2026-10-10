@@ -3,436 +3,279 @@ package pterm_test
 import (
 	"bytes"
 	"encoding/json"
-	"log/slog"
-	"os"
-	"os/exec"
+	"errors"
 	"strings"
+	"sync"
 	"testing"
 	"time"
-	"unicode/utf8"
-
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 
 	"github.com/pterm/pterm"
+	"github.com/pterm/pterm/internal/screen"
 )
 
-// newBufferedLogger returns a logger writing into the returned buffer, with
-// timestamps disabled so output is deterministic.
-func newBufferedLogger() (*pterm.Logger, *bytes.Buffer) {
-	buf := new(bytes.Buffer)
-	logger := pterm.DefaultLogger.WithWriter(buf).WithTime(false)
+// sizedBuffer is a buffer with a known width that is not a terminal, so
+// log lines keep their colors and wrap like on a terminal of that width.
+type sizedBuffer struct {
+	bytes.Buffer
 
-	return logger, buf
+	width int
 }
 
-// Level filtering: messages below the configured level must produce no
-// output at all, messages at or above it must be printed.
+func (b *sizedBuffer) IsTerminal() bool          { return false }
+func (b *sizedBuffer) Size() (width, height int) { return b.width, 24 }
 
-func TestLoggerLevelFiltering(t *testing.T) {
-	methods := []struct {
-		name  string
-		level pterm.LogLevel
-		call  func(l *pterm.Logger, msg string)
-	}{
-		{"Trace", pterm.LogLevelTrace, func(l *pterm.Logger, msg string) { l.Trace(msg) }},
-		{"Debug", pterm.LogLevelDebug, func(l *pterm.Logger, msg string) { l.Debug(msg) }},
-		{"Info", pterm.LogLevelInfo, func(l *pterm.Logger, msg string) { l.Info(msg) }},
-		{"Warn", pterm.LogLevelWarn, func(l *pterm.Logger, msg string) { l.Warn(msg) }},
-		{"Error", pterm.LogLevelError, func(l *pterm.Logger, msg string) { l.Error(msg) }},
-		{"Print", pterm.LogLevelPrint, func(l *pterm.Logger, msg string) { l.Print(msg) }},
+// logTo returns what fn logs with a logger that writes to a buffer of the
+// given width.
+func logTo(width int, fn func(l *pterm.LoggerPrinter)) string {
+	buf := &sizedBuffer{width: width}
+	fn(pterm.Logger.WithWriter(buf).WithLevel(pterm.LogLevelTrace))
+
+	return strings.TrimSuffix(buf.String(), "\n")
+}
+
+func fixClock(t *testing.T) {
+	t.Helper()
+
+	restore := pterm.SetLogClock(func() time.Time { return time.Date(2026, 10, 10, 14, 3, 9, 0, time.UTC) })
+	t.Cleanup(restore)
+}
+
+func TestLoggerSnapshots(t *testing.T) {
+	fixClock(t)
+
+	levels := func(l *pterm.LoggerPrinter) {
+		l.Trace("Reading config", l.Args("path", "./config.yaml"))
+		l.Debug("Config loaded", l.Args("workers", 4))
+		l.Info("Server started", l.Args("addr", ":8080", "env", "production"))
+		l.Warn("Slow request", l.Args("path", "/api/search", "took", 1240*time.Millisecond))
+		l.Error("Payment failed", l.Args("order", 1042, "error", errors.New("card declined")))
+		l.Print("Plain line", l.Args("n", 1))
 	}
 
-	configuredLevels := []pterm.LogLevel{
-		pterm.LogLevelDisabled,
-		pterm.LogLevelTrace,
-		pterm.LogLevelDebug,
-		pterm.LogLevelInfo,
-		pterm.LogLevelWarn,
-		pterm.LogLevelError,
-		pterm.LogLevelFatal,
-		pterm.LogLevelPrint,
+	snap(t, "Levels", func() string { return logTo(80, levels) })
+	snap(t, "Time", func() string {
+		return logTo(80, func(l *pterm.LoggerPrinter) { l.WithTime().Info("Job queued", l.Args("job", "nightly")) })
+	})
+	snap(t, "Block", func() string {
+		return logTo(60, func(l *pterm.LoggerPrinter) {
+			l.Info("Retrying the upload of the nightly backup to the secondary region",
+				l.Args("bucket", "s3://backups", "reason", "connection reset", "trace", "line one\nline two"))
+		})
+	})
+	snap(t, "KeyStyles", func() string {
+		return logTo(80, func(l *pterm.LoggerPrinter) {
+			l.AppendKeyStyle("user", pterm.ToneAccent.Style()).Info("Signed in", l.Args("user", "ada", "err", "none"))
+		})
+	})
+}
+
+func TestLoggerPlainLines(t *testing.T) {
+	setup(t)
+
+	out := capture(t, func() {
+		l := pterm.Logger.WithLevel(pterm.LogLevelTrace)
+		l.Trace("trace")
+		l.Debug("debug")
+		l.Info("info", l.Args("quoted", "two words", "empty", "", "eq", "a=b"))
+		l.Warn("warn")
+		l.Error("error")
+		l.Print("print")
+	})
+
+	want := `◦ trace trace
+◦ debug debug
+● info  info quoted="two words" empty="" eq="a=b"
+▲ warn  warn
+✖ error error
+•       print
+`
+	if out != want {
+		t.Errorf("output:\n%s\nwant:\n%s", out, want)
+	}
+}
+
+func TestLoggerLevels(t *testing.T) {
+	setup(t)
+
+	out := capture(t, func() {
+		pterm.Logger.Trace("hidden")
+		pterm.Logger.Debug("hidden")
+		pterm.Logger.Info("shown")
+		pterm.Logger.WithLevel(pterm.LogLevelError).Warn("hidden")
+		pterm.Logger.WithLevel(pterm.LogLevelDisabled).Print("hidden")
+		pterm.Logger.WithLevel(pterm.LogLevelError).Print("print shows")
+	})
+
+	if out != "● info  shown\n•       print shows\n" {
+		t.Errorf("output = %q", out)
 	}
 
-	for _, configured := range configuredLevels {
-		for _, method := range methods {
-			t.Run(configured.String()+"/"+method.name, func(t *testing.T) {
-				logger, buf := newBufferedLogger()
-				method.call(logger.WithLevel(configured), "the message")
+	if pterm.Logger.CanPrint(pterm.LogLevelDebug) || !pterm.Logger.CanPrint(pterm.LogLevelWarn) {
+		t.Error("CanPrint does not follow the level")
+	}
+}
 
-				shouldPrint := configured != pterm.LogLevelDisabled && configured <= method.level
-				if shouldPrint {
-					out := stripANSI(buf.String())
-					assert.Contains(t, out, "the message")
-					assert.Contains(t, out, method.level.String(), "the printed line must carry the level name")
-				} else {
-					assert.Empty(t, buf.String(), "%s must print nothing at level %s", method.name, configured)
-				}
-			})
+func TestLoggerWritesToErrorOutput(t *testing.T) {
+	setup(t)
+
+	var stdout, stderr bytes.Buffer
+
+	pterm.SetDefaultOutput(&stdout)
+	pterm.SetErrorOutput(&stderr)
+
+	pterm.Logger.Info("to stderr")
+
+	if stdout.Len() != 0 || !strings.Contains(stderr.String(), "to stderr") {
+		t.Errorf("stdout = %q, stderr = %q", stdout.String(), stderr.String())
+	}
+}
+
+func TestLoggerArgs(t *testing.T) {
+	args := pterm.Logger.Args("a", 1, "orphan")
+	if len(args) != 2 || args[1].Key != pterm.ErrKeyWithoutValue || args[1].Value != "orphan" {
+		t.Errorf("args = %v", args)
+	}
+
+	m := pterm.Logger.ArgsFromMap(map[string]any{"b": 2, "a": 1, "c": 3})
+	if m[0].Key != "a" || m[1].Key != "b" || m[2].Key != "c" {
+		t.Errorf("map args not sorted: %v", m)
+	}
+}
+
+func TestLoggerSortArguments(t *testing.T) {
+	out := logTo(0, func(l *pterm.LoggerPrinter) {
+		l = l.WithSortArguments()
+		l.Info("sorted", l.Args("z", 1, "a", 2))
+	})
+
+	if !strings.HasSuffix(pterm.RemoveColorFromString(out), "sorted a=2 z=1") {
+		t.Errorf("output = %q", out)
+	}
+}
+
+func TestLoggerUnknownWidthStaysOnOneLine(t *testing.T) {
+	out := logTo(0, func(l *pterm.LoggerPrinter) {
+		l.Info(strings.Repeat("long ", 40), l.Args("value", "a\nb"))
+	})
+
+	if strings.Contains(out, "\n") || !strings.Contains(out, `value="a\nb"`) {
+		t.Errorf("output = %q", out)
+	}
+}
+
+func TestLoggerJSON(t *testing.T) {
+	setup(t)
+	fixClock(t)
+
+	var buf bytes.Buffer
+
+	l := pterm.Logger.WithWriter(&buf).WithFormatter(pterm.LogFormatterJSON).WithTimeFormat(time.RFC3339)
+	l.Warn("Slow request", l.Args("ms", 1240, "error", errors.New("timeout")))
+
+	var got map[string]any
+	if err := json.Unmarshal(buf.Bytes(), &got); err != nil {
+		t.Fatalf("invalid JSON %q: %v", buf.String(), err)
+	}
+
+	want := map[string]any{"level": "WARN", "msg": "Slow request", "timestamp": "2026-10-10T14:03:09Z", "ms": 1240.0, "error": "timeout"}
+	for k, v := range want {
+		if got[k] != v {
+			t.Errorf("%s = %v, want %v", k, got[k], v)
 		}
 	}
 }
 
-func TestLoggerCanPrint(t *testing.T) {
-	assert.True(t, pterm.Logger{Level: pterm.LogLevelInfo}.CanPrint(pterm.LogLevelInfo))
-	assert.True(t, pterm.Logger{Level: pterm.LogLevelInfo}.CanPrint(pterm.LogLevelError))
-	assert.False(t, pterm.Logger{Level: pterm.LogLevelInfo}.CanPrint(pterm.LogLevelDebug))
-	assert.False(t, pterm.Logger{Level: pterm.LogLevelDisabled}.CanPrint(pterm.LogLevelFatal), "a disabled logger never prints")
-}
+func TestLoggerCaller(t *testing.T) {
+	setup(t)
 
-func TestLogLevelString(t *testing.T) {
-	expected := map[pterm.LogLevel]string{
-		pterm.LogLevelDisabled: "",
-		pterm.LogLevelTrace:    "TRACE",
-		pterm.LogLevelDebug:    "DEBUG",
-		pterm.LogLevelInfo:     "INFO",
-		pterm.LogLevelWarn:     "WARN",
-		pterm.LogLevelError:    "ERROR",
-		pterm.LogLevelFatal:    "FATAL",
-		pterm.LogLevelPrint:    "PRINT",
-	}
-
-	for level, name := range expected {
-		assert.Equal(t, name, level.String())
-	}
-
-	assert.Equal(t, "Unknown", pterm.LogLevel(255).String())
-}
-
-// Args conversion.
-
-func TestLoggerArgs(t *testing.T) {
-	logger := pterm.DefaultLogger
-
-	t.Run("pairs", func(t *testing.T) {
-		args := logger.Args("k1", "v1", "k2", 2)
-		assert.Equal(t, []pterm.LoggerArgument{
-			{Key: "k1", Value: "v1"},
-			{Key: "k2", Value: 2},
-		}, args)
+	out := capture(t, func() {
+		pterm.Logger.WithCaller().Info("here")
 	})
 
-	t.Run("no args", func(t *testing.T) {
-		assert.Empty(t, logger.Args())
+	if !strings.Contains(out, "caller=pterm/logger_test.go:") && !strings.Contains(out, "/logger_test.go:") {
+		t.Errorf("output = %q", out)
+	}
+
+	wrapped := func(l *pterm.LoggerPrinter) { l.Info("wrapped") }
+
+	out = capture(t, func() {
+		wrapped(pterm.Logger.WithCaller().WithCallerOffset(1))
 	})
 
-	t.Run("odd number of args marks the dangling value", func(t *testing.T) {
-		assert.Equal(t, []pterm.LoggerArgument{
-			{Key: pterm.ErrKeyWithoutValue, Value: "lonely"},
-		}, logger.Args("lonely"))
+	if !strings.Contains(out, "logger_test.go:") {
+		t.Errorf("output with offset = %q", out)
+	}
+}
 
-		assert.Equal(t, []pterm.LoggerArgument{
-			{Key: "k", Value: "v"},
-			{Key: pterm.ErrKeyWithoutValue, Value: "extra"},
-		}, logger.Args("k", "v", "extra"))
+func TestLoggerFatalExits(t *testing.T) {
+	setup(t)
+
+	code := -1
+	exit := screen.Exit
+	screen.Exit = func(c int) { code = c }
+
+	defer func() { screen.Exit = exit }()
+
+	out := capture(t, func() { pterm.Logger.Fatal("boom", pterm.Logger.Args("code", 7)) })
+
+	if out != "✖ fatal boom code=7\n" || code != 1 {
+		t.Errorf("output = %q, exit code = %d", out, code)
+	}
+}
+
+func TestLoggerLabels(t *testing.T) {
+	setup(t)
+
+	out := capture(t, func() {
+		pterm.Logger.WithLabel(pterm.LogLevelInfo, pterm.LevelLabel{Word: "note", Tone: pterm.ToneAccent}).Info("custom")
 	})
-}
 
-func TestLoggerArgsFromMap(t *testing.T) {
-	args := pterm.DefaultLogger.ArgsFromMap(map[string]any{"a": 1, "b": "x"})
-
-	asMap := make(map[string]any, len(args))
-	for _, arg := range args {
-		asMap[arg.Key] = arg.Value
+	if out != "● note  custom\n" {
+		t.Errorf("output = %q", out)
 	}
 
-	assert.Equal(t, map[string]any{"a": 1, "b": "x"}, asMap)
-}
-
-func TestLoggerWithSortArguments(t *testing.T) {
-	p := pterm.Logger{}
-	p2 := p.WithSortArguments()
-
-	assert.True(t, p2.SortArguments)
-	assert.False(t, p.SortArguments)
-}
-
-// Colorful (text) formatter.
-
-func TestLoggerColorfulInlineFormat(t *testing.T) {
-	logger, buf := newBufferedLogger()
-
-	logger.Info("service started", logger.Args("port", 8080, "env", "prod"))
-
-	// The level is padded to a fixed width so messages align across levels.
-	assert.Equal(t, "INFO  service started port=8080 env=prod\n", stripANSI(buf.String()))
-
-	buf.Reset()
-	logger.Error("boom")
-	assert.Equal(t, "ERROR boom\n", stripANSI(buf.String()))
-}
-
-func TestLoggerQuotesValuesWithSpaces(t *testing.T) {
-	logger, buf := newBufferedLogger()
-
-	logger.Info("msg", logger.Args("key", "two words", "plain", "word"))
-
-	assert.Equal(t, `INFO  msg key="two words" plain=word`+"\n", stripANSI(buf.String()))
-}
-
-func TestLoggerWithTimeAndFormat(t *testing.T) {
-	buf := new(bytes.Buffer)
-	logger := pterm.DefaultLogger.WithWriter(buf).WithTime(true).WithTimeFormat("2006")
-
-	logger.Info("timed")
-
-	assert.Equal(t, time.Now().Format("2006")+" INFO  timed\n", stripANSI(buf.String()))
-
-	buf.Reset()
-	logger.WithTime(false).Info("untimed")
-	assert.Equal(t, "INFO  untimed\n", stripANSI(buf.String()))
-}
-
-func TestLoggerWithCallerAddsCallerArg(t *testing.T) {
-	logger, buf := newBufferedLogger()
-
-	logger.WithCaller().Info("who called")
-
-	out := stripANSI(buf.String())
-	assert.Contains(t, out, "caller=")
-	assert.Contains(t, out, "logger_test.go:", "the caller must point at this test file")
-}
-
-// A multiline argument value must force block rendering with the tree rail,
-// and continuation lines must align under the start of the value.
-func TestLoggerMultilineValueRendersAsBlock(t *testing.T) {
-	logger, buf := newBufferedLogger()
-
-	logger.Info("msg", logger.Args("stack", "a\nb"))
-
-	lines := strings.Split(strings.TrimSuffix(stripANSI(buf.String()), "\n"), "\n")
-	require.Len(t, lines, 3)
-	assert.Equal(t, "INFO  msg", lines[0])
-	assert.Equal(t, "      └ stack=a", lines[1])
-	assert.Equal(t, strings.Repeat(" ", 14)+"b", lines[2], "the continuation line must align under the value start")
-}
-
-// WithMaxWidth: overflowing content wraps into a block where every line stays
-// within the width and arguments hang off a tree rail. (The exact wrapped
-// layout is locked by snapshot tests; this verifies the structure.)
-func TestLoggerMaxWidthWrapsOverflowingLines(t *testing.T) {
-	const width = 30
-
-	logger, buf := newBufferedLogger()
-	logger = logger.WithMaxWidth(width)
-
-	logger.Info("this message is far too long to fit into thirty columns",
-		logger.Args("first", "value", "second", "value"))
-
-	out := strings.TrimSuffix(stripANSI(buf.String()), "\n")
-	lines := strings.Split(out, "\n")
-	require.Greater(t, len(lines), 2, "overflowing content must wrap into multiple lines")
-
-	for _, line := range lines {
-		assert.LessOrEqual(t, utf8.RuneCountInString(line), width, "line %q exceeds the max width", line)
+	if _, ok := pterm.Logger.Labels[pterm.LogLevelInfo]; ok {
+		t.Error("WithLabel changed the package logger")
 	}
-
-	assert.Contains(t, out, "├ first=", "all but the last argument hang off a branch connector")
-	assert.Contains(t, out, "└ second=", "the last argument hangs off the end connector")
 }
 
-func TestLoggerShortLineStaysInline(t *testing.T) {
-	logger, buf := newBufferedLogger()
-	logger = logger.WithMaxWidth(80)
+func TestLoggerAppendKeyStyleDoesNotShare(t *testing.T) {
+	_ = pterm.Logger.AppendKeyStyle("user", pterm.ToneAccent.Style())
 
-	logger.Info("short", logger.Args("k", "v"))
-
-	assert.Equal(t, "INFO  short k=v\n", stripANSI(buf.String()))
-}
-
-// Raw output mode keeps every log on a single line so it stays grep-friendly.
-func TestLoggerRawOutputStaysOnSingleLine(t *testing.T) {
-	restoreGlobalStyling(t)
-	pterm.DisableStyling()
-
-	logger, buf := newBufferedLogger()
-	logger = logger.WithMaxWidth(20)
-
-	logger.Info("this would normally wrap into a block", logger.Args("key", "value with spaces"))
-
-	out := buf.String()
-	assert.NotContains(t, out, "\x1b", "raw output must not contain escape codes")
-	assert.Equal(t, 1, strings.Count(out, "\n"), "raw output must stay on one line")
-	assert.Contains(t, out, `key="value with spaces"`)
-}
-
-func TestLoggerAppendKeyStyle(t *testing.T) {
-	buf := new(bytes.Buffer)
-	logger := pterm.Logger{
-		Formatter: pterm.LogFormatterColorful,
-		Writer:    buf,
-		Level:     pterm.LogLevelInfo,
-		KeyStyles: map[string]pterm.Style{},
+	if _, ok := pterm.Logger.KeyStyles["user"]; ok {
+		t.Error("AppendKeyStyle changed the package logger")
 	}
-
-	logger.AppendKeyStyle("special", *pterm.NewStyle(pterm.FgMagenta)).Info("msg", logger.Args("special", "v"))
-
-	assert.Contains(t, buf.String(), "\x1b[35mspecial\x1b[0m", "the key must be rendered with its configured style")
 }
 
-// JSON formatter.
+func TestLoggerAboveLivePrinters(t *testing.T) {
+	term := setup(t)
 
-func TestLoggerJSONFormat(t *testing.T) {
-	logger, buf := newBufferedLogger()
-	logger = logger.WithFormatter(pterm.LogFormatterJSON)
+	bar, _ := quietBar.WithTotal(2).Start("Working")
 
-	logger.Warn("something odd", logger.Args("code", 42, "detail", "disk full"))
+	pterm.Logger.Info("step", pterm.Logger.Args("n", 1))
+	bar.Add(2)
 
-	var m map[string]any
-
-	require.NoError(t, json.Unmarshal(buf.Bytes(), &m), "JSON output must parse")
-	assert.Equal(t, "WARN", m["level"])
-	assert.Equal(t, "something odd", m["msg"])
-	assert.Equal(t, float64(42), m["code"])
-	assert.Equal(t, "disk full", m["detail"])
-
-	timestamp, ok := m["timestamp"].(string)
-	require.True(t, ok, "timestamp must be present")
-
-	_, err := time.Parse(logger.TimeFormat, timestamp)
-	assert.NoError(t, err, "timestamp must follow the configured TimeFormat")
-}
-
-func TestLoggerJSONCaller(t *testing.T) {
-	logger, buf := newBufferedLogger()
-
-	logger.WithFormatter(pterm.LogFormatterJSON).WithCaller().Error("with caller")
-
-	var m map[string]any
-
-	require.NoError(t, json.Unmarshal(buf.Bytes(), &m))
-
-	caller, ok := m["caller"].(string)
-	require.True(t, ok, "caller key must be present")
-	assert.Contains(t, caller, "logger_test.go:")
-}
-
-// Fatal handling. Fatal calls os.Exit(1) after printing, so the exiting path
-// runs in a subprocess; the non-exiting path (disabled logger) runs inline.
-
-func TestLoggerFatalOnDisabledLoggerDoesNotExitOrPrint(t *testing.T) {
-	logger, buf := newBufferedLogger()
-
-	// If this exited, the whole test binary would die here.
-	logger.WithLevel(pterm.LogLevelDisabled).Fatal("must not be printed")
-
-	assert.Empty(t, buf.String())
-}
-
-func TestLoggerFatalExitsWithCode1(t *testing.T) {
-	if os.Getenv("PTERM_TEST_LOGGER_FATAL") == "1" {
-		pterm.DefaultLogger.WithTime(false).WithWriter(os.Stderr).Fatal("fatal crash")
-		return // unreachable: Fatal exits the process
+	if got, want := term.Screen(), "● info  step n=1\n✔ Working 2/2"; got != want {
+		t.Errorf("screen:\n%s\nwant:\n%s", got, want)
 	}
-
-	//nolint:gosec // re-runs this test binary to observe the os.Exit.
-	cmd := exec.Command(os.Args[0], "-test.run", "^TestLoggerFatalExitsWithCode1$")
-
-	cmd.Env = append(os.Environ(), "PTERM_TEST_LOGGER_FATAL=1")
-
-	out, err := cmd.CombinedOutput()
-
-	var exitErr *exec.ExitError
-
-	require.ErrorAs(t, err, &exitErr, "the subprocess must exit non-zero")
-	assert.Equal(t, 1, exitErr.ExitCode())
-	assert.Contains(t, string(out), "FATAL")
-	assert.Contains(t, string(out), "fatal crash")
 }
 
-// slog integration: pterm as a slog backend.
+func TestLoggerConcurrent(t *testing.T) {
+	term := setup(t)
 
-func TestSlogHandlerEnabledHonorsLoggerLevel(t *testing.T) {
-	logger, _ := newBufferedLogger()
-	handler := pterm.NewSlogHandler(logger.WithLevel(pterm.LogLevelWarn))
+	var wg sync.WaitGroup
 
-	assert.False(t, handler.Enabled(t.Context(), slog.LevelDebug))
-	assert.False(t, handler.Enabled(t.Context(), slog.LevelInfo))
-	assert.True(t, handler.Enabled(t.Context(), slog.LevelWarn))
-	assert.True(t, handler.Enabled(t.Context(), slog.LevelError))
-}
-
-func TestSlogHandlerRoutesRecordsThroughTheLogger(t *testing.T) {
-	logger, buf := newBufferedLogger()
-	slogger := slog.New(pterm.NewSlogHandler(logger.WithFormatter(pterm.LogFormatterJSON).WithLevel(pterm.LogLevelDebug)))
-
-	levels := map[string]func(msg string, args ...any){
-		"DEBUG": slogger.Debug,
-		"INFO":  slogger.Info,
-		"WARN":  slogger.Warn,
-		"ERROR": slogger.Error,
-	}
-
-	for levelName, log := range levels {
-		t.Run(levelName, func(t *testing.T) {
-			buf.Reset()
-			log("slog message", "key", "value", "answer", 42)
-
-			var m map[string]any
-
-			require.NoError(t, json.Unmarshal(buf.Bytes(), &m))
-			assert.Equal(t, levelName, m["level"])
-			assert.Equal(t, "slog message", m["msg"])
-			assert.Equal(t, "value", m["key"], "slog attrs must flow through as logger args")
-			assert.Equal(t, float64(42), m["answer"])
+	for i := range 8 {
+		wg.Go(func() {
+			for range 25 {
+				pterm.Logger.Info("tick", pterm.Logger.Args("worker", i))
+			}
 		})
 	}
-}
 
-func TestSlogHandlerFiltersBelowLoggerLevel(t *testing.T) {
-	logger, buf := newBufferedLogger()
-	slogger := slog.New(pterm.NewSlogHandler(logger.WithLevel(pterm.LogLevelInfo)))
+	wg.Wait()
 
-	slogger.Debug("hidden")
-	assert.Empty(t, buf.String(), "records below the logger level must be dropped")
-
-	slogger.Info("visible")
-	assert.Contains(t, stripANSI(buf.String()), "visible")
-}
-
-func TestSlogHandlerWithAttrs(t *testing.T) {
-	logger, buf := newBufferedLogger()
-	slogger := slog.New(pterm.NewSlogHandler(logger.WithFormatter(pterm.LogFormatterJSON)))
-
-	slogger.With("request_id", "abc123").Info("handled")
-
-	var m map[string]any
-
-	require.NoError(t, json.Unmarshal(buf.Bytes(), &m))
-	assert.Equal(t, "abc123", m["request_id"], "attrs bound via With must be attached to every record")
-}
-
-func TestSlogHandlerWithGroupFlattensAttrs(t *testing.T) {
-	logger, buf := newBufferedLogger()
-	slogger := slog.New(pterm.NewSlogHandler(logger.WithFormatter(pterm.LogFormatterJSON)))
-
-	// Groups are not supported by pterm (yet); attrs inside a group must
-	// still be printed, just without the group prefix.
-	slogger.WithGroup("http").Info("request", "method", "GET")
-
-	var m map[string]any
-
-	require.NoError(t, json.Unmarshal(buf.Bytes(), &m))
-	assert.Equal(t, "GET", m["method"])
-}
-
-func TestSlogHandlerPreservesArgumentOrder(t *testing.T) {
-	logger, buf := newBufferedLogger()
-	slogger := slog.New(pterm.NewSlogHandler(logger.WithLevel(pterm.LogLevelDebug)))
-
-	// WithAttrs attrs come first, then the record's own attrs, each in the order
-	// they were supplied. None of the keys are alphabetical, so a stable output
-	// proves the order is preserved rather than randomized by map iteration.
-	slogger.With("request_id", "abc123").Info("ordered", "zeta", 1, "alpha", 2, "mike", 3)
-
-	assert.Equal(t, "INFO  ordered request_id=abc123 zeta=1 alpha=2 mike=3\n", stripANSI(buf.String()))
-}
-
-func TestSlogHandlerSortArgumentsSortsAlphabetically(t *testing.T) {
-	logger, buf := newBufferedLogger()
-	slogger := slog.New(pterm.NewSlogHandler(logger.WithLevel(pterm.LogLevelDebug).WithSortArguments()))
-
-	slogger.Info("sorted", "zeta", 1, "alpha", 2, "mike", 3)
-
-	assert.Equal(t, "INFO  sorted alpha=2 mike=3 zeta=1\n", stripANSI(buf.String()))
+	if n := strings.Count(term.Screen(), "● info  tick worker="); n != 200 {
+		t.Errorf("%d lines", n)
+	}
 }

@@ -1,6 +1,6 @@
 ### bigtext/demo
 
-![Animation](https://vhs.charm.sh/vhs-Dltv80znAaeuvbEhngzLB.gif)
+![Animation](demo/animation.gif)
 
 <details>
 
@@ -9,63 +9,72 @@
 ```go
 package main
 
-import (
-	"github.com/pterm/pterm"
-	"github.com/pterm/pterm/putils"
-)
+import "github.com/pterm/pterm"
 
 func main() {
-	// Big ASCII-art text in the default theme style. Handy for title screens.
-	pterm.DefaultBigText.WithLetters(putils.LettersFromString("PTerm")).Render()
+	// Big letters for title screens, in a gradient from Primary to Accent.
+	pterm.BigText.Println("PTerm")
+}
+```
 
-	// Each letter group can carry its own style, so parts of the text can be
-	// colored independently.
-	pterm.DefaultBigText.WithLetters(
-		putils.LettersFromStringWithStyle("P", pterm.FgCyan.ToStyle()),
-		putils.LettersFromStringWithStyle("Term", pterm.FgLightMagenta.ToStyle()),
-	).Render()
+</details>
 
-	// TrueColor works too. On terminals without TrueColor support, PTerm
-	// downsamples the RGB value automatically.
-	pterm.DefaultBigText.WithLetters(
-		putils.LettersFromStringWithRGB("PTerm", pterm.NewRGB(255, 215, 0)),
+### bigtext/gradient
+
+![Animation](gradient/animation.gif)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	// A gradient can run through any number of tones.
+	pterm.BigText.WithGradient(pterm.ToneInfo, pterm.TonePrimary, pterm.ToneError).Println("v1.0")
+
+	pterm.Println()
+
+	// The offset shifts the gradient by a share of the text width. It
+	// bounces at the ends, so stepping it from 0 to 2 in a loop sweeps the
+	// colors across the text and back without a jump.
+	pterm.BigText.WithGradientOffset(0.5).Println("PTerm")
+}
+```
+
+</details>
+
+### bigtext/letters
+
+![Animation](letters/animation.gif)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	// Letters with a style of their own keep it; the rest follow the
+	// printer's gradient.
+	pterm.BigText.WithLetters(
+		pterm.LettersFromString("P", pterm.ToneAccent.Style()),
+		pterm.LettersFromString("Term"),
 	).Render()
 }
 ```
 
 </details>
 
-### bigtext/colored
+### bigtext/tone
 
-![Animation](https://vhs.charm.sh/vhs-6OVbbx3QPZS9Rz75SwAzmR.gif)
-
-<details>
-
-<summary>SHOW SOURCE</summary>
-
-```go
-package main
-
-import (
-	"github.com/pterm/pterm"
-	"github.com/pterm/pterm/putils"
-)
-
-func main() {
-	// Each LettersFromStringWithStyle call gets its own color, so parts of
-	// the big text can be highlighted independently.
-	pterm.DefaultBigText.WithLetters(
-		putils.LettersFromStringWithStyle("P", pterm.FgCyan.ToStyle()),
-		putils.LettersFromStringWithStyle("Term", pterm.FgLightMagenta.ToStyle())).
-		Render()
-}
-```
-
-</details>
-
-### bigtext/default
-
-![Animation](https://vhs.charm.sh/vhs-3AzGuVlmJ9yL1ADI8F1IV2.gif)
+![Animation](tone/animation.gif)
 
 <details>
 
@@ -74,17 +83,11 @@ func main() {
 ```go
 package main
 
-import (
-	"github.com/pterm/pterm"
-	"github.com/pterm/pterm/putils"
-)
+import "github.com/pterm/pterm"
 
 func main() {
-	// BigText takes Letters rather than a plain string; putils converts one
-	// into the other.
-	letters := putils.LettersFromString("PTerm")
-
-	pterm.DefaultBigText.WithLetters(letters).Render()
+	// One tone instead of the gradient.
+	pterm.BigText.WithTone(pterm.ToneSuccess).Println("Done")
 }
 ```
 

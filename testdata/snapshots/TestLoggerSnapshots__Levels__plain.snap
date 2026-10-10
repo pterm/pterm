@@ -1,0 +1,6 @@
+◦ trace Reading config path=./config.yaml
+◦ debug Config loaded workers=4
+● info  Server started addr=:8080 env=production
+▲ warn  Slow request path=/api/search took=1.24s
+✖ error Payment failed order=1042 error="card declined"
+•       Plain line n=1

@@ -3,116 +3,88 @@ package pterm
 import (
 	"fmt"
 	"io"
+	"strings"
 )
 
-var (
-	// DefaultBasicText returns a default BasicTextPrinter, which can be used to print text as is.
-	// No default style is present for BasicTextPrinter.
-	DefaultBasicText = BasicTextPrinter{}
-)
-
-// BasicTextPrinter is the printer used to print the input as-is or as specified by user formatting.
+// BasicTextPrinter prints plain text in the Text tone, wrapped to the
+// terminal width. Use it instead of fmt when output should follow the
+// theme and appear above running live printers.
 type BasicTextPrinter struct {
-	Style  *Style
+	// Style styles the text.
+	Style Style
+	// NoWrap keeps long lines as they are instead of wrapping them to the
+	// terminal width.
+	NoWrap bool
+	// Writer receives the output. Nil means the default output.
 	Writer io.Writer
 }
 
-// WithStyle adds a style to the printer.
-func (p BasicTextPrinter) WithStyle(style *Style) *BasicTextPrinter {
-	p.Style = style
+// Text is the default text printer.
+var Text = BasicTextPrinter{Style: ToneText.Style()}
+
+// WithStyle returns a copy of p that styles text with s.
+func (p BasicTextPrinter) WithStyle(s Style) *BasicTextPrinter {
+	p.Style = s
 	return &p
 }
 
-// WithWriter sets the custom Writer.
-func (p BasicTextPrinter) WithWriter(writer io.Writer) *BasicTextPrinter {
-	p.Writer = writer
+// WithTone returns a copy of p that colors text with t.
+func (p BasicTextPrinter) WithTone(t Tone) *BasicTextPrinter {
+	p.Style.Fg = t
 	return &p
 }
 
-// Sprint formats using the default formats for its operands and returns the resulting string.
-// Spaces are added between operands when neither is a string.
-func (p BasicTextPrinter) Sprint(a ...any) string {
-	if p.Style == nil {
-		p.Style = NewStyle()
+// WithNoWrap returns a copy of p that does not wrap long lines.
+func (p BasicTextPrinter) WithNoWrap(b ...bool) *BasicTextPrinter {
+	p.NoWrap = flag(b)
+	return &p
+}
+
+// WithWriter returns a copy of p that writes to w.
+func (p BasicTextPrinter) WithWriter(w io.Writer) *BasicTextPrinter {
+	p.Writer = w
+	return &p
+}
+
+func (p BasicTextPrinter) out() io.Writer { return orDefault(p.Writer) }
+
+func (p BasicTextPrinter) render(c canvas, s string) string {
+	if p.NoWrap {
+		return c.style(p.Style, s)
 	}
 
-	return p.Style.Sprint(a...)
+	return c.style(p.Style, strings.Join(c.wrap(s, 0), "\n"))
 }
 
-// Sprintln formats using the default formats for its operands and returns the resulting string.
-// Spaces are always added between operands and a newline is appended.
-func (p BasicTextPrinter) Sprintln(a ...any) string {
-	return p.Sprint(fmt.Sprintln(a...))
-}
+// Sprint returns the styled text.
+func (p BasicTextPrinter) Sprint(a ...any) string { return sprintText(p, fmt.Sprint(a...)) }
 
-// Sprintf formats according to a format specifier and returns the resulting string.
+// Sprintln is like Sprint and adds a newline.
+func (p BasicTextPrinter) Sprintln(a ...any) string { return sprintText(p, sprintln(a...)) + "\n" }
+
+// Sprintf formats and returns the styled text.
 func (p BasicTextPrinter) Sprintf(format string, a ...any) string {
-	return p.Sprint(Sprintf(format, a...))
+	return sprintText(p, fmt.Sprintf(format, a...))
 }
 
-// Sprintfln formats according to a format specifier and returns the resulting string.
-// Spaces are always added between operands and a newline is appended.
+// Sprintfln is like Sprintf and adds a newline.
 func (p BasicTextPrinter) Sprintfln(format string, a ...any) string {
-	return p.Sprintf(format, a...) + "\n"
+	return sprintText(p, fmt.Sprintf(format, a...)) + "\n"
 }
 
-// Print formats using the default formats for its operands and writes to provided writer.
-// Spaces are added between operands when neither is a string.
-// It returns the number of bytes written and any write error encountered.
-func (p *BasicTextPrinter) Print(a ...any) *TextPrinter {
-	Fprint(p.Writer, p.Sprint(a...))
-	tp := TextPrinter(p)
+// Print prints the text without a newline, like fmt.Print.
+func (p BasicTextPrinter) Print(a ...any) { printText(p, fmt.Sprint(a...)) }
 
-	return &tp
+// Println prints the text and a newline.
+func (p BasicTextPrinter) Println(a ...any) { printLine(p, sprintln(a...)) }
+
+// Printf formats and prints the text without a newline.
+func (p BasicTextPrinter) Printf(format string, a ...any) { printText(p, fmt.Sprintf(format, a...)) }
+
+// Printfln formats and prints the text and a newline.
+func (p BasicTextPrinter) Printfln(format string, a ...any) {
+	printLine(p, fmt.Sprintf(format, a...))
 }
 
-// Println formats using the default formats for its operands and writes to provided writer.
-// Spaces are always added between operands and a newline is appended.
-// It returns the number of bytes written and any write error encountered.
-func (p *BasicTextPrinter) Println(a ...any) *TextPrinter {
-	Fprint(p.Writer, p.Sprintln(a...))
-	tp := TextPrinter(p)
-
-	return &tp
-}
-
-// Printf formats according to a format specifier and writes to provided writer.
-// It returns the number of bytes written and any write error encountered.
-func (p *BasicTextPrinter) Printf(format string, a ...any) *TextPrinter {
-	Fprint(p.Writer, p.Sprintf(format, a...))
-	tp := TextPrinter(p)
-
-	return &tp
-}
-
-// Printfln formats according to a format specifier and writes to provided writer.
-// Spaces are always added between operands and a newline is appended.
-// It returns the number of bytes written and any write error encountered.
-func (p *BasicTextPrinter) Printfln(format string, a ...any) *TextPrinter {
-	Fprint(p.Writer, p.Sprintfln(format, a...))
-	tp := TextPrinter(p)
-
-	return &tp
-}
-
-// PrintOnError prints every error which is not nil.
-// If every error is nil, nothing will be printed.
-// This can be used for simple error checking.
-func (p *BasicTextPrinter) PrintOnError(a ...any) *TextPrinter {
-	printOnError(p, a...)
-
-	tp := TextPrinter(p)
-
-	return &tp
-}
-
-// PrintOnErrorf wraps every error which is not nil and prints it.
-// If every error is nil, nothing will be printed.
-// This can be used for simple error checking.
-func (p *BasicTextPrinter) PrintOnErrorf(format string, a ...any) *TextPrinter {
-	printOnErrorf(p, format, a...)
-
-	tp := TextPrinter(p)
-
-	return &tp
-}
+// PrintOnError prints every non-nil error in a.
+func (p BasicTextPrinter) PrintOnError(a ...any) { printOnError(p, a...) }

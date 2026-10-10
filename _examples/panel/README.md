@@ -1,6 +1,6 @@
 ### panel/demo
 
-![Animation](https://vhs.charm.sh/vhs-1ojPuB9SETuUW6zO274YLY.gif)
+![Animation](demo/animation.gif)
 
 <details>
 
@@ -12,31 +12,27 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Panels form a 2D grid: the outer slice holds rows, the inner slices hold
-	// the panels of each row. Panel content can be multiline and may come from
-	// other printers.
-	panels := pterm.Panels{
-		{
-			{Data: "This is the first panel"},
-			{Data: pterm.DefaultHeader.Sprint("Hello, World!")},
-			{Data: "This\npanel\ncontains\nmultiple\nlines"},
-		},
-		{
-			{Data: pterm.Red("This is another\npanel line")},
-			{Data: "This is the second panel\nwith a new line"},
-		},
-	}
-
-	// Padding controls the horizontal space between panels in a row.
-	_ = pterm.DefaultPanel.WithPanels(panels).WithPadding(5).Render()
+	// Boxed panels make a small dashboard. Every row is laid out side by side
+	// and frames of one row end on the same line.
+	pterm.Panel.WithBoxed().
+		WithRow(
+			pterm.PanelItem{Title: "Uptime", Data: "99.99%\nlast 30 days"},
+			pterm.PanelItem{Title: "Requests", Data: "1.2M per day"},
+			pterm.PanelItem{Title: "Errors", Data: "0.02%\n14 in the last hour"},
+		).
+		WithRow(
+			pterm.PanelItem{Title: "Region", Data: "eu-central-1"},
+			pterm.PanelItem{Title: "Version", Data: "v2.4.1\nbuilt 5 minutes ago"},
+		).
+		Render()
 }
 ```
 
 </details>
 
-### panel/boxed
+### panel/columns
 
-![Animation](https://vhs.charm.sh/vhs-3am3fCMbszVAZx96utD5Z3.gif)
+![Animation](columns/animation.gif)
 
 <details>
 
@@ -48,28 +44,46 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Panels form a 2D grid: the outer slice holds rows, the inner slices hold
-	// the panels of each row.
-	panels := pterm.Panels{
-		{
-			{Data: "Uptime\n99.99%"},
-			{Data: "Requests\n1.2M/day"},
-			{Data: "Errors\n0.02%"},
-		},
-		{
-			{Data: "Region\neu-central"},
-			{Data: "Version\nv2.4.1"},
-			{Data: "Build\n#4821"},
-		},
-	}
+	// Without frames, panels are plain columns. Their content can come from
+	// other printers, such as these bullet lists.
+	tools, _ := pterm.BulletList.WithTexts("npm", "bun", "pip").Srender()
+	stores, _ := pterm.BulletList.WithTexts("Docker images", "Go modules").Srender()
 
-	// WithBoxPrinter draws each panel inside a box. WithSameColumnWidth pads
-	// every panel of a column to the widest one, so the boxes line up.
-	_ = pterm.DefaultPanel.
-		WithPanels(panels).
-		WithBoxPrinter(pterm.DefaultBox).
-		WithSameColumnWidth().
-		Render()
+	pterm.Panel.WithPadding(6).WithPanels(pterm.Panels{{
+		{Title: "Package managers", Data: tools},
+		{Title: "Stores", Data: stores},
+	}}).Render()
+}
+```
+
+</details>
+
+### panel/same-column-width
+
+![Animation](same-column-width/animation.gif)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	// SameColumnWidth widens every panel to the widest one of its column,
+	// so the frames of different rows line up.
+	pterm.Panel.WithBoxed().WithSameColumnWidth().WithPanels(pterm.Panels{
+		{
+			{Title: "CPU", Data: "12%"},
+			{Title: "Memory", Data: "3.1 GB of 16 GB"},
+		},
+		{
+			{Title: "Disk", Data: "212 GB free"},
+			{Title: "Network", Data: "4 MB/s"},
+		},
+	}).Render()
 }
 ```
 

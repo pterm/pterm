@@ -1,17 +1,19 @@
 package main
 
 import (
+	"encoding/csv"
+	"strings"
+
 	"github.com/pterm/pterm"
-	"github.com/pterm/pterm/putils"
 )
 
 func main() {
-	csv := `Firstname,Lastname,Email
-Paul,Dean,paul@example.com
-Callie,Mckay,callie@example.com
-Libby,Camacho,libby@example.com`
+	data := `Name,Role,Commits
+Ada,maintainer,1204
+Grace,reviewer,388
+Linus,contributor,57`
 
-	// TableDataFromCSV converts raw CSV into pterm.TableData. The CSV header
-	// line ends up as the first row, so WithHasHeader renders it as such.
-	pterm.DefaultTable.WithHasHeader().WithData(putils.TableDataFromCSV(csv)).Render()
+	// WithCSVReader reads every record. The CSV header line becomes the
+	// table header.
+	pterm.Table.WithCSVReader(csv.NewReader(strings.NewReader(data))).Render()
 }

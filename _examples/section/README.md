@@ -1,6 +1,6 @@
 ### section/demo
 
-![Animation](https://vhs.charm.sh/vhs-1Wv6LwKgaw4o36p5quakV1.gif)
+![Animation](demo/animation.gif)
 
 <details>
 
@@ -12,13 +12,42 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Sections structure long output into headed blocks, like chapters.
-	pterm.DefaultSection.Println("This is a section!")
-	pterm.Info.Println("And here is some text.\nThis text could be anything.\nBasically it's just a placeholder")
+	// Sections split output into parts. Each one starts with a blank line,
+	// so the program does not have to add spacing itself.
+	pterm.Section.Println("Installation")
+	pterm.Text.Println("Run the installer and follow the prompts.")
 
-	// Higher levels render as smaller subsections.
-	pterm.DefaultSection.WithLevel(2).Println("This is another section!")
-	pterm.Info.Println("And this is\nmore placeholder text")
+	pterm.Section.Println("Configuration")
+	pterm.Text.Println("Settings live in ~/.config/app/config.toml.")
+}
+```
+
+</details>
+
+### section/levels
+
+![Animation](levels/animation.gif)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	// Deeper levels get quieter: level 2 is bold text, level 3 is muted.
+	pterm.Section.Println("Packages")
+	pterm.Section.WithLevel(2).Println("Runtime")
+	pterm.Text.Println("atomicgo.dev/color, atomicgo.dev/cursor")
+	pterm.Section.WithLevel(3).Println("Indirect")
+	pterm.Text.Println("golang.org/x/term")
+
+	// A prefix makes the depth visible, like headings in Markdown.
+	pterm.Section.WithPrefix("#").WithLevel(2).WithBottomPadding(1).Println("Development")
+	pterm.Text.Println("github.com/pterm/pterm/internal/vt")
 }
 ```
 

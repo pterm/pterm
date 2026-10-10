@@ -1,0 +1,5 @@
+\x1b[38;2;128;135;162m├─ \x1b[0m\x1b[38;2;139;213;202mdoctor\x1b[0m    \x1b[38;2;128;135;162mdiagnostics\x1b[0m
+\x1b[38;2;128;135;162m├─ \x1b[0m\x1b[38;2;139;213;202mmcp\x1b[0m       \x1b[38;2;128;135;162mmanage MCP servers\x1b[0m
+\x1b[38;2;128;135;162m│  └─ \x1b[0m\x1b[38;2;139;213;202mstart\x1b[0m  \x1b[38;2;128;135;162mboots a server\x1b[0m
+\x1b[38;2;128;135;162m└─ \x1b[0m\x1b[38;2;139;213;202mdisk\x1b[0m      \x1b[38;2;128;135;162mlocal disk utilities\x1b[0m
+\x1b[38;2;128;135;162m   └─ \x1b[0m\x1b[38;2;139;213;202mclean\x1b[0m

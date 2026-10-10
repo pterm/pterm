@@ -1,0 +1,16 @@
+\x1b[38;2;183;189;248m?\x1b[0m \x1b[1;38;2;202;211;245mWhat should be cleaned?\x1b[0m \x1b[38;2;128;135;162m2 of 7\x1b[0m
+
+  \x1b[38;2;128;135;162mPACKAGE MANAGERS\x1b[0m
+    \x1b[38;2;166;218;149m◉\x1b[0m \x1b[38;2;202;211;245mnpm cache\x1b[0m          \x1b[38;2;128;135;162m~/.npm/_cacache\x1b[0m              \x1b[38;2;202;211;245m1.2 GB\x1b[0m
+  \x1b[38;2;183;189;248m❯\x1b[0m \x1b[38;2;128;135;162m○\x1b[0m \x1b[1;38;2;183;189;248myarn cache\x1b[0m         \x1b[38;2;128;135;162m~/Library/Caches/Yarn\x1b[0m        \x1b[38;2;202;211;245m640 MB\x1b[0m
+    \x1b[38;2;128;135;162m○\x1b[0m \x1b[38;2;202;211;245mgo module cache\x1b[0m    \x1b[38;2;128;135;162m~/go/pkg/mod\x1b[0m                 \x1b[38;2;202;211;245m3.4 GB\x1b[0m
+
+  \x1b[38;2;128;135;162mBUILD CACHES\x1b[0m
+    \x1b[38;2;166;218;149m◉\x1b[0m \x1b[38;2;202;211;245mgo build cache\x1b[0m     \x1b[38;2;128;135;162m~/Library/Caches/go-build\x1b[0m    \x1b[38;2;202;211;245m5.8 GB\x1b[0m
+    \x1b[38;2;128;135;162m○\x1b[0m \x1b[38;2;128;135;162mBazel output base\x1b[0m  \x1b[38;2;128;135;162min use by a running build\x1b[0m    \x1b[38;2;128;135;162m7.2 GB\x1b[0m
+
+  \x1b[38;2;128;135;162mCONTAINERS\x1b[0m
+    \x1b[38;2;128;135;162m○\x1b[0m \x1b[38;2;202;211;245mDocker images\x1b[0m      \x1b[38;2;128;135;162mdangling and unused images\x1b[0m  \x1b[38;2;202;211;245m18.3 GB\x1b[0m
+    \x1b[38;2;128;135;162m○\x1b[0m \x1b[38;2;202;211;245mDocker volumes\x1b[0m     \x1b[38;2;128;135;162mmay hold databases\x1b[0m           \x1b[38;2;202;211;245m4.7 GB\x1b[0m
+
+  \x1b[38;2;128;135;162m[\x1b[0m\x1b[38;2;202;211;245mspace\x1b[0m\x1b[38;2;128;135;162m]\x1b[0m \x1b[38;2;128;135;162mtoggle\x1b[0m\x1b[38;2;128;135;162m · \x1b[0m\x1b[38;2;128;135;162m[\x1b[0m\x1b[38;2;202;211;245ma\x1b[0m\x1b[38;2;128;135;162m]\x1b[0m \x1b[38;2;128;135;162mall\x1b[0m\x1b[38;2;128;135;162m · \x1b[0m\x1b[38;2;128;135;162m[\x1b[0m\x1b[38;2;202;211;245mn\x1b[0m\x1b[38;2;128;135;162m]\x1b[0m \x1b[38;2;128;135;162mnone\x1b[0m\x1b[38;2;128;135;162m · \x1b[0m\x1b[38;2;128;135;162m[\x1b[0m\x1b[38;2;202;211;245menter\x1b[0m\x1b[38;2;128;135;162m]\x1b[0m \x1b[38;2;128;135;162mconfirm\x1b[0m\x1b[38;2;128;135;162m · \x1b[0m\x1b[38;2;128;135;162m[\x1b[0m\x1b[38;2;202;211;245m/\x1b[0m\x1b[38;2;128;135;162m]\x1b[0m \x1b[38;2;128;135;162mfilter\x1b[0m

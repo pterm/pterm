@@ -1,6 +1,6 @@
 ### tree/demo
 
-![Animation](https://vhs.charm.sh/vhs-7jq6l6QS4HH2hVPCWqkncl.gif)
+![Animation](demo/animation.gif)
 
 <details>
 
@@ -9,34 +9,29 @@
 ```go
 package main
 
-import (
-	"github.com/pterm/pterm"
-)
+import "github.com/pterm/pterm"
 
 func main() {
-	// A tree is described by nesting TreeNodes; each node holds its text and
-	// its children.
-	tree := pterm.TreeNode{
-		Text: "Top node",
-		Children: []pterm.TreeNode{{
-			Text: "Child node",
-			Children: []pterm.TreeNode{
-				{Text: "Grandchild node"},
-				{Text: "Grandchild node"},
-				{Text: "Grandchild node"},
-			},
+	// Descriptions line up in one muted column, however deep the node sits.
+	pterm.Tree.WithNodes(
+		pterm.TreeNode{Text: "doctor", Description: "diagnostics"},
+		pterm.TreeNode{Text: "mcp", Description: "manage MCP servers", Children: []pterm.TreeNode{
+			{Text: "start", Description: "boots a server"},
+			{Text: "stop", Description: "stops a running server"},
 		}},
-	}
-
-	pterm.DefaultTree.WithRoot(tree).Render()
+		pterm.TreeNode{Text: "disk", Description: "local disk utilities", Children: []pterm.TreeNode{
+			{Text: "usage", Description: "shows what takes up space"},
+			{Text: "clean"},
+		}},
+	).Render()
 }
 ```
 
 </details>
 
-### tree/from-leveled-list
+### tree/from-indented
 
-![Animation](https://vhs.charm.sh/vhs-5m4lW2DbvrN4pgynZUdVvO.gif)
+![Animation](from-indented/animation.gif)
 
 <details>
 
@@ -51,47 +46,29 @@ import (
 )
 
 func main() {
-	// A LeveledList is a flat alternative to nesting TreeNodes by hand: each
-	// entry states its own depth.
-	leveledList := pterm.LeveledList{
-		{Level: 0, Text: "C:"},
-		{Level: 1, Text: "Users"},
-		{Level: 1, Text: "Windows"},
-		{Level: 1, Text: "Programs"},
-		{Level: 1, Text: "Programs(x86)"},
-		{Level: 1, Text: "dev"},
-		{Level: 0, Text: "D:"},
-		{Level: 0, Text: "E:"},
-		{Level: 1, Text: "Movies"},
-		{Level: 1, Text: "Music"},
-		{Level: 2, Text: "LinkinPark"},
-		{Level: 1, Text: "Games"},
-		{Level: 2, Text: "Shooter"},
-		{Level: 3, Text: "CallOfDuty"},
-		{Level: 3, Text: "CS:GO"},
-		{Level: 3, Text: "Battlefield"},
-		{Level: 4, Text: "Battlefield 1"},
-		{Level: 4, Text: "Battlefield 2"},
-		{Level: 0, Text: "F:"},
-		{Level: 1, Text: "dev"},
-		{Level: 2, Text: "dops"},
-		{Level: 2, Text: "PTerm"},
-	}
+	// Write the tree the way you would sketch it in a README. Each level
+	// only has to be indented further than its parent.
+	files := putils.TreeFromIndented(`
+cmd
+  pterm
+    main.go
+internal
+  screen
+    screen.go
+    region.go
+  text
+    width.go
+go.mod`)
 
-	// TreeFromLeveledList converts the list into a TreeNode; the returned
-	// root just needs a name.
-	root := putils.TreeFromLeveledList(leveledList)
-	root.Text = "Computer"
-
-	pterm.DefaultTree.WithRoot(root).Render()
+	_ = pterm.Tree.WithRoot(files).Render()
 }
 ```
 
 </details>
 
-### tree/styled
+### tree/from-leveled-list
 
-![Animation](https://vhs.charm.sh/vhs-6695FaObbMrAZ8wcnhMb6T.gif)
+![Animation](from-leveled-list/animation.gif)
 
 <details>
 
@@ -100,31 +77,100 @@ func main() {
 ```go
 package main
 
-import (
-	"github.com/pterm/pterm"
-)
+import "github.com/pterm/pterm"
 
 func main() {
-	tree := pterm.TreeNode{
-		Text: "project",
+	// A LeveledList is a flat alternative to nesting TreeNodes by hand: each
+	// item states its own depth.
+	list := pterm.LeveledList{
+		{Level: 0, Text: "C:"},
+		{Level: 1, Text: "Users"},
+		{Level: 1, Text: "Windows"},
+		{Level: 1, Text: "Programs"},
+		{Level: 0, Text: "D:"},
+		{Level: 1, Text: "Movies"},
+		{Level: 1, Text: "Games"},
+		{Level: 2, Text: "Shooter"},
+		{Level: 3, Text: "Battlefield"},
+		{Level: 0, Text: "E:"},
+		{Level: 1, Text: "dev"},
+		{Level: 2, Text: "pterm"},
+	}
+
+	root := list.Tree()
+	root.Text = "Computer"
+
+	pterm.Tree.WithRoot(root).Render()
+}
+```
+
+</details>
+
+### tree/root
+
+![Animation](root/animation.gif)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	// The text of the root goes on the first line, above its children.
+	pterm.Tree.WithRoot(pterm.TreeNode{
+		Text: "pterm",
 		Children: []pterm.TreeNode{
-			{Text: "cmd", Children: []pterm.TreeNode{
-				{Text: "main.go"},
+			{Text: "_examples", Children: []pterm.TreeNode{
+				{Text: "table"},
+				{Text: "tree"},
 			}},
 			{Text: "internal", Children: []pterm.TreeNode{
-				{Text: "server.go"},
-				{Text: "config.go"},
+				{Text: "screen", Description: "the renderer"},
+				{Text: "text", Description: "width, wrapping and cutting"},
 			}},
 			{Text: "go.mod"},
 			{Text: "README.md"},
 		},
-	}
+	}).Render()
+}
+```
 
-	// WithTreeStyle colors the branch lines, WithTextStyle the node text.
-	pterm.DefaultTree.
-		WithRoot(tree).
-		WithTreeStyle(pterm.NewStyle(pterm.FgLightBlue)).
-		WithTextStyle(pterm.NewStyle(pterm.FgLightGreen)).
+</details>
+
+### tree/styled
+
+![Animation](styled/animation.gif)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import "github.com/pterm/pterm"
+
+func main() {
+	// Every part has its own tone. Here the node names are Accent and the
+	// branches get one more column of line per level.
+	pterm.Tree.
+		WithTextStyle(pterm.ToneAccent.Style()).
+		WithLineTone(pterm.ToneMuted).
+		WithIndent(1).
+		WithNodes(
+			pterm.TreeNode{Text: "cmd", Children: []pterm.TreeNode{
+				{Text: "main.go"},
+			}},
+			pterm.TreeNode{Text: "internal", Children: []pterm.TreeNode{
+				{Text: "server.go"},
+				{Text: "config.go"},
+			}},
+			pterm.TreeNode{Text: "go.mod"},
+		).
 		Render()
 }
 ```

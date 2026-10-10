@@ -1,243 +1,176 @@
 package pterm_test
 
 import (
-	"runtime"
+	"context"
 	"strings"
+	"sync"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
+	"time"
 
 	"github.com/pterm/pterm"
+	"github.com/pterm/pterm/internal/vt"
 )
 
-// fdBuffer is a syncBuffer that also reports a (fake) file descriptor. The
-// AreaPrinter — and the MultiPrinter, which renders through an area — only
-// accepts writers on which the cursor can be moved, i.e. writers with an Fd
-// method, so tests capture area output through this type.
-type fdBuffer struct {
-	syncBuffer
-}
+func TestAreaUpdatesInPlace(t *testing.T) {
+	term := setup(t)
 
-// Fd pretends the buffer is a terminal file descriptor.
-func (b *fdBuffer) Fd() uintptr {
-	return 0
-}
-
-// clearLineSequence is the ANSI sequence the area emits to erase a line
-// before repainting.
-const clearLineSequence = "\x1b[2K"
-
-// lastAreaFrame returns the visible content of the most recent area repaint
-// in s. Every repaint first clears the previous content with clear-line
-// sequences, so the text after the final clear is what stays on screen.
-func lastAreaFrame(s string) string {
-	if idx := strings.LastIndex(s, clearLineSequence); idx >= 0 {
-		s = s[idx+len(clearLineSequence):]
+	area, err := pterm.Area.Start("waiting\nfor data")
+	if err != nil {
+		t.Fatal(err)
 	}
 
-	return stripTerminalEscapes(s)
-}
+	if got := term.Screen(); got != "waiting\nfor data" {
+		t.Errorf("screen = %q", got)
+	}
 
-// startTestArea starts the given area printer writing into a fresh fdBuffer.
-func startTestArea(t *testing.T, printer *pterm.AreaPrinter, text ...any) (*pterm.AreaPrinter, *fdBuffer) {
-	t.Helper()
+	area.Update("3 rows")
+	pterm.Println("log line")
 
-	buf := &fdBuffer{}
-	printer.SetWriter(buf)
+	if got := term.Screen(); got != "log line\n3 rows" {
+		t.Errorf("screen = %q", got)
+	}
 
-	started, err := printer.Start(text...)
-	require.NoError(t, err)
-	t.Cleanup(func() { _ = started.Stop() })
+	if area.Content() != "3 rows" {
+		t.Errorf("content = %q", area.Content())
+	}
 
-	return started, buf
-}
+	_ = area.Stop()
+	area.Update("ignored")
 
-func TestAreaPrinter_StartRendersInitialContent(t *testing.T) {
-	printer := pterm.AreaPrinter{}
+	if got := term.Screen(); got != "log line\n3 rows" {
+		t.Errorf("screen after stop = %q", got)
+	}
 
-	area, buf := startTestArea(t, &printer, "hello area")
-
-	assert.Same(t, &printer, area, "Start must return the started instance")
-	assert.Equal(t, "hello area", area.GetContent())
-
-	if runtime.GOOS != "windows" {
-		assert.Equal(t, "hello area", lastAreaFrame(buf.String()))
+	if term.CursorHidden() {
+		t.Error("cursor still hidden")
 	}
 }
 
-func TestAreaPrinter_UpdateReplacesContentInPlace(t *testing.T) {
-	area, buf := startTestArea(t, &pterm.AreaPrinter{}, "first content")
+func TestAreaClearAndRemove(t *testing.T) {
+	term := setup(t)
 
-	area.Update("second content")
-
-	if runtime.GOOS == "windows" {
-		assert.Equal(t, "second content", area.GetContent())
-
-		return
-	}
-
-	out := buf.String()
-	firstEnd := strings.Index(out, "first content") + len("first content")
-	assert.Contains(t, out[firstEnd:], clearLineSequence, "the old content must be cleared before repainting")
-
-	frame := lastAreaFrame(out)
-	assert.Equal(t, "second content", frame, "only the new content may remain visible")
-	assert.Equal(t, "second content", area.GetContent())
-}
-
-func TestAreaPrinter_MultipleUpdates(t *testing.T) {
-	area, buf := startTestArea(t, &pterm.AreaPrinter{})
-
-	for _, content := range []string{"one", "two", "three"} {
-		area.Update(content)
-
-		assert.Equal(t, content, area.GetContent())
-
-		if runtime.GOOS != "windows" {
-			assert.Equal(t, content, lastAreaFrame(buf.String()))
-		}
-	}
-}
-
-func TestAreaPrinter_UpdateWrapsLongLines(t *testing.T) {
-	if runtime.GOOS == "windows" {
-		t.Skip("cursor's Windows backend moves and clears using the real console, not the test writer")
-	}
-
-	pterm.SetForcedTerminalSize(10, 60)
-	t.Cleanup(func() { pterm.SetForcedTerminalSize(terminalWidth, terminalHeight) })
-
-	area, buf := startTestArea(t, &pterm.AreaPrinter{}, "first ten c")
-
-	area.Update("first ten characters")
-
-	frame := lastAreaFrame(buf.String())
-	assert.Equal(t, "first ten\ncharacters", frame,
-		"lines wider than the terminal must use explicit newlines so every wrapped row is cleared")
-	assert.Equal(t, "first ten characters", area.GetContent())
-}
-
-func TestAreaPrinter_MultilineUpdateClearsAllLines(t *testing.T) {
-	area, buf := startTestArea(t, &pterm.AreaPrinter{}, "line 1\nline 2\nline 3")
-
-	area.Update("replacement")
-
-	if runtime.GOOS == "windows" {
-		assert.Equal(t, "replacement", area.GetContent())
-
-		return
-	}
-
-	out := buf.String()
-	assert.Contains(t, out, "\x1b[1A"+clearLineSequence, "multi-line content must be cleared upwards line by line")
-	assert.Equal(t, "replacement", lastAreaFrame(out))
-}
-
-func TestAreaPrinter_CenterCentersContent(t *testing.T) {
-	area, buf := startTestArea(t, pterm.DefaultArea.WithCenter())
-
-	area.Update("ab")
-
-	if runtime.GOOS == "windows" {
-		return
-	}
-
-	line := strings.TrimRight(lastAreaFrame(buf.String()), "\n")
-	assert.Equal(t, strings.Repeat(" ", 39)+"ab", line,
-		"the content must be padded to the center of the 80 column terminal")
-}
-
-func TestAreaPrinter_FullscreenPadsToTerminalHeight(t *testing.T) {
-	area, buf := startTestArea(t, pterm.DefaultArea.WithFullscreen())
-
-	area.Update("content line")
-
-	if runtime.GOOS == "windows" {
-		return
-	}
-
-	frame := lastAreaFrame(buf.String())
-	assert.Equal(t, "content line", strings.TrimSpace(frame))
-	assert.Equal(t, 58, strings.Count(frame, "\n"),
-		"the content must be padded with blank lines to fill the 60 row terminal")
-}
-
-func TestAreaPrinter_FullscreenPadsWrappedContentToTerminalHeight(t *testing.T) {
-	if runtime.GOOS == "windows" {
-		t.Skip("cursor's Windows backend moves and clears using the real console, not the test writer")
-	}
-
-	pterm.SetForcedTerminalSize(10, 60)
-	t.Cleanup(func() { pterm.SetForcedTerminalSize(terminalWidth, terminalHeight) })
-
-	area, buf := startTestArea(t, pterm.DefaultArea.WithFullscreen())
-
-	area.Update("first ten characters")
-
-	frame := lastAreaFrame(buf.String())
-	assert.Equal(t, "first ten\ncharacters", strings.TrimSpace(frame))
-	assert.Equal(t, 58, strings.Count(frame, "\n"),
-		"the padding must account for wrapped rows so the frame fits the 60 row terminal")
-}
-
-func TestAreaPrinter_FullscreenCenterPadsOnBothSides(t *testing.T) {
-	area, buf := startTestArea(t, pterm.DefaultArea.WithFullscreen().WithCenter())
-
-	area.Update("x")
-
-	if runtime.GOOS == "windows" {
-		return
-	}
-
-	frame := lastAreaFrame(buf.String())
-	assert.Equal(t, "x", strings.TrimSpace(frame))
-	assert.Equal(t, 59, strings.Count(frame, "\n"))
-
-	lines := strings.Split(frame, "\n")
-	require.Greater(t, len(lines), 31)
-	assert.Equal(t, "x", strings.TrimSpace(lines[30]), "the content must sit in the vertical center")
-}
-
-func TestAreaPrinter_ClearEmptiesArea(t *testing.T) {
-	area, buf := startTestArea(t, &pterm.AreaPrinter{}, "visible content")
-
-	buf.Reset()
+	area, _ := pterm.Area.WithRemoveWhenDone().Start("temporary")
 	area.Clear()
 
-	if runtime.GOOS == "windows" {
-		return
+	if got := term.Screen(); got != "" {
+		t.Errorf("screen after clear = %q", got)
 	}
 
-	out := buf.String()
-	assert.Contains(t, out, clearLineSequence, "clearing must erase the painted line")
-	assert.Empty(t, strings.TrimSpace(stripTerminalEscapes(out)), "clearing must not paint any visible content")
+	area.Update("back")
+	_ = area.Stop()
+
+	if got := term.Screen(); got != "" {
+		t.Errorf("screen after stop = %q", got)
+	}
 }
 
-func TestAreaPrinter_RemoveWhenDoneClearsOnStop(t *testing.T) {
-	area, buf := startTestArea(t, pterm.DefaultArea.WithRemoveWhenDone(), "temporary content")
+func TestAreaNotTerminal(t *testing.T) {
+	setup(t)
 
-	buf.Reset()
-	require.NoError(t, area.Stop())
+	out := capture(t, func() {
+		area, _ := pterm.Area.WithFullscreen().WithCenter().Start("first")
+		area.Update("second")
+		area.Update("final\n")
+		_ = area.Stop()
+	})
+	if out != "final\n" {
+		t.Errorf("output = %q", out)
+	}
+}
 
-	if runtime.GOOS == "windows" {
-		return
+func TestAreaCenter(t *testing.T) {
+	setup(t)
+
+	term := vt.New(21, 10)
+	area, _ := pterm.Area.WithWriter(term).WithCenter().Start("ab\nabcd")
+
+	// 20 usable columns: the block is 4 wide, so it moves 8 to the right
+	// and its lines stay aligned with each other.
+	if got, want := term.Screen(), "        ab\n        abcd"; got != want {
+		t.Errorf("screen = %q, want %q", got, want)
 	}
 
-	out := buf.String()
-	assert.Contains(t, out, clearLineSequence, "stopping must clear the area")
-	assert.Empty(t, strings.TrimSpace(stripTerminalEscapes(out)), "no visible content may remain after Stop")
-
-	// A second Stop must be a silent no-op.
-	buf.Reset()
-	require.NoError(t, area.Stop())
-	assert.Empty(t, buf.String())
+	_ = area.Stop()
 }
 
-func TestAreaPrinter_StopKeepsContentWithoutRemoveWhenDone(t *testing.T) {
-	area, buf := startTestArea(t, &pterm.AreaPrinter{}, "kept content")
+func TestAreaFullscreen(t *testing.T) {
+	setup(t)
 
-	buf.Reset()
-	require.NoError(t, area.Stop())
-	assert.Empty(t, buf.String(), "without RemoveWhenDone, Stop must not touch the rendered content")
+	term := vt.New(20, 7)
+	area, _ := pterm.Area.WithWriter(term).WithFullscreen().WithCenter().Start("hi")
+
+	// Six rows are drawn; the line sits in the middle of them.
+	lines := strings.Split(term.Raw(), "\n")
+	if len(lines) != 6 || !strings.Contains(lines[2], "hi") {
+		t.Errorf("rows = %q", lines)
+	}
+
+	area.Update("a\nb\nc\nd\ne\nf\ng\nh")
+
+	// Content taller than the terminal keeps its last rows.
+	if got := strings.ReplaceAll(term.Screen(), " ", ""); !strings.HasSuffix(got, "c\nd\ne\nf\ng\nh") {
+		t.Errorf("screen = %q", got)
+	}
+
+	_ = area.Stop()
+}
+
+func TestAreaWraps(t *testing.T) {
+	setup(t)
+
+	term := vt.New(11, 10)
+	area, _ := pterm.Area.WithWriter(term).Start("one two three four")
+
+	if got := term.Screen(); got != "one two\nthree four" {
+		t.Errorf("screen = %q", got)
+	}
+
+	_ = area.Stop()
+}
+
+func TestAreaContextStops(t *testing.T) {
+	term := setup(t)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	area, _ := pterm.Area.WithContext(ctx).Start("live")
+
+	cancel()
+
+	deadline := time.Now().Add(time.Second)
+	for term.CursorHidden() && time.Now().Before(deadline) {
+		time.Sleep(5 * time.Millisecond)
+	}
+
+	area.Update("ignored")
+
+	if got := term.Screen(); got != "live" || term.CursorHidden() {
+		t.Errorf("screen = %q, cursor hidden = %v", got, term.CursorHidden())
+	}
+}
+
+func TestAreaConcurrent(t *testing.T) {
+	term := setup(t)
+
+	area, _ := pterm.Area.Start()
+
+	var wg sync.WaitGroup
+
+	for i := range 8 {
+		wg.Go(func() {
+			for range 50 {
+				area.Update(strings.Repeat("x", i+1))
+				pterm.Print("")
+
+				_ = area.Content()
+			}
+		})
+	}
+
+	wg.Wait()
+	area.Update("done")
+	_ = area.Stop()
+
+	if got := term.Screen(); got != "done" {
+		t.Errorf("screen = %q", got)
+	}
 }

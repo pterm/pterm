@@ -1,380 +1,246 @@
 package pterm_test
 
-// Behavioral tests for TablePrinter: column width math, alignment, separators,
-// header styling, boxing and CSV input. The builder/contract plumbing is
-// covered generically in contract_test.go, one representative output is locked
-// in snapshot_test.go.
-
 import (
+	"bytes"
 	"encoding/csv"
+	"errors"
 	"strings"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
-
 	"github.com/pterm/pterm"
+	"github.com/pterm/pterm/internal/vt"
 )
 
-// srenderPlain renders a RenderPrinter and strips all ANSI escape codes, so
-// tests can assert on the exact visible layout. Shared by the render printer
-// test files (table, tree, bullet list, panel, bar chart, heatmap, big text).
-func srenderPlain(t *testing.T, p pterm.RenderPrinter) string {
-	t.Helper()
-
-	out, err := p.Srender()
-	require.NoError(t, err)
-
-	return stripANSI(out)
+var cacheData = pterm.TableData{
+	{"Cache", "State", "Size"},
+	{"npm", "stale", "1.20 GB"},
+	{"nub", "fresh", "393 MB"},
 }
 
-// styledPrefix returns the escape sequence a style emits directly before its
-// content, so tests can detect which style a rendered region starts with.
-func styledPrefix(t *testing.T, style *pterm.Style) string {
-	t.Helper()
-
-	parts := strings.SplitN(style.Sprint("X"), "X", 2)
-	require.NotEmpty(t, parts[0], "style must emit an escape sequence")
-
-	return parts[0]
+func TestTableSnapshots(t *testing.T) {
+	snap(t, "Default", srender(t, pterm.Table.WithData(cacheData).Srender))
+	snap(t, "NoHeader", srender(t, pterm.Table.WithHasHeader(false).WithData(cacheData).Srender))
+	snap(t, "Boxed", srender(t, pterm.Table.WithBoxed().WithTitle("Caches").WithData(cacheData).Srender))
+	snap(t, "BoxedRowSeparators", srender(t, pterm.Table.WithBoxed().WithRowSeparators().WithData(cacheData).Srender))
+	snap(t, "RowSeparators", srender(t, pterm.Table.WithRowSeparators().WithData(cacheData).Srender))
+	snap(t, "MultiLine", srender(t, pterm.Table.WithData(pterm.TableData{
+		{"Command", "Description"},
+		{"init", "Create a project\nin this folder"},
+		{"build", "Compile"},
+	}).Srender))
+	snap(t, "Styles", srender(t, pterm.Table.WithData(cacheData).
+		WithColumnStyle(1, pterm.ToneAccent.Style()).
+		WithRowStyle(1, pterm.ToneError.Style()).Srender))
+	snap(t, "AlternateRowStyle", srender(t, pterm.Table.WithData(append(cacheData, []string{"go", "fresh", "2.84 GB"})).
+		WithAlternateRowStyle(pterm.ToneText.Style().On(pterm.ToneBorder)).Srender))
+	snap(t, "CJK", srender(t, pterm.Table.WithData(pterm.TableData{
+		{"Name", "Note"},
+		{"张", "这是一个测试"},
+		{"Paul", "ok"},
+	}).Srender))
 }
 
-func TestTablePrinter_ColumnsPaddedToWidestCell(t *testing.T) {
-	printer := pterm.DefaultTable.WithData(pterm.TableData{
-		{"Name", "Age"},
-		{"Alice", "1"},
-		{"Bob", "22"},
-	})
+func TestTableDefaultLook(t *testing.T) {
+	setup(t)
 
-	// Column 0 is padded to "Alice" (5), column 1 to "Age" (3); the last
-	// column is padded too, so every separator lines up across all rows.
-	expected := "" +
-		"Name  │ Age\n" +
-		"Alice │ 1  \n" +
-		"Bob   │ 22 \n"
+	out := capture(t, func() { _ = pterm.Table.WithData(cacheData).Render() })
+	want := "CACHE  STATE     SIZE\n" +
+		"─────────────────────\n" +
+		"npm    stale  1.20 GB\n" +
+		"nub    fresh   393 MB\n"
 
-	assert.Equal(t, expected, srenderPlain(t, printer))
+	if out != want {
+		t.Errorf("output:\n%s\nwant:\n%s", out, want)
+	}
 }
 
-func TestTablePrinter_WideUnicodeCellsAlign(t *testing.T) {
-	printer := pterm.DefaultTable.WithData(pterm.TableData{
-		{"汉字", "x"},
-		{"abc", "y"},
-	})
+func TestTableEmpty(t *testing.T) {
+	setup(t)
 
-	// "汉字" occupies 4 terminal cells, so "abc" gets one space of padding.
-	expected := "" +
-		"汉字 │ x\n" +
-		"abc  │ y\n"
+	if _, err := pterm.Table.Srender(); !errors.Is(err, pterm.ErrEmpty) {
+		t.Errorf("err = %v, want ErrEmpty", err)
+	}
 
-	assert.Equal(t, expected, srenderPlain(t, printer))
+	if err := pterm.Table.WithData(pterm.TableData{{}}).Render(); !errors.Is(err, pterm.ErrEmpty) {
+		t.Errorf("err = %v, want ErrEmpty", err)
+	}
 }
 
-func TestTablePrinter_ANSICodesInCellsDoNotAffectPadding(t *testing.T) {
-	printer := pterm.DefaultTable.WithData(pterm.TableData{
-		{pterm.FgRed.Sprint("a"), "b"},
-		{"cc", "d"},
-	})
+func TestTableAlignment(t *testing.T) {
+	setup(t)
 
-	// The styled "a" is much longer in bytes than "cc", but only its visible
-	// width (1) may count for the column width.
-	expected := "" +
-		"a  │ b\n" +
-		"cc │ d\n"
+	data := pterm.TableData{{"a", "b"}, {"x", "1"}, {"long", "22"}}
 
-	assert.Equal(t, expected, srenderPlain(t, printer))
+	got, _ := pterm.Table.WithHeaderRule(false).WithData(data).WithColumnAlignment(0, pterm.AlignRight).
+		WithColumnAlignment(1, pterm.AlignLeft).Srender()
+	want := "   A  B\n   x  1\nlong  22"
+
+	if plain(got) != want {
+		t.Errorf("got:\n%s\nwant:\n%s", plain(got), want)
+	}
+
+	got, _ = pterm.Table.WithHeaderRule(false).WithData(data).WithRightAlignment().Srender()
+	if want := "   A   B\n   x   1\nlong  22"; plain(got) != want {
+		t.Errorf("right:\n%s\nwant:\n%s", plain(got), want)
+	}
+
+	got, _ = pterm.Table.WithHeaderRule(false).WithData(data).WithLeftAlignment().Srender()
+	if want := "A     B\nx     1\nlong  22"; plain(got) != want {
+		t.Errorf("left:\n%s\nwant:\n%s", plain(got), want)
+	}
 }
 
-func TestTablePrinter_RightAlignment(t *testing.T) {
-	printer := pterm.DefaultTable.WithRightAlignment().WithData(pterm.TableData{
-		{"Name", "Age"},
-		{"Alice", "1"},
-		{"Bob", "22"},
-	})
+func TestTableNumberDetection(t *testing.T) {
+	setup(t)
 
-	expected := "" +
-		" Name │ Age\n" +
-		"Alice │   1\n" +
-		"  Bob │  22\n"
+	got, _ := pterm.Table.WithHasHeader(false).WithData(pterm.TableData{
+		{"a", "1m 34s", "v1.2.3", "12%"},
+		{"bb", "5s", "v1.10.0", "-"},
+	}).Srender()
+	want := "a   1m 34s  v1.2.3   12%\nbb      5s  v1.10.0    -"
 
-	assert.Equal(t, expected, srenderPlain(t, printer))
+	if plain(got) != want {
+		t.Errorf("got:\n%s\nwant:\n%s", plain(got), want)
+	}
 }
 
-func TestTablePrinter_MultilineCellsStayInTheirColumn(t *testing.T) {
-	printer := pterm.DefaultTable.WithData(pterm.TableData{
-		{"a\nb", "x"},
-		{"c", "y"},
-	})
+func TestTableCutsToWidth(t *testing.T) {
+	setup(t)
 
-	// The second line of the multiline cell stays in column 0; column 1 is
-	// padded with spaces on that line.
-	expected := "" +
-		"a │ x\n" +
-		"b │  \n" +
-		"c │ y\n"
-
-	assert.Equal(t, expected, srenderPlain(t, printer))
-}
-
-func TestTablePrinter_HeaderRowSeparatorSpansTableWidth(t *testing.T) {
-	printer := pterm.DefaultTable.WithHasHeader().WithHeaderRowSeparator("=").WithData(pterm.TableData{
-		{"Name", "Age"},
-		{"Bob", "1"},
-	})
-
-	expected := "" +
-		"Name │ Age\n" +
-		"==========\n" +
-		"Bob  │ 1  \n"
-
-	assert.Equal(t, expected, srenderPlain(t, printer))
-}
-
-func TestTablePrinter_RowSeparatorBetweenRowsOnly(t *testing.T) {
-	printer := pterm.DefaultTable.WithRowSeparator("-").WithData(pterm.TableData{
-		{"a"},
-		{"b"},
-		{"c"},
-	})
-
-	// A separator line (as wide as the widest row) between rows, but not
-	// after the last one.
-	expected := "a\n-\nb\n-\nc\n"
-
-	assert.Equal(t, expected, srenderPlain(t, printer))
-}
-
-func TestTablePrinter_HasHeaderStylesOnlyFirstRow(t *testing.T) {
+	term := vt.New(30, 10)
 	data := pterm.TableData{
-		{"Name", "Age"},
-		{"Alice", "1"},
+		{"Name", "Path"},
+		{"npm", "~/.npm/_cacache/index-v5/aa/bb"},
+		{"go", "~/go/pkg/mod/cache/download"},
 	}
 
-	styled, err := pterm.DefaultTable.WithHasHeader().WithData(data).Srender()
-	require.NoError(t, err)
-
-	prefix := styledPrefix(t, &pterm.ThemeDefault.TableHeaderStyle)
-	assert.Contains(t, styled, prefix+"Name", "header row must be wrapped in the header style")
-	assert.NotContains(t, styled, prefix+"Alice", "data rows must not get the header style")
-
-	// Apart from the header separator line, the header style must not change
-	// the visible layout.
-	expected := "" +
-		"Name  │ Age\n" +
-		"───────────\n" +
-		"Alice │ 1  \n"
-	assert.Equal(t, expected, stripANSI(styled))
-}
-
-func TestTablePrinter_AlternateRowStyleOnEverySecondRow(t *testing.T) {
-	alt := pterm.NewStyle(pterm.FgMagenta)
-	printer := pterm.DefaultTable.WithHasHeader().WithAlternateRowStyle(alt).WithData(pterm.TableData{
-		{"Name", "Age"},
-		{"Bob", "1"},
-		{"Callie", "2"},
-		{"Dean", "3"},
-	})
-
-	styled, err := printer.Srender()
-	require.NoError(t, err)
-
-	prefix := styledPrefix(t, alt)
-	assert.Contains(t, styled, prefix+"Bob", "row 1 must use the alternate style")
-	assert.Contains(t, styled, prefix+"Dean", "row 3 must use the alternate style")
-	assert.NotContains(t, styled, prefix+"Callie", "row 2 must not use the alternate style")
-}
-
-func TestTablePrinter_BoxedWrapsTableInAlignedBox(t *testing.T) {
-	printer := pterm.DefaultTable.WithBoxed().WithData(pterm.TableData{
-		{"a", "b"},
-		{"cc", "dd"},
-	})
-
-	expected := "" +
-		"╭─────────╮\n" +
-		"│ a  │ b  │\n" +
-		"│ cc │ dd │\n" +
-		"╰─────────╯"
-
-	assert.Equal(t, expected, srenderPlain(t, printer))
-}
-
-func TestTablePrinter_WithBoxPrinterCustomBorders(t *testing.T) {
-	customBox := pterm.BoxPrinter{
-		VerticalString:          "#",
-		TopRightCornerString:    "+",
-		TopLeftCornerString:     "+",
-		BottomLeftCornerString:  "+",
-		BottomRightCornerString: "+",
-		HorizontalString:        "=",
-		RightPadding:            1,
-		LeftPadding:             1,
+	if err := pterm.Table.WithWriter(term).WithData(data).Render(); err != nil {
+		t.Fatal(err)
 	}
 
-	printer := pterm.DefaultTable.WithBoxPrinter(customBox).WithData(pterm.TableData{
-		{"a", "b"},
-		{"cc", "dd"},
-	})
-
-	expected := "" +
-		"+=========+\n" +
-		"# a  │ b  #\n" +
-		"# cc │ dd #\n" +
-		"+=========+"
-
-	assert.Equal(t, expected, srenderPlain(t, printer))
-}
-
-func TestTablePrinter_WithBoxPrinterBoxStyle(t *testing.T) {
-	style := pterm.NewStyle(pterm.FgCyan)
-	customBox := *pterm.DefaultBox.WithBoxStyle(style)
-
-	printer := pterm.DefaultTable.WithBoxPrinter(customBox).WithData(pterm.TableData{
-		{"a", "b"},
-	})
-
-	out, err := printer.Srender()
-	require.NoError(t, err)
-
-	prefix := styledPrefix(t, style)
-	assert.Contains(t, out, prefix, "custom box style must be applied to box borders")
-}
-
-func TestTablePrinter_WithBoxPrinterWithTitle(t *testing.T) {
-	customBox := *pterm.DefaultBox.WithTitle("Table Title")
-
-	printer := pterm.DefaultTable.WithBoxPrinter(customBox).WithData(pterm.TableData{
-		{"a", "b"},
-	})
-
-	plain := srenderPlain(t, printer)
-	assert.Contains(t, plain, "Table Title", "box title must be rendered")
-}
-
-func TestTablePrinter_WithBoxPrinterDisablingViaWithBoxedFalse(t *testing.T) {
-	customBox := *pterm.DefaultBox.WithVerticalString("#")
-
-	printer := pterm.DefaultTable.WithBoxPrinter(customBox).WithBoxed(false).WithData(pterm.TableData{
-		{"a", "b"},
-	})
-
-	expected := "a │ b\n"
-	assert.Equal(t, expected, srenderPlain(t, printer))
-}
-
-func TestTablePrinter_WithBoxPrinterZeroValueFallsBackToDefaultBox(t *testing.T) {
-	printer := pterm.DefaultTable.WithBoxPrinter(pterm.BoxPrinter{}).WithData(pterm.TableData{
-		{"a", "b"},
-		{"cc", "dd"},
-	})
-
-	expected := "" +
-		"╭─────────╮\n" +
-		"│ a  │ b  │\n" +
-		"│ cc │ dd │\n" +
-		"╰─────────╯"
-
-	assert.Equal(t, expected, srenderPlain(t, printer))
-}
-
-func TestTablePrinter_EmptyDataRendersEmptyString(t *testing.T) {
-	// Documents current behavior: a table without data renders as an empty
-	// string and does not return an error.
-	out, err := pterm.DefaultTable.Srender()
-	require.NoError(t, err)
-	assert.Empty(t, out)
-}
-
-func TestTablePrinter_WithCSVReaderParsesRecordsIntoData(t *testing.T) {
-	reader := csv.NewReader(strings.NewReader("Name,Age\nAlice,30\n"))
-	printer := pterm.DefaultTable.WithCSVReader(reader)
-
-	require.Equal(t, pterm.TableData{{"Name", "Age"}, {"Alice", "30"}}, printer.Data)
-
-	// The CSV-fed table must render exactly like the same data set directly.
-	fromData := srenderPlain(t, pterm.DefaultTable.WithData(pterm.TableData{{"Name", "Age"}, {"Alice", "30"}}))
-	assert.Equal(t, fromData, srenderPlain(t, printer))
-}
-
-func TestTablePrinter_WithCSVReaderKeepsDataOnParseError(t *testing.T) {
-	reader := csv.NewReader(strings.NewReader("a,b\nc\n")) // inconsistent field count
-	printer := pterm.DefaultTable.WithCSVReader(reader)
-
-	assert.Nil(t, printer.Data, "malformed CSV must leave Data unchanged")
-}
-
-func TestTablePrinter_SrenderIsPure(t *testing.T) {
-	data := pterm.TableData{
-		{"Name", "Age"},
-		{"Alice", "1"},
+	for _, line := range strings.Split(term.Screen(), "\n") {
+		if w := len([]rune(line)); w > 30 {
+			t.Errorf("line %q is %d columns wide", line, w)
+		}
 	}
-	printer := pterm.DefaultTable.WithHasHeader().WithData(data)
 
-	first, err := printer.Srender()
-	require.NoError(t, err)
-
-	second, err := printer.Srender()
-	require.NoError(t, err)
-
-	assert.Equal(t, first, second, "rendering twice must yield identical output")
-	assert.Equal(t, pterm.TableData{{"Name", "Age"}, {"Alice", "1"}}, data, "rendering must not modify the input data")
-}
-
-func TestTablePrinter_ColumnMinWidthsWidenNarrowColumns(t *testing.T) {
-	printer := pterm.DefaultTable.
-		WithColumnMinWidths(8, 5).
-		WithData(pterm.TableData{
-			{"Name", "Age"},
-			{"Bob", "22"},
-		})
-
-	// Column 0 is only 4 wide by content ("Name") but is padded to the
-	// requested minimum of 8; column 1 to 5. The last column is padded too.
-	expected := "" +
-		"Name     │ Age  \n" +
-		"Bob      │ 22   \n"
-
-	assert.Equal(t, expected, srenderPlain(t, printer))
-}
-
-func TestTablePrinter_ColumnMinWidthsNeverShrinkWideColumns(t *testing.T) {
-	// A minimum below the natural content width has no effect: content wins.
-	data := pterm.TableData{
-		{"Firstname", "Age"},
-		{"Alice", "1"},
+	if !strings.Contains(term.Screen(), "…") {
+		t.Errorf("no ellipsis in:\n%s", term.Screen())
 	}
-	withMin := pterm.DefaultTable.WithColumnMinWidths(2, 2).WithData(data)
-	plain := pterm.DefaultTable.WithData(data)
 
-	assert.Equal(t, srenderPlain(t, plain), srenderPlain(t, withMin))
+	// The widest column shrinks; the narrow one keeps its content.
+	if !strings.Contains(term.Screen(), "npm   ~/.npm/") {
+		t.Errorf("narrow column was cut:\n%s", term.Screen())
+	}
 }
 
-func TestTablePrinter_ColumnMinWidthsAlignSeparateTables(t *testing.T) {
-	// The main use case: two tables with different content render with the
-	// same column layout when given the same minimum widths, so they line up
-	// when printed one after another.
-	widths := []int{10, 6}
+func TestTableBoxedFitsWidth(t *testing.T) {
+	setup(t)
 
-	first := srenderPlain(t, pterm.DefaultTable.
-		WithColumnMinWidths(widths...).
-		WithData(pterm.TableData{{"Alice", "1"}}))
-	second := srenderPlain(t, pterm.DefaultTable.
-		WithColumnMinWidths(widths...).
-		WithData(pterm.TableData{{"Bob", "22"}}))
+	term := vt.New(20, 10)
+	_ = pterm.Table.WithWriter(term).WithBoxed().WithData(pterm.TableData{
+		{"Name", "Description"},
+		{"x", "a description that is far too long"},
+	}).Render()
 
-	// Both tables are single ASCII rows, so a byte count is their width.
-	firstWidth := len(strings.TrimRight(first, "\n"))
-	secondWidth := len(strings.TrimRight(second, "\n"))
-	assert.Equal(t, firstWidth, secondWidth, "tables sharing minimum widths must render at the same width")
+	for _, line := range strings.Split(term.Screen(), "\n") {
+		if w := len([]rune(line)); w != 20 {
+			t.Errorf("line %q is %d columns wide, want 20", line, w)
+		}
+	}
 }
 
-func TestTablePrinter_ColumnMinWidthsExtraEntriesIgnored(t *testing.T) {
-	// More minimums than columns must not panic; the surplus is ignored.
-	printer := pterm.DefaultTable.
-		WithColumnMinWidths(3, 3, 3, 3).
-		WithData(pterm.TableData{{"a", "b"}})
+func TestTableUnknownWidthNeverCuts(t *testing.T) {
+	setup(t)
+	t.Setenv("COLUMNS", "")
 
-	out, err := printer.Srender()
-	require.NoError(t, err)
-	assert.NotEmpty(t, out)
+	var buf bytes.Buffer
+
+	long := strings.Repeat("x", 300)
+	_ = pterm.Table.WithWriter(&buf).WithData(pterm.TableData{{"A"}, {long}}).Render()
+
+	if !strings.Contains(buf.String(), long) {
+		t.Error("cell was cut with an unknown width")
+	}
+}
+
+func TestTableANSIInCells(t *testing.T) {
+	setup(t)
+
+	red := pterm.ToneError.Sprint("12")
+	got, _ := pterm.Table.WithHeaderUppercase(false).WithData(pterm.TableData{
+		{pterm.ToneAccent.Sprint("head"), "n"},
+		{red, "1"},
+		{"345", "2"},
+	}).Srender()
+
+	if !strings.Contains(got, red) {
+		t.Errorf("styled cell lost its style: %q", got)
+	}
+
+	if want := "head  N"; strings.Split(plain(got), "\n")[0] == want {
+		t.Error("header was uppercased without HeaderUppercase")
+	}
+
+	// Escape sequences do not count as width: "12" right-aligns under "345".
+	if lines := strings.Split(plain(got), "\n"); lines[2] != "  12  1" {
+		t.Errorf("row = %q", lines[2])
+	}
+}
+
+func TestTableUppercaseKeepsEscapes(t *testing.T) {
+	setup(t)
+
+	got, _ := pterm.Table.WithData(pterm.TableData{{pterm.ToneAccent.Sprint("name")}, {"x"}}).Srender()
+	if !strings.Contains(got, "NAME") || !strings.Contains(got, "\x1b[38;2;") {
+		t.Errorf("header = %q", got)
+	}
+}
+
+func TestTableMinWidthsAndRaggedRows(t *testing.T) {
+	setup(t)
+
+	got, _ := pterm.Table.WithHeaderRule(false).WithColumnMinWidths(6).WithData(pterm.TableData{
+		{"a", "b", "c"},
+		{"x"},
+	}).Srender()
+
+	if want := "A       B  C\nx"; plain(got) != want {
+		t.Errorf("got %q, want %q", plain(got), want)
+	}
+}
+
+func TestTableCSV(t *testing.T) {
+	setup(t)
+
+	p := pterm.Table.WithCSVReader(csv.NewReader(strings.NewReader("a,b\n1,2")))
+	if len(p.Data) != 2 || p.Data[1][1] != "2" {
+		t.Errorf("data = %v", p.Data)
+	}
+
+	broken := pterm.Table.WithData(cacheData).WithCSVReader(csv.NewReader(strings.NewReader("a,\"b")))
+	if len(broken.Data) != len(cacheData) {
+		t.Error("a failing reader replaced the data")
+	}
+}
+
+func TestTableBuildersDoNotShare(t *testing.T) {
+	setup(t)
+
+	base := pterm.Table.WithColumnStyle(0, pterm.ToneAccent.Style())
+	a := base.WithColumnStyle(1, pterm.ToneError.Style())
+	b := base.WithColumnStyle(1, pterm.ToneSuccess.Style())
+
+	if a.ColumnStyles[1] == b.ColumnStyles[1] {
+		t.Error("builders share their column styles")
+	}
+
+	if len(pterm.Table.ColumnStyles) != 0 {
+		t.Error("the default table was changed")
+	}
+}
+
+// plain strips colors from s.
+func plain(s string) string {
+	return pterm.RemoveColorFromString(s)
 }

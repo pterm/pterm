@@ -1,6 +1,6 @@
 ### paragraph/demo
 
-![Animation](https://vhs.charm.sh/vhs-rDsuWNMNIZlEJ4RMSFwhR.gif)
+![Animation](demo/animation.gif)
 
 <details>
 
@@ -12,26 +12,22 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// The paragraph printer wraps long text at word boundaries so it fits the
-	// terminal width without breaking words apart.
-	pterm.DefaultParagraph.Println("This is the default paragraph printer. As you can see, no words are separated, " +
-		"but the text is split at the spaces. This is useful for continuous text of all kinds. You can manually change the line width if you want to." +
-		"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam")
+	// A paragraph wraps running text at word boundaries. Lines stay at most
+	// 80 columns wide, which keeps text easy to read on wide terminals.
+	// A blank line starts a new paragraph.
+	pterm.Paragraph.Println(`pterm prints beautiful terminal output with one line of code. Every printer
+follows one theme, so tables, spinners and prompts look like parts of one tool.
 
-	pterm.Println()
-
-	// For comparison: plain Println lets the terminal break lines wherever
-	// they happen to overflow, even in the middle of a word.
-	pterm.Println("This text is written with the default Println() function. No intelligent splitting here." +
-		"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam")
+Output adapts to the terminal: colors are turned off when the output is a pipe,
+and text wraps to the width of the window.`)
 }
 ```
 
 </details>
 
-### paragraph/customized
+### paragraph/max-width
 
-![Animation](https://vhs.charm.sh/vhs-5DTRfS5OXeOv4yybnL8aOE.gif)
+![Animation](max-width/animation.gif)
 
 <details>
 
@@ -43,22 +39,8 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	longText := "This is a custom paragraph printer. As you can see, no words are separated, " +
-		"but the text is split at the spaces. This is useful for continuous text of all kinds. You can manually change the line width if you want to." +
-		"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam"
-
-	// The paragraph printer wraps at word boundaries. WithMaxWidth caps the
-	// line width instead of using the full terminal width.
-	pterm.DefaultParagraph.WithMaxWidth(60).Println(longText)
-
-	pterm.Println()
-
-	longTextWithoutParagraph := "This text is written with the default Println() function. No intelligent splitting here." +
-		"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam"
-
-	// For comparison: plain Println lets the terminal break lines wherever
-	// they happen to overflow, even in the middle of a word.
-	pterm.Println(longTextWithoutParagraph)
+	// A narrow column suits short notes next to other output.
+	pterm.Paragraph.WithMaxWidth(40).Println("The cache keeps downloaded modules for 30 days. Run the clean command to remove them earlier and free disk space.")
 }
 ```
 

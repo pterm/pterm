@@ -1,32 +1,31 @@
 # heatmap/demo
 
-![Animation](https://vhs.charm.sh/vhs-7FApY9pxrlKjoDh6ZmBpAS.gif)
+![Animation](animation.gif)
 
 ```go
 package main
 
-import (
-	"github.com/pterm/pterm"
-)
+import "github.com/pterm/pterm"
 
 func main() {
-	// Each inner slice is one row; cell colors are scaled between the
-	// smallest and largest value in the whole matrix.
-	data := [][]float32{
-		{0.9, 0.2, -0.7, 0.4, -0.5, 0.6, -0.3, 0.8, -0.1, -1.0, 0.1, -0.8, 0.3},
-		{0.2, -0.7, -0.5, -0.3, -0.1, 0.1, 0.3, 0.5, 0.9, -0.9, -0.7, -0.5, -0.3},
-		{0.4, 0.4, -0.3, -1.0, 0.3, -0.2, -0.9, 0.5, -0.3, -1.0, 0.6, -0.2, -0.9},
-		{0.9, -0.5, -0.1, 0.3, 1, -0.7, -0.3, 0.1, 0.7, -0.9, -0.5, 0.2, 0.6},
-		{0.5, 0.6, 0.1, -0.2, -0.7, 0.8, 0.6, 0.1, -0.5, -0.7, 0.7, 0.3, 0.0},
+	// Commits per weekday, in two-hour slots. Each row is one day, and the
+	// colors run from Border through Primary to Accent.
+	data := pterm.HeatmapData{
+		{3, 6, 4, 7, 12, 24, 34, 32, 28, 12, 3, 6},
+		{5, 3, 6, 4, 14, 26, 31, 34, 25, 14, 5, 3},
+		{7, 5, 3, 6, 11, 28, 33, 31, 27, 11, 7, 5},
+		{4, 7, 5, 3, 13, 25, 35, 33, 24, 13, 4, 7},
+		{6, 4, 7, 5, 10, 27, 32, 35, 26, 10, 6, 4},
+		{1, 4, 2, 5, 5, 6, 11, 9, 10, 5, 1, 4},
+		{3, 1, 4, 2, 7, 8, 8, 11, 7, 7, 3, 1},
 	}
 
-	// Axis labels must match the data: one X label per column, one Y label per row.
-	headerData := pterm.HeatmapAxis{
-		XAxis: []string{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m"},
-		YAxis: []string{"1", "2", "3", "4", "5"},
+	// One X label per column and one Y label per row.
+	axis := pterm.HeatmapAxis{
+		XAxis: []string{"00", "02", "04", "06", "08", "10", "12", "14", "16", "18", "20", "22"},
+		YAxis: []string{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"},
 	}
 
-	// WithEnableRGB uses smooth TrueColor gradients instead of the ANSI palette.
-	pterm.DefaultHeatmap.WithAxisData(headerData).WithData(data).WithEnableRGB().Render()
+	pterm.Heatmap.WithData(data).WithAxisData(axis).WithLegendLabel("commits").Render()
 }
 ```

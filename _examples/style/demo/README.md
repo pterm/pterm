@@ -1,20 +1,28 @@
 # style/demo
 
-![Animation](https://vhs.charm.sh/vhs-5fzvhSDBpEvbWqcS5BrJhl.gif)
+![Animation](animation.gif)
 
 ```go
 package main
 
-import "github.com/pterm/pterm"
+import (
+	"atomicgo.dev/color"
+
+	"github.com/pterm/pterm"
+)
 
 func main() {
-	// A Style combines any number of colors and text options.
-	// It can be reused anywhere PTerm accepts a style.
-	primary := pterm.NewStyle(pterm.FgLightCyan, pterm.BgGray, pterm.Bold)
-	secondary := pterm.NewStyle(pterm.FgLightGreen, pterm.BgWhite, pterm.Italic)
+	// A Style combines a foreground tone, an optional background tone and
+	// text attributes. Tones follow the active theme.
+	title := pterm.NewStyle(pterm.TonePrimary, color.Bold)
+	label := pterm.NewStyle(pterm.ToneText).On(pterm.ToneBorder)
+	link := pterm.NewStyle(pterm.ToneInfo, color.Underline)
 
-	// Styles are also TextPrinters, so they can print directly.
-	primary.Println("Hello, World!")
-	secondary.Println("Hello, World!")
+	pterm.Println(title.Sprint("Release notes"))
+	pterm.Println(label.Sprint(" v0.13.0 "), pterm.ToneMuted.Sprint("2026-10-10"))
+	pterm.Println("Read more at", link.Sprint("https://pterm.sh"))
+
+	// With adds attributes to a copy, so the base style stays untouched.
+	pterm.Println(title.With(color.Italic).Sprint("Thanks to all contributors"))
 }
 ```

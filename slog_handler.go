@@ -2,94 +2,114 @@ package pterm
 
 import (
 	"context"
-
 	"log/slog"
+	"slices"
 )
 
-// SlogHandler is a slog.Handler that prints log records via a pterm Logger.
+// SlogHandler is a slog.Handler that prints records with a LoggerPrinter,
+// so code that logs with log/slog gets pterm's look:
+//
+//	slog.SetDefault(slog.New(pterm.NewSlogHandler(pterm.Logger.WithLevel(pterm.LogLevelDebug))))
 type SlogHandler struct {
-	logger *Logger
-	attrs  []slog.Attr
+	logger *LoggerPrinter
+	attrs  []LoggerArgument
+	group  string
 }
 
-// Enabled returns true if the given level is enabled.
+// NewSlogHandler returns a handler that prints with logger, or with Logger
+// when logger is nil. The handler reads logger for every record, so later
+// changes to it take effect.
+func NewSlogHandler(logger *LoggerPrinter) *SlogHandler {
+	if logger == nil {
+		logger = &Logger
+	}
+
+	return &SlogHandler{logger: logger}
+}
+
+// logLevelOf maps a slog level to the pterm level that covers it.
+func logLevelOf(level slog.Level) LogLevel {
+	switch {
+	case level < slog.LevelDebug:
+		return LogLevelTrace
+	case level < slog.LevelInfo:
+		return LogLevelDebug
+	case level < slog.LevelWarn:
+		return LogLevelInfo
+	case level < slog.LevelError:
+		return LogLevelWarn
+	default:
+		return LogLevelError
+	}
+}
+
+// Enabled reports whether the logger prints records of level.
 func (s *SlogHandler) Enabled(_ context.Context, level slog.Level) bool {
-	switch level {
-	case slog.LevelDebug:
-		return s.logger.CanPrint(LogLevelDebug)
-	case slog.LevelInfo:
-		return s.logger.CanPrint(LogLevelInfo)
-	case slog.LevelWarn:
-		return s.logger.CanPrint(LogLevelWarn)
-	case slog.LevelError:
-		return s.logger.CanPrint(LogLevelError)
-	}
-
-	return false
+	return s.logger.CanPrint(logLevelOf(level))
 }
 
-// Handle handles the given record.
+// Handle prints record. Attributes keep their order: those added with
+// WithAttrs first, then the record's own. Groups become key prefixes, as in
+// "request.id".
 func (s *SlogHandler) Handle(_ context.Context, record slog.Record) error {
-	level := record.Level
-	message := record.Message
+	args := slices.Clone(s.attrs)
 
-	// Collect the attrs in the order they were supplied, so the logger can print
-	// them predictably instead of in Go's randomized map order. Attrs bound via
-	// WithAttrs come first, followed by the record's own attrs, matching the
-	// behavior of slog's own text handler. Alphabetical ordering is available
-	// through the logger's SortArguments option.
-	args := make([]LoggerArgument, 0, len(s.attrs)+record.NumAttrs())
-
-	for _, attr := range s.attrs {
-		args = append(args, LoggerArgument{Key: attr.Key, Value: attr.Value})
-	}
-
-	record.Attrs(func(attr slog.Attr) bool {
-		args = append(args, LoggerArgument{Key: attr.Key, Value: attr.Value})
+	record.Attrs(func(a slog.Attr) bool {
+		args = appendAttr(args, s.group, a)
 		return true
 	})
 
-	// Wrapping args inside another slice to match [][]LoggerArgument
-	argsWrapped := [][]LoggerArgument{args}
-
-	logger := s.logger
-
-	// Must be done here, see https://github.com/pterm/pterm/issues/608#issuecomment-1876001650
-	if logger.CallerOffset == 0 {
-		logger = logger.WithCallerOffset(3)
-	}
-
-	switch level {
-	case slog.LevelDebug:
-		logger.Debug(message, argsWrapped...)
-	case slog.LevelInfo:
-		logger.Info(message, argsWrapped...)
-	case slog.LevelWarn:
-		logger.Warn(message, argsWrapped...)
-	case slog.LevelError:
-		logger.Error(message, argsWrapped...)
-	default:
-		logger.Print(message, argsWrapped...)
-	}
+	s.logger.log(logLevelOf(record.Level), record.Message, args, record.PC)
 
 	return nil
 }
 
-// WithAttrs returns a new handler with the given attributes.
+// WithAttrs returns a handler that adds attrs to every record.
 func (s *SlogHandler) WithAttrs(attrs []slog.Attr) slog.Handler {
-	newS := *s
-	newS.attrs = attrs
+	next := *s
+	next.attrs = slices.Clone(s.attrs)
 
-	return &newS
+	for _, a := range attrs {
+		next.attrs = appendAttr(next.attrs, s.group, a)
+	}
+
+	return &next
 }
 
-// WithGroup is not yet supported.
-func (s *SlogHandler) WithGroup(_ string) slog.Handler {
-	// Grouping is not yet supported by pterm.
-	return s
+// WithGroup returns a handler that prefixes the keys of later attributes
+// with name.
+func (s *SlogHandler) WithGroup(name string) slog.Handler {
+	if name == "" {
+		return s
+	}
+
+	next := *s
+	next.group = s.group + name + "."
+
+	return &next
 }
 
-// NewSlogHandler returns a new logging handler that can be integrated with log/slog.
-func NewSlogHandler(logger *Logger) *SlogHandler {
-	return &SlogHandler{logger: logger}
+// appendAttr appends a as arguments, flattening groups into dotted keys.
+func appendAttr(args []LoggerArgument, prefix string, a slog.Attr) []LoggerArgument {
+	a.Value = a.Value.Resolve()
+
+	if a.Equal(slog.Attr{}) {
+		return args
+	}
+
+	if a.Value.Kind() != slog.KindGroup {
+		return append(args, LoggerArgument{Key: prefix + a.Key, Value: a.Value})
+	}
+
+	// A group without a key adds its attributes at the current level, as
+	// slog's own handlers do.
+	if a.Key != "" {
+		prefix += a.Key + "."
+	}
+
+	for _, ga := range a.Value.Group() {
+		args = appendAttr(args, prefix, ga)
+	}
+
+	return args
 }

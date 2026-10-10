@@ -1,448 +1,327 @@
 package pterm
 
 import (
+	"context"
+	"fmt"
 	"io"
-	"os"
 	"sync"
 	"time"
 
-	"github.com/pterm/pterm/internal"
+	"github.com/pterm/pterm/internal/screen"
 )
 
-var activeSpinnerPrinters []*SpinnerPrinter
-
-// DefaultSpinner is the default SpinnerPrinter.
-var DefaultSpinner = SpinnerPrinter{
-	Sequence:            []string{"⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"},
-	Style:               &ThemeDefault.SpinnerStyle,
-	Delay:               time.Millisecond * 100,
-	ShowTimer:           true,
-	TimerRoundingFactor: time.Second,
-	TimerStyle:          &ThemeDefault.TimerStyle,
-	MessageStyle:        &ThemeDefault.SpinnerTextStyle,
-	InfoPrinter:         &Info,
-	SuccessPrinter:      &Success,
-	FailPrinter:         &Error,
-	WarningPrinter:      &Warning,
-	Writer:              os.Stderr,
-}
-
-// SpinnerPrinter is a loading animation, which can be used if the progress is unknown.
-// It's an animation loop, which can have a text and supports throwing errors or warnings.
-// A TextPrinter is used to display all outputs, after the SpinnerPrinter is done.
+// SpinnerPrinter shows that something is running. It ends as a status line
+// with the time it took:
+//
+//	⠹ Downloading assets 1.2s
+//	✔ Downloaded assets 3.4s
 type SpinnerPrinter struct {
-	Text                string
-	Sequence            []string
-	Style               *Style
-	Delay               time.Duration
-	MessageStyle        *Style
-	InfoPrinter         TextPrinter
-	SuccessPrinter      TextPrinter
-	FailPrinter         TextPrinter
-	WarningPrinter      TextPrinter
-	RemoveWhenDone      bool
-	ShowTimer           bool
-	TimerRoundingFactor time.Duration
-	TimerStyle          *Style
-
-	IsActive bool
-
-	startedAt       time.Time
-	currentSequence string
-
+	// Text describes what is running.
+	Text string
+	// Tone colors the spinner frames.
+	Tone Tone
+	// Frames are drawn in turn. Nil uses the spinner of the glyph set.
+	Frames []string
+	// Delay is the time between two frames.
+	Delay time.Duration
+	// ShowTimer adds the elapsed time, muted, after the text.
+	ShowTimer bool
+	// RemoveWhenDone removes the spinner when it stops instead of leaving a
+	// status line.
+	RemoveWhenDone bool
+	// Writer receives the output. Nil means the default output.
 	Writer io.Writer
+	// Context stops the spinner as canceled when it ends.
+	Context context.Context
+	// OnInterrupt runs when the user presses Ctrl+C while the spinner runs,
+	// after the terminal was restored. Nil exits the program with code 130.
+	OnInterrupt func()
 
-	// mu serializes access to the printer's mutable state once Start has run.
-	// It is a pointer so the value-receiver With* methods can copy the struct
-	// without tripping go vet's copylocks check; Start lazily allocates it.
-	mu *sync.RWMutex
-	// wg lets Stop block until the animation goroutine has fully exited,
-	// avoiding leaked goroutines that would otherwise accumulate across
-	// successive Start/Stop cycles (especially in tests).
-	wg *sync.WaitGroup
-	// stopCh is closed by Stop to interrupt the animation goroutine's sleep;
-	// without it the goroutine would not exit until its next Delay tick fires.
-	stopCh   chan struct{}
-	stopOnce *sync.Once
+	run *spinnerRun
 }
 
-// lock locks the printer's runtime mutex, allocating it on first use so the
-// value-receiver builders can be used safely before Start.
-func (s *SpinnerPrinter) lock() {
-	if s.mu == nil {
-		s.mu = &sync.RWMutex{}
+// spinnerRun is the state of a started spinner. Copies of a started
+// SpinnerPrinter share it.
+type spinnerRun struct {
+	mu      sync.Mutex
+	text    string
+	started time.Time
+	frame   int
+	region  *screen.Region
+	done    chan struct{}
+	// finished prints the final line once. Callers that end the spinner at
+	// the same time wait until it is printed, so a Stop right before the
+	// program exits never loses it.
+	finished sync.Once
+}
+
+// Spinner is the default spinner.
+var Spinner = SpinnerPrinter{
+	Tone:      TonePrimary,
+	Delay:     80 * time.Millisecond,
+	ShowTimer: true,
+}
+
+// WithText returns a copy of p with text t.
+func (p SpinnerPrinter) WithText(t string) *SpinnerPrinter {
+	p.Text = t
+	return &p
+}
+
+// WithTone returns a copy of p whose frames use tone t.
+func (p SpinnerPrinter) WithTone(t Tone) *SpinnerPrinter {
+	p.Tone = t
+	return &p
+}
+
+// WithFrames returns a copy of p that draws frames in turn.
+func (p SpinnerPrinter) WithFrames(frames ...string) *SpinnerPrinter {
+	p.Frames = frames
+	return &p
+}
+
+// WithDelay returns a copy of p that waits d between frames.
+func (p SpinnerPrinter) WithDelay(d time.Duration) *SpinnerPrinter {
+	p.Delay = d
+	return &p
+}
+
+// WithShowTimer returns a copy of p that shows or hides the elapsed time.
+func (p SpinnerPrinter) WithShowTimer(show ...bool) *SpinnerPrinter {
+	p.ShowTimer = flag(show)
+	return &p
+}
+
+// WithRemoveWhenDone returns a copy of p that disappears when it stops.
+func (p SpinnerPrinter) WithRemoveWhenDone(remove ...bool) *SpinnerPrinter {
+	p.RemoveWhenDone = flag(remove)
+	return &p
+}
+
+// WithWriter returns a copy of p that writes to w.
+func (p SpinnerPrinter) WithWriter(w io.Writer) *SpinnerPrinter {
+	p.Writer = w
+	return &p
+}
+
+// WithContext returns a copy of p that stops as canceled when ctx ends.
+func (p SpinnerPrinter) WithContext(ctx context.Context) *SpinnerPrinter {
+	p.Context = ctx
+	return &p
+}
+
+// WithOnInterrupt returns a copy of p that runs fn on Ctrl+C instead of
+// exiting.
+func (p SpinnerPrinter) WithOnInterrupt(fn func()) *SpinnerPrinter {
+	p.OnInterrupt = fn
+	return &p
+}
+
+// Start shows the spinner with the given text, or with p.Text when none is
+// given, and returns the running spinner.
+func (p SpinnerPrinter) Start(text ...any) (*SpinnerPrinter, error) {
+	if len(text) > 0 {
+		p.Text = sprintln(text...)
 	}
 
-	s.mu.Lock()
-}
-
-// unlock releases the printer's runtime mutex.
-func (s *SpinnerPrinter) unlock() {
-	s.mu.Unlock()
-}
-
-// rlock takes a read lock on the printer's runtime mutex, allocating it on
-// first use.
-func (s *SpinnerPrinter) rlock() {
-	if s.mu == nil {
-		s.mu = &sync.RWMutex{}
+	if p.Delay <= 0 {
+		p.Delay = Spinner.Delay
 	}
 
-	s.mu.RLock()
-}
+	run := &spinnerRun{text: p.Text, started: time.Now(), done: make(chan struct{})}
+	p.run = run
 
-// runlock releases a read lock taken by rlock.
-func (s *SpinnerPrinter) runlock() {
-	s.mu.RUnlock()
-}
-
-// isActive returns whether the spinner is currently active. Used internally by
-// print.go to inspect spinners from another goroutine without racing with
-// Start/Stop.
-func (s *SpinnerPrinter) isActive() bool {
-	s.rlock()
-	defer s.runlock()
-
-	return s.IsActive
-}
-
-// writer returns the configured writer under the runtime lock.
-func (s *SpinnerPrinter) writer() io.Writer {
-	s.rlock()
-	defer s.runlock()
-
-	return s.Writer
-}
-
-// WithText adds a text to the SpinnerPrinter.
-func (s SpinnerPrinter) WithText(text string) *SpinnerPrinter {
-	s.Text = text
-	return &s
-}
-
-// WithSequence adds a sequence to the SpinnerPrinter.
-func (s SpinnerPrinter) WithSequence(sequence ...string) *SpinnerPrinter {
-	s.Sequence = sequence
-	return &s
-}
-
-// WithStyle adds a style to the SpinnerPrinter.
-func (s SpinnerPrinter) WithStyle(style *Style) *SpinnerPrinter {
-	s.Style = style
-	return &s
-}
-
-// WithDelay adds a delay to the SpinnerPrinter.
-func (s SpinnerPrinter) WithDelay(delay time.Duration) *SpinnerPrinter {
-	s.Delay = delay
-	return &s
-}
-
-// WithMessageStyle adds a style to the SpinnerPrinter message.
-func (s SpinnerPrinter) WithMessageStyle(style *Style) *SpinnerPrinter {
-	s.MessageStyle = style
-	return &s
-}
-
-// WithRemoveWhenDone removes the SpinnerPrinter after it is done.
-func (s SpinnerPrinter) WithRemoveWhenDone(b ...bool) *SpinnerPrinter {
-	s.RemoveWhenDone = internal.WithBoolean(b)
-	return &s
-}
-
-// WithShowTimer shows how long the spinner is running.
-func (s SpinnerPrinter) WithShowTimer(b ...bool) *SpinnerPrinter {
-	s.ShowTimer = internal.WithBoolean(b)
-	return &s
-}
-
-// WithStartedAt sets the time when the SpinnerPrinter started.
-func (s SpinnerPrinter) WithStartedAt(t time.Time) *SpinnerPrinter {
-	s.startedAt = t
-	return &s
-}
-
-// WithTimerRoundingFactor sets the rounding factor for the timer.
-func (s SpinnerPrinter) WithTimerRoundingFactor(factor time.Duration) *SpinnerPrinter {
-	s.TimerRoundingFactor = factor
-	return &s
-}
-
-// WithTimerStyle adds a style to the SpinnerPrinter timer.
-func (s SpinnerPrinter) WithTimerStyle(style *Style) *SpinnerPrinter {
-	s.TimerStyle = style
-	return &s
-}
-
-// WithWriter sets the custom Writer.
-func (s SpinnerPrinter) WithWriter(writer io.Writer) *SpinnerPrinter {
-	s.Writer = writer
-	return &s
-}
-
-// SetWriter sets the custom Writer.
-func (s *SpinnerPrinter) SetWriter(writer io.Writer) {
-	s.Writer = writer
-}
-
-// ResetTimer resets the timer of the SpinnerPrinter.
-func (s *SpinnerPrinter) ResetTimer() {
-	s.lock()
-	defer s.unlock()
-
-	s.startedAt = time.Now()
-}
-
-// SetStartedAt sets the time when the SpinnerPrinter started.
-func (s *SpinnerPrinter) SetStartedAt(t time.Time) {
-	s.lock()
-	defer s.unlock()
-
-	s.startedAt = t
-}
-
-// UpdateText updates the message of the active SpinnerPrinter.
-// Can be used live.
-func (s *SpinnerPrinter) UpdateText(text string) {
-	s.lock()
-	s.Text = text
-	style := s.Style
-	currentSequence := s.currentSequence
-	messageStyle := s.MessageStyle
-	writer := s.Writer
-	s.unlock()
-
-	if !rawOutput() {
-		Fprinto(writer, "\033[K"+style.Sprint(currentSequence)+" "+messageStyle.Sprint(text))
-	} else {
-		Fprintln(writer, text)
-	}
-}
-
-// Start the SpinnerPrinter.
-func (s SpinnerPrinter) Start(text ...any) (*SpinnerPrinter, error) {
-	// Allocate the runtime mutex eagerly so the spinner goroutine and any
-	// subsequent user calls share the same lock without racing on lazy init.
-	s.mu = &sync.RWMutex{}
-	s.wg = &sync.WaitGroup{}
-	s.stopCh = make(chan struct{})
-	s.stopOnce = &sync.Once{}
-
-	s.IsActive = true
-	s.startedAt = time.Now()
-
-	if len(text) != 0 {
-		s.Text = Sprint(text...)
+	if OutputEnabled() {
+		run.region = screen.For(p.out()).NewRegion(screen.RegionOptions{
+			OnInterrupt: func() string { return p.final(canvasFor(p.out()), statusCanceled, "") },
+			Handler:     p.OnInterrupt,
+		})
 	}
 
-	registerSpinner(&s)
+	p.draw()
 
-	sp := &s
-	sp.wg.Go(func() {
-		sp.runAnimation()
-	})
+	go p.animate(orBackground(p.Context))
 
-	return sp, nil
+	return &p, nil
 }
 
-// sleepOrStop sleeps for d, returning early if stopCh is closed.
-// Returns true if the spinner was asked to stop.
-func (s *SpinnerPrinter) sleepOrStop(d time.Duration) bool {
-	t := time.NewTimer(d)
-	defer t.Stop()
+func (p *SpinnerPrinter) out() io.Writer { return orDefault(p.Writer) }
 
-	select {
-	case <-s.stopCh:
-		return true
-	case <-t.C:
-		return false
-	}
-}
+func (p *SpinnerPrinter) animate(ctx context.Context) {
+	ticker := time.NewTicker(p.Delay)
+	defer ticker.Stop()
 
-// runAnimation drives the spinner frames. Reads fields under the runtime lock
-// so it is safe to call concurrently with UpdateText/Stop.
-func (s *SpinnerPrinter) runAnimation() {
-	for s.isActive() {
-		s.rlock()
-		sequence := s.Sequence
-		s.runlock()
-
-		for _, seq := range sequence {
-			if !s.isActive() {
-				return
-			}
-
-			if rawOutput() {
-				s.rlock()
-				delay := s.Delay
-				s.runlock()
-
-				if s.sleepOrStop(delay) {
-					return
-				}
-
-				continue
-			}
-
-			s.lock()
-			style := s.Style
-			messageStyle := s.MessageStyle
-			timerStyle := s.TimerStyle
-			text := s.Text
-			showTimer := s.ShowTimer
-			startedAt := s.startedAt
-			rounding := s.TimerRoundingFactor
-			delay := s.Delay
-			writer := s.Writer
-			s.currentSequence = seq
-			s.unlock()
-
-			var timer string
-			if showTimer {
-				timer = " (" + time.Since(startedAt).Round(rounding).String() + ")"
-			}
-
-			Fprinto(writer, style.Sprint(seq)+" "+messageStyle.Sprint(text)+timerStyle.Sprint(timer))
-
-			if s.sleepOrStop(delay) {
-				return
-			}
+	for {
+		select {
+		case <-p.run.done:
+			return
+		case <-ctx.Done():
+			p.finish(statusCanceled, "")
+			return
+		case <-ticker.C:
+			p.run.mu.Lock()
+			p.run.frame++
+			p.run.mu.Unlock()
+			p.draw()
 		}
 	}
 }
 
-// Stop terminates the SpinnerPrinter immediately.
-// The SpinnerPrinter will not resolve into anything.
-//
-// Stop signals the animation goroutine to exit (via stopCh) and waits for it
-// to finish before returning. Without this synchronization, leaked goroutines
-// would accumulate across Start/Stop cycles in tests and degrade the runtime
-// of subsequent tests under -race.
-func (s *SpinnerPrinter) Stop() error {
-	s.lock()
-	wasActive := s.IsActive
-	s.IsActive = false
-	removeWhenDone := s.RemoveWhenDone
-	writer := s.Writer
-	stopOnce := s.stopOnce
-	stopCh := s.stopCh
-	wg := s.wg
-	s.unlock()
-
-	// Signal the animation goroutine to stop. Stop may be called multiple
-	// times (e.g. by Warning followed by an explicit defer Stop), so the
-	// channel is closed via sync.Once.
-	if stopOnce != nil {
-		stopOnce.Do(func() { close(stopCh) })
-	}
-	// Wait for the goroutine to exit so any further writes from the spinner
-	// cannot race with the caller draining the writer.
-	if wg != nil {
-		wg.Wait()
+// draw shows the current frame.
+func (p *SpinnerPrinter) draw() {
+	if p.run.region == nil || !StylingEnabled() {
+		return
 	}
 
-	if !wasActive {
-		return nil
+	c := canvasFor(p.out())
+	frames := p.Frames
+
+	if len(frames) == 0 {
+		frames = c.g.Spinner
 	}
 
-	if rawOutput() {
-		return nil
+	p.run.mu.Lock()
+	frame := frames[p.run.frame%len(frames)]
+	line := c.paint(p.Tone, frame) + " " + c.paint(ToneText, p.run.text) + p.timer(c)
+	p.run.mu.Unlock()
+
+	p.run.region.Set(node(line))
+}
+
+// timer returns the muted elapsed time, with a leading space. The caller
+// holds p.run.mu.
+func (p *SpinnerPrinter) timer(c canvas) string {
+	if !p.ShowTimer {
+		return ""
 	}
 
-	if removeWhenDone {
-		fClearLine(writer)
-		Fprinto(writer)
-	} else {
-		Fprintln(writer)
+	return " " + c.paint(ToneMuted, formatDuration(time.Since(p.run.started)))
+}
+
+// UpdateText replaces the text of a running spinner.
+func (p *SpinnerPrinter) UpdateText(text string) {
+	if p.run == nil {
+		return
 	}
 
+	p.run.mu.Lock()
+	p.run.text = text
+	p.run.mu.Unlock()
+	p.draw()
+}
+
+// Stop ends the spinner as a success with its current text.
+func (p *SpinnerPrinter) Stop() error {
+	p.finish(statusSuccess, "")
 	return nil
 }
 
-// GenericStart runs Start, but returns a LivePrinter.
-// This is used for the interface LivePrinter.
-// You most likely want to use Start instead of this in your program.
-func (s *SpinnerPrinter) GenericStart() (*LivePrinter, error) {
-	p2, _ := s.Start()
-	lp := LivePrinter(p2)
+// Success ends the spinner with a success glyph and the given text, or its
+// current text when none is given.
+func (p *SpinnerPrinter) Success(text ...any) { p.finish(statusSuccess, sprintln(text...)) }
 
-	return &lp, nil
+// Fail ends the spinner with an error glyph.
+func (p *SpinnerPrinter) Fail(text ...any) { p.finish(statusError, sprintln(text...)) }
+
+// Warning ends the spinner with a warning glyph.
+func (p *SpinnerPrinter) Warning(text ...any) { p.finish(statusWarning, sprintln(text...)) }
+
+// Info ends the spinner with an info glyph.
+func (p *SpinnerPrinter) Info(text ...any) { p.finish(statusInfo, sprintln(text...)) }
+
+// Skip ends the spinner as skipped.
+func (p *SpinnerPrinter) Skip(text ...any) { p.finish(statusSkipped, sprintln(text...)) }
+
+func (p *SpinnerPrinter) finish(st status, text string) {
+	if p.run == nil {
+		return
+	}
+
+	p.run.finished.Do(func() {
+		close(p.run.done)
+
+		if p.run.region == nil {
+			return
+		}
+
+		final := ""
+		if !p.RemoveWhenDone {
+			final = p.final(canvasFor(p.out()), st, text)
+		}
+
+		p.run.region.Close(final)
+	})
 }
 
-// GenericStop runs Stop, but returns a LivePrinter.
-// This is used for the interface LivePrinter.
-// You most likely want to use Stop instead of this in your program.
-func (s *SpinnerPrinter) GenericStop() (*LivePrinter, error) {
-	_ = s.Stop()
-	lp := LivePrinter(s)
+// final renders the status line the spinner leaves behind.
+func (p *SpinnerPrinter) final(c canvas, st status, text string) string {
+	p.run.mu.Lock()
+	defer p.run.mu.Unlock()
 
-	return &lp, nil
+	if text == "" {
+		text = p.run.text
+	}
+
+	textTone, timer := ToneText, p.timer(c)
+	if st == statusSkipped {
+		textTone, timer = ToneMuted, ""
+	}
+
+	line := st.glyph(c) + " " + c.paint(textTone, text) + timer
+	if st == statusCanceled {
+		line += " " + c.paint(ToneMuted, "canceled")
+	}
+
+	return node(line)
 }
 
-// Info displays an info message
-// If no message is given, the text of the SpinnerPrinter will be reused as the default message.
-func (s *SpinnerPrinter) Info(message ...any) {
-	if s.InfoPrinter == nil {
-		s.InfoPrinter = &Info
+// status is how a step, a spinner or a prompt ended.
+type status uint8
+
+const (
+	statusSuccess status = iota
+	statusError
+	statusWarning
+	statusInfo
+	statusSkipped
+	statusCanceled
+	statusPending
+)
+
+// glyph returns the colored glyph of st.
+func (st status) glyph(c canvas) string {
+	switch st {
+	case statusError:
+		return c.paint(ToneError, c.g.Error)
+	case statusWarning:
+		return c.paint(ToneWarning, c.g.Warning)
+	case statusInfo:
+		return c.paint(ToneInfo, c.g.Info)
+	case statusSkipped:
+		return c.paint(ToneMuted, c.g.Skipped)
+	case statusCanceled:
+		return c.paint(ToneError, c.g.Canceled)
+	case statusPending:
+		return c.paint(ToneMuted, c.g.Pending)
+	default:
+		return c.paint(ToneSuccess, c.g.Success)
 	}
-
-	if len(message) == 0 {
-		message = []any{s.Text}
-	}
-
-	fClearLine(s.Writer)
-
-	Fprinto(s.Writer, s.InfoPrinter.Sprint(message...))
-	_ = s.Stop()
 }
 
-// Success displays the success printer.
-// If no message is given, the text of the SpinnerPrinter will be reused as the default message.
-func (s *SpinnerPrinter) Success(message ...any) {
-	if s.SuccessPrinter == nil {
-		s.SuccessPrinter = &Success
+// formatDuration formats d the way pterm shows elapsed time: "0.4s",
+// "12.3s", "1m 34s", "2h 5m".
+func formatDuration(d time.Duration) string {
+	switch {
+	case d < time.Minute:
+		return fmt.Sprintf("%.1fs", d.Seconds())
+	case d < time.Hour:
+		return fmt.Sprintf("%dm %ds", int(d.Minutes()), int(d.Seconds())%60)
+	default:
+		return fmt.Sprintf("%dh %dm", int(d.Hours()), int(d.Minutes())%60)
 	}
-
-	if len(message) == 0 {
-		message = []any{s.Text}
-	}
-
-	fClearLine(s.Writer)
-
-	Fprinto(s.Writer, s.SuccessPrinter.Sprint(message...))
-	_ = s.Stop()
 }
 
-// Fail displays the fail printer.
-// If no message is given, the text of the SpinnerPrinter will be reused as the default message.
-func (s *SpinnerPrinter) Fail(message ...any) {
-	if s.FailPrinter == nil {
-		s.FailPrinter = &Error
-	}
-
-	if len(message) == 0 {
-		message = []any{s.Text}
-	}
-
-	fClearLine(s.Writer)
-
-	Fprinto(s.Writer, s.FailPrinter.Sprint(message...))
-	_ = s.Stop()
-}
-
-// Warning displays the warning printer.
-// If no message is given, the text of the SpinnerPrinter will be reused as the default message.
-func (s *SpinnerPrinter) Warning(message ...any) {
-	if s.WarningPrinter == nil {
-		s.WarningPrinter = &Warning
-	}
-
-	if len(message) == 0 {
-		message = []any{s.Text}
-	}
-
-	fClearLine(s.Writer)
-
-	Fprinto(s.Writer, s.WarningPrinter.Sprint(message...))
-	_ = s.Stop()
+// flag returns the value of an optional bool argument, true when omitted.
+func flag(b []bool) bool {
+	return len(b) == 0 || b[0]
 }

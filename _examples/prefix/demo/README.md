@@ -1,6 +1,6 @@
 # prefix/demo
 
-![Animation](https://vhs.charm.sh/vhs-6vnMXqfVTtzXZnMoifwpNo.gif)
+![Animation](animation.gif)
 
 ```go
 package main
@@ -8,22 +8,14 @@ package main
 import "github.com/pterm/pterm"
 
 func main() {
-	// Debug messages are hidden by default. Enable them so pterm.Debug prints.
+	pterm.Info.Println("Fetching the latest release")
+	pterm.Success.Println("Deployed v1.4.2 to production")
+	pterm.Warning.Println("The build cache is older than 30 days")
+	pterm.Error.Println("Could not reach registry.example.com")
+
+	// Debug output only shows up after EnableDebugMessages, for example
+	// behind a --verbose flag.
 	pterm.EnableDebugMessages()
-
-	pterm.Debug.Println("Hello, World!")
-	pterm.Info.Println("Hello, World!")
-	pterm.Success.Println("Hello, World!")
-	pterm.Warning.Println("Hello, World!")
-
-	// Error prints the filename and line number of the call site.
-	pterm.Error.Println("Errors show the filename and linenumber inside the terminal!")
-
-	// Any PrefixPrinter can show line numbers via WithShowLineNumber.
-	pterm.Info.WithShowLineNumber().Println("Other PrefixPrinters can do that too!")
-
-	// Fatal would normally terminate the program. WithFatal(false) turns that
-	// off so this demo keeps running.
-	pterm.Fatal.WithFatal(false).Println("Hello, World!")
+	pterm.Debug.Println("Resolved 42 packages in 120ms")
 }
 ```

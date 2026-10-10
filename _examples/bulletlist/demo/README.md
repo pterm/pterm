@@ -1,32 +1,21 @@
 # bulletlist/demo
 
-![Animation](https://vhs.charm.sh/vhs-6ybH1SVurQNm5WaatnNAkF.gif)
+![Animation](animation.gif)
 
 ```go
 package main
 
-import (
-	"github.com/pterm/pterm"
-	"github.com/pterm/pterm/putils"
-)
+import "github.com/pterm/pterm"
 
 func main() {
-	// Level controls the indentation depth of each item.
-	bulletListItems := []pterm.BulletListItem{
-		{Level: 0, Text: "Level 0"},
-		{Level: 1, Text: "Level 1"},
-		{Level: 2, Text: "Level 2"},
-	}
-
-	pterm.DefaultBulletList.WithItems(bulletListItems).Render()
-
-	// Alternatively, build a list from an indented string. The second
-	// argument is the indent unit; one leading space equals one level here.
-	text := `0
- 1
-  2
-   3`
-
-	putils.BulletListFromString(text, " ").Render()
+	// Level nests an item under the one before it. Long items wrap under
+	// their own text, not under the bullet.
+	pterm.BulletList.WithItems([]pterm.BulletListItem{
+		{Text: "Measure what can be freed"},
+		{Level: 1, Text: "npm, bun and pip caches"},
+		{Level: 1, Text: "Docker images that no container uses"},
+		{Text: "Ask before deleting anything"},
+		{Text: "Clean up and print a summary of how much space came back, grouped by tool"},
+	}).Render()
 }
 ```

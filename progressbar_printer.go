@@ -1,614 +1,598 @@
 package pterm
 
 import (
-	"fmt"
+	"context"
 	"io"
-	"math"
-	"os"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
 
-	"atomicgo.dev/cursor"
-	"atomicgo.dev/schedule"
-
-	"github.com/pterm/pterm/internal"
+	"github.com/pterm/pterm/internal/screen"
+	"github.com/pterm/pterm/internal/text"
 )
 
-// ActiveProgressBarPrinters contains all running ProgressbarPrinters.
-// Generally, there should only be one active ProgressbarPrinter at a time.
-var ActiveProgressBarPrinters []*ProgressbarPrinter
-
-// DefaultProgressbar is the default ProgressbarPrinter.
-var DefaultProgressbar = ProgressbarPrinter{
-	Total:         100,
-	BarCharacter:  "█",
-	LastCharacter: "█",
-	// Eighth-block glyphs, ordered from least to most filled, give the bar a
-	// smooth edge that advances one eighth of a cell at a time.
-	BarPartialCharacters:      []string{"▏", "▎", "▍", "▌", "▋", "▊", "▉"},
-	BarFiller:                 "░",
-	BarFillerStyle:            &ThemeDefault.ProgressbarFillerStyle,
-	ElapsedTimeRoundingFactor: time.Second,
-	BarStyle:                  &ThemeDefault.ProgressbarBarStyle,
-	TitleStyle:                &ThemeDefault.ProgressbarTitleStyle,
-	ShowTitle:                 true,
-	ShowCount:                 true,
-	ShowPercentage:            true,
-	ShowElapsedTime:           true,
-	MaxWidth:                  80,
-	Writer:                    os.Stderr,
-}
-
-// ProgressbarPrinter shows a progress animation in the terminal.
+// ProgressbarPrinter shows how far a task with a known amount of work got.
+// It ends as a status line with the count and the time it took:
+//
+//	Downloading  ██████████▍░░░░░░░░░   52%   52/100  1.2s · eta 1.1s
+//	✔ Downloading 100/100 2.3s
+//
+// The bar stops by itself when Current reaches Total.
 type ProgressbarPrinter struct {
-	Title                     string
-	Total                     int
-	Current                   int
-	BarCharacter              string
-	LastCharacter             string
-	ElapsedTimeRoundingFactor time.Duration
+	// Title describes the task.
+	Title string
+	// Total is the amount of work. The bar is full when Current reaches it.
+	Total int
+	// Current is the amount of work done when the bar starts.
+	Current int
 
-	// BarFiller is repeated to fill the unfilled portion of the bar. When
-	// empty the remaining space is left blank.
-	BarFiller string
+	// Tone colors the filled part of the bar.
+	Tone Tone
+	// TrackTone colors the empty part of the bar.
+	TrackTone Tone
+	// TitleTone colors the title.
+	TitleTone Tone
+	// PercentageTone colors the percentage.
+	PercentageTone Tone
+	// DetailTone colors the count, the elapsed time and the ETA.
+	DetailTone Tone
+	// Fill is the glyph of the filled part. Empty uses the meter fill of
+	// the glyph set.
+	Fill string
+	// Track is the glyph of the empty part. Empty uses the meter track of
+	// the glyph set.
+	Track string
 
-	// BarFillerStyle styles the unfilled portion of the bar. When nil, the
-	// theme's ProgressbarFillerStyle is used.
-	BarFillerStyle *Style
-
-	// BarPartialCharacters holds the glyphs used to draw the leading edge of
-	// the bar at sub-character resolution, ordered from least to most filled.
-	// When empty, the bar falls back to whole-cell rendering using
-	// BarCharacter and LastCharacter.
-	BarPartialCharacters []string
-
+	// BarWidth is the width of the bar itself in columns. The bar gets
+	// narrower when the line would not fit otherwise.
+	BarWidth int
+	// MaxWidth caps the width of the whole line. Zero or less uses the
+	// terminal width.
 	MaxWidth int
 
+	// ShowTitle shows the title.
+	ShowTitle bool
+	// ShowPercentage shows the percentage after the bar.
+	ShowPercentage bool
+	// ShowCount shows "current/total" after the bar.
+	ShowCount bool
+	// ShowElapsedTime shows the time since the start.
 	ShowElapsedTime bool
-	ShowCount       bool
-	ShowTitle       bool
-	ShowPercentage  bool
-	RemoveWhenDone  bool
+	// ShowETA shows an estimate of the time left.
+	ShowETA bool
+	// RemoveWhenDone removes the bar when it stops instead of leaving a
+	// status line.
+	RemoveWhenDone bool
 
-	TitleStyle *Style
-	BarStyle   *Style
-
-	IsActive bool
-
-	startedAt    time.Time
-	rerenderTask *schedule.Task
-
+	// Writer receives the output. Nil means the default output.
 	Writer io.Writer
+	// Context stops the bar as canceled when it ends.
+	Context context.Context
+	// OnInterrupt runs when the user presses Ctrl+C while the bar runs,
+	// after the terminal was restored. Nil exits the program with code 130.
+	OnInterrupt func()
 
-	// mu serializes access to the printer's mutable state once Start has run.
-	// It is a pointer so the value-receiver With* methods can copy the struct
-	// without tripping go vet's copylocks check; Start lazily allocates it.
-	mu *sync.RWMutex
+	run *progressRun
 }
 
-// lock locks the printer's runtime mutex, allocating it on first use so the
-// value-receiver builders can be used safely before Start.
-func (p *ProgressbarPrinter) lock() {
-	if p.mu == nil {
-		p.mu = &sync.RWMutex{}
-	}
-
-	p.mu.Lock()
+// progressRun is the state of a started progress bar. Copies of a started
+// ProgressbarPrinter share it.
+type progressRun struct {
+	mu         sync.Mutex
+	title      string
+	current    int
+	total      int
+	started    time.Time
+	titleWidth int // widest title so far, so the bar does not jump around
+	region     *screen.Region
+	done       chan struct{}
+	stopped    bool
+	finished   sync.Once // the final line is printed once, and callers wait for it
 }
 
-// unlock releases the printer's runtime mutex.
-func (p *ProgressbarPrinter) unlock() {
-	p.mu.Unlock()
+// Progressbar is the default progress bar.
+var Progressbar = ProgressbarPrinter{
+	Total:           100,
+	Tone:            TonePrimary,
+	TrackTone:       ToneBorder,
+	TitleTone:       ToneText,
+	PercentageTone:  ToneText,
+	DetailTone:      ToneMuted,
+	BarWidth:        30,
+	MaxWidth:        100,
+	ShowTitle:       true,
+	ShowPercentage:  true,
+	ShowCount:       true,
+	ShowElapsedTime: true,
+	ShowETA:         true,
 }
 
-// rlock takes a read lock on the printer's runtime mutex, allocating it on
-// first use.
-func (p *ProgressbarPrinter) rlock() {
-	if p.mu == nil {
-		p.mu = &sync.RWMutex{}
-	}
+// progressbarTick is how often a running bar redraws to update its timer.
+const progressbarTick = 200 * time.Millisecond
 
-	p.mu.RLock()
-}
-
-// runlock releases a read lock taken by rlock.
-func (p *ProgressbarPrinter) runlock() {
-	p.mu.RUnlock()
-}
-
-// isActive returns whether the printer is currently active. Used internally by
-// print.go to inspect bars from another goroutine without racing with Start/Stop.
-func (p *ProgressbarPrinter) isActive() bool {
-	p.rlock()
-	defer p.runlock()
-
-	return p.IsActive
-}
-
-// title returns the current title under the runtime lock.
-func (p *ProgressbarPrinter) title() string {
-	p.rlock()
-	defer p.runlock()
-
-	return p.Title
-}
-
-// writer returns the configured writer under the runtime lock.
-func (p *ProgressbarPrinter) writer() io.Writer {
-	p.rlock()
-	defer p.runlock()
-
-	return p.Writer
-}
-
-// WithTitle sets the name of the ProgressbarPrinter.
-func (p ProgressbarPrinter) WithTitle(name string) *ProgressbarPrinter {
-	p.Title = name
+// WithTitle returns a copy of p with title t.
+func (p ProgressbarPrinter) WithTitle(t string) *ProgressbarPrinter {
+	p.Title = t
 	return &p
 }
 
-// WithMaxWidth sets the maximum width of the ProgressbarPrinter.
-// If the terminal is smaller than the given width, the terminal width will be used instead.
-// If the width is set to zero, or below, the terminal width will be used.
-func (p ProgressbarPrinter) WithMaxWidth(maxWidth int) *ProgressbarPrinter {
-	p.MaxWidth = maxWidth
-	return &p
-}
-
-// WithTotal sets the total value of the ProgressbarPrinter.
+// WithTotal returns a copy of p that is full at total.
 func (p ProgressbarPrinter) WithTotal(total int) *ProgressbarPrinter {
 	p.Total = total
 	return &p
 }
 
-// WithCurrent sets the current value of the ProgressbarPrinter.
+// WithCurrent returns a copy of p that starts at current.
 func (p ProgressbarPrinter) WithCurrent(current int) *ProgressbarPrinter {
 	p.Current = current
 	return &p
 }
 
-// WithBarCharacter sets the bar character of the ProgressbarPrinter.
-func (p ProgressbarPrinter) WithBarCharacter(char string) *ProgressbarPrinter {
-	p.BarCharacter = char
+// WithTone returns a copy of p whose fill uses tone t.
+func (p ProgressbarPrinter) WithTone(t Tone) *ProgressbarPrinter {
+	p.Tone = t
 	return &p
 }
 
-// WithLastCharacter sets the last character of the ProgressbarPrinter.
-func (p ProgressbarPrinter) WithLastCharacter(char string) *ProgressbarPrinter {
-	p.LastCharacter = char
+// WithTrackTone returns a copy of p whose track uses tone t.
+func (p ProgressbarPrinter) WithTrackTone(t Tone) *ProgressbarPrinter {
+	p.TrackTone = t
 	return &p
 }
 
-// WithElapsedTimeRoundingFactor sets the rounding factor of the elapsed time.
-func (p ProgressbarPrinter) WithElapsedTimeRoundingFactor(duration time.Duration) *ProgressbarPrinter {
-	p.ElapsedTimeRoundingFactor = duration
+// WithTitleTone returns a copy of p whose title uses tone t.
+func (p ProgressbarPrinter) WithTitleTone(t Tone) *ProgressbarPrinter {
+	p.TitleTone = t
 	return &p
 }
 
-// WithShowElapsedTime sets if the elapsed time should be displayed in the ProgressbarPrinter.
-func (p ProgressbarPrinter) WithShowElapsedTime(b ...bool) *ProgressbarPrinter {
-	p.ShowElapsedTime = internal.WithBoolean(b)
+// WithPercentageTone returns a copy of p whose percentage uses tone t.
+func (p ProgressbarPrinter) WithPercentageTone(t Tone) *ProgressbarPrinter {
+	p.PercentageTone = t
 	return &p
 }
 
-// WithShowCount sets if the total and current count should be displayed in the ProgressbarPrinter.
-func (p ProgressbarPrinter) WithShowCount(b ...bool) *ProgressbarPrinter {
-	p.ShowCount = internal.WithBoolean(b)
+// WithDetailTone returns a copy of p whose count and times use tone t.
+func (p ProgressbarPrinter) WithDetailTone(t Tone) *ProgressbarPrinter {
+	p.DetailTone = t
 	return &p
 }
 
-// WithShowTitle sets if the title should be displayed in the ProgressbarPrinter.
-func (p ProgressbarPrinter) WithShowTitle(b ...bool) *ProgressbarPrinter {
-	p.ShowTitle = internal.WithBoolean(b)
+// WithFill returns a copy of p that draws the filled part with glyph g.
+// A custom fill has no partial blocks, so the bar moves a column at a time.
+func (p ProgressbarPrinter) WithFill(g string) *ProgressbarPrinter {
+	p.Fill = g
 	return &p
 }
 
-// WithShowPercentage sets if the completed percentage should be displayed in the ProgressbarPrinter.
-func (p ProgressbarPrinter) WithShowPercentage(b ...bool) *ProgressbarPrinter {
-	p.ShowPercentage = internal.WithBoolean(b)
+// WithTrack returns a copy of p that draws the empty part with glyph g.
+func (p ProgressbarPrinter) WithTrack(g string) *ProgressbarPrinter {
+	p.Track = g
 	return &p
 }
 
-// WithStartedAt sets the time when the ProgressbarPrinter started.
-func (p ProgressbarPrinter) WithStartedAt(t time.Time) *ProgressbarPrinter {
-	p.startedAt = t
+// WithBarWidth returns a copy of p whose bar is w columns wide.
+func (p ProgressbarPrinter) WithBarWidth(w int) *ProgressbarPrinter {
+	p.BarWidth = w
 	return &p
 }
 
-// WithTitleStyle sets the style of the title.
-func (p ProgressbarPrinter) WithTitleStyle(style *Style) *ProgressbarPrinter {
-	p.TitleStyle = style
+// WithMaxWidth returns a copy of p whose line is at most w columns wide.
+func (p ProgressbarPrinter) WithMaxWidth(w int) *ProgressbarPrinter {
+	p.MaxWidth = w
 	return &p
 }
 
-// WithBarStyle sets the style of the bar.
-func (p ProgressbarPrinter) WithBarStyle(style *Style) *ProgressbarPrinter {
-	p.BarStyle = style
+// WithShowTitle returns a copy of p that shows or hides the title.
+func (p ProgressbarPrinter) WithShowTitle(show ...bool) *ProgressbarPrinter {
+	p.ShowTitle = flag(show)
 	return &p
 }
 
-// WithRemoveWhenDone sets if the ProgressbarPrinter should be removed when it is done.
-func (p ProgressbarPrinter) WithRemoveWhenDone(b ...bool) *ProgressbarPrinter {
-	p.RemoveWhenDone = internal.WithBoolean(b)
+// WithShowPercentage returns a copy of p that shows or hides the percentage.
+func (p ProgressbarPrinter) WithShowPercentage(show ...bool) *ProgressbarPrinter {
+	p.ShowPercentage = flag(show)
 	return &p
 }
 
-// WithBarFiller sets the filler character for the ProgressbarPrinter.
-func (p ProgressbarPrinter) WithBarFiller(char string) *ProgressbarPrinter {
-	p.BarFiller = char
+// WithShowCount returns a copy of p that shows or hides "current/total".
+func (p ProgressbarPrinter) WithShowCount(show ...bool) *ProgressbarPrinter {
+	p.ShowCount = flag(show)
 	return &p
 }
 
-// WithBarFillerStyle sets the style of the unfilled portion of the bar.
-func (p ProgressbarPrinter) WithBarFillerStyle(style *Style) *ProgressbarPrinter {
-	p.BarFillerStyle = style
+// WithShowElapsedTime returns a copy of p that shows or hides the elapsed
+// time.
+func (p ProgressbarPrinter) WithShowElapsedTime(show ...bool) *ProgressbarPrinter {
+	p.ShowElapsedTime = flag(show)
 	return &p
 }
 
-// WithBarPartialCharacters sets the glyphs used to render the leading edge of
-// the bar at sub-character resolution, ordered from least to most filled (e.g.
-// "▏" through "▉"). Passing an empty slice disables smooth rendering and falls
-// back to whole-cell rendering with BarCharacter and LastCharacter.
-func (p ProgressbarPrinter) WithBarPartialCharacters(chars []string) *ProgressbarPrinter {
-	p.BarPartialCharacters = chars
+// WithShowETA returns a copy of p that shows or hides the time left.
+func (p ProgressbarPrinter) WithShowETA(show ...bool) *ProgressbarPrinter {
+	p.ShowETA = flag(show)
 	return &p
 }
 
-// WithWriter sets the custom Writer.
-func (p ProgressbarPrinter) WithWriter(writer io.Writer) *ProgressbarPrinter {
-	p.Writer = writer
+// WithRemoveWhenDone returns a copy of p that disappears when it stops.
+func (p ProgressbarPrinter) WithRemoveWhenDone(remove ...bool) *ProgressbarPrinter {
+	p.RemoveWhenDone = flag(remove)
 	return &p
 }
 
-// SetWriter sets the custom Writer.
-func (p *ProgressbarPrinter) SetWriter(writer io.Writer) {
-	p.Writer = writer
+// WithWriter returns a copy of p that writes to w.
+func (p ProgressbarPrinter) WithWriter(w io.Writer) *ProgressbarPrinter {
+	p.Writer = w
+	return &p
 }
 
-// SetStartedAt sets the time when the ProgressbarPrinter started.
-func (p *ProgressbarPrinter) SetStartedAt(t time.Time) {
-	p.lock()
-	defer p.unlock()
-
-	p.startedAt = t
+// WithContext returns a copy of p that stops as canceled when ctx ends.
+func (p ProgressbarPrinter) WithContext(ctx context.Context) *ProgressbarPrinter {
+	p.Context = ctx
+	return &p
 }
 
-// ResetTimer resets the timer of the ProgressbarPrinter.
-func (p *ProgressbarPrinter) ResetTimer() {
-	p.lock()
-	defer p.unlock()
-
-	p.startedAt = time.Now()
+// WithOnInterrupt returns a copy of p that runs fn on Ctrl+C instead of
+// exiting.
+func (p ProgressbarPrinter) WithOnInterrupt(fn func()) *ProgressbarPrinter {
+	p.OnInterrupt = fn
+	return &p
 }
 
-// Increment current value by one.
-func (p *ProgressbarPrinter) Increment() *ProgressbarPrinter {
-	p.Add(1)
-	return p
-}
-
-// UpdateTitle updates the title and re-renders the progressbar
-func (p *ProgressbarPrinter) UpdateTitle(title string) *ProgressbarPrinter {
-	p.lock()
-	p.Title = title
-	p.unlock()
-	p.updateProgress()
-
-	return p
-}
-
-// updateProgress renders the progressbar to the configured writer. It locks
-// internally via getString and reads the writer under the same lock.
-func (p *ProgressbarPrinter) updateProgress() *ProgressbarPrinter {
-	rendered, writer := p.renderAndWriter()
-	if rendered == "" {
-		return p
-	}
-
-	Fprinto(writer, rendered)
-
-	return p
-}
-
-// renderAndWriter renders the bar and returns it along with the writer to
-// emit to. Both reads happen under a single lock acquisition.
-func (p *ProgressbarPrinter) renderAndWriter() (string, io.Writer) {
-	p.lock()
-	defer p.unlock()
-
-	return p.getStringLocked(), p.Writer
-}
-
-// getStringLocked renders the progress bar. The caller must hold p.mu.
-func (p *ProgressbarPrinter) getStringLocked() string {
-	if !p.IsActive || p.Total == 0 {
-		return ""
-	}
-
-	if p.TitleStyle == nil {
-		p.TitleStyle = NewStyle()
-	}
-
-	if p.BarStyle == nil {
-		p.BarStyle = NewStyle()
-	}
-
-	before := p.decoratorsBeforeLocked()
-	after := p.decoratorsAfterLocked()
-
-	// The bar fills whatever horizontal space the decorators leave behind.
-	barWidth := p.lineWidthLocked() - internal.GetStringMaxWidth(before) - internal.GetStringMaxWidth(after)
-
-	return before + p.renderBar(barWidth) + after
-}
-
-// lineWidthLocked returns the total width the rendered line may occupy, clamped
-// to the terminal. The caller must hold p.mu.
-func (p *ProgressbarPrinter) lineWidthLocked() int {
-	terminalWidth := GetTerminalWidth()
-	if p.MaxWidth <= 0 || terminalWidth < p.MaxWidth {
-		return terminalWidth
-	}
-
-	return p.MaxWidth
-}
-
-// decoratorsBeforeLocked builds the prefix shown left of the bar (title and
-// count). The caller must hold p.mu.
-func (p *ProgressbarPrinter) decoratorsBeforeLocked() string {
-	var b strings.Builder
-
-	if p.ShowTitle {
-		b.WriteString(p.TitleStyle.Sprint(p.Title) + " ")
-	}
-
-	if p.ShowCount {
-		// Space-pad the current value to the width of the total so the line
-		// keeps a stable layout while the numbers grow.
-		padding := 1 + int(math.Log10(float64(p.Total)))
-		b.WriteString(LightWhite(fmt.Sprintf("%*d", padding, p.Current)) + Gray(fmt.Sprintf("/%d", p.Total)) + " ")
-	}
-
-	return b.String()
-}
-
-// decoratorsAfterLocked builds the suffix shown right of the bar (percentage
-// and elapsed time). The caller must hold p.mu.
-func (p *ProgressbarPrinter) decoratorsAfterLocked() string {
-	var b strings.Builder
-
-	b.WriteString(" ")
-
-	if p.ShowPercentage {
-		percentage := int(internal.PercentageRound(float64(int64(p.Total)), float64(int64(p.Current))))
-
-		text := fmt.Sprintf("%3d%%", percentage)
-		if p.Current >= p.Total {
-			text = Green(text)
-		} else {
-			text = LightWhite(text)
-		}
-
-		b.WriteString(text + " ")
-	}
-
-	if p.ShowElapsedTime {
-		b.WriteString(Gray("· " + p.parseElapsedTimeLocked()))
-	}
-
-	return b.String()
-}
-
-// renderBar draws the filled/unfilled bar to exactly width display cells.
-// The default block bar is drawn with sub-character resolution for a smooth
-// edge; a custom BarCharacter falls back to whole-cell rendering.
-func (p *ProgressbarPrinter) renderBar(width int) string {
-	if width <= 0 {
-		return ""
-	}
-
-	filler := p.BarFiller
-	if filler == "" {
-		filler = " "
-	}
-
-	ratio := float64(p.Current) / float64(p.Total)
-	switch {
-	case ratio > 1:
-		ratio = 1
-	case ratio < 0:
-		ratio = 0
-	}
-
-	if len(p.BarPartialCharacters) > 0 {
-		return p.renderSmoothBar(ratio, width, filler)
-	}
-
-	full := int(ratio * float64(width))
-
-	var bar string
-	if full > 0 {
-		bar = p.BarStyle.Sprint(strings.Repeat(p.BarCharacter, full-1) + p.LastCharacter)
-	}
-
-	if full < width {
-		bar += p.sprintFiller(filler, width-full)
-	}
-
-	return bar
-}
-
-// sprintFiller renders n cells of the unfilled bar track. Blank fillers are
-// returned unstyled to keep the output free of redundant escape codes.
-func (p *ProgressbarPrinter) sprintFiller(filler string, n int) string {
-	s := strings.Repeat(filler, n)
-	if strings.TrimSpace(s) == "" {
-		return s
-	}
-
-	style := p.BarFillerStyle
-	if style == nil {
-		style = &ThemeDefault.ProgressbarFillerStyle
-	}
-
-	return style.Sprint(s)
-}
-
-// renderSmoothBar draws the bar using a partial-block glyph for the leading
-// edge so the fill grows a fraction of a cell at a time.
-func (p *ProgressbarPrinter) renderSmoothBar(ratio float64, width int, filler string) string {
-	exact := ratio * float64(width)
-	full := int(exact)
-
-	// Map the fractional remainder to a partial glyph. Slot 0 means the fill
-	// lands exactly on a cell boundary, so no partial edge is drawn.
-	var partial string
-	if slot := int((exact - float64(full)) * float64(len(p.BarPartialCharacters)+1)); slot > 0 {
-		partial = p.BarPartialCharacters[slot-1]
-	}
-
-	cells := full
-	if partial != "" {
-		cells++
-	}
-
-	bar := p.BarStyle.Sprint(strings.Repeat(p.BarCharacter, full) + partial)
-	if cells < width {
-		bar += p.sprintFiller(filler, width-cells)
-	}
-
-	return bar
-}
-
-// Add to current value.
-func (p *ProgressbarPrinter) Add(count int) *ProgressbarPrinter {
-	p.lock()
-
-	if p.Total == 0 {
-		p.unlock()
-		return nil
-	}
-
-	p.Current += count
-
-	reachedEnd := p.Current >= p.Total
-	if reachedEnd {
-		p.Total = p.Current
-	}
-
-	p.unlock()
-
-	p.updateProgress()
-
-	if reachedEnd {
-		p.updateProgress()
-		_, _ = p.Stop()
-	}
-
-	return p
-}
-
-// Start the ProgressbarPrinter.
+// Start shows the bar with the given title, or with p.Title when none is
+// given, and returns the running bar.
 func (p ProgressbarPrinter) Start(title ...any) (*ProgressbarPrinter, error) {
-	cursor.Hide()
-
-	// Allocate the runtime mutex eagerly so the rerender goroutine and any
-	// subsequent user calls share the same lock without racing on lazy init.
-	p.mu = &sync.RWMutex{}
-
-	if rawOutput() && p.ShowTitle {
-		Fprintln(p.Writer, p.Title)
+	if len(title) > 0 {
+		p.Title = sprintln(title...)
 	}
 
-	p.IsActive = true
-	if len(title) != 0 {
-		p.Title = Sprint(title...)
+	run := &progressRun{
+		title:      p.Title,
+		current:    max(p.Current, 0),
+		total:      p.Total,
+		started:    time.Now(),
+		titleWidth: text.Width(p.Title),
+		done:       make(chan struct{}),
 	}
+	p.run = run
 
-	registerProgressBar(&p)
-	p.startedAt = time.Now()
-
-	p.updateProgress()
-
-	if p.ShowElapsedTime {
-		p.rerenderTask = schedule.Every(time.Second, func() bool {
-			p.updateProgress()
-			return true
+	if OutputEnabled() {
+		run.region = screen.For(p.out()).NewRegion(screen.RegionOptions{
+			OnInterrupt: func() string { return p.final(canvasFor(p.out()), statusCanceled, "") },
+			Handler:     p.OnInterrupt,
 		})
 	}
+
+	if run.total > 0 && run.current >= run.total {
+		p.finish(statusSuccess, "")
+		return &p, nil
+	}
+
+	p.draw()
+
+	go p.animate(orBackground(p.Context))
 
 	return &p, nil
 }
 
-// Stop the ProgressbarPrinter.
-func (p *ProgressbarPrinter) Stop() (*ProgressbarPrinter, error) {
-	p.lock()
-	task := p.rerenderTask
-	wasActive := p.IsActive
-	p.IsActive = false
-	removeWhenDone := p.RemoveWhenDone
-	writer := p.Writer
-	p.unlock()
+func (p *ProgressbarPrinter) out() io.Writer { return orDefault(p.Writer) }
 
-	// Stop the rerender task outside the lock: schedule.Task.Stop blocks until
-	// the in-flight callback returns, and that callback also takes p.mu.
-	if task != nil && task.IsActive() {
-		task.Stop()
+func (p *ProgressbarPrinter) animate(ctx context.Context) {
+	ticker := time.NewTicker(progressbarTick)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-p.run.done:
+			return
+		case <-ctx.Done():
+			p.finish(statusCanceled, "")
+			return
+		case <-ticker.C:
+			if p.ShowElapsedTime || p.ShowETA {
+				p.draw()
+			}
+		}
 	}
-
-	cursor.Show()
-
-	if !wasActive {
-		return p, nil
-	}
-
-	if removeWhenDone {
-		fClearLine(writer)
-		Fprinto(writer)
-	} else {
-		Fprintln(writer)
-	}
-
-	return p, nil
 }
 
-// GenericStart runs Start, but returns a LivePrinter.
-// This is used for the interface LivePrinter.
-// You most likely want to use Start instead of this in your program.
-func (p *ProgressbarPrinter) GenericStart() (*LivePrinter, error) {
-	p2, _ := p.Start()
-	lp := LivePrinter(p2)
-
-	return &lp, nil
+// Increment adds one to the progress.
+func (p *ProgressbarPrinter) Increment() *ProgressbarPrinter {
+	return p.Add(1)
 }
 
-// GenericStop runs Stop, but returns a LivePrinter.
-// This is used for the interface LivePrinter.
-// You most likely want to use Stop instead of this in your program.
-func (p *ProgressbarPrinter) GenericStop() (*LivePrinter, error) {
-	p2, _ := p.Stop()
-	lp := LivePrinter(p2)
-
-	return &lp, nil
-}
-
-// GetElapsedTime returns the elapsed time, since the ProgressbarPrinter was started.
-func (p *ProgressbarPrinter) GetElapsedTime() time.Duration {
-	p.rlock()
-	defer p.runlock()
-
-	return time.Since(p.startedAt)
-}
-
-// parseElapsedTimeLocked formats the elapsed time. The caller must hold p.mu.
-func (p *ProgressbarPrinter) parseElapsedTimeLocked() string {
-	elapsed := time.Since(p.startedAt)
-	// time.Duration.Round panics if the rounding factor is <= 0.
-	// Guard against invalid values by skipping rounding in this case.
-	if p.ElapsedTimeRoundingFactor <= 0 {
-		return elapsed.String()
+// Add adds n to the progress. The bar stops as a success when it reaches
+// its total.
+func (p *ProgressbarPrinter) Add(n int) *ProgressbarPrinter {
+	if p.run == nil {
+		return p
 	}
 
-	return elapsed.Round(p.ElapsedTimeRoundingFactor).String()
+	p.run.mu.Lock()
+	if p.run.stopped {
+		p.run.mu.Unlock()
+		return p
+	}
+
+	p.run.current = max(p.run.current+n, 0)
+	full := p.run.total > 0 && p.run.current >= p.run.total
+
+	if full {
+		p.run.current = p.run.total
+	}
+	p.run.mu.Unlock()
+
+	if full {
+		p.finish(statusSuccess, "")
+		return p
+	}
+
+	p.draw()
+
+	return p
+}
+
+// UpdateTitle replaces the title of a running bar.
+func (p *ProgressbarPrinter) UpdateTitle(title string) *ProgressbarPrinter {
+	if p.run == nil {
+		return p
+	}
+
+	p.run.mu.Lock()
+	p.run.title = title
+	p.run.titleWidth = max(p.run.titleWidth, text.Width(title))
+	p.run.mu.Unlock()
+	p.draw()
+
+	return p
+}
+
+// Progress returns the current progress and the total of a running bar.
+func (p *ProgressbarPrinter) Progress() (current, total int) {
+	if p.run == nil {
+		return p.Current, p.Total
+	}
+
+	p.run.mu.Lock()
+	defer p.run.mu.Unlock()
+
+	return p.run.current, p.run.total
+}
+
+// Elapsed returns the time since the bar started.
+func (p *ProgressbarPrinter) Elapsed() time.Duration {
+	if p.run == nil {
+		return 0
+	}
+
+	p.run.mu.Lock()
+	defer p.run.mu.Unlock()
+
+	return time.Since(p.run.started)
+}
+
+// ResetTimer restarts the elapsed time of a running bar.
+func (p *ProgressbarPrinter) ResetTimer() {
+	if p.run == nil {
+		return
+	}
+
+	p.run.mu.Lock()
+	p.run.started = time.Now()
+	p.run.mu.Unlock()
+	p.draw()
+}
+
+// Stop ends the bar as a success, whatever its progress. When the context
+// of the bar already ended, the bar ends as canceled instead, so Stop can
+// wait for the canceled line before the program exits.
+func (p *ProgressbarPrinter) Stop() error {
+	st := statusSuccess
+	if p.Context != nil && p.Context.Err() != nil {
+		st = statusCanceled
+	}
+
+	p.finish(st, "")
+
+	return nil
+}
+
+// Fail ends the bar with an error glyph and the given text, or its title
+// when none is given.
+func (p *ProgressbarPrinter) Fail(text ...any) { p.finish(statusError, sprintln(text...)) }
+
+// draw shows the current state of the bar.
+func (p *ProgressbarPrinter) draw() {
+	if p.run.region == nil || !StylingEnabled() {
+		return
+	}
+
+	line := p.frame(canvasFor(p.out()))
+	p.run.region.Set(line)
+}
+
+// frame renders one frame of the running bar.
+func (p *ProgressbarPrinter) frame(c canvas) string {
+	p.run.mu.Lock()
+	defer p.run.mu.Unlock()
+
+	current, total := p.run.current, p.run.total
+
+	var head, tail []string
+
+	if p.ShowTitle && p.run.titleWidth > 0 {
+		head = append(head, c.paint(p.TitleTone, text.PadRight(p.run.title, p.run.titleWidth)))
+	}
+
+	if p.ShowPercentage {
+		tail = append(tail, c.paint(p.PercentageTone, text.PadLeft(strconv.Itoa(percentOf(current, total))+"%", 4)))
+	}
+
+	if p.ShowCount {
+		tail = append(tail, c.paint(p.DetailTone, p.count(current, total, true)))
+	}
+
+	if times := p.times(c, current, total); times != "" {
+		tail = append(tail, times)
+	}
+
+	const gap = "  "
+
+	fixed := 0
+	for _, part := range head {
+		fixed += text.Width(part) + len(gap)
+	}
+
+	for _, part := range tail {
+		fixed += text.Width(part) + len(gap)
+	}
+
+	barWidth := p.BarWidth
+	if limit := p.lineLimit(c); limit > 0 {
+		barWidth = min(barWidth, limit-fixed)
+	}
+
+	parts := head
+
+	if barWidth >= 3 {
+		ratio := 0.0
+		if total > 0 {
+			ratio = float64(current) / float64(total)
+		}
+
+		parts = append(parts, drawMeter(p.barCanvas(c), ratio, barWidth, p.Tone, p.TrackTone))
+	}
+
+	return strings.Join(append(parts, tail...), gap)
+}
+
+// lineLimit returns how wide the line may get, or 0 for no limit.
+func (p *ProgressbarPrinter) lineLimit(c canvas) int {
+	limit := p.MaxWidth
+	if c.width > 0 && (limit <= 0 || c.width-1 < limit) {
+		limit = c.width - 1
+	}
+
+	return max(limit, 0)
+}
+
+// count formats "current/total". Padded, it keeps the same width while the
+// numbers grow. The caller holds p.run.mu.
+func (p *ProgressbarPrinter) count(current, total int, padded bool) string {
+	if total <= 0 {
+		return strconv.Itoa(current)
+	}
+
+	cur := strconv.Itoa(current)
+	if padded {
+		cur = text.PadLeft(cur, len(strconv.Itoa(total)))
+	}
+
+	return cur + "/" + strconv.Itoa(total)
+}
+
+// times returns the muted elapsed time and ETA. The caller holds p.run.mu.
+func (p *ProgressbarPrinter) times(c canvas, current, total int) string {
+	elapsed := time.Since(p.run.started)
+
+	var parts []string
+
+	if p.ShowElapsedTime {
+		parts = append(parts, formatDuration(elapsed))
+	}
+
+	if p.ShowETA && current > 0 && total > current {
+		eta := time.Duration(float64(elapsed) / float64(current) * float64(total-current))
+		parts = append(parts, "eta "+formatDuration(eta))
+	}
+
+	if len(parts) == 0 {
+		return ""
+	}
+
+	return c.paint(p.DetailTone, strings.Join(parts, " "+c.g.Dot+" "))
+}
+
+// final renders the status line the bar leaves behind.
+func (p *ProgressbarPrinter) final(c canvas, st status, title string) string {
+	p.run.mu.Lock()
+	defer p.run.mu.Unlock()
+
+	if title == "" && p.ShowTitle {
+		title = p.run.title
+	}
+
+	parts := []string{st.glyph(c)}
+	if title != "" {
+		parts = append(parts, c.paint(p.TitleTone, title))
+	}
+
+	switch {
+	case p.ShowCount:
+		parts = append(parts, c.paint(p.DetailTone, p.count(p.run.current, p.run.total, false)))
+	case p.ShowPercentage || len(parts) == 1:
+		parts = append(parts, c.paint(p.DetailTone, strconv.Itoa(percentOf(p.run.current, p.run.total))+"%"))
+	}
+
+	if p.ShowElapsedTime {
+		parts = append(parts, c.paint(p.DetailTone, formatDuration(time.Since(p.run.started))))
+	}
+
+	if st == statusCanceled {
+		parts = append(parts, c.paint(ToneMuted, "canceled"))
+	}
+
+	return node(strings.Join(parts, " "))
+}
+
+// finish ends the bar. When several goroutines end it at once, the first
+// one wins and the others return after its final line was printed, so a
+// Stop right before the program exits never loses that line.
+func (p *ProgressbarPrinter) finish(st status, title string) {
+	if p.run == nil {
+		return
+	}
+
+	p.run.finished.Do(func() {
+		p.run.mu.Lock()
+		p.run.stopped = true
+		close(p.run.done)
+		p.run.mu.Unlock()
+
+		if p.run.region == nil {
+			return
+		}
+
+		final := ""
+		if !p.RemoveWhenDone {
+			final = p.final(canvasFor(p.out()), st, title)
+		}
+
+		p.run.region.Close(final)
+	})
+}
+
+// percentOf returns current as a whole percentage of total, from 0 to
+// 100. It rounds down, so a bar never shows 100% before it is done.
+func percentOf(current, total int) int {
+	if total <= 0 {
+		return 0
+	}
+
+	return min(max(current*100/total, 0), 100)
+}
+
+// barCanvas returns c with the bar glyphs of p. A custom fill has no
+// eighth blocks to go with it, so the bar then fills whole columns.
+func (p *ProgressbarPrinter) barCanvas(c canvas) canvas {
+	if p.Fill != "" {
+		c.g.MeterFill, c.g.Eighths = p.Fill, nil
+	}
+
+	if p.Track != "" {
+		c.g.MeterTrack = p.Track
+	}
+
+	return c
 }

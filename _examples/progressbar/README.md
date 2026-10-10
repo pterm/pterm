@@ -1,6 +1,6 @@
 ### progressbar/demo
 
-![Animation](https://vhs.charm.sh/vhs-7wWqFXiNFydcIw4FCmNZQG.gif)
+![Animation](demo/animation.gif)
 
 <details>
 
@@ -10,41 +10,92 @@
 package main
 
 import (
-	"strings"
 	"time"
 
 	"github.com/pterm/pterm"
 )
 
-// Pretend we have a list of packages to download.
-var fakeInstallList = strings.Split("pseudo-excel pseudo-photoshop pseudo-chrome pseudo-outlook pseudo-explorer "+
-	"pseudo-dops pseudo-git pseudo-vsc pseudo-intellij pseudo-minecraft pseudo-scoop pseudo-chocolatey", " ")
-
 func main() {
-	p, _ := pterm.DefaultProgressbar.WithTotal(len(fakeInstallList)).WithTitle("Downloading stuff").Start()
+	packages := []string{
+		"react", "react-dom", "typescript", "vite", "eslint", "prettier",
+		"vitest", "zod", "date-fns", "clsx", "tailwindcss", "postcss",
+	}
 
-	for i := 0; i < p.Total; i++ {
-		// Simulate one download taking much longer than the rest.
+	bar, _ := pterm.Progressbar.WithTotal(len(packages)).Start("Installing packages")
+
+	for i, pkg := range packages {
+		bar.UpdateTitle("Installing " + pkg)
+
+		// One package takes a while, which the ETA picks up.
 		if i == 6 {
-			time.Sleep(time.Second * 3)
+			time.Sleep(1500 * time.Millisecond)
 		}
 
-		p.UpdateTitle("Downloading " + fakeInstallList[i])
+		time.Sleep(300 * time.Millisecond)
 
-		// Printing through pterm while the progressbar runs places the output
-		// above the bar instead of breaking it.
-		pterm.Success.Println("Downloading " + fakeInstallList[i])
-		p.Increment()
-		time.Sleep(time.Millisecond * 350)
+		// Output printed while the bar runs appears above it.
+		pterm.Success.Println("Installed " + pkg)
+
+		// The bar stops on its own at its total and keeps its title in the
+		// status line it leaves behind, so name the result before the last
+		// step.
+		if i == len(packages)-1 {
+			bar.UpdateTitle("Installed packages")
+		}
+
+		bar.Increment()
 	}
 }
 ```
 
 </details>
 
-### progressbar/custom-style
+### progressbar/cancel
 
-![Animation](https://vhs.charm.sh/vhs-6q2cOGHtVlL0B7qOi8jpZX.gif)
+![Animation](cancel/animation.gif)
+
+<details>
+
+<summary>SHOW SOURCE</summary>
+
+```go
+package main
+
+import (
+	"context"
+	"time"
+
+	"github.com/pterm/pterm"
+)
+
+func main() {
+	// The upload takes longer than the timeout allows, so the bar ends as
+	// canceled when the context runs out.
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+
+	bar, _ := pterm.Progressbar.WithTotal(50).WithContext(ctx).Start("Uploading backup")
+
+	// Stop after the context ended prints the canceled line before main
+	// returns.
+	defer bar.Stop()
+
+	for range 50 {
+		select {
+		case <-ctx.Done():
+			return
+		case <-time.After(100 * time.Millisecond):
+			bar.Increment()
+		}
+	}
+}
+```
+
+</details>
+
+### progressbar/custom
+
+![Animation](custom/animation.gif)
 
 <details>
 
@@ -60,24 +111,32 @@ import (
 )
 
 func main() {
-	// Every visual part of the progressbar can be swapped out. Here the bar
-	// gets a retro ASCII look; clearing BarPartialCharacters disables the
-	// smooth block-glyph edge, which would clash with plain "#".
-	p, _ := pterm.DefaultProgressbar.
-		WithTotal(50).
-		WithTitle("Installing").
-		WithBarCharacter("#").
-		WithLastCharacter("#").
-		WithBarFiller("-").
-		WithBarPartialCharacters(nil).
-		WithTitleStyle(pterm.NewStyle(pterm.FgLightYellow)).
-		WithBarStyle(pterm.NewStyle(pterm.FgLightMagenta)).
+	// Every part of the bar can be changed: here a green fill, a wider bar,
+	// and no ETA because the work comes in uneven chunks.
+	bar, _ := pterm.Progressbar.
+		WithTotal(200).
+		WithTone(pterm.ToneSuccess).
+		WithBarWidth(40).
+		WithShowETA(false).
+		Start("Migrating rows")
+
+	for range 20 {
+		time.Sleep(100 * time.Millisecond)
+		bar.Add(10)
+	}
+
+	// Without title, count and timer, only the bar and the percentage are
+	// left.
+	bar, _ = pterm.Progressbar.
+		WithShowTitle(false).
+		WithShowCount(false).
 		WithShowElapsedTime(false).
+		WithShowETA(false).
 		Start()
 
-	for i := 0; i < p.Total; i++ {
-		p.Increment()
-		time.Sleep(time.Millisecond * 60)
+	for range 100 {
+		time.Sleep(20 * time.Millisecond)
+		bar.Increment()
 	}
 }
 ```
@@ -86,7 +145,7 @@ func main() {
 
 ### progressbar/multiple
 
-![Animation](https://vhs.charm.sh/vhs-6DBA2K63ez2hC8yJeWxsAi.gif)
+![Animation](multiple/animation.gif)
 
 <details>
 
@@ -96,48 +155,37 @@ func main() {
 package main
 
 import (
+	"sync"
 	"time"
 
 	"github.com/pterm/pterm"
 )
 
 func main() {
-	// A MultiPrinter renders several live printers at once. Each progressbar
-	// writes to its own writer obtained from the multi printer.
-	multi := pterm.DefaultMultiPrinter
-
-	pb1, _ := pterm.DefaultProgressbar.WithTotal(100).WithWriter(multi.NewWriter()).Start("Progressbar 1")
-	pb2, _ := pterm.DefaultProgressbar.WithTotal(100).WithWriter(multi.NewWriter()).Start("Progressbar 2")
-	pb3, _ := pterm.DefaultProgressbar.WithTotal(100).WithWriter(multi.NewWriter()).Start("Progressbar 3")
-	pb4, _ := pterm.DefaultProgressbar.WithTotal(100).WithWriter(multi.NewWriter()).Start("Progressbar 4")
-	pb5, _ := pterm.DefaultProgressbar.WithTotal(100).WithWriter(multi.NewWriter()).Start("Progressbar 5")
-
-	multi.Start()
-
-	// Advance the bars at different speeds so they visibly run independently.
-	for i := 1; i <= 100; i++ {
-		pb1.Increment()
-
-		if i%2 == 0 {
-			pb2.Add(3)
-		}
-
-		if i%5 == 0 {
-			pb3.Increment()
-		}
-
-		if i%10 == 0 {
-			pb4.Increment()
-		}
-
-		if i%3 == 0 {
-			pb5.Increment()
-		}
-
-		time.Sleep(time.Millisecond * 50)
+	downloads := []struct {
+		name   string
+		chunks int
+	}{
+		{"ubuntu-24.04.iso", 60},
+		{"node-v22.tar.gz", 25},
+		{"go1.27.zip", 40},
 	}
 
-	multi.Stop()
+	// Bars that run at the same time stack below each other on their own.
+	var wg sync.WaitGroup
+
+	for _, d := range downloads {
+		bar, _ := pterm.Progressbar.WithTotal(d.chunks).Start(d.name)
+
+		wg.Go(func() {
+			for range d.chunks {
+				time.Sleep(50 * time.Millisecond)
+				bar.Increment()
+			}
+		})
+	}
+
+	wg.Wait()
 }
 ```
 

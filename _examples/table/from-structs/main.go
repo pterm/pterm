@@ -1,25 +1,27 @@
 package main
 
 import (
+	"github.com/pterm/pterm"
 	"github.com/pterm/pterm/putils"
 )
 
-// User is a regular struct; no tags or interfaces are needed.
-type User struct {
+type cache struct {
 	Name  string
-	Age   int
-	Email string
+	State string
+	Size  string
+	Files int
+	Path  string `pterm:"Location"`
+	inode uint64
 }
 
 func main() {
-	users := []User{
-		{Name: "Ada Lovelace", Age: 36, Email: "ada@example.com"},
-		{Name: "Alan Turing", Age: 41, Email: "alan@example.com"},
-		{Name: "Grace Hopper", Age: 85, Email: "grace@example.com"},
+	caches := []cache{
+		{Name: "npm", State: "stale", Size: "1.20 GB", Files: 48211, Path: "~/.npm/_cacache"},
+		{Name: "go", State: "fresh", Size: "2.84 GB", Files: 112530, Path: "~/go/pkg/mod"},
+		{Name: "pip", State: "stale", Size: "87 MB", Files: 1302, Path: "~/.cache/pip"},
 	}
 
-	// DefaultTableFromStructSlice fills the default table via reflection: the
-	// field names become the first row, so WithHasHeader styles them as the
-	// header.
-	putils.DefaultTableFromStructSlice(users).WithHasHeader().Render()
+	// Field names become the header. A pterm tag renames a column, and
+	// unexported fields are left out.
+	_ = pterm.Table.WithData(putils.TableFromStructs(caches)).Render()
 }

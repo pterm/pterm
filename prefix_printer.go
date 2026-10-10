@@ -3,381 +3,206 @@ package pterm
 import (
 	"fmt"
 	"io"
-	"runtime"
 	"strings"
 
-	"github.com/pterm/pterm/internal"
+	"github.com/pterm/pterm/internal/screen"
 )
 
-var (
-	// GrayBoxStyle wraps text in a gray box.
-	GrayBoxStyle = NewStyle(BgGray, FgLightWhite)
-)
-
-var (
-	// Info returns a PrefixPrinter, which can be used to print text with an "info" Prefix.
-	// The prefix text is padded so all default prefix badges share the same width
-	// and messages line up when different printers are mixed.
-	Info = PrefixPrinter{
-		MessageStyle: &ThemeDefault.InfoMessageStyle,
-		Prefix: Prefix{
-			Style: &ThemeDefault.InfoPrefixStyle,
-			Text:  " INFO  ",
-		},
-	}
-
-	// Warning returns a PrefixPrinter, which can be used to print text with a "warning" Prefix.
-	Warning = PrefixPrinter{
-		MessageStyle: &ThemeDefault.WarningMessageStyle,
-		Prefix: Prefix{
-			Style: &ThemeDefault.WarningPrefixStyle,
-			Text:  "WARNING",
-		},
-	}
-
-	// Success returns a PrefixPrinter, which can be used to print text with a "success" Prefix.
-	Success = PrefixPrinter{
-		MessageStyle: &ThemeDefault.SuccessMessageStyle,
-		Prefix: Prefix{
-			Style: &ThemeDefault.SuccessPrefixStyle,
-			Text:  "SUCCESS",
-		},
-	}
-
-	// Error returns a PrefixPrinter, which can be used to print text with an "error" Prefix.
-	Error = PrefixPrinter{
-		MessageStyle: &ThemeDefault.ErrorMessageStyle,
-		Prefix: Prefix{
-			Style: &ThemeDefault.ErrorPrefixStyle,
-			Text:  " ERROR ",
-		},
-	}
-
-	// Fatal returns a PrefixPrinter, which can be used to print text with an "fatal" Prefix.
-	// NOTICE: Fatal terminates the application immediately!
-	Fatal = PrefixPrinter{
-		MessageStyle: &ThemeDefault.FatalMessageStyle,
-		Prefix: Prefix{
-			Style: &ThemeDefault.FatalPrefixStyle,
-			Text:  " FATAL ",
-		},
-		Fatal: true,
-	}
-
-	// Debug Prints debug messages. By default it will only print if PrintDebugMessages is true.
-	// You can change PrintDebugMessages with EnableDebugMessages and DisableDebugMessages, or by setting the variable itself.
-	Debug = PrefixPrinter{
-		MessageStyle: &ThemeDefault.DebugMessageStyle,
-		Prefix: Prefix{
-			Text:  " DEBUG ",
-			Style: &ThemeDefault.DebugPrefixStyle,
-		},
-		Debugger: true,
-	}
-
-	// Description returns a PrefixPrinter, which can be used to print text with a "description" Prefix.
-	Description = PrefixPrinter{
-		MessageStyle: &ThemeDefault.DescriptionMessageStyle,
-		Prefix: Prefix{
-			Style: &ThemeDefault.DescriptionPrefixStyle,
-			Text:  "Description",
-		},
-	}
-)
-
-// PrefixPrinter is the printer used to print a Prefix.
-type PrefixPrinter struct {
-	Prefix           Prefix
-	Scope            Scope
-	MessageStyle     *Style
-	Fatal            bool
-	ShowLineNumber   bool
-	LineNumberOffset int
-	Writer           io.Writer
-	// If Debugger is true, the printer will only print if PrintDebugMessages is set to true.
-	// You can change PrintDebugMessages with EnableDebugMessages and DisableDebugMessages, or by setting the variable itself.
-	Debugger bool
-}
-
-// WithPrefix adds a custom prefix to the printer.
-func (p PrefixPrinter) WithPrefix(prefix Prefix) *PrefixPrinter {
-	p.Prefix = prefix
-	return &p
-}
-
-// WithScope adds a scope to the Prefix.
-func (p PrefixPrinter) WithScope(scope Scope) *PrefixPrinter {
-	p.Scope = scope
-	return &p
-}
-
-// WithMessageStyle adds a custom prefix to the printer.
-func (p PrefixPrinter) WithMessageStyle(style *Style) *PrefixPrinter {
-	p.MessageStyle = style
-	return &p
-}
-
-// WithFatal sets if the printer should panic after printing.
-// NOTE:
-// The printer will only panic if either PrefixPrinter.Println, PrefixPrinter.Print
-// or PrefixPrinter.Printf is called.
-func (p PrefixPrinter) WithFatal(b ...bool) *PrefixPrinter {
-	p.Fatal = internal.WithBoolean(b)
-	return &p
-}
-
-// WithShowLineNumber sets if the printer should print the line number from where it's called in a go file.
-func (p PrefixPrinter) WithShowLineNumber(b ...bool) *PrefixPrinter {
-	p.ShowLineNumber = internal.WithBoolean(b)
-	return &p
-}
-
-// WithDebugger returns a new Printer with specific Debugger value.
-// If Debugger is true, the printer will only print if PrintDebugMessages is set to true.
-// You can change PrintDebugMessages with EnableDebugMessages and DisableDebugMessages, or by setting the variable itself.
-func (p PrefixPrinter) WithDebugger(b ...bool) *PrefixPrinter {
-	p.Debugger = internal.WithBoolean(b)
-	return &p
-}
-
-// WithLineNumberOffset can be used to exclude a specific amount of calls in the call stack.
-// If you make a wrapper function for example, you can set this to one.
-// The printed line number will then be the line number where your wrapper function is called.
-func (p PrefixPrinter) WithLineNumberOffset(offset int) *PrefixPrinter {
-	p.LineNumberOffset = offset
-	return &p
-}
-
-// WithWriter sets the custom Writer.
-func (p PrefixPrinter) WithWriter(writer io.Writer) *PrefixPrinter {
-	p.Writer = writer
-	return &p
-}
-
-// Sprint formats using the default formats for its operands and returns the resulting string.
-// Spaces are added between operands when neither is a string.
-func (p *PrefixPrinter) Sprint(a ...any) string {
-	m := Sprint(a...)
-
-	if p.Debugger && !printDebugMessages() {
-		return ""
-	}
-
-	if rawOutput() {
-		if p.Prefix.Text != "" {
-			return Sprintf("%s: %s", strings.TrimSpace(p.Prefix.Text), Sprint(a...))
-		}
-
-		return Sprint(a...)
-	}
-
-	// Work on a copy: the default styles assigned below must not mutate the
-	// printer itself, which may be shared between goroutines (e.g. the
-	// package-level pterm.Info).
-	cp := *p
-
-	if cp.Prefix.Style == nil {
-		cp.Prefix.Style = NewStyle()
-	}
-
-	if cp.Scope.Style == nil {
-		cp.Scope.Style = NewStyle()
-	}
-
-	if cp.MessageStyle == nil {
-		cp.MessageStyle = NewStyle()
-	}
-
-	var ret strings.Builder
-	var newLine bool
-
-	if strings.HasSuffix(m, "\n") {
-		m = strings.TrimRight(m, "\n")
-		newLine = true
-	}
-
-	messageLines := strings.Split(m, "\n")
-	for i, m := range messageLines {
-		if i == 0 {
-			ret.WriteString(cp.GetFormattedPrefix())
-			ret.WriteByte(' ')
-
-			if cp.Scope.Text != "" {
-				ret.WriteString(NewStyle(*cp.Scope.Style...).Sprint(" (" + cp.Scope.Text + ") "))
-			}
-
-			ret.WriteString(cp.MessageStyle.Sprint(m))
-		} else {
-			ret.WriteByte('\n')
-			ret.WriteString(cp.Prefix.Style.Sprint(strings.Repeat(" ", internal.GetStringMaxWidth(cp.Prefix.Text)+2)))
-			ret.WriteByte(' ')
-			ret.WriteString(cp.MessageStyle.Sprint(m))
-		}
-	}
-
-	if cp.ShowLineNumber {
-		_, fileName, line, _ := runtime.Caller(3 + cp.LineNumberOffset)
-		ret.WriteString(FgGray.Sprint("\n└ " + fmt.Sprintf("(%s:%d)\n", fileName, line)))
-
-		newLine = false
-	}
-
-	if newLine {
-		ret.WriteByte('\n')
-	}
-
-	return Sprint(ret.String())
-}
-
-// Sprintln formats using the default formats for its operands and returns the resulting string.
-// Spaces are always added between operands and a newline is appended.
-func (p PrefixPrinter) Sprintln(a ...any) string {
-	if p.Debugger && !printDebugMessages() {
-		return ""
-	}
-
-	str := fmt.Sprintln(a...)
-
-	return p.Sprint(str)
-}
-
-// Sprintf formats according to a format specifier and returns the resulting string.
-func (p PrefixPrinter) Sprintf(format string, a ...any) string {
-	if p.Debugger && !printDebugMessages() {
-		return ""
-	}
-
-	return p.Sprint(Sprintf(format, a...))
-}
-
-// Sprintfln formats according to a format specifier and returns the resulting string.
-// Spaces are always added between operands and a newline is appended.
-func (p PrefixPrinter) Sprintfln(format string, a ...any) string {
-	if p.Debugger && !printDebugMessages() {
-		return ""
-	}
-
-	return p.Sprintf(format, a...) + "\n"
-}
-
-// Print formats using the default formats for its operands and writes to standard output.
-// Spaces are added between operands when neither is a string.
-// It returns the number of bytes written and any write error encountered.
-func (p *PrefixPrinter) Print(a ...any) *TextPrinter {
-	tp := TextPrinter(p)
-	if p.Debugger && !printDebugMessages() {
-		return &tp
-	}
-
-	// Adjust the line number offset on a copy: mutating the printer itself
-	// would race when a shared printer (e.g. pterm.Info) prints concurrently.
-	cp := *p
-	cp.LineNumberOffset--
-	Fprint(cp.GetWriter(), cp.Sprint(a...))
-	checkFatal(&cp)
-
-	return &tp
-}
-
-// Println formats using the default formats for its operands and writes to standard output.
-// Spaces are always added between operands and a newline is appended.
-// It returns the number of bytes written and any write error encountered.
-func (p *PrefixPrinter) Println(a ...any) *TextPrinter {
-	tp := TextPrinter(p)
-	if p.Debugger && !printDebugMessages() {
-		return &tp
-	}
-
-	Fprint(p.GetWriter(), p.Sprintln(a...))
-	checkFatal(p)
-
-	return &tp
-}
-
-// Printf formats according to a format specifier and writes to standard output.
-// It returns the number of bytes written and any write error encountered.
-func (p *PrefixPrinter) Printf(format string, a ...any) *TextPrinter {
-	tp := TextPrinter(p)
-	if p.Debugger && !printDebugMessages() {
-		return &tp
-	}
-
-	Fprint(p.GetWriter(), p.Sprintf(format, a...))
-	checkFatal(p)
-
-	return &tp
-}
-
-// Printfln formats according to a format specifier and writes to standard output.
-// Spaces are always added between operands and a newline is appended.
-// It returns the number of bytes written and any write error encountered.
-func (p *PrefixPrinter) Printfln(format string, a ...any) *TextPrinter {
-	tp := TextPrinter(p)
-	if p.Debugger && !printDebugMessages() {
-		return &tp
-	}
-
-	p.LineNumberOffset++
-	Fprint(p.GetWriter(), p.Sprintfln(format, a...))
-	p.LineNumberOffset--
-	checkFatal(p)
-
-	return &tp
-}
-
-// PrintOnError prints every error which is not nil.
-// If every error is nil, nothing will be printed.
-// This can be used for simple error checking.
+// PrefixPrinter prints status messages: a glyph in the printer's tone, then
+// the message. A message with several lines, or a printer with a title,
+// becomes a callout.
 //
-// Note: Use WithFatal(true) or Fatal to panic after first non nil error.
-func (p *PrefixPrinter) PrintOnError(a ...any) *TextPrinter {
-	printOnError(p, a...)
-
-	tp := TextPrinter(p)
-
-	return &tp
+//	✔ Deployed to production
+type PrefixPrinter struct {
+	// Tone colors the glyph and the title.
+	Tone Tone
+	// Glyph is drawn before the message. Empty means the glyph of Kind
+	// from the active glyph set.
+	Glyph string
+	// Kind picks the default glyph and the default writer.
+	Kind MessageKind
+	// Title is shown above multi-line messages. Empty uses the first line
+	// of the message as title.
+	Title string
+	// Writer receives the output. Nil means the default output, or the
+	// error output for warnings, errors and fatal messages.
+	Writer io.Writer
 }
 
-// PrintOnErrorf wraps every error which is not nil and prints it.
-// If every error is nil, nothing will be printed.
-// This can be used for simple error checking.
-func (p *PrefixPrinter) PrintOnErrorf(format string, a ...any) *TextPrinter {
-	printOnErrorf(p, format, a...)
+// MessageKind is the kind of a status message.
+type MessageKind uint8
 
-	tp := TextPrinter(p)
+// The kinds of status messages.
+const (
+	KindInfo MessageKind = iota
+	KindSuccess
+	KindWarning
+	KindError
+	KindFatal
+	KindDebug
+)
 
-	return &tp
+// The status printers.
+var (
+	// Info prints neutral notes.
+	Info = PrefixPrinter{Tone: ToneInfo, Kind: KindInfo}
+	// Success prints things that worked.
+	Success = PrefixPrinter{Tone: ToneSuccess, Kind: KindSuccess}
+	// Warning prints things to double check, to the error output.
+	Warning = PrefixPrinter{Tone: ToneWarning, Kind: KindWarning}
+	// Error prints failures, to the error output.
+	Error = PrefixPrinter{Tone: ToneError, Kind: KindError}
+	// Fatal prints like Error and then exits the program with code 1.
+	Fatal = PrefixPrinter{Tone: ToneError, Kind: KindFatal}
+	// Debug prints only after EnableDebugMessages.
+	Debug = PrefixPrinter{Tone: ToneMuted, Kind: KindDebug}
+)
+
+// WithTone returns a copy of p that uses tone t.
+func (p PrefixPrinter) WithTone(t Tone) *PrefixPrinter {
+	p.Tone = t
+	return &p
 }
 
-// GetFormattedPrefix returns the Prefix as a styled text string.
-func (p PrefixPrinter) GetFormattedPrefix() string {
-	return p.Prefix.Style.Sprint(" " + p.Prefix.Text + " ")
+// WithGlyph returns a copy of p that draws g before messages.
+func (p PrefixPrinter) WithGlyph(g string) *PrefixPrinter {
+	p.Glyph = g
+	return &p
 }
 
-// GetWriter returns the Writer if set, otherwise defaultWriter.
-func (p PrefixPrinter) GetWriter() io.Writer {
-	if p.Writer != nil {
+// WithTitle returns a copy of p that prints messages as a callout with
+// title t.
+func (p PrefixPrinter) WithTitle(t string) *PrefixPrinter {
+	p.Title = t
+	return &p
+}
+
+// WithWriter returns a copy of p that writes to w.
+func (p PrefixPrinter) WithWriter(w io.Writer) *PrefixPrinter {
+	p.Writer = w
+	return &p
+}
+
+func (p PrefixPrinter) out() io.Writer {
+	switch {
+	case p.Writer != nil:
 		return p.Writer
+	case p.Kind == KindWarning || p.Kind == KindError || p.Kind == KindFatal:
+		return ErrorOutput()
+	default:
+		return DefaultOutput()
+	}
+}
+
+func (p PrefixPrinter) glyph(g Glyphs) string {
+	if p.Glyph != "" {
+		return p.Glyph
 	}
 
-	return getDefaultWriter()
-}
-
-// Prefix contains the data used as the beginning of a printed text via a PrefixPrinter.
-type Prefix struct {
-	Text  string
-	Style *Style
-}
-
-// Scope contains the data of the optional scope of a prefix.
-// If it has a text, it will be printed after the Prefix in brackets.
-type Scope struct {
-	Text  string
-	Style *Style
-}
-
-func checkFatal(p *PrefixPrinter) {
-	if p.Fatal {
-		panic("")
+	switch p.Kind {
+	case KindSuccess:
+		return g.Success
+	case KindWarning:
+		return g.Warning
+	case KindError, KindFatal:
+		return g.Error
+	case KindDebug:
+		return g.Debug
+	default:
+		return g.Info
 	}
+}
+
+func (p PrefixPrinter) render(c canvas, s string) string {
+	if p.Kind == KindDebug && !DebugMessagesEnabled() {
+		return ""
+	}
+
+	s = strings.TrimRight(s, "\n")
+	glyph := c.paint(p.Tone, p.glyph(c.g))
+
+	if p.Title == "" && !strings.Contains(s, "\n") {
+		body := c.paint(ToneText, s)
+		if p.Kind == KindDebug {
+			body = c.paint(ToneMuted, s)
+		}
+
+		lines := c.wrap(body, 2)
+		for i := range lines[1:] {
+			lines[i+1] = "  " + lines[i+1]
+		}
+
+		return node(glyph + " " + strings.Join(lines, "\n"))
+	}
+
+	title, body := p.Title, s
+	if title == "" {
+		title, body, _ = strings.Cut(s, "\n")
+	}
+
+	return Callout.WithTone(p.Tone).WithGlyph(p.glyph(c.g)).WithTitle(title).render(c, body)
+}
+
+// Sprint returns the message as Print would print it.
+func (p PrefixPrinter) Sprint(a ...any) string { return sprintText(p, fmt.Sprint(a...)) }
+
+// Sprintln is like Sprint and adds a newline.
+func (p PrefixPrinter) Sprintln(a ...any) string { return sprintText(p, sprintln(a...)) + "\n" }
+
+// Sprintf formats the message and returns it as Print would print it.
+func (p PrefixPrinter) Sprintf(format string, a ...any) string {
+	return sprintText(p, fmt.Sprintf(format, a...))
+}
+
+// Sprintfln is like Sprintf and adds a newline.
+func (p PrefixPrinter) Sprintfln(format string, a ...any) string {
+	return sprintText(p, fmt.Sprintf(format, a...)) + "\n"
+}
+
+// Print prints the message. Messages always end with a newline, so Print
+// and Println print the same.
+func (p PrefixPrinter) Print(a ...any) { p.print(fmt.Sprint(a...)) }
+
+// Println prints the message.
+func (p PrefixPrinter) Println(a ...any) { p.print(sprintln(a...)) }
+
+// Printf formats and prints the message.
+func (p PrefixPrinter) Printf(format string, a ...any) { p.print(fmt.Sprintf(format, a...)) }
+
+// Printfln formats and prints the message.
+func (p PrefixPrinter) Printfln(format string, a ...any) { p.print(fmt.Sprintf(format, a...)) }
+
+// PrintOnError prints every non-nil error in a.
+func (p PrefixPrinter) PrintOnError(a ...any) {
+	for _, arg := range a {
+		if err, ok := arg.(error); ok && err != nil {
+			p.print(err.Error())
+		}
+	}
+}
+
+// PrintOnErrorf prints every non-nil error in a, wrapped with format, which
+// must contain one %w or %v verb.
+func (p PrefixPrinter) PrintOnErrorf(format string, a ...any) {
+	for _, arg := range a {
+		if err, ok := arg.(error); ok && err != nil {
+			p.print(fmt.Errorf(format, err).Error())
+		}
+	}
+}
+
+func (p PrefixPrinter) print(s string) {
+	if out := sprintRaw(p, s); out != "" {
+		emit(p.out(), out+"\n")
+	}
+
+	if p.Kind == KindFatal {
+		screen.Exit(1)
+	}
+}
+
+// sprintRaw renders for the printer's own writer and keeps node markers,
+// for output that goes to a screen.
+func sprintRaw(p textRenderer, s string) string {
+	return p.render(canvasFor(p.out()), s)
 }

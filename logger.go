@@ -2,45 +2,49 @@ package pterm
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"log/slog"
 	"maps"
-	"os"
 	"path/filepath"
 	"runtime"
 	"slices"
+	"strconv"
 	"strings"
-	"sync"
 	"time"
 
-	"github.com/pterm/pterm/internal"
+	"atomicgo.dev/color"
+
+	"github.com/pterm/pterm/internal/screen"
+	"github.com/pterm/pterm/internal/text"
 )
 
-// LogLevel is the severity level used by the Logger.
+// LogLevel is the severity of a log line.
 type LogLevel int
 
-// Style returns the style of the log level, as configured in ThemeDefault.
-func (l LogLevel) Style() Style {
-	switch l {
-	case LogLevelTrace:
-		return ThemeDefault.LoggerTraceStyle
-	case LogLevelDebug:
-		return ThemeDefault.LoggerDebugStyle
-	case LogLevelInfo:
-		return ThemeDefault.LoggerInfoStyle
-	case LogLevelWarn:
-		return ThemeDefault.LoggerWarnStyle
-	case LogLevelError:
-		return ThemeDefault.LoggerErrorStyle
-	case LogLevelFatal:
-		return ThemeDefault.LoggerFatalStyle
-	case LogLevelPrint:
-		return ThemeDefault.LoggerPrintStyle
-	}
+// The log levels, from least to most severe. A logger prints the lines of
+// its own level and every level above it. LogLevelPrint is always printed
+// unless the logger is disabled.
+const (
+	// LogLevelDisabled never prints.
+	LogLevelDisabled LogLevel = iota
+	// LogLevelTrace is for very detailed output while tracking down a bug.
+	LogLevelTrace
+	// LogLevelDebug is for output that helps while developing.
+	LogLevelDebug
+	// LogLevelInfo is for normal operation.
+	LogLevelInfo
+	// LogLevelWarn is for things to double check.
+	LogLevelWarn
+	// LogLevelError is for failures.
+	LogLevelError
+	// LogLevelFatal is for failures that end the program.
+	LogLevelFatal
+	// LogLevelPrint is for lines that are always printed.
+	LogLevelPrint
+)
 
-	return ThemeDefault.LoggerPrintStyle
-}
-
+// String returns the name of l in upper case, as JSON output uses it.
 func (l LogLevel) String() string {
 	switch l {
 	case LogLevelDisabled:
@@ -61,505 +65,550 @@ func (l LogLevel) String() string {
 		return "PRINT"
 	}
 
-	return "Unknown"
+	return "UNKNOWN"
 }
 
-const (
-	// LogLevelDisabled does never print.
-	LogLevelDisabled LogLevel = iota
-	// LogLevelTrace is the log level for traces.
-	LogLevelTrace
-	// LogLevelDebug is the log level for debug.
-	LogLevelDebug
-	// LogLevelInfo is the log level for info.
-	LogLevelInfo
-	// LogLevelWarn is the log level for warnings.
-	LogLevelWarn
-	// LogLevelError is the log level for errors.
-	LogLevelError
-	// LogLevelFatal is the log level for fatal errors.
-	LogLevelFatal
-	// LogLevelPrint is the log level for printing.
-	LogLevelPrint
-)
-
-// LogFormatter is the log formatter.
-// Can be either LogFormatterColorful or LogFormatterJSON.
+// LogFormatter is the output format of a logger.
 type LogFormatter int
 
 const (
-	// LogFormatterColorful is a colorful log formatter.
+	// LogFormatterColorful prints lines for humans.
 	LogFormatterColorful LogFormatter = iota
-	// LogFormatterJSON is a JSON log formatter.
+	// LogFormatterJSON prints one JSON object per line, for machines.
 	LogFormatterJSON
 )
 
-// DefaultLogger is the default logger.
-var DefaultLogger = Logger{
-	Formatter:  LogFormatterColorful,
-	Writer:     os.Stdout,
-	Level:      LogLevelInfo,
-	ShowTime:   true,
-	TimeFormat: "2006-01-02 15:04:05",
-	MaxWidth:   80,
-	KeyStyles: map[string]Style{
-		"error":  *NewStyle(FgRed, Bold),
-		"err":    *NewStyle(FgRed, Bold),
-		"caller": *NewStyle(FgGray, Bold),
-	},
+// LevelLabel is how a log level looks at the start of a line.
+type LevelLabel struct {
+	// Glyph is drawn first. Empty uses the glyph of the level from the
+	// active glyph set.
+	Glyph string
+	// Word names the level, such as "warn".
+	Word string
+	// Tone colors the glyph and the word.
+	Tone Tone
 }
 
-// loggerMutex syncs all loggers, so that they don't print at the exact same time.
-var loggerMutex sync.Mutex
+// ErrKeyWithoutValue is the key Args uses for a value whose key is missing,
+// when it gets an odd number of arguments.
+const ErrKeyWithoutValue = "ERROR: key_without_value"
 
-// Logger is a fully configurable, structured logger.
-type Logger struct {
-	// Formatter is the log formatter of the logger.
+// LoggerArgument is a key-value pair of a log line.
+type LoggerArgument struct {
+	// Key names the value.
+	Key string
+	// Value is printed with fmt.Sprint, or as JSON by the JSON formatter.
+	Value any
+}
+
+// LoggerPrinter prints structured log lines: a toned level, the message
+// and muted key=value pairs.
+//
+//	● info  Server started port=8080 env=production
+//	▲ warn  Disk almost full free="2.1 GB"
+//
+// Log lines go to the error output by default, so they stay apart from the
+// output of a program.
+type LoggerPrinter struct {
+	// Formatter picks colorful lines or JSON.
 	Formatter LogFormatter
-	// Writer is the writer of the logger.
+	// Writer receives the output. Nil means the error output.
 	Writer io.Writer
-	// Level is the log level of the logger.
+	// Level is the least severe level that gets printed.
 	Level LogLevel
-	// ShowCaller defines if the logger should print the caller.
+	// ShowCaller adds the file and line that logged, as a "caller" argument.
 	ShowCaller bool
-	// CallerOffset defines the offset of the caller.
+	// CallerOffset skips stack frames when finding the caller, for loggers
+	// wrapped in helpers of their own.
 	CallerOffset int
-	// ShowTime defines if the logger should print a timestamp.
+	// ShowTime starts each line with the time.
 	ShowTime bool
-	// TimestampLayout defines the layout of the timestamp.
+	// TimeFormat is the layout of the time, see time.Layout.
 	TimeFormat string
-	// KeyStyles defines the styles for specific keys.
+	// Labels change how levels look. Levels without an entry use the
+	// default look.
+	Labels map[LogLevel]LevelLabel
+	// MessageTone colors the message.
+	MessageTone Tone
+	// KeyTone colors the keys of arguments.
+	KeyTone Tone
+	// ValueTone colors the values of arguments.
+	ValueTone Tone
+	// TimeTone colors the time.
+	TimeTone Tone
+	// KeyStyles style the key and value of the arguments with these keys,
+	// such as "error".
 	KeyStyles map[string]Style
-	// MaxWidth defines the maximum width of the logger.
-	// If the text (including the arguments) is longer than the max width, it will be split into multiple lines.
-	// The width is always capped to the current terminal width.
-	// A value of zero or less uses the full terminal width.
+	// MaxWidth caps the width of a line. Longer lines put each argument on
+	// a line of its own. Zero or less uses the terminal width.
 	MaxWidth int
-	// SortArguments sorts the key-value arguments alphabetically by key before
-	// printing. When false (the default), arguments keep the order in which they
-	// were supplied.
+	// SortArguments sorts arguments by key. Otherwise they keep the order
+	// they were given in.
 	SortArguments bool
 }
 
-// WithFormatter sets the log formatter of the logger.
-func (l Logger) WithFormatter(formatter LogFormatter) *Logger {
-	l.Formatter = formatter
+// Logger is the default logger. It prints Info and above.
+var Logger = LoggerPrinter{
+	Level:       LogLevelInfo,
+	TimeFormat:  "15:04:05",
+	MessageTone: ToneText,
+	KeyTone:     ToneMuted,
+	ValueTone:   ToneMuted,
+	TimeTone:    ToneMuted,
+	KeyStyles: map[string]Style{
+		"error": {Fg: ToneError},
+		"err":   {Fg: ToneError},
+	},
+}
+
+// logNow returns the time stamped on log lines. Tests replace it.
+var logNow = time.Now
+
+// WithFormatter returns a copy of l that prints in format f.
+func (l LoggerPrinter) WithFormatter(f LogFormatter) *LoggerPrinter {
+	l.Formatter = f
 	return &l
 }
 
-// WithWriter sets the writer of the logger.
-func (l Logger) WithWriter(writer io.Writer) *Logger {
-	l.Writer = writer
+// WithWriter returns a copy of l that writes to w.
+func (l LoggerPrinter) WithWriter(w io.Writer) *LoggerPrinter {
+	l.Writer = w
 	return &l
 }
 
-// WithLevel sets the log level of the logger.
-func (l Logger) WithLevel(level LogLevel) *Logger {
+// WithLevel returns a copy of l that prints level and everything more
+// severe.
+func (l LoggerPrinter) WithLevel(level LogLevel) *LoggerPrinter {
 	l.Level = level
 	return &l
 }
 
-// WithCaller enables or disables the caller.
-func (l Logger) WithCaller(b ...bool) *Logger {
-	l.ShowCaller = internal.WithBoolean(b)
+// WithCaller returns a copy of l that shows or hides the caller.
+func (l LoggerPrinter) WithCaller(show ...bool) *LoggerPrinter {
+	l.ShowCaller = flag(show)
 	return &l
 }
 
-// WithCallerOffset sets the caller offset.
-func (l Logger) WithCallerOffset(offset int) *Logger {
+// WithCallerOffset returns a copy of l that skips offset more stack frames
+// to find the caller.
+func (l LoggerPrinter) WithCallerOffset(offset int) *LoggerPrinter {
 	l.CallerOffset = offset
 	return &l
 }
 
-// WithTime enables or disables the timestamp.
-func (l Logger) WithTime(b ...bool) *Logger {
-	l.ShowTime = internal.WithBoolean(b)
+// WithTime returns a copy of l that shows or hides the time.
+func (l LoggerPrinter) WithTime(show ...bool) *LoggerPrinter {
+	l.ShowTime = flag(show)
 	return &l
 }
 
-// WithTimeFormat sets the timestamp layout.
-func (l Logger) WithTimeFormat(format string) *Logger {
-	l.TimeFormat = format
+// WithTimeFormat returns a copy of l that formats the time with layout.
+func (l LoggerPrinter) WithTimeFormat(layout string) *LoggerPrinter {
+	l.TimeFormat = layout
 	return &l
 }
 
-// WithKeyStyles sets the style for a specific key.
-func (l Logger) WithKeyStyles(styles map[string]Style) *Logger {
+// WithLabel returns a copy of l in which level looks like label.
+func (l LoggerPrinter) WithLabel(level LogLevel, label LevelLabel) *LoggerPrinter {
+	labels := maps.Clone(l.Labels)
+	if labels == nil {
+		labels = map[LogLevel]LevelLabel{}
+	}
+
+	labels[level] = label
+	l.Labels = labels
+
+	return &l
+}
+
+// WithMessageTone returns a copy of l whose messages use tone t.
+func (l LoggerPrinter) WithMessageTone(t Tone) *LoggerPrinter {
+	l.MessageTone = t
+	return &l
+}
+
+// WithKeyTone returns a copy of l whose argument keys use tone t.
+func (l LoggerPrinter) WithKeyTone(t Tone) *LoggerPrinter {
+	l.KeyTone = t
+	return &l
+}
+
+// WithValueTone returns a copy of l whose argument values use tone t.
+func (l LoggerPrinter) WithValueTone(t Tone) *LoggerPrinter {
+	l.ValueTone = t
+	return &l
+}
+
+// WithTimeTone returns a copy of l whose time uses tone t.
+func (l LoggerPrinter) WithTimeTone(t Tone) *LoggerPrinter {
+	l.TimeTone = t
+	return &l
+}
+
+// WithKeyStyles returns a copy of l that uses styles for arguments with
+// these keys, replacing the styles it had.
+func (l LoggerPrinter) WithKeyStyles(styles map[string]Style) *LoggerPrinter {
 	l.KeyStyles = styles
 	return &l
 }
 
-// WithMaxWidth sets the maximum width of the logger.
-func (l Logger) WithMaxWidth(width int) *Logger {
-	l.MaxWidth = width
-	return &l
-}
-
-// WithSortArguments enables or disables alphabetical sorting of the key-value
-// arguments by key. When disabled (the default), arguments keep the order in
-// which they were supplied.
-func (l Logger) WithSortArguments(b ...bool) *Logger {
-	l.SortArguments = internal.WithBoolean(b)
-	return &l
-}
-
-// AppendKeyStyles appends a style for a specific key.
-func (l Logger) AppendKeyStyles(styles map[string]Style) *Logger {
-	maps.Copy(l.KeyStyles, styles)
-
-	return &l
-}
-
-// AppendKeyStyle appends a style for a specific key.
-func (l Logger) AppendKeyStyle(key string, style Style) *Logger {
-	l.KeyStyles[key] = style
-	return &l
-}
-
-// CanPrint checks if the logger can print a specific log level.
-func (l Logger) CanPrint(level LogLevel) bool {
-	if l.Level == LogLevelDisabled {
-		return false
+// AppendKeyStyles returns a copy of l that also uses styles for arguments
+// with these keys.
+func (l LoggerPrinter) AppendKeyStyles(styles map[string]Style) *LoggerPrinter {
+	merged := maps.Clone(l.KeyStyles)
+	if merged == nil {
+		merged = map[string]Style{}
 	}
 
-	return l.Level <= level
+	maps.Copy(merged, styles)
+	l.KeyStyles = merged
+
+	return &l
 }
 
-// Args converts any arguments to a slice of LoggerArgument.
-func (l Logger) Args(args ...any) []LoggerArgument {
-	var loggerArgs []LoggerArgument
+// AppendKeyStyle returns a copy of l that also uses style for arguments
+// with key.
+func (l LoggerPrinter) AppendKeyStyle(key string, style Style) *LoggerPrinter {
+	return l.AppendKeyStyles(map[string]Style{key: style})
+}
 
-	// args are in the format of: key, value, key, value, key, value, ...
-	args = l.sanitizeArgs(args)
+// WithMaxWidth returns a copy of l whose lines are at most w columns wide.
+func (l LoggerPrinter) WithMaxWidth(w int) *LoggerPrinter {
+	l.MaxWidth = w
+	return &l
+}
+
+// WithSortArguments returns a copy of l that sorts arguments by key.
+func (l LoggerPrinter) WithSortArguments(sort ...bool) *LoggerPrinter {
+	l.SortArguments = flag(sort)
+	return &l
+}
+
+// CanPrint reports whether l prints lines of level.
+func (l LoggerPrinter) CanPrint(level LogLevel) bool {
+	return l.Level != LogLevelDisabled && level != LogLevelDisabled && l.Level <= level
+}
+
+// Args pairs up keys and values: Args("user", "ada", "id", 42). With an odd
+// number of arguments the last value gets the key ErrKeyWithoutValue.
+func (l LoggerPrinter) Args(args ...any) []LoggerArgument {
+	out := make([]LoggerArgument, 0, (len(args)+1)/2)
 
 	for i := 0; i < len(args); i += 2 {
-		key := Sprint(args[i])
-		value := args[i+1]
+		if i+1 == len(args) {
+			out = append(out, LoggerArgument{Key: ErrKeyWithoutValue, Value: args[i]})
+			break
+		}
 
-		loggerArgs = append(loggerArgs, LoggerArgument{
-			Key:   key,
-			Value: value,
-		})
+		out = append(out, LoggerArgument{Key: fmt.Sprint(args[i]), Value: args[i+1]})
 	}
 
-	return loggerArgs
+	return out
 }
 
-// ArgsFromMap converts a map to a slice of LoggerArgument.
-func (l Logger) ArgsFromMap(m map[string]any) []LoggerArgument {
-	loggerArgs := make([]LoggerArgument, 0, len(m))
-
-	for k, v := range m {
-		loggerArgs = append(loggerArgs, LoggerArgument{
-			Key:   k,
-			Value: v,
-		})
+// ArgsFromMap turns a map into arguments, sorted by key so lines are
+// stable from run to run.
+func (l LoggerPrinter) ArgsFromMap(m map[string]any) []LoggerArgument {
+	out := make([]LoggerArgument, 0, len(m))
+	for _, k := range slices.Sorted(maps.Keys(m)) {
+		out = append(out, LoggerArgument{Key: k, Value: m[k]})
 	}
 
-	return loggerArgs
+	return out
 }
 
-// sanitizeArgs inserts an error message into an args slice if an odd number of arguments is provided.
-func (l Logger) sanitizeArgs(args []any) []any {
-	numArgs := len(args)
-	if numArgs > 0 && numArgs%2 != 0 {
-		if numArgs > 1 {
-			lastArg := args[numArgs-1]
-			args = append(args[:numArgs-1], []any{ErrKeyWithoutValue, lastArg}...)
-		} else {
-			args = []any{ErrKeyWithoutValue, args[0]}
+// Trace logs at the trace level.
+func (l LoggerPrinter) Trace(msg string, args ...[]LoggerArgument) {
+	l.log(LogLevelTrace, msg, slices.Concat(args...), 0)
+}
+
+// Debug logs at the debug level.
+func (l LoggerPrinter) Debug(msg string, args ...[]LoggerArgument) {
+	l.log(LogLevelDebug, msg, slices.Concat(args...), 0)
+}
+
+// Info logs at the info level.
+func (l LoggerPrinter) Info(msg string, args ...[]LoggerArgument) {
+	l.log(LogLevelInfo, msg, slices.Concat(args...), 0)
+}
+
+// Warn logs at the warn level.
+func (l LoggerPrinter) Warn(msg string, args ...[]LoggerArgument) {
+	l.log(LogLevelWarn, msg, slices.Concat(args...), 0)
+}
+
+// Error logs at the error level.
+func (l LoggerPrinter) Error(msg string, args ...[]LoggerArgument) {
+	l.log(LogLevelError, msg, slices.Concat(args...), 0)
+}
+
+// Fatal logs at the fatal level and exits the program with code 1, also
+// when the level of l hides the line.
+func (l LoggerPrinter) Fatal(msg string, args ...[]LoggerArgument) {
+	l.log(LogLevelFatal, msg, slices.Concat(args...), 0)
+	screen.Exit(1)
+}
+
+// Print logs a line that is printed at every level but LogLevelDisabled.
+func (l LoggerPrinter) Print(msg string, args ...[]LoggerArgument) {
+	l.log(LogLevelPrint, msg, slices.Concat(args...), 0)
+}
+
+func (l LoggerPrinter) out() io.Writer { return orErrorOutput(l.Writer) }
+
+// log prints one line. pc is the program counter of the caller, or 0 to
+// look it up on the stack.
+func (l LoggerPrinter) log(level LogLevel, msg string, args []LoggerArgument, pc uintptr) {
+	if !l.CanPrint(level) || !OutputEnabled() {
+		return
+	}
+
+	if l.ShowCaller {
+		if pc == 0 {
+			// Skip runtime.Callers, log and the level method.
+			pcs := make([]uintptr, 1)
+			if runtime.Callers(3+l.CallerOffset, pcs) > 0 {
+				pc = pcs[0]
+			}
+		}
+
+		if caller := callerOf(pc); caller != "" {
+			args = append(slices.Clip(args), LoggerArgument{Key: "caller", Value: caller})
 		}
 	}
 
-	return args
-}
-
-func (l Logger) getCallerInfo() (path string, line int) {
-	if !l.ShowCaller {
-		return
-	}
-
-	_, path, line, _ = runtime.Caller(l.CallerOffset + 4)
-	_, callerBase, _, _ := runtime.Caller(0)
-	basepath := filepath.Dir(callerBase)
-	basepath = strings.ReplaceAll(basepath, "\\", "/")
-
-	path = strings.TrimPrefix(path, basepath)
-
-	return
-}
-
-func (l Logger) combineArgs(args ...[]LoggerArgument) []LoggerArgument {
-	var result []LoggerArgument
-
-	for _, arg := range args {
-		result = append(result, arg...)
-	}
-
 	if l.SortArguments {
-		slices.SortStableFunc(result, func(a, b LoggerArgument) int {
-			return strings.Compare(a.Key, b.Key)
-		})
+		args = slices.Clone(args)
+		slices.SortStableFunc(args, func(a, b LoggerArgument) int { return strings.Compare(a.Key, b.Key) })
 	}
 
-	return result
-}
-
-func (l Logger) print(level LogLevel, msg string, args []LoggerArgument) {
-	if !l.CanPrint(level) {
-		return
-	}
+	w := l.out()
 
 	var line string
 
 	switch l.Formatter {
-	case LogFormatterColorful:
-		line = l.renderColorful(level, msg, args)
 	case LogFormatterJSON:
 		line = l.renderJSON(level, msg, args)
+	default:
+		line = l.render(canvasFor(w), level, msg, args)
 	}
 
-	loggerMutex.Lock()
-	defer loggerMutex.Unlock()
-
-	Fprintln(l.Writer, line)
+	emit(w, line+"\n")
 }
 
-// loggerLevelWidth is the width the level name is padded to, so that the
-// messages of all levels start at the same column.
-const loggerLevelWidth = 5
-
-// loggerMinContentWidth is the narrowest the wrapped content is allowed to
-// get. In terminals too narrow to hold the prefix plus this width, lines
-// overflow instead of degrading into one word per line.
-const loggerMinContentWidth = 16
-
-// lineWidth returns the width a rendered log line may occupy: MaxWidth capped
-// to the current terminal width. A MaxWidth of zero or less means the full
-// terminal width may be used.
-func (l Logger) lineWidth() int {
-	width := l.MaxWidth
-
-	if terminalWidth := GetTerminalWidth(); terminalWidth > 0 && (width <= 0 || terminalWidth < width) {
-		width = terminalWidth
+// callerOf returns "dir/file.go:line" for pc, or "" when it is unknown.
+func callerOf(pc uintptr) string {
+	if pc == 0 {
+		return ""
 	}
 
-	return width
+	frame, _ := runtime.CallersFrames([]uintptr{pc}).Next()
+	if frame.File == "" {
+		return ""
+	}
+
+	file := filepath.ToSlash(frame.File)
+	if i := strings.LastIndexByte(file, '/'); i > 0 {
+		if j := strings.LastIndexByte(file[:i], '/'); j >= 0 {
+			file = file[j+1:]
+		}
+	}
+
+	return file + ":" + strconv.Itoa(frame.Line)
 }
 
-// quoteValue wraps a value that contains spaces in dimmed quotes, so that
-// inline key=value pairs stay unambiguous.
-func (l Logger) quoteValue(value string) string {
-	stripped := internal.RemoveEscapeCodes(value)
+// label returns how level looks, with the glyph filled in.
+func (l LoggerPrinter) label(c canvas, level LogLevel) LevelLabel {
+	if lb, ok := l.Labels[level]; ok {
+		if lb.Glyph == "" {
+			lb.Glyph = defaultLabel(c.g, level).Glyph
+		}
 
-	if stripped == "" || (strings.Contains(stripped, " ") && !strings.Contains(stripped, "\n")) {
-		return Gray(`"`) + value + Gray(`"`)
+		return lb
 	}
 
-	return value
+	return defaultLabel(c.g, level)
 }
 
-func (l Logger) renderColorful(level LogLevel, msg string, args []LoggerArgument) string {
-	var prefix string
-
-	if l.ShowTime {
-		prefix += ThemeDefault.LoggerTimestampStyle.Sprint(time.Now().Format(l.TimeFormat)) + " "
+func defaultLabel(g Glyphs, level LogLevel) LevelLabel {
+	switch level {
+	case LogLevelTrace:
+		return LevelLabel{Glyph: g.Debug, Word: "trace", Tone: ToneMuted}
+	case LogLevelDebug:
+		return LevelLabel{Glyph: g.Debug, Word: "debug", Tone: ToneMuted}
+	case LogLevelWarn:
+		return LevelLabel{Glyph: g.Warning, Word: "warn", Tone: ToneWarning}
+	case LogLevelError:
+		return LevelLabel{Glyph: g.Error, Word: "error", Tone: ToneError}
+	case LogLevelFatal:
+		return LevelLabel{Glyph: g.Error, Word: "fatal", Tone: ToneError}
+	case LogLevelPrint:
+		return LevelLabel{Glyph: g.Bullet, Word: "", Tone: ToneMuted}
+	default:
+		return LevelLabel{Glyph: g.Info, Word: "info", Tone: ToneInfo}
 	}
+}
 
-	prefix += level.Style().Sprintf("%-*s", loggerLevelWidth, level.String()) + " "
+// logWordWidth is the width level words are padded to, so messages line
+// up.
+const logWordWidth = 5
 
-	if l.ShowCaller {
-		path, line := l.getCallerInfo()
-		args = append(args, LoggerArgument{
-			Key:   "caller",
-			Value: ThemeDefault.LoggerCallerStyle.Sprintf("%s:%d", path, line),
-		})
-	}
+// render formats a line for humans.
+func (l LoggerPrinter) render(c canvas, level LogLevel, msg string, args []LoggerArgument) string {
+	lb := l.label(c, level)
+	st := Style{Fg: lb.Tone}
 
-	keys := make([]string, len(args))
-	values := make([]string, len(args))
-
-	// Keys take the level color; the FATAL background is too heavy to repeat
-	// on every key, so its keys fall back to plain red.
-	keyStyle := level.Style()
 	if level == LogLevelFatal {
-		keyStyle = ThemeDefault.LoggerFatalKeyStyle
+		st.Attrs = color.Bold
 	}
 
-	var multilineValues bool
+	prefix := c.paint(lb.Tone, lb.Glyph) + " " + c.style(st, text.PadRight(lb.Word, logWordWidth)) + " "
+	if l.ShowTime {
+		prefix = c.paint(l.TimeTone, logNow().Format(l.TimeFormat)) + " " + prefix
+	}
 
-	for i, arg := range args {
-		style, ok := l.KeyStyles[arg.Key]
-		if !ok {
-			style = keyStyle
+	msg = strings.TrimRight(msg, "\n")
+	width := l.lineWidth(c)
+
+	pairs := make([]string, len(args))
+	multiline := strings.Contains(msg, "\n")
+
+	for i, a := range args {
+		pairs[i] = l.pair(c, a, true)
+		if strings.Contains(fmt.Sprint(a.Value), "\n") {
+			multiline = true
 		}
-
-		keys[i] = style.Sprint(arg.Key) + Gray("=")
-		values[i] = Sprint(arg.Value)
-
-		if strings.Contains(values[i], "\n") {
-			multilineValues = true
-		}
 	}
 
-	width := l.lineWidth()
-
-	var inlineBuilder strings.Builder
-
-	inlineBuilder.WriteString(prefix)
-	inlineBuilder.WriteString(msg)
-
-	for i := range keys {
-		inlineBuilder.WriteString(" ")
-		inlineBuilder.WriteString(keys[i])
-		inlineBuilder.WriteString(l.quoteValue(values[i]))
+	inline := prefix + c.paint(l.MessageTone, msg)
+	if len(pairs) > 0 {
+		inline += " " + strings.Join(pairs, " ")
 	}
 
-	inline := inlineBuilder.String()
-
-	// Raw output always stays on a single line, so it remains grep-friendly
-	// when piped into files or other tools.
-	if rawOutput() {
-		return inline
+	// Without styling or with an unknown width a line stays one line, so
+	// files and pipes can be grepped.
+	if !StylingEnabled() || width <= 0 || (!multiline && text.Width(inline) <= width) {
+		return node(inline)
 	}
 
-	if !multilineValues && !strings.Contains(msg, "\n") && (width <= 0 || internal.GetStringMaxWidth(inline) <= width) {
-		return inline
-	}
-
-	return l.renderBlock(prefix, msg, keys, values, width)
+	return node(l.renderBlock(c, prefix, msg, args, width))
 }
 
-// renderBlock renders a log whose inline form would overflow the line width:
-// the message wraps under its own first line and every argument moves onto its
-// own line, connected by a dimmed tree rail. Wrapped and multiline argument
-// values align under the start of the value.
-func (l Logger) renderBlock(prefix, msg string, keys, values []string, width int) string {
-	prefixWidth := internal.GetStringMaxWidth(prefix)
-	indent := strings.Repeat(" ", prefixWidth)
+// renderBlock formats a line that does not fit: the message wraps under
+// itself and every argument gets a line of its own.
+func (l LoggerPrinter) renderBlock(c canvas, prefix, msg string, args []LoggerArgument, width int) string {
+	indentWidth := text.Width(prefix)
+	indent := strings.Repeat(" ", indentWidth)
+	room := max(width-indentWidth, 20)
 
-	contentWidth := 0
-	if width > 0 {
-		contentWidth = max(width-prefixWidth, loggerMinContentWidth)
-	}
+	var b strings.Builder
 
-	var sb strings.Builder
+	b.WriteString(prefix)
 
-	sb.WriteString(prefix)
-
-	for i, line := range internal.WrapText(msg, contentWidth) {
+	for i, line := range text.Wrap(msg, room) {
 		if i > 0 {
-			sb.WriteString("\n" + indent)
+			b.WriteString("\n" + indent)
 		}
 
-		sb.WriteString(line)
+		b.WriteString(c.paint(l.MessageTone, line))
 	}
 
-	for i := range keys {
-		connector, rail := Gray("├ "), Gray("│ ")
-		if i == len(keys)-1 {
-			connector, rail = Gray("└ "), "  "
+	for _, a := range args {
+		value := fmt.Sprint(a.Value)
+		if !strings.Contains(value, "\n") {
+			b.WriteString("\n" + indent + l.pair(c, a, false))
+			continue
 		}
 
-		valueIndent := internal.GetStringMaxWidth(keys[i])
-		if contentWidth > 0 && valueIndent > contentWidth/2 {
-			valueIndent = 2
-		}
+		key, valueStyle := l.pairStyles(a.Key)
+		b.WriteString("\n" + indent + c.style(key, a.Key) + c.paint(l.KeyTone, "="))
 
-		valueWidth := 0
-		if contentWidth > 0 {
-			valueWidth = contentWidth - 2 - valueIndent
-		}
-
-		valueLines := internal.WrapText(values[i], valueWidth)
-
-		sb.WriteString("\n" + indent + connector + keys[i] + valueLines[0])
-
-		for _, line := range valueLines[1:] {
-			sb.WriteString("\n" + indent + rail + strings.Repeat(" ", valueIndent) + line)
+		for _, line := range text.Wrap(strings.TrimRight(value, "\n"), max(room-2, 10)) {
+			b.WriteString("\n" + indent + "  " + c.style(valueStyle, line))
 		}
 	}
 
-	return sb.String()
+	return b.String()
 }
 
-func (l Logger) renderJSON(level LogLevel, msg string, args []LoggerArgument) string {
-	m := l.argsToMap(args)
+// pair formats key=value. Inline, values that contain spaces, quotes or
+// line breaks are quoted so the line stays unambiguous.
+func (l LoggerPrinter) pair(c canvas, a LoggerArgument, inline bool) string {
+	key, value := l.pairStyles(a.Key)
+
+	v := fmt.Sprint(a.Value)
+	if needsQuotes(v, inline) {
+		v = strconv.Quote(v)
+	}
+
+	return c.style(key, a.Key) + c.paint(l.KeyTone, "=") + c.style(value, v)
+}
+
+// pairStyles returns the styles of the key and the value of an argument.
+func (l LoggerPrinter) pairStyles(key string) (keyStyle, valueStyle Style) {
+	if st, ok := l.KeyStyles[key]; ok {
+		return st, st
+	}
+
+	return Style{Fg: l.KeyTone}, Style{Fg: l.ValueTone}
+}
+
+func needsQuotes(v string, inline bool) bool {
+	if v == "" {
+		return true
+	}
+
+	if inline && strings.ContainsAny(v, "\n\r\t") {
+		return true
+	}
+
+	return strings.ContainsAny(v, " \"=")
+}
+
+// lineWidth returns the width a line may take, or 0 when it is unknown.
+func (l LoggerPrinter) lineWidth(c canvas) int {
+	switch {
+	case c.width <= 0:
+		return 0
+	case l.MaxWidth > 0 && l.MaxWidth < c.width:
+		return l.MaxWidth
+	default:
+		return c.width
+	}
+}
+
+// renderJSON formats a line as a JSON object.
+func (l LoggerPrinter) renderJSON(level LogLevel, msg string, args []LoggerArgument) string {
+	m := make(map[string]any, len(args)+3)
+
+	for _, a := range args {
+		m[a.Key] = jsonValue(a.Value)
+	}
 
 	m["level"] = level.String()
-	m["timestamp"] = time.Now().Format(l.TimeFormat)
+	m["timestamp"] = logNow().Format(l.TimeFormat)
 	m["msg"] = msg
-
-	if file, line := l.getCallerInfo(); file != "" {
-		m["caller"] = Sprintf("%s:%d", file, line)
-	}
 
 	b, err := json.Marshal(m)
 	if err != nil {
-		return Sprintf("%v", m)
+		return fmt.Sprint(m)
 	}
 
 	return string(b)
 }
 
-func (l Logger) argsToMap(args []LoggerArgument) map[string]any {
-	m := make(map[string]any)
-
-	for _, arg := range args {
-		v := arg.Value
-		if sv, ok := arg.Value.(slog.Value); ok {
-			v = sv.Any()
-		}
-
-		m[arg.Key] = v
+// jsonValue returns v in a form json.Marshal prints usefully.
+func jsonValue(v any) any {
+	switch x := v.(type) {
+	case slog.Value:
+		return jsonValue(x.Resolve().Any())
+	case error:
+		return x.Error()
+	case json.Marshaler:
+		return x
+	case fmt.Stringer:
+		return x.String()
+	default:
+		return v
 	}
-
-	return m
-}
-
-// Trace prints a trace log.
-func (l Logger) Trace(msg string, args ...[]LoggerArgument) {
-	l.print(LogLevelTrace, msg, l.combineArgs(args...))
-}
-
-// Debug prints a debug log.
-func (l Logger) Debug(msg string, args ...[]LoggerArgument) {
-	l.print(LogLevelDebug, msg, l.combineArgs(args...))
-}
-
-// Info prints an info log.
-func (l Logger) Info(msg string, args ...[]LoggerArgument) {
-	l.print(LogLevelInfo, msg, l.combineArgs(args...))
-}
-
-// Warn prints a warning log.
-func (l Logger) Warn(msg string, args ...[]LoggerArgument) {
-	l.print(LogLevelWarn, msg, l.combineArgs(args...))
-}
-
-// Error prints an error log.
-func (l Logger) Error(msg string, args ...[]LoggerArgument) {
-	l.print(LogLevelError, msg, l.combineArgs(args...))
-}
-
-// Fatal prints a fatal log and exits the program.
-func (l Logger) Fatal(msg string, args ...[]LoggerArgument) {
-	l.print(LogLevelFatal, msg, l.combineArgs(args...))
-
-	if l.CanPrint(LogLevelFatal) {
-		os.Exit(1)
-	}
-}
-
-// Print prints a log.
-func (l Logger) Print(msg string, args ...[]LoggerArgument) {
-	l.print(LogLevelPrint, msg, l.combineArgs(args...))
-}
-
-// LoggerArgument is a key-value pair for a logger.
-type LoggerArgument struct {
-	// Key is the key of the argument.
-	Key string
-	// Value is the value of the argument.
-	Value any
 }
