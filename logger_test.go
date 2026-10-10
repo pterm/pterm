@@ -139,6 +139,14 @@ func TestLoggerArgsFromMap(t *testing.T) {
 	assert.Equal(t, map[string]any{"a": 1, "b": "x"}, asMap)
 }
 
+func TestLoggerWithSortArguments(t *testing.T) {
+	p := pterm.Logger{}
+	p2 := p.WithSortArguments()
+
+	assert.True(t, p2.SortArguments)
+	assert.False(t, p.SortArguments)
+}
+
 // Colorful (text) formatter.
 
 func TestLoggerColorfulInlineFormat(t *testing.T) {
@@ -406,4 +414,25 @@ func TestSlogHandlerWithGroupFlattensAttrs(t *testing.T) {
 
 	require.NoError(t, json.Unmarshal(buf.Bytes(), &m))
 	assert.Equal(t, "GET", m["method"])
+}
+
+func TestSlogHandlerPreservesArgumentOrder(t *testing.T) {
+	logger, buf := newBufferedLogger()
+	slogger := slog.New(pterm.NewSlogHandler(logger.WithLevel(pterm.LogLevelDebug)))
+
+	// WithAttrs attrs come first, then the record's own attrs, each in the order
+	// they were supplied. None of the keys are alphabetical, so a stable output
+	// proves the order is preserved rather than randomized by map iteration.
+	slogger.With("request_id", "abc123").Info("ordered", "zeta", 1, "alpha", 2, "mike", 3)
+
+	assert.Equal(t, "INFO  ordered request_id=abc123 zeta=1 alpha=2 mike=3\n", stripANSI(buf.String()))
+}
+
+func TestSlogHandlerSortArgumentsSortsAlphabetically(t *testing.T) {
+	logger, buf := newBufferedLogger()
+	slogger := slog.New(pterm.NewSlogHandler(logger.WithLevel(pterm.LogLevelDebug).WithSortArguments()))
+
+	slogger.Info("sorted", "zeta", 1, "alpha", 2, "mike", 3)
+
+	assert.Equal(t, "INFO  sorted alpha=2 mike=3 zeta=1\n", stripANSI(buf.String()))
 }

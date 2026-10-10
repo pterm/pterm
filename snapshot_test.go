@@ -131,6 +131,12 @@ func TestSnapshots(t *testing.T) {
 			{"Paul", "Dean"},
 		}).Srender)
 	})
+	testSnapshot(t, "TableColumnMinWidths", func(t *testing.T) string {
+		return srender(t, pterm.DefaultTable.WithHasHeader().WithColumnMinWidths(12, 10).WithData(pterm.TableData{
+			{"Firstname", "Lastname"},
+			{"Paul", "Dean"},
+		}).Srender)
+	})
 
 	testSnapshot(t, "Panel", func(t *testing.T) string {
 		return srender(t, pterm.DefaultPanel.WithPanels(pterm.Panels{

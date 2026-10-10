@@ -151,6 +151,17 @@ func TestInteractiveTextInputPrinter_MultiLine(t *testing.T) {
 		assert.Contains(t, stripANSI(output), "[Press tab to submit]", "the multi-line hint must be rendered")
 	})
 
+	t.Run("custom submit hint replaces the default one", func(t *testing.T) {
+		output := captureUserFacingStdout(t, func() {
+			simulateKeys(t, keys.Tab)
+
+			showTextInput(t, pterm.DefaultInteractiveTextInput.WithMultiLine().WithSubmitHint("[Tab zum Absenden]"))
+		})
+
+		assert.Contains(t, stripANSI(output), "[Tab zum Absenden]")
+		assert.NotContains(t, stripANSI(output), "[Press tab to submit]")
+	})
+
 	t.Run("up navigates to the previous line", func(t *testing.T) {
 		simulateKeys(t, keys.Enter, "second", keys.Up, "first", keys.Tab)
 
@@ -191,12 +202,20 @@ func TestInteractiveTextInputPrinter_MultiLine(t *testing.T) {
 		assert.Equal(t, "keep", result)
 	})
 
-	t.Run("enter submits an untouched default value", func(t *testing.T) {
-		simulateKeys(t, keys.Enter)
+	t.Run("enter adds a line after an untouched default value", func(t *testing.T) {
+		simulateKeys(t, keys.Enter, "newline", keys.Tab)
 
 		result := showTextInput(t, pterm.DefaultInteractiveTextInput.WithMultiLine().WithDefaultValue("keep"))
 
-		assert.Equal(t, "keep", result)
+		assert.Equal(t, "keep\nnewline", result)
+	})
+
+	t.Run("enter then tab keeps the newline", func(t *testing.T) {
+		simulateKeys(t, keys.Enter, keys.Tab)
+
+		result := showTextInput(t, pterm.DefaultInteractiveTextInput.WithMultiLine().WithDefaultValue("keep"))
+
+		assert.Equal(t, "keep\n", result)
 	})
 }
 
