@@ -1,300 +1,321 @@
 package pterm
 
-var (
-	// ThemeDefault is the default theme used by PTerm.
-	// If this variable is overwritten, the new value is used as default theme.
-	ThemeDefault = Theme{
-		DefaultText:             Style{FgDefault, BgDefault},
-		PrimaryStyle:            Style{FgLightCyan},
-		SecondaryStyle:          Style{FgLightMagenta},
-		HighlightStyle:          Style{Bold, FgYellow},
-		InfoMessageStyle:        Style{FgLightCyan},
-		InfoPrefixStyle:         Style{FgBlack, BgCyan},
-		SuccessMessageStyle:     Style{FgGreen},
-		SuccessPrefixStyle:      Style{FgBlack, BgGreen},
-		WarningMessageStyle:     Style{FgYellow},
-		WarningPrefixStyle:      Style{FgBlack, BgYellow},
-		ErrorMessageStyle:       Style{FgLightRed},
-		ErrorPrefixStyle:        Style{FgBlack, BgLightRed},
-		FatalMessageStyle:       Style{FgLightRed},
-		FatalPrefixStyle:        Style{FgLightWhite, BgRed, Bold},
-		DescriptionMessageStyle: Style{FgDefault},
-		DescriptionPrefixStyle:  Style{FgLightWhite, BgDarkGray},
-		ScopeStyle:              Style{FgGray},
-		ProgressbarBarStyle:     Style{FgCyan},
-		ProgressbarTitleStyle:   Style{FgLightCyan},
-		ProgressbarFillerStyle:  Style{FgDarkGray},
-		HeaderTextStyle:         Style{FgBlack, Bold},
-		HeaderBackgroundStyle:   Style{BgCyan},
-		SpinnerStyle:            Style{FgLightCyan},
-		SpinnerTextStyle:        Style{FgLightWhite},
-		TableStyle:              Style{FgDefault},
-		TableHeaderStyle:        Style{Bold, FgLightCyan},
-		TableSeparatorStyle:     Style{FgGray},
-		HeatmapStyle:            Style{FgDefault},
-		HeatmapHeaderStyle:      Style{FgLightCyan},
-		HeatmapSeparatorStyle:   Style{FgGray},
-		SectionStyle:            Style{Bold, FgLightMagenta},
-		BulletListTextStyle:     Style{FgDefault},
-		BulletListBulletStyle:   Style{FgCyan},
-		TreeStyle:               Style{FgGray},
-		TreeTextStyle:           Style{FgDefault},
-		LetterStyle:             Style{FgDefault},
-		DebugMessageStyle:       Style{FgGray},
-		DebugPrefixStyle:        Style{FgBlack, BgGray},
-		BoxStyle:                Style{FgGray},
-		BoxTextStyle:            Style{FgDefault},
-		BoxTitleStyle:           Style{Bold, FgLightCyan},
-		BarLabelStyle:           Style{FgLightCyan},
-		BarStyle:                Style{FgCyan},
-		TimerStyle:              Style{FgGray},
-		LoggerTraceStyle:        Style{Bold, FgGray},
-		LoggerDebugStyle:        Style{Bold, FgBlue},
-		LoggerInfoStyle:         Style{Bold, FgCyan},
-		LoggerWarnStyle:         Style{Bold, FgYellow},
-		LoggerErrorStyle:        Style{Bold, FgRed},
-		LoggerFatalStyle:        Style{Bold, FgLightWhite, BgRed},
-		LoggerPrintStyle:        Style{Bold, FgWhite},
-		LoggerFatalKeyStyle:     Style{FgRed, Bold},
-		LoggerTimestampStyle:    Style{FgGray},
-		LoggerCallerStyle:       Style{FgGray},
-		HeatmapTextColor:        FgBlack,
-		HeatmapColors:           []Color{BgRed, BgLightRed, BgYellow, BgLightYellow, BgLightGreen, BgGreen},
-		HeatmapTextRGB:          RGB{0, 0, 0, false},
-		HeatmapRGBRange:         []RGB{{R: 255, G: 0, B: 0, Background: true}, {R: 255, G: 165, B: 0, Background: true}, {R: 0, G: 255, B: 0, Background: true}},
-		Checkmark: Checkmark{
-			Checked:   Green("✓"),
-			Unchecked: Red("✗"),
-		},
-	}
+import (
+	"fmt"
+	"os"
+	"strings"
+	"sync"
+	"sync/atomic"
+	"time"
+
+	"atomicgo.dev/color"
+
+	"github.com/pterm/pterm/internal/screen"
 )
 
-// Theme for PTerm.
-// Theme contains every Style used in PTerm. You can create own themes for your application or use one
-// of the existing themes.
+// Theme holds the nine base colors every printer builds on. Printers never
+// store colors of their own; they refer to these slots by Tone, so a new
+// theme restyles everything.
 type Theme struct {
-	DefaultText             Style
-	PrimaryStyle            Style
-	SecondaryStyle          Style
-	HighlightStyle          Style
-	InfoMessageStyle        Style
-	InfoPrefixStyle         Style
-	SuccessMessageStyle     Style
-	SuccessPrefixStyle      Style
-	WarningMessageStyle     Style
-	WarningPrefixStyle      Style
-	ErrorMessageStyle       Style
-	ErrorPrefixStyle        Style
-	FatalMessageStyle       Style
-	FatalPrefixStyle        Style
-	DescriptionMessageStyle Style
-	DescriptionPrefixStyle  Style
-	ScopeStyle              Style
-	ProgressbarBarStyle     Style
-	ProgressbarTitleStyle   Style
-	// ProgressbarFillerStyle styles the unfilled track of the Progressbar
-	// (the BarFiller characters).
-	ProgressbarFillerStyle Style
-	HeaderTextStyle        Style
-	HeaderBackgroundStyle  Style
-	SpinnerStyle           Style
-	SpinnerTextStyle       Style
-	TimerStyle             Style
-	TableStyle             Style
-	TableHeaderStyle       Style
-	TableSeparatorStyle    Style
-	HeatmapStyle           Style
-	HeatmapHeaderStyle     Style
-	HeatmapSeparatorStyle  Style
-	SectionStyle           Style
-	BulletListTextStyle    Style
-	BulletListBulletStyle  Style
-	TreeStyle              Style
-	TreeTextStyle          Style
-	LetterStyle            Style
-	DebugMessageStyle      Style
-	DebugPrefixStyle       Style
-	BoxStyle               Style
-	BoxTextStyle           Style
-	// BoxTitleStyle styles the title of a BoxPrinter.
-	BoxTitleStyle Style
-	BarLabelStyle Style
-	BarStyle      Style
-	// LoggerTraceStyle till LoggerPrintStyle style the level prefix of the
-	// Logger, one field per LogLevel.
-	LoggerTraceStyle Style
-	LoggerDebugStyle Style
-	LoggerInfoStyle  Style
-	LoggerWarnStyle  Style
-	LoggerErrorStyle Style
-	LoggerFatalStyle Style
-	LoggerPrintStyle Style
-	// LoggerFatalKeyStyle styles the argument keys of fatal logs, whose level
-	// style (background) would be too heavy to repeat on every key.
-	LoggerFatalKeyStyle  Style
-	LoggerTimestampStyle Style
-	LoggerCallerStyle    Style
-	// HeatmapTextColor, HeatmapColors, HeatmapTextRGB and HeatmapRGBRange are
-	// the default cell colors of the HeatmapPrinter.
-	HeatmapTextColor Color
-	HeatmapColors    []Color
-	HeatmapTextRGB   RGB
-	HeatmapRGBRange  []RGB
-	Checkmark        Checkmark
+	// Primary marks titles, the active item and anything that is "pterm".
+	Primary color.Color
+	// Accent marks values and highlights that stand next to Primary.
+	Accent color.Color
+	// Success marks things that worked.
+	Success color.Color
+	// Warning marks things to double check.
+	Warning color.Color
+	// Error marks failures.
+	Error color.Color
+	// Info marks neutral notes.
+	Info color.Color
+	// Text is the color of plain text.
+	Text color.Color
+	// Muted is for hints, metadata and anything secondary.
+	Muted color.Color
+	// Border is for lines, frames and tracks that structure output.
+	Border color.Color
 }
 
-// WithPrimaryStyle returns a new theme with overridden value.
-func (t Theme) WithPrimaryStyle(style Style) Theme {
-	t.PrimaryStyle = style
+// ThemeMacchiato is the Catppuccin Macchiato theme, made for dark terminals.
+var ThemeMacchiato = Theme{
+	Primary: color.RGB(0xb7, 0xbd, 0xf8), // lavender
+	Accent:  color.RGB(0x8b, 0xd5, 0xca), // teal
+	Success: color.RGB(0xa6, 0xda, 0x95), // green
+	Warning: color.RGB(0xee, 0xd4, 0x9f), // yellow
+	Error:   color.RGB(0xed, 0x87, 0x96), // red
+	Info:    color.RGB(0x8a, 0xad, 0xf4), // blue
+	Text:    color.RGB(0xca, 0xd3, 0xf5), // text
+	Muted:   color.RGB(0x80, 0x87, 0xa2), // overlay1
+	Border:  color.RGB(0x5b, 0x60, 0x78), // surface2
+}
+
+// ThemeLatte is the Catppuccin Latte theme, made for light terminals.
+var ThemeLatte = Theme{
+	Primary: color.RGB(0x72, 0x87, 0xfd), // lavender
+	Accent:  color.RGB(0x17, 0x92, 0x99), // teal
+	Success: color.RGB(0x40, 0xa0, 0x2b), // green
+	Warning: color.RGB(0xdf, 0x8e, 0x1d), // yellow
+	Error:   color.RGB(0xd2, 0x0f, 0x39), // red
+	Info:    color.RGB(0x1e, 0x66, 0xf5), // blue
+	Text:    color.RGB(0x4c, 0x4f, 0x69), // text
+	Muted:   color.RGB(0x8c, 0x8f, 0xa1), // overlay1
+	Border:  color.RGB(0xac, 0xb0, 0xbe), // surface2
+}
+
+// ThemeANSI uses the 16 basic terminal colors, so output follows whatever
+// palette the user configured in their terminal.
+var ThemeANSI = Theme{
+	Primary: color.Magenta,
+	Accent:  color.Cyan,
+	Success: color.Green,
+	Warning: color.Yellow,
+	Error:   color.Red,
+	Info:    color.Blue,
+	Text:    color.None,
+	Muted:   color.BrightBlack,
+	Border:  color.BrightBlack,
+}
+
+// themes are the presets PTERM_THEME can name.
+var themes = map[string]Theme{
+	"macchiato": ThemeMacchiato,
+	"latte":     ThemeLatte,
+	"ansi":      ThemeANSI,
+}
+
+// slots maps each slot name to its field, for PTERM_THEME_<SLOT>.
+var slots = map[string]func(*Theme) *color.Color{
+	"PRIMARY": func(t *Theme) *color.Color { return &t.Primary },
+	"ACCENT":  func(t *Theme) *color.Color { return &t.Accent },
+	"SUCCESS": func(t *Theme) *color.Color { return &t.Success },
+	"WARNING": func(t *Theme) *color.Color { return &t.Warning },
+	"ERROR":   func(t *Theme) *color.Color { return &t.Error },
+	"INFO":    func(t *Theme) *color.Color { return &t.Info },
+	"TEXT":    func(t *Theme) *color.Color { return &t.Text },
+	"MUTED":   func(t *Theme) *color.Color { return &t.Muted },
+	"BORDER":  func(t *Theme) *color.Color { return &t.Border },
+}
+
+var (
+	activeTheme atomic.Pointer[Theme]
+	themeOnce   sync.Once
+
+	// backgroundTimeout bounds the OSC 11 query on first use.
+	backgroundTimeout = 50 * time.Millisecond
+)
+
+// SetTheme makes t the theme of every printer. Environment variables do not
+// apply to a theme set this way; use ThemeFromEnv to layer them on top.
+func SetTheme(t Theme) {
+	themeOnce.Do(func() {})
+	activeTheme.Store(&t)
+}
+
+// CurrentTheme returns the active theme. On first use it is picked from the
+// environment, see ThemeFromEnv.
+func CurrentTheme() Theme {
+	themeOnce.Do(func() {
+		t := ThemeFromEnv()
+		activeTheme.Store(&t)
+	})
+
+	return *activeTheme.Load()
+}
+
+// ThemeFromEnv builds the theme the environment asks for.
+//
+// PTERM_THEME picks a preset: "macchiato", "latte", "ansi" or "auto" (the
+// default). "auto" asks the terminal for its background color and picks
+// Latte for light backgrounds and Macchiato otherwise. The question is only
+// asked when standard input and output are both terminals and CI is unset,
+// takes at most 50 milliseconds, and is asked once per program.
+//
+// PTERM_THEME_<SLOT> then overrides single colors, for example
+// PTERM_THEME_PRIMARY=#f5a97f. Values can be hex colors, basic color names
+// such as "brightblue", or 256-color indexes. Invalid values are ignored.
+func ThemeFromEnv() Theme {
+	name := strings.ToLower(strings.TrimSpace(os.Getenv("PTERM_THEME")))
+
+	t, ok := themes[name]
+	if !ok {
+		t = autoTheme()
+	}
+
+	for slot, field := range slots {
+		v, set := os.LookupEnv("PTERM_THEME_" + slot)
+		if !set {
+			continue
+		}
+
+		if c, err := color.Parse(v); err == nil {
+			*field(&t) = c
+		}
+	}
+
 	return t
 }
 
-// WithSecondaryStyle returns a new theme with overridden value.
-func (t Theme) WithSecondaryStyle(style Style) Theme {
-	t.SecondaryStyle = style
-	return t
+func autoTheme() Theme {
+	if os.Getenv("CI") != "" || !screen.IsTerminal(os.Stdout) || !screen.IsTerminal(os.Stdin) {
+		return ThemeMacchiato
+	}
+
+	if bg, ok := color.Background(backgroundTimeout); ok && !bg.IsDark() {
+		return ThemeLatte
+	}
+
+	return ThemeMacchiato
 }
 
-// WithHighlightStyle returns a new theme with overridden value.
-func (t Theme) WithHighlightStyle(style Style) Theme {
-	t.HighlightStyle = style
-	return t
+// Tone is a color for a part of a printer: one of the theme slots, or a
+// fixed color made with Fixed. Slots resolve against the active theme when
+// the printer renders, so they follow SetTheme.
+type Tone struct {
+	slot  uint8
+	fixed color.Color
 }
 
-// WithInfoMessageStyle returns a new theme with overridden value.
-func (t Theme) WithInfoMessageStyle(style Style) Theme {
-	t.InfoMessageStyle = style
-	return t
+const (
+	slotNone uint8 = iota
+	slotPrimary
+	slotAccent
+	slotSuccess
+	slotWarning
+	slotError
+	slotInfo
+	slotText
+	slotMuted
+	slotBorder
+	slotFixed
+)
+
+// The theme tones. ToneDefault leaves the terminal's own color alone.
+var (
+	ToneDefault = Tone{}
+	TonePrimary = Tone{slot: slotPrimary}
+	ToneAccent  = Tone{slot: slotAccent}
+	ToneSuccess = Tone{slot: slotSuccess}
+	ToneWarning = Tone{slot: slotWarning}
+	ToneError   = Tone{slot: slotError}
+	ToneInfo    = Tone{slot: slotInfo}
+	ToneText    = Tone{slot: slotText}
+	ToneMuted   = Tone{slot: slotMuted}
+	ToneBorder  = Tone{slot: slotBorder}
+)
+
+// Fixed returns a Tone that is always c, whatever the theme.
+func Fixed(c color.Color) Tone {
+	return Tone{slot: slotFixed, fixed: c}
 }
 
-// WithInfoPrefixStyle returns a new theme with overridden value.
-func (t Theme) WithInfoPrefixStyle(style Style) Theme {
-	t.InfoPrefixStyle = style
-	return t
+// In returns the color of t in theme th.
+func (t Tone) In(th Theme) color.Color {
+	switch t.slot {
+	case slotPrimary:
+		return th.Primary
+	case slotAccent:
+		return th.Accent
+	case slotSuccess:
+		return th.Success
+	case slotWarning:
+		return th.Warning
+	case slotError:
+		return th.Error
+	case slotInfo:
+		return th.Info
+	case slotText:
+		return th.Text
+	case slotMuted:
+		return th.Muted
+	case slotBorder:
+		return th.Border
+	case slotFixed:
+		return t.fixed
+	default:
+		return color.None
+	}
 }
 
-// WithSuccessMessageStyle returns a new theme with overridden value.
-func (t Theme) WithSuccessMessageStyle(style Style) Theme {
-	t.SuccessMessageStyle = style
-	return t
+// Color returns the color of t in the active theme.
+func (t Tone) Color() color.Color {
+	return t.In(CurrentTheme())
 }
 
-// WithSuccessPrefixStyle returns a new theme with overridden value.
-func (t Theme) WithSuccessPrefixStyle(style Style) Theme {
-	t.SuccessPrefixStyle = style
-	return t
+// String names the tone: "primary", "muted"..., or the fixed color.
+func (t Tone) String() string {
+	names := [...]string{"default", "primary", "accent", "success", "warning", "error", "info", "text", "muted", "border"}
+	if t.slot == slotFixed {
+		return t.fixed.String()
+	}
+
+	return names[t.slot]
 }
 
-// WithWarningMessageStyle returns a new theme with overridden value.
-func (t Theme) WithWarningMessageStyle(style Style) Theme {
-	t.WarningMessageStyle = style
-	return t
+// Style returns a Style with t as foreground.
+func (t Tone) Style() Style {
+	return Style{Fg: t}
 }
 
-// WithWarningPrefixStyle returns a new theme with overridden value.
-func (t Theme) WithWarningPrefixStyle(style Style) Theme {
-	t.WarningPrefixStyle = style
-	return t
+// Bold returns a bold Style with t as foreground.
+func (t Tone) Bold() Style {
+	return Style{Fg: t, Attrs: color.Bold}
 }
 
-// WithErrorMessageStyle returns a new theme with overridden value.
-func (t Theme) WithErrorMessageStyle(style Style) Theme {
-	t.ErrorMessageStyle = style
-	return t
+// Sprint colors the text with t for the default output.
+func (t Tone) Sprint(a ...any) string {
+	return t.Style().Sprint(a...)
 }
 
-// WithErrorPrefixStyle returns a new theme with overridden value.
-func (t Theme) WithErrorPrefixStyle(style Style) Theme {
-	t.ErrorPrefixStyle = style
-	return t
+// Sprintf formats and colors the text with t for the default output.
+func (t Tone) Sprintf(format string, a ...any) string {
+	return t.Style().Sprintf(format, a...)
 }
 
-// WithFatalMessageStyle returns a new theme with overridden value.
-func (t Theme) WithFatalMessageStyle(style Style) Theme {
-	t.FatalMessageStyle = style
-	return t
+// Style is a foreground tone, a background tone and text attributes.
+// The zero value leaves text unchanged.
+type Style struct {
+	Fg    Tone
+	Bg    Tone
+	Attrs color.Attr
 }
 
-// WithFatalPrefixStyle returns a new theme with overridden value.
-func (t Theme) WithFatalPrefixStyle(style Style) Theme {
-	t.FatalPrefixStyle = style
-	return t
+// NewStyle returns a Style with fg as foreground and the given attributes.
+func NewStyle(fg Tone, attrs ...color.Attr) Style {
+	s := Style{Fg: fg}
+	for _, a := range attrs {
+		s.Attrs |= a
+	}
+
+	return s
 }
 
-// WithDescriptionMessageStyle returns a new theme with overridden value.
-func (t Theme) WithDescriptionMessageStyle(style Style) Theme {
-	t.DescriptionMessageStyle = style
-	return t
+// On returns a copy of s with bg as background.
+func (s Style) On(bg Tone) Style {
+	s.Bg = bg
+	return s
 }
 
-// WithDescriptionPrefixStyle returns a new theme with overridden value.
-func (t Theme) WithDescriptionPrefixStyle(style Style) Theme {
-	t.DescriptionPrefixStyle = style
-	return t
+// With returns a copy of s with the given attributes added.
+func (s Style) With(attrs ...color.Attr) Style {
+	for _, a := range attrs {
+		s.Attrs |= a
+	}
+
+	return s
 }
 
-// WithBulletListTextStyle returns a new theme with overridden value.
-func (t Theme) WithBulletListTextStyle(style Style) Theme {
-	t.BulletListTextStyle = style
-	return t
+// Render styles text at level l with theme th.
+func (s Style) Render(l color.Level, th Theme, text string) string {
+	return color.Style{Foreground: s.Fg.In(th), Background: s.Bg.In(th), Attrs: s.Attrs}.Render(l, text)
 }
 
-// WithBulletListBulletStyle returns a new theme with overridden value.
-func (t Theme) WithBulletListBulletStyle(style Style) Theme {
-	t.BulletListBulletStyle = style
-	return t
+// Sprint styles the text for the default output.
+func (s Style) Sprint(a ...any) string {
+	return s.Render(ColorLevel(DefaultOutput()), CurrentTheme(), fmt.Sprint(a...))
 }
 
-// WithLetterStyle returns a new theme with overridden value.
-func (t Theme) WithLetterStyle(style Style) Theme {
-	t.LetterStyle = style
-	return t
-}
-
-// WithDebugMessageStyle returns a new theme with overridden value.
-func (t Theme) WithDebugMessageStyle(style Style) Theme {
-	t.DebugMessageStyle = style
-	return t
-}
-
-// WithDebugPrefixStyle returns a new theme with overridden value.
-func (t Theme) WithDebugPrefixStyle(style Style) Theme {
-	t.DebugPrefixStyle = style
-	return t
-}
-
-// WithTreeStyle returns a new theme with overridden value.
-func (t Theme) WithTreeStyle(style Style) Theme {
-	t.TreeStyle = style
-	return t
-}
-
-// WithTreeTextStyle returns a new theme with overridden value.
-func (t Theme) WithTreeTextStyle(style Style) Theme {
-	t.TreeTextStyle = style
-	return t
-}
-
-// WithBoxStyle returns a new theme with overridden value.
-func (t Theme) WithBoxStyle(style Style) Theme {
-	t.BoxStyle = style
-	return t
-}
-
-// WithBoxTextStyle returns a new theme with overridden value.
-func (t Theme) WithBoxTextStyle(style Style) Theme {
-	t.BoxTextStyle = style
-	return t
-}
-
-// WithBarLabelStyle returns a new theme with overridden value.
-func (t Theme) WithBarLabelStyle(style Style) Theme {
-	t.BarLabelStyle = style
-	return t
-}
-
-// WithBarStyle returns a new theme with overridden value.
-func (t Theme) WithBarStyle(style Style) Theme {
-	t.BarStyle = style
-	return t
+// Sprintf formats and styles the text for the default output.
+func (s Style) Sprintf(format string, a ...any) string {
+	return s.Sprint(fmt.Sprintf(format, a...))
 }

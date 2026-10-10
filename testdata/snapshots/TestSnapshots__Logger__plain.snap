@@ -1,3 +1,0 @@
-INFO  An info log key=value
-WARN  A warning log
-ERROR An error log code=42 spaced="a quoted value"

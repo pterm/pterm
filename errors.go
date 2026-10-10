@@ -3,12 +3,21 @@ package pterm
 import "errors"
 
 var (
-	// ErrTerminalSizeNotDetectable - the terminal size can not be detected and the fallback values are used.
-	ErrTerminalSizeNotDetectable = errors.New("terminal size could not be detected - using fallback value")
+	// ErrNotInteractive is returned by interactive printers when standard
+	// input is not a terminal and the printer has no default value.
+	ErrNotInteractive = errors.New("pterm: standard input is not a terminal")
 
-	// ErrHexCodeIsInvalid - the given HEX code is invalid.
-	ErrHexCodeIsInvalid = errors.New("hex code is not valid")
+	// ErrCanceled is returned when the context of a printer ends before the
+	// printer finished.
+	ErrCanceled = errors.New("pterm: canceled")
 
-	// ErrKeyWithoutValue - an odd number of arguments was passed to a pterm Logger's Args method.
-	ErrKeyWithoutValue = "ERROR: key_without_value"
+	// ErrInterrupted is returned by interactive printers whose interrupt
+	// handler returned after the user pressed Ctrl+C.
+	ErrInterrupted = errors.New("pterm: interrupted")
+
+	// ErrEmpty is returned by render printers that have nothing to render.
+	ErrEmpty = errors.New("pterm: nothing to render")
+
+	// ErrAlreadyActive is returned by Start when a live printer is running.
+	ErrAlreadyActive = errors.New("pterm: printer is already running")
 )
