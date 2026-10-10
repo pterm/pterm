@@ -151,6 +151,17 @@ func TestInteractiveTextInputPrinter_MultiLine(t *testing.T) {
 		assert.Contains(t, stripANSI(output), "[Press tab to submit]", "the multi-line hint must be rendered")
 	})
 
+	t.Run("custom submit hint replaces the default one", func(t *testing.T) {
+		output := captureUserFacingStdout(t, func() {
+			simulateKeys(t, keys.Tab)
+
+			showTextInput(t, pterm.DefaultInteractiveTextInput.WithMultiLine().WithSubmitHint("[Tab zum Absenden]"))
+		})
+
+		assert.Contains(t, stripANSI(output), "[Tab zum Absenden]")
+		assert.NotContains(t, stripANSI(output), "[Press tab to submit]")
+	})
+
 	t.Run("up navigates to the previous line", func(t *testing.T) {
 		simulateKeys(t, keys.Enter, "second", keys.Up, "first", keys.Tab)
 
