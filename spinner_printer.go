@@ -265,7 +265,12 @@ func (p *SpinnerPrinter) final(c canvas, st status, text string) string {
 		text = p.run.text
 	}
 
-	line := st.glyph(c) + " " + c.paint(ToneText, text) + p.timer(c)
+	textTone, timer := ToneText, p.timer(c)
+	if st == statusSkipped {
+		textTone, timer = ToneMuted, ""
+	}
+
+	line := st.glyph(c) + " " + c.paint(textTone, text) + timer
 	if st == statusCanceled {
 		line += " " + c.paint(ToneMuted, "canceled")
 	}

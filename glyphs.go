@@ -46,8 +46,8 @@ type Glyphs struct {
 
 // BoxGlyphs draw frames.
 type BoxGlyphs struct {
-	TopLeft, TopRight, BottomLeft, BottomRight string
-	Horizontal, Vertical                       string
+	TopLeft, TopRight, BottomLeft, BottomRight  string
+	Horizontal, Vertical                        string
 	TeeLeft, TeeRight, TeeTop, TeeBottom, Cross string
 }
 

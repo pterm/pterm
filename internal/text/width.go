@@ -105,6 +105,7 @@ func escapeAt(s string, i int) string {
 				return s[i : j+1]
 			}
 		}
+
 	case ']':
 		for j := i + 2; j < len(s); j++ {
 			if s[j] == '\a' {

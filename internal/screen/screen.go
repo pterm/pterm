@@ -120,7 +120,7 @@ func IsTerminal(w io.Writer) bool {
 		return false
 	}
 
-	return term.IsTerminal(int(f.Fd())) //nolint:gosec // file descriptors fit in an int.
+	return term.IsTerminal(int(f.Fd()))
 }
 
 // Size returns the width and height of the terminal behind w. Writers that
@@ -132,8 +132,8 @@ func Size(w io.Writer) (width, height int) {
 	}
 
 	if f, ok := w.(interface{ Fd() uintptr }); ok {
-		if width, height, err := term.GetSize(int(f.Fd())); err == nil && width > 0 { //nolint:gosec // file descriptors fit in an int.
-			return width, height
+		if w, h, err := term.GetSize(int(f.Fd())); err == nil && w > 0 {
+			return w, h
 		}
 	}
 
@@ -275,11 +275,13 @@ func (s *Screen) draw(b *strings.Builder) {
 
 	if !s.atBOL {
 		b.WriteString("\n")
+
 		s.atBOL = true
 	}
 
 	if !s.hidden {
 		b.WriteString("\x1b[?25l")
+
 		s.hidden = true
 	}
 
@@ -345,6 +347,7 @@ func (s *Screen) finishIfIdle(b *strings.Builder) {
 
 	if s.hidden {
 		b.WriteString("\x1b[?25h")
+
 		s.hidden = false
 	}
 }

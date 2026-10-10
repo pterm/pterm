@@ -53,6 +53,7 @@ func TestSpinnerContextCancels(t *testing.T) {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	s, _ := pterm.Spinner.WithShowTimer(false).WithDelay(time.Millisecond).WithContext(ctx).Start("waiting")
+
 	cancel()
 
 	deadline := time.Now().Add(time.Second)
@@ -72,6 +73,7 @@ func TestSpinnerNotTerminal(t *testing.T) {
 
 	out := capture(t, func() {
 		s, _ := pterm.Spinner.WithShowTimer(false).Start("building")
+
 		time.Sleep(20 * time.Millisecond)
 		s.Success("built")
 	})
@@ -84,7 +86,7 @@ func TestSpinnerRemoveWhenDone(t *testing.T) {
 	term := setup(t)
 
 	s, _ := pterm.Spinner.WithRemoveWhenDone().Start("temporary")
-	s.Stop()
+	_ = s.Stop()
 
 	if got := term.Screen(); got != "" {
 		t.Errorf("screen = %q", got)

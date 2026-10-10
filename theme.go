@@ -245,6 +245,7 @@ func (t Tone) Color() color.Color {
 // String names the tone: "primary", "muted"..., or the fixed color.
 func (t Tone) String() string {
 	names := [...]string{"default", "primary", "accent", "success", "warning", "error", "info", "text", "muted", "border"}
+
 	if t.slot == slotFixed {
 		return t.fixed.String()
 	}
@@ -319,3 +320,6 @@ func (s Style) Sprint(a ...any) string {
 func (s Style) Sprintf(format string, a ...any) string {
 	return s.Sprint(fmt.Sprintf(format, a...))
 }
+
+// boldUnderline marks the chosen answer of a prompt.
+const boldUnderline = color.Bold | color.Underline

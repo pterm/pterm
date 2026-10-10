@@ -2,6 +2,7 @@ package pterm_test
 
 import (
 	"bytes"
+	"regexp"
 	"testing"
 
 	"atomicgo.dev/color"
@@ -91,4 +92,12 @@ func capture(t *testing.T, fn func()) string {
 	fn()
 
 	return buf.String()
+}
+
+// timerRegex matches the muted elapsed time spinners and steps append.
+var timerRegex = regexp.MustCompile(` \d+\.\ds`)
+
+// stripTimer removes elapsed times so screens with timers can be compared.
+func stripTimer(s string) string {
+	return timerRegex.ReplaceAllString(s, "")
 }

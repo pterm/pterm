@@ -62,6 +62,7 @@ func (r *Region) Set(content string) {
 	}
 
 	r.content = content
+
 	s.redraw()
 }
 

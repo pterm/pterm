@@ -72,6 +72,7 @@ func TestMultipleRegions(t *testing.T) {
 
 	a := s.NewRegion(screen.RegionOptions{})
 	b := s.NewRegion(screen.RegionOptions{})
+
 	a.Set("a1\na2")
 	b.Set("b1")
 	a.Set("a1")
@@ -138,7 +139,7 @@ func TestDecorator(t *testing.T) {
 	var buf bytes.Buffer
 
 	s := screen.For(&buf)
-	pop := s.PushDecorator(func(str string, item bool) string {
+	pop := s.PushDecorator(func(str string, _ bool) string {
 		if strings.HasPrefix(str, screen.Node) {
 			return str
 		}

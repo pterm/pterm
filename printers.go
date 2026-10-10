@@ -4,5 +4,9 @@ package pterm
 var (
 	_ TextPrinter = PrefixPrinter{}
 	_ TextPrinter = CalloutPrinter{}
+
 	_ LivePrinter = (*SpinnerPrinter)(nil)
+	_ LivePrinter = (*FlowPrinter)(nil)
+
+	_ InteractivePrinter[bool] = ConfirmPrinter{}
 )

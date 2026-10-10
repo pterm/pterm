@@ -104,11 +104,14 @@ func (t *Terminal) Write(p []byte) (int, error) {
 			}
 
 			i += n
+
 		case c == '\n':
 			t.row++
 			t.col = 0
 			t.ensureRow()
+
 			i++
+
 		case c == '\r':
 			t.col = 0
 			i++
@@ -122,6 +125,7 @@ func (t *Terminal) Write(p []byte) (int, error) {
 
 			r, size := utf8.DecodeRune(data[i:])
 			t.put(r)
+
 			i += size
 		}
 	}
@@ -178,6 +182,7 @@ func (t *Terminal) escape(data []byte) int {
 		}
 
 		return 0
+
 	case ']':
 		for j := 2; j < len(data); j++ {
 			if data[j] == 0x07 {
@@ -190,6 +195,7 @@ func (t *Terminal) escape(data []byte) int {
 		}
 
 		return 0
+
 	default:
 		return 2
 	}
@@ -235,6 +241,7 @@ func (t *Terminal) eraseLine(params string) {
 		for i := 0; i <= t.col && i < len(line); i++ {
 			line[i] = ' '
 		}
+
 	default:
 		if t.col < len(line) {
 			t.rows[t.row] = line[:t.col]

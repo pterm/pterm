@@ -1,5 +1,7 @@
 atomicgo.dev/color v0.1.1-0.20261010040902-cb7802c5a0c1 h1:ZBWyjT8CHjVFTM9lCx1RqzMz9+9xHKno5PSwZ4XClFY=
 atomicgo.dev/color v0.1.1-0.20261010040902-cb7802c5a0c1/go.mod h1:kH5TCdq3EAO3acuYHVyTDvKnLkClR5Ev72vYipAHrrw=
+atomicgo.dev/keyboard v0.2.11-0.20261010040932-e2182d4dc6b5 h1:/EtlEJnrdALbdttW2/wk7Xpo3iYYiyBNVRtP0sQje4w=
+atomicgo.dev/keyboard v0.2.11-0.20261010040932-e2182d4dc6b5/go.mod h1:+pESJjMrkknFAeWncDbC+bFzn11FWKoyzH2ben7ezZM=
 github.com/clipperhouse/uax29/v2 v2.7.0 h1:+gs4oBZ2gPfVrKPthwbMzWZDaAFPGYK72F0NJv2v7Vk=
 github.com/clipperhouse/uax29/v2 v2.7.0/go.mod h1:EFJ2TJMRUaplDxHKj1qAEhCtQPW2tJSwu5BF98AuoVM=
 github.com/mattn/go-runewidth v0.0.24 h1:cpokDiIn0MGnhdHwuWnJBITySJ20QyNGnY2kR/ay2DU=

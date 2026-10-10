@@ -41,6 +41,7 @@ func TestDebugHiddenByDefault(t *testing.T) {
 	}
 
 	pterm.EnableDebugMessages()
+
 	defer pterm.DisableDebugMessages()
 
 	out = capture(t, func() { pterm.Debug.Println("shown") })
