@@ -9,8 +9,8 @@ require (
 	github.com/lithammer/fuzzysearch v1.1.8
 	github.com/mattn/go-runewidth v0.0.24
 	github.com/stretchr/testify v1.11.1
-	golang.org/x/sys v0.44.0
-	golang.org/x/term v0.43.0
+	golang.org/x/sys v0.48.0
+	golang.org/x/term v0.46.0
 	golang.org/x/text v0.37.0
 )
 
