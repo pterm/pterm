@@ -2,8 +2,8 @@ package pterm
 
 import (
 	"context"
-
 	"log/slog"
+	"slices"
 )
 
 // SlogHandler is a slog.Handler that prints log records via a pterm Logger.
@@ -78,7 +78,7 @@ func (s *SlogHandler) Handle(_ context.Context, record slog.Record) error {
 // WithAttrs returns a new handler with the given attributes.
 func (s *SlogHandler) WithAttrs(attrs []slog.Attr) slog.Handler {
 	newS := *s
-	newS.attrs = attrs
+	newS.attrs = slices.Concat(s.attrs, attrs)
 
 	return &newS
 }
