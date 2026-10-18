@@ -56,15 +56,10 @@ func (p InteractiveTextInputPrinter) WithDefaultValue(value string) *Interactive
 
 // WithBodyStyle sets the input style. Only Foreground colors.
 func (p InteractiveTextInputPrinter) WithBodyStyle(color Color) *InteractiveTextInputPrinter {
-
 	if color >= 30 && color <= 37 || color >= 90 && color <= 97 { // include light colors and normal colors
-
 		p.BodyStyle = color
-
 	}
-
 	return &p
-
 }
 
 // WithTextStyle sets the text style.
