@@ -317,10 +317,11 @@ func (p *PrefixPrinter) Printfln(format string, a ...any) *TextPrinter {
 		return &tp
 	}
 
-	p.LineNumberOffset++
-	Fprint(p.GetWriter(), p.Sprintfln(format, a...))
-	p.LineNumberOffset--
-	checkFatal(p)
+	// Adjust the line number offset on a copy, as Print does.
+	cp := *p
+	cp.LineNumberOffset++
+	Fprint(cp.GetWriter(), cp.Sprintfln(format, a...))
+	checkFatal(&cp)
 
 	return &tp
 }

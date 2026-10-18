@@ -86,6 +86,18 @@ func TestConcurrencySmoke(_ *testing.T) {
 		}
 	})
 
+	// A shared prefix printer printing from several goroutines at once.
+	for range 2 {
+		wg.Go(func() {
+			for i := range iterations {
+				pterm.Info.Print("concurrent print ", i)
+				pterm.Info.Println("concurrent println ", i)
+				pterm.Info.Printf("concurrent printf %d", i)
+				pterm.Info.Printfln("concurrent printfln %d", i)
+			}
+		})
+	}
+
 	// Loggers share a package-level mutex; print from two at once.
 	for range 2 {
 		wg.Go(func() {

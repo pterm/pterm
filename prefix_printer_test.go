@@ -219,6 +219,17 @@ func TestPrefixPrinterShowLineNumberReportsTheCallSite(t *testing.T) {
 	assert.Equal(t, fmt.Sprintf("  INFO    message\n└ (%s:%d)\n", file, line+4), stripANSI(out))
 }
 
+func TestPrefixPrinterPrintflnShowLineNumberReportsTheCallSite(t *testing.T) {
+	_, file, line, ok := runtime.Caller(0)
+	require.True(t, ok)
+
+	out := captureStdout(func(_ io.Writer) {
+		pterm.Info.WithShowLineNumber().Printfln("%s", "message") // keep exactly 4 lines below runtime.Caller(0)
+	})
+
+	assert.Contains(t, stripANSI(out), fmt.Sprintf("└ (%s:%d)\n", file, line+4))
+}
+
 func TestPrefixPrinterZeroValueDoesNotPanic(t *testing.T) {
 	assert.NotPanics(t, func() {
 		_ = captureStdout(func(_ io.Writer) {
