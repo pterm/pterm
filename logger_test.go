@@ -402,6 +402,19 @@ func TestSlogHandlerWithAttrs(t *testing.T) {
 	assert.Equal(t, "abc123", m["request_id"], "attrs bound via With must be attached to every record")
 }
 
+func TestSlogHandlerChainedWithAttrs(t *testing.T) {
+	logger, buf := newBufferedLogger()
+	parent := slog.New(pterm.NewSlogHandler(logger)).With("request_id", "abc123")
+
+	parent.With("user", "alice").Info("first")
+	parent.With("user", "bob").Info("second")
+	parent.Info("parent")
+
+	assert.Equal(t, "INFO  first request_id=abc123 user=alice\n"+
+		"INFO  second request_id=abc123 user=bob\n"+
+		"INFO  parent request_id=abc123\n", stripANSI(buf.String()))
+}
+
 func TestSlogHandlerWithGroupFlattensAttrs(t *testing.T) {
 	logger, buf := newBufferedLogger()
 	slogger := slog.New(pterm.NewSlogHandler(logger.WithFormatter(pterm.LogFormatterJSON)))
