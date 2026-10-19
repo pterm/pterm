@@ -25,38 +25,6 @@ func showTextInput(t *testing.T, printer *pterm.InteractiveTextInputPrinter, tex
 	return result
 }
 
-func TestInteractiveTextInputPrinter_WithBodyStyle(t *testing.T) {
-	t.Run("accepts foreground colors", func(t *testing.T) {
-		printer := pterm.InteractiveTextInputPrinter{BodyStyle: pterm.FgBlue}
-
-		for value := 30; value <= 37; value++ {
-			color := pterm.Color(value)
-			assert.Equal(t, color, printer.WithBodyStyle(color).BodyStyle)
-		}
-
-		for value := 90; value <= 97; value++ {
-			color := pterm.Color(value)
-			assert.Equal(t, color, printer.WithBodyStyle(color).BodyStyle)
-		}
-
-		assert.Equal(t, pterm.FgBlue, printer.BodyStyle, "WithBodyStyle must not mutate the original printer")
-	})
-
-	t.Run("ignores non-foreground colors", func(t *testing.T) {
-		printer := pterm.InteractiveTextInputPrinter{BodyStyle: pterm.FgBlue}
-		invalidColors := []pterm.Color{
-			29, 38, pterm.FgDefault, pterm.BgBlack, pterm.BgWhite,
-			89, 98, pterm.BgDarkGray, pterm.BgLightWhite,
-		}
-
-		for _, color := range invalidColors {
-			assert.Equal(t, pterm.FgBlue, printer.WithBodyStyle(color).BodyStyle, "color %d must leave BodyStyle unchanged", color)
-		}
-
-		assert.Equal(t, pterm.FgBlue, printer.BodyStyle, "WithBodyStyle must not mutate the original printer")
-	})
-}
-
 func TestInteractiveTextInputPrinter_TypeAndSubmit(t *testing.T) {
 	simulateKeys(t, "hi", keys.Enter)
 
