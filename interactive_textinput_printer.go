@@ -289,7 +289,7 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 		return p.DefaultValue, nil
 	}
 
-	return strings.ReplaceAll(areaText, p.text, ""), nil
+	return strings.TrimPrefix(areaText, p.text), nil
 }
 
 func (p InteractiveTextInputPrinter) updateArea(area *cursor.Area) string {

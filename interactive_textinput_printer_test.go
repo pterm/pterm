@@ -246,3 +246,38 @@ func TestInteractiveTextInputPrinter_InterruptExitsByDefault(t *testing.T) {
 	assert.Empty(t, result)
 	assert.Equal(t, 1, exitCode, "without an OnInterruptFunc, Ctrl+C must exit with code 1")
 }
+
+func TestInteractiveTextInputPrinter_PreservesPromptTextInAnswer(t *testing.T) {
+	restoreGlobalStyling(t)
+	pterm.DisableColor()
+
+	for _, input := range []string{"Prompt: ", "before Prompt: after", "Prompt: Prompt: "} {
+		t.Run(input, func(t *testing.T) {
+			simulateKeys(t, input, keys.Enter)
+
+			result := showTextInput(t, &pterm.DefaultInteractiveTextInput, "Prompt")
+
+			assert.Equal(t, input, result)
+		})
+	}
+}
+
+func TestInteractiveTextInputPrinter_PreservesPromptTextInEditedDefault(t *testing.T) {
+	restoreGlobalStyling(t)
+	pterm.DisableColor()
+	simulateKeys(t, "after", keys.Enter)
+
+	result := showTextInput(t, pterm.DefaultInteractiveTextInput.WithDefaultValue("Prompt: "), "Prompt")
+
+	assert.Equal(t, "Prompt: after", result)
+}
+
+func TestInteractiveTextInputPrinter_PreservesPromptTextInMultilineAnswer(t *testing.T) {
+	restoreGlobalStyling(t)
+	pterm.DisableColor()
+	simulateKeys(t, "Prompt : ", keys.Enter, "after", keys.Tab)
+
+	result := showTextInput(t, pterm.DefaultInteractiveTextInput.WithMultiLine().WithSubmitHint(""), "Prompt")
+
+	assert.Equal(t, "Prompt : \nafter", result)
+}
