@@ -8,7 +8,9 @@ package pterm_test
 // configured Style is (or is not) applied to the text.
 
 import (
+	"fmt"
 	"io"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -67,10 +69,24 @@ func TestBasicTextPrinterKeepsVisibleTextOfPreStyledInput(t *testing.T) {
 }
 
 func TestBasicTextPrinterSprintlnAppendsExactlyOneNewline(t *testing.T) {
+	assert.Equal(t, fmt.Sprintln("Hello"), pterm.DefaultBasicText.Sprintln("Hello"))
 	assert.Equal(t, "Hello\n", pterm.DefaultBasicText.Sprintln("Hello"))
+
+	// Multiple arguments format with intervening spaces and end with exactly one newline.
+	assert.Equal(t, fmt.Sprintln("Hello", "World"), pterm.DefaultBasicText.Sprintln("Hello", "World"))
+	assert.Equal(t, "Hello World\n", pterm.DefaultBasicText.Sprintln("Hello", "World"))
+
+	assert.Equal(t, fmt.Sprintln("count:", 42, true), pterm.DefaultBasicText.Sprintln("count:", 42, true))
+	assert.Equal(t, "count: 42 true\n", pterm.DefaultBasicText.Sprintln("count:", 42, true))
+
+	// Verify no double newline is added.
+	out := pterm.DefaultBasicText.Sprintln("hello")
+	assert.True(t, strings.HasSuffix(out, "\n"))
+	assert.False(t, strings.HasSuffix(out, "\n\n"))
 
 	styled := pterm.DefaultBasicText.WithStyle(pterm.NewStyle(pterm.FgRed))
 	assert.Equal(t, "\x1b[31mHello\x1b[0m\n", styled.Sprintln("Hello"))
+	assert.Equal(t, "\x1b[31mHello World\x1b[0m\n", styled.Sprintln("Hello", "World"))
 }
 
 func TestBasicTextPrinterSprintfFormatsBeforeStyling(t *testing.T) {

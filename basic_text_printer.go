@@ -42,7 +42,8 @@ func (p BasicTextPrinter) Sprint(a ...any) string {
 // Sprintln formats using the default formats for its operands and returns the resulting string.
 // Spaces are always added between operands and a newline is appended.
 func (p BasicTextPrinter) Sprintln(a ...any) string {
-	return p.Sprint(fmt.Sprintln(a...))
+	str := fmt.Sprintln(a...)
+	return p.Sprint(str)
 }
 
 // Sprintf formats according to a format specifier and returns the resulting string.
