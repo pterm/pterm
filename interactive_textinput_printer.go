@@ -14,7 +14,7 @@ import (
 // DefaultInteractiveTextInput is the default InteractiveTextInput printer.
 var DefaultInteractiveTextInput = InteractiveTextInputPrinter{
 	DefaultText: "Input text",
-	BodyStyle:   FgWhite,
+	BodyColor:   FgWhite,
 	Delimiter:   ": ",
 	TextStyle:   &ThemeDefault.PrimaryStyle,
 	Mask:        "",
@@ -24,7 +24,7 @@ var DefaultInteractiveTextInput = InteractiveTextInputPrinter{
 // InteractiveTextInputPrinter is a printer for interactive select menus.
 type InteractiveTextInputPrinter struct {
 	TextStyle       *Style
-	BodyStyle       Color
+	BodyColor       Color
 	DefaultText     string
 	DefaultValue    string
 	Delimiter       string
@@ -54,9 +54,9 @@ func (p InteractiveTextInputPrinter) WithDefaultValue(value string) *Interactive
 	return &p
 }
 
-// WithBodyStyle sets the input style. Only Foreground colors.
-func (p InteractiveTextInputPrinter) WithBodyStyle(color Color) *InteractiveTextInputPrinter {
-	p.BodyStyle = color
+// WithBodyColor sets the input style. Only Foreground colors.
+func (p InteractiveTextInputPrinter) WithBodyColor(color Color) *InteractiveTextInputPrinter {
+	p.BodyColor = color
 	return &p
 }
 
@@ -323,7 +323,7 @@ func (p InteractiveTextInputPrinter) updateArea(area *cursor.Area) string {
 		p.cursorXPos = -internal.GetStringMaxWidth(p.input[p.cursorYPos])
 	}
 
-	color := p.BodyStyle
+	color := p.BodyColor
 
 	if color >= 30 && color <= 37 || color >= 90 && color <= 97 {
 		area.Update(color.Sprint(areaText))
