@@ -6,7 +6,6 @@ import (
 	"atomicgo.dev/cursor"
 	"atomicgo.dev/keyboard"
 	"atomicgo.dev/keyboard/keys"
-	"github.com/mattn/go-runewidth"
 
 	"github.com/pterm/pterm/internal"
 )
@@ -113,18 +112,19 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	}
 
 	p.text = areaText
-	area := cursor.NewArea()
-	area.Update(areaText)
-	area.StartOfLine()
-
-	if !p.MultiLine {
-		cursor.Right(runewidth.StringWidth(RemoveColorFromString(areaText)))
-	}
 
 	if p.DefaultValue != "" {
-		p.input = append(p.input, p.DefaultValue)
-		p.updateArea(&area)
+		if p.MultiLine {
+			p.input = append(p.input, strings.Split(p.DefaultValue, "\n")...)
+		} else {
+			p.input = append(p.input, p.DefaultValue)
+		}
+	} else {
+		p.input = []string{""}
 	}
+
+	area := cursor.NewArea()
+	p.updateArea(&area)
 
 	err := keyboard.Listen(func(key keys.Key) (stop bool, err error) {
 		if !p.MultiLine {
@@ -219,7 +219,6 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 			}
 
 			if !p.startedTyping {
-				p.input = []string{""}
 				p.startedTyping = true
 			}
 
@@ -235,7 +234,6 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 			}
 
 			if !p.startedTyping {
-				p.input = []string{""}
 				p.startedTyping = true
 			}
 
@@ -277,19 +275,11 @@ func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	// Add new line
 	Println()
 
-	for i, s := range p.input {
-		if i < len(p.input)-1 {
-			areaText += s + "\n"
-		} else {
-			areaText += s
-		}
-	}
-
 	if !p.startedTyping {
 		return p.DefaultValue, nil
 	}
 
-	return strings.ReplaceAll(areaText, p.text, ""), nil
+	return strings.Join(p.input, "\n"), nil
 }
 
 func (p InteractiveTextInputPrinter) updateArea(area *cursor.Area) string {

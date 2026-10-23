@@ -90,6 +90,8 @@ func TestInteractiveTextInputPrinter_CursorMovementEditsAtPosition(t *testing.T)
 }
 
 func TestInteractiveTextInputPrinter_DefaultValue(t *testing.T) {
+	restoreGlobalStyling(t)
+
 	t.Run("enter submits the default value", func(t *testing.T) {
 		simulateKeys(t, keys.Enter)
 
@@ -120,6 +122,40 @@ func TestInteractiveTextInputPrinter_DefaultValue(t *testing.T) {
 		result := showTextInput(t, pterm.DefaultInteractiveTextInput.WithDefaultValue("abc"))
 
 		assert.Equal(t, "ab", result)
+	})
+
+	t.Run("backspace deletes characters without cursor shift or escape sequence corruption", func(t *testing.T) {
+		// Issue #750: deleting default values with backspace must not shift columns or leave escape codes.
+		simulateKeys(t, keys.Backspace, keys.Backspace, keys.Backspace, "project", keys.Enter)
+
+		result := showTextInput(t, pterm.DefaultInteractiveTextInput.WithDefaultValue("zen"))
+
+		assert.Equal(t, "project", result)
+	})
+
+	t.Run("in-place editing with cursor navigation on default value", func(t *testing.T) {
+		simulateKeys(t, keys.Left, keys.Left, 'x', keys.Right, 'y', keys.Enter)
+
+		result := showTextInput(t, pterm.DefaultInteractiveTextInput.WithDefaultValue("test"))
+
+		assert.Equal(t, "texsyt", result)
+	})
+
+	t.Run("input containing delimiter or prompt text is preserved", func(t *testing.T) {
+		simulateKeys(t, keys.Delete, "Enter project name: my-project", keys.Enter)
+
+		result := showTextInput(t, pterm.DefaultInteractiveTextInput.WithDefaultValue("zen"), "Enter project name")
+
+		assert.Equal(t, "Enter project name: my-project", result)
+	})
+
+	t.Run("colored default value backspace and editing", func(t *testing.T) {
+		pterm.EnableColor()
+		simulateKeys(t, keys.Backspace, 'd', keys.Enter)
+
+		result := showTextInput(t, pterm.DefaultInteractiveTextInput.WithDefaultValue("abc"))
+
+		assert.Equal(t, "abd", result)
 	})
 }
 
@@ -216,6 +252,14 @@ func TestInteractiveTextInputPrinter_MultiLine(t *testing.T) {
 		result := showTextInput(t, pterm.DefaultInteractiveTextInput.WithMultiLine().WithDefaultValue("keep"))
 
 		assert.Equal(t, "keep\n", result)
+	})
+
+	t.Run("multi-line default value navigation with up and down preserves content", func(t *testing.T) {
+		simulateKeys(t, keys.Down, "!", keys.Up, "?", keys.Tab)
+
+		result := showTextInput(t, pterm.DefaultInteractiveTextInput.WithMultiLine().WithDefaultValue("line1\nline2"))
+
+		assert.Equal(t, "line1?\nline2!", result)
 	})
 }
 
