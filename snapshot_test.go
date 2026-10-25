@@ -160,6 +160,14 @@ func TestSnapshots(t *testing.T) {
 		}).Srender)
 	})
 
+	testSnapshot(t, "PieChart", func(t *testing.T) string {
+		return srender(t, pterm.DefaultPieChart.WithShowValue().WithSlices(pterm.PieSlices{
+			{Label: "A", Value: 10},
+			{Label: "B", Value: 20},
+			{Label: "C", Value: 5},
+		}).Srender)
+	})
+
 	testSnapshot(t, "BigText", func(t *testing.T) string {
 		return srender(t, pterm.DefaultBigText.WithLetters(pterm.NewLettersFromStringWithStyle("PT", pterm.NewStyle(pterm.FgCyan))).Srender)
 	})

@@ -72,6 +72,7 @@ var builderPrinters = []any{
 	pterm.BulletListPrinter{},
 	pterm.HeatmapPrinter{},
 	pterm.PanelPrinter{},
+	pterm.PieChartPrinter{},
 	pterm.TablePrinter{},
 	pterm.TreePrinter{},
 	// Live printers
@@ -551,6 +552,10 @@ func renderPrinterCases() []renderPrinterCase {
 			{Label: "a", Value: 1},
 			{Label: "b", Value: 3},
 		})},
+		{name: "PieChartPrinter", printer: pterm.DefaultPieChart.WithSlices(pterm.PieSlices{
+			{Label: "a", Value: 1},
+			{Label: "b", Value: 3},
+		}), skipColorInvariant: true},
 		{name: "BigTextPrinter", printer: pterm.DefaultBigText.WithLetters(pterm.NewLettersFromString("Hi"))},
 		{name: "HeatmapPrinter", printer: pterm.DefaultHeatmap.WithAxisData(pterm.HeatmapAxis{
 			XAxis: []string{"x1", "x2"},

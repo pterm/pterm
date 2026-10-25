@@ -46,6 +46,7 @@ var (
 	_ RenderPrinter = BulletListPrinter{}
 	_ RenderPrinter = HeatmapPrinter{}
 	_ RenderPrinter = PanelPrinter{}
+	_ RenderPrinter = PieChartPrinter{}
 	_ RenderPrinter = TablePrinter{}
 	_ RenderPrinter = TreePrinter{}
 

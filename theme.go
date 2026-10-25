@@ -47,6 +47,7 @@ var (
 		BoxTitleStyle:           Style{Bold, FgLightCyan},
 		BarLabelStyle:           Style{FgLightCyan},
 		BarStyle:                Style{FgCyan},
+		PieChartLabelStyle:      Style{FgDefault},
 		TimerStyle:              Style{FgGray},
 		LoggerTraceStyle:        Style{Bold, FgGray},
 		LoggerDebugStyle:        Style{Bold, FgBlue},
@@ -61,6 +62,7 @@ var (
 		HeatmapTextColor:        FgBlack,
 		HeatmapColors:           []Color{BgRed, BgLightRed, BgYellow, BgLightYellow, BgLightGreen, BgGreen},
 		HeatmapTextRGB:          RGB{0, 0, 0, false},
+		PieChartColors:          []Color{FgCyan, FgMagenta, FgYellow, FgGreen, FgBlue, FgRed, FgLightCyan, FgLightMagenta},
 		HeatmapRGBRange:         []RGB{{R: 255, G: 0, B: 0, Background: true}, {R: 255, G: 165, B: 0, Background: true}, {R: 0, G: 255, B: 0, Background: true}},
 		Checkmark: Checkmark{
 			Checked:   Green("✓"),
@@ -120,6 +122,8 @@ type Theme struct {
 	BoxTitleStyle Style
 	BarLabelStyle Style
 	BarStyle      Style
+	// PieChartLabelStyle styles the legend labels of the PieChartPrinter.
+	PieChartLabelStyle Style
 	// LoggerTraceStyle till LoggerPrintStyle style the level prefix of the
 	// Logger, one field per LogLevel.
 	LoggerTraceStyle Style
@@ -140,7 +144,9 @@ type Theme struct {
 	HeatmapColors    []Color
 	HeatmapTextRGB   RGB
 	HeatmapRGBRange  []RGB
-	Checkmark        Checkmark
+	// PieChartColors are the default slice colors of the PieChartPrinter.
+	PieChartColors []Color
+	Checkmark      Checkmark
 }
 
 // WithPrimaryStyle returns a new theme with overridden value.
@@ -290,6 +296,12 @@ func (t Theme) WithBoxTextStyle(style Style) Theme {
 // WithBarLabelStyle returns a new theme with overridden value.
 func (t Theme) WithBarLabelStyle(style Style) Theme {
 	t.BarLabelStyle = style
+	return t
+}
+
+// WithPieChartLabelStyle returns a new theme with overridden value.
+func (t Theme) WithPieChartLabelStyle(style Style) Theme {
+	t.PieChartLabelStyle = style
 	return t
 }
 
