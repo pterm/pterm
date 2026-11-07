@@ -12,25 +12,31 @@ type SlogHandler struct {
 	attrs  []slog.Attr
 }
 
+// slogLevel maps each band to its lower severity. Values outside slog's
+// standard range use Trace below Debug and Error above Error.
+func slogLevel(level slog.Level) LogLevel {
+	switch {
+	case level < slog.LevelDebug:
+		return LogLevelTrace
+	case level < slog.LevelInfo:
+		return LogLevelDebug
+	case level < slog.LevelWarn:
+		return LogLevelInfo
+	case level < slog.LevelError:
+		return LogLevelWarn
+	default:
+		return LogLevelError
+	}
+}
+
 // Enabled returns true if the given level is enabled.
 func (s *SlogHandler) Enabled(_ context.Context, level slog.Level) bool {
-	switch level {
-	case slog.LevelDebug:
-		return s.logger.CanPrint(LogLevelDebug)
-	case slog.LevelInfo:
-		return s.logger.CanPrint(LogLevelInfo)
-	case slog.LevelWarn:
-		return s.logger.CanPrint(LogLevelWarn)
-	case slog.LevelError:
-		return s.logger.CanPrint(LogLevelError)
-	}
-
-	return false
+	return s.logger.CanPrint(slogLevel(level))
 }
 
 // Handle handles the given record.
 func (s *SlogHandler) Handle(_ context.Context, record slog.Record) error {
-	level := record.Level
+	level := slogLevel(record.Level)
 	message := record.Message
 
 	// Collect the attrs in the order they were supplied, so the logger can print
@@ -60,16 +66,16 @@ func (s *SlogHandler) Handle(_ context.Context, record slog.Record) error {
 	}
 
 	switch level {
-	case slog.LevelDebug:
+	case LogLevelTrace:
+		logger.Trace(message, argsWrapped...)
+	case LogLevelDebug:
 		logger.Debug(message, argsWrapped...)
-	case slog.LevelInfo:
+	case LogLevelInfo:
 		logger.Info(message, argsWrapped...)
-	case slog.LevelWarn:
+	case LogLevelWarn:
 		logger.Warn(message, argsWrapped...)
-	case slog.LevelError:
+	case LogLevelError:
 		logger.Error(message, argsWrapped...)
-	default:
-		logger.Print(message, argsWrapped...)
 	}
 
 	return nil
@@ -89,7 +95,12 @@ func (s *SlogHandler) WithGroup(_ string) slog.Handler {
 	return s
 }
 
-// NewSlogHandler returns a new logging handler that can be integrated with log/slog.
+// NewSlogHandler returns a handler for log/slog. Custom levels between Debug,
+// Info, Warn, and Error use the lower band. Levels below Debug use Trace;
+// levels above Error use Error. For example:
+//
+//	logger := slog.New(pterm.NewSlogHandler(pterm.DefaultLogger.WithLevel(pterm.LogLevelTrace)))
+//	logger.Log(context.Background(), slog.Level(-5), "tracing a request")
 func NewSlogHandler(logger *Logger) *SlogHandler {
 	return &SlogHandler{logger: logger}
 }
