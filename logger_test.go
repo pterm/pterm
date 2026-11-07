@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"log/slog"
+	"math"
 	"os"
 	"os/exec"
 	"strings"
@@ -375,6 +376,34 @@ func TestSlogHandlerRoutesRecordsThroughTheLogger(t *testing.T) {
 			assert.Equal(t, "slog message", m["msg"])
 			assert.Equal(t, "value", m["key"], "slog attrs must flow through as logger args")
 			assert.Equal(t, float64(42), m["answer"])
+		})
+	}
+}
+
+func TestSlogHandlerCustomLevels(t *testing.T) {
+	cases := []struct {
+		level slog.Level
+		want  pterm.LogLevel
+	}{
+		{math.MinInt, pterm.LogLevelTrace}, {-5, pterm.LogLevelTrace},
+		{-4, pterm.LogLevelDebug}, {-3, pterm.LogLevelDebug}, {-1, pterm.LogLevelDebug},
+		{0, pterm.LogLevelInfo}, {1, pterm.LogLevelInfo}, {3, pterm.LogLevelInfo},
+		{4, pterm.LogLevelWarn}, {5, pterm.LogLevelWarn}, {7, pterm.LogLevelWarn},
+		{8, pterm.LogLevelError}, {9, pterm.LogLevelError}, {math.MaxInt, pterm.LogLevelError},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.level.String(), func(t *testing.T) {
+			logger, buf := newBufferedLogger()
+			handler := pterm.NewSlogHandler(logger.WithLevel(tc.want).WithFormatter(pterm.LogFormatterJSON))
+			require.True(t, handler.Enabled(t.Context(), tc.level))
+			slog.New(handler).Log(t.Context(), tc.level, "custom level")
+			var record map[string]any
+			require.NoError(t, json.Unmarshal(buf.Bytes(), &record))
+			assert.Equal(t, tc.want.String(), record["level"])
+
+			stricter := pterm.NewSlogHandler(logger.WithLevel(tc.want + 1))
+			assert.False(t, stricter.Enabled(t.Context(), tc.level))
 		})
 	}
 }
