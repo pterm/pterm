@@ -402,6 +402,19 @@ func TestSlogHandlerWithAttrs(t *testing.T) {
 	assert.Equal(t, "abc123", m["request_id"], "attrs bound via With must be attached to every record")
 }
 
+func TestSlogHandlerWithChainedAttrs(t *testing.T) {
+	logger, buf := newBufferedLogger()
+	slogger := slog.New(pterm.NewSlogHandler(logger.WithFormatter(pterm.LogFormatterJSON)))
+
+	slogger.With("request_id", "abc123").With("user", "alice").Info("handled")
+
+	var m map[string]any
+
+	require.NoError(t, json.Unmarshal(buf.Bytes(), &m))
+	assert.Equal(t, "abc123", m["request_id"], "attrs from earlier With calls must be retained")
+	assert.Equal(t, "alice", m["user"], "attrs from the latest With call must be attached")
+}
+
 func TestSlogHandlerWithGroupFlattensAttrs(t *testing.T) {
 	logger, buf := newBufferedLogger()
 	slogger := slog.New(pterm.NewSlogHandler(logger.WithFormatter(pterm.LogFormatterJSON)))
