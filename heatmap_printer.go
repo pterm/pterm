@@ -612,7 +612,7 @@ func (p HeatmapPrinter) writeLegendSeparatorRow(buffer *bytes.Buffer, legendColW
 		}
 	}
 
-	buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), len(p.LegendLabel)))
+	buffer.WriteString(strings.Repeat(p.SeparatorStyle.Sprint(p.HorizontalSeparator), internal.GetStringMaxWidth(p.LegendLabel)))
 	buffer.WriteString(p.SeparatorStyle.Sprint(cross))
 
 	for i := 0; i < segments; i++ {
@@ -637,23 +637,23 @@ func (p HeatmapPrinter) legendValue(i, steps int) float32 {
 	}
 }
 
-// padCell centers text in a cell of the given width. internal.CenterText
-// drops the remainder space on odd padding, so the missing column is re-added
-// on the right, or on the left when padLeft is set (right-aligning the cell
-// content). Widths are measured in bytes, consistent with CenterText.
+// padCell centers text in a cell of the given terminal display width. Odd
+// padding gets the extra space on the right, or on the left when padLeft is
+// set (right-aligning the cell content). Widths are measured in terminal
+// cells, so wide Unicode text and ANSI-styled labels align with the grid.
 func padCell(text string, width int, padLeft bool) string {
-	cell := internal.CenterText(text, width)
-
-	missing := width - len(cell)
-	if missing <= 0 {
-		return cell
+	padding := width - internal.GetStringMaxWidth(text)
+	if padding <= 0 {
+		return text
 	}
 
+	left := padding / 2
+	right := padding - left
 	if padLeft {
-		return strings.Repeat(" ", missing) + cell
+		left, right = right, left
 	}
 
-	return cell + strings.Repeat(" ", missing)
+	return strings.Repeat(" ", left) + text + strings.Repeat(" ", right)
 }
 
 // centerAndShorten formats a legend value into a cell of lineLength
