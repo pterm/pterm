@@ -61,6 +61,7 @@ func TestHeatmapPrinter_CJKAxisLabelsAlignWithoutPanic(t *testing.T) {
 		out := srenderPlain(t, printer)
 		lines := strings.Split(strings.TrimSuffix(out, "\n"), "\n")
 		require.NotEmpty(t, lines)
+
 		for _, line := range lines[1:] {
 			assert.Equal(t, runewidth.StringWidth(lines[0]), runewidth.StringWidth(line))
 		}

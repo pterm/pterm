@@ -649,6 +649,7 @@ func padCell(text string, width int, padLeft bool) string {
 
 	left := padding / 2
 	right := padding - left
+
 	if padLeft {
 		left, right = right, left
 	}
