@@ -12,6 +12,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"github.com/mattn/go-runewidth"
+
 	"github.com/pterm/pterm"
 )
 
@@ -44,6 +46,39 @@ func TestHeatmapPrinter_GridAxisAndLegendLayout(t *testing.T) {
 		"╰──────┴───┴───┴───┴───┴───┴───╯\n"
 
 	assert.Equal(t, expected, srenderPlain(t, printer))
+}
+
+func TestHeatmapPrinter_CJKAxisLabelsAlignWithoutPanic(t *testing.T) {
+	printer := pterm.DefaultHeatmap.
+		WithData(pterm.HeatmapData{{0, 1}}).
+		WithAxisData(pterm.HeatmapAxis{
+			XAxis: []string{"双字", "x"},
+			YAxis: []string{"双字"},
+		}).
+		WithLegend(false)
+
+	require.NotPanics(t, func() {
+		out := srenderPlain(t, printer)
+		lines := strings.Split(strings.TrimSuffix(out, "\n"), "\n")
+		require.NotEmpty(t, lines)
+
+		for _, line := range lines[1:] {
+			assert.Equal(t, runewidth.StringWidth(lines[0]), runewidth.StringWidth(line))
+		}
+	})
+}
+
+func TestHeatmapPrinter_UnicodeLegendLabelAlignsBox(t *testing.T) {
+	printer := pterm.DefaultHeatmap.
+		WithData(pterm.HeatmapData{{0, 1}}).
+		WithLegendLabel("温度")
+
+	out := srenderPlain(t, printer)
+	lines := strings.Split(strings.TrimSuffix(out, "\n"), "\n")
+	require.GreaterOrEqual(t, len(lines), 3)
+	legend := lines[len(lines)-3:]
+	assert.Equal(t, runewidth.StringWidth(legend[0]), runewidth.StringWidth(legend[1]))
+	assert.Equal(t, runewidth.StringWidth(legend[1]), runewidth.StringWidth(legend[2]))
 }
 
 func TestHeatmapPrinter_WithLegendFalseRemovesLegend(t *testing.T) {
